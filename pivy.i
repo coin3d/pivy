@@ -815,13 +815,10 @@ cast(PyObject *self, PyObject *args)
 %ignore SoXt::init(int argc, char ** argv, const char * appname, const char * classname = "SoXt");
 %ignore SoXt::init(Widget * toplevelwidget);
 
-%ignore SoVRMLAudioClip::getDefaultIntroPause();
-%ignore SoVRMLAudioClip::getDefaultPauseBetweenTracks();
-%ignore SoVRMLAudioClip::getDefaultSampleRate();
-%ignore SoVRMLAudioClip::getDefaultTimerInterval();
-%ignore SoLazyElement::getAlphaTest(SoState * state);
-%ignore SoGLColorIndexElement::get(const int index) const;
-%ignore SoGLColorIndexElement::getDefault(void);
+/* ignores for undefined Symbols */
+%ignore SoGuiColorEditor::getClassNodekitCatalog(void);
+%ignore SoGuiColorEditor::getClassTypeId(void);
+
 
 /* if SWIG thinks the class is abstract, then it refuses to 
  * generate constructors of any kind. the following %feature
@@ -874,18 +871,6 @@ cast(PyObject *self, PyObject *args)
   } else {
 	PyErr_SetString(PyExc_TypeError, "expected a file object.");
   }
-}
-
-%typemap(in) unsigned char * {
-  if (PyString_Check($input)) {
-	$1 = (unsigned char *)PyString_AsString($input);
-  } else {
-	PyErr_SetString(PyExc_TypeError, "expected a string object.");
-  }  
-}
-
-%typemap(out) unsigned char * {
-  $result = PyString_FromString((const char *)$1);
 }
 
 %include Inventor/C/base/hash.h

@@ -68,7 +68,7 @@ DARWIN_OPTS = "-bundle -bundle_loader %s" % sys.executable
 SWIG = "swig"
 SWIG_SUPPRESS_WARNINGS = "-w302,306,307,312,389,362,503,509,510"
 SWIG_PARAMS = SWIG_SUPPRESS_WARNINGS + " -v -c++ -python -includeall " + \
-              "-D__PIVY__ %s -I. -I%s -Ifake_headers %s -o pivy_wrap.cxx pivy.i"
+              "-D__PIVY__ %s -I. -Ifake_headers -I%s %s -o pivy_wrap.cxx pivy.i"
 MODULE_NAME = "_pivy.so"
 
 SUPPORTED_SWIG_VERSIONS = ['1.3.19']

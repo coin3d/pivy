@@ -91,7 +91,7 @@ Operating System :: MacOS :: MacOS X
 Operating System :: Microsoft :: Windows
 """
 
-PIVY_VERSION = "0.1.3"
+PIVY_VERSION = "0.1.4"
 
 class pivy_build(build):
     PIVY_SNAKES = r"""

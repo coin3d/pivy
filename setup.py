@@ -52,6 +52,7 @@ import os, shutil, sys
 
 from distutils.command.build import build
 from distutils.command.clean import clean
+from distutils.command.install import install
 from distutils.core import setup
 from distutils.extension import Extension
 from distutils.sysconfig import get_python_lib
@@ -90,7 +91,7 @@ Operating System :: MacOS :: MacOS X
 Operating System :: Microsoft :: Windows
 """
 
-PIVY_VERSION = "0.1.2"
+PIVY_VERSION = "0.1.3"
 
 class pivy_build(build):
     PIVY_SNAKES = r"""
@@ -140,8 +141,9 @@ class pivy_build(build):
 """
 
     SWIG = ((sys.platform == "win32" and "swig.exe") or "swig")
+
     SWIG_SUPPRESS_WARNINGS = "-w302,306,307,312,389,361,362,503,509,510"
-    SWIG_PARAMS = "-noruntime -v -c++ -python -includeall " + \
+    SWIG_PARAMS = "-noruntime -c++ -python -includeall " + \
                   "-D__PIVY__ -I. -Ifake_headers -I%s %s -o %s_wrap.cpp interfaces" + os.sep + "%s.i"
 
     SOGUI = ['SoQt', 'SoXt', 'SoGtk', 'SoWin']
@@ -335,23 +337,13 @@ class pivy_build(build):
     def swig_generate(self):
         "build all available modules and the runtime library"
 
-        if not os.path.isfile("pivy_runtime_wrap.cpp"):
-            print red("\n=== Generating pivy_runtime_wrap.cpp ===")
-            print blue(self.SWIG   + " -runtime -v -c++ -python -interface libpivy_runtime -o pivy_runtime_wrap.cpp interfaces" + os.sep + "pivy_runtime.i")
-            if os.system(self.SWIG + " -runtime -v -c++ -python -interface libpivy_runtime -o pivy_runtime_wrap.cpp interfaces" + os.sep + "pivy_runtime.i"):
-                print red("SWIG did not generate runtime wrapper successfully! ** Aborting **")
+        if not os.path.isfile("pivy_runtime_wrap.c"):
+            print red("\n=== Creating pivy_runtime shared library ===")
+            if os.system(sys.executable + " scons" + os.sep + "scons.py -Q"):
+                print red("Could not create shared pivy_runtime library! ** Aborting **")
                 sys.exit(1)
-
-            extra_compile_args=None
-            if sys.platform == "win32":
-                extra_compile_args = ["/DSWIG_GLOBAL"]
-            self.ext_modules.append(Extension("libpivy_runtime",
-                                              ["pivy_runtime_wrap.cpp"],
-                                              extra_compile_args=extra_compile_args))
         else:
-            print red("=== pivy_runtime_wrap.cpp already exists! ===")
-
-        self.py_modules.append("pivy_runtime")
+            print red("=== The shared pivy_runtime library already exists! ===")
         
         for module in self.MODULES.keys():
             module_name = self.MODULES[module][0]
@@ -387,11 +379,10 @@ class pivy_build(build):
                                                                             module))
 
             runtime_library_dirs = []
+            library_dirs = [os.getcwd(), get_python_lib()]
             if sys.platform == "win32":
-                library_dirs = [self.build_temp + os.path.sep + (self.debug and 'Debug' or 'Release')]
                 libraries = ['libpivy_runtime']
             else:
-                library_dirs = [os.getcwd() + os.path.sep + self.build_lib]
                 runtime_library_dirs = [get_python_lib()]
                 libraries = ['pivy_runtime']
 
@@ -415,14 +406,13 @@ class pivy_build(build):
         for cmd_name in self.get_sub_commands():
             self.run_command(cmd_name)
 
-
 class pivy_clean(clean):
-    WRAPPER_FILES = ('pivy_runtime_wrap.cpp',
-                     'pivy_wrap.cpp',
-                     'soqt_wrap.cpp',
-                     'sogtk_wrap.cpp',
-                     'soxt_wrap.cpp',
-                     'sowin_wrap.cpp')
+    REMOVE_FILES = ('pivy_wrap.cpp',  'pivy.py',  'pivy.pyc',
+                    'soqt_wrap.cpp',  'soqt.py',  'soqt.pyc',
+                    'sogtk_wrap.cpp', 'sogtk.py', 'sogtk.py',
+                    'soxt_wrap.cpp',  'soxt.py',  'soxt.pyc',
+                    'sowin_wrap.cpp'  'sowin.py', 'sowin.pyc',
+                    'sogui.pyc')
 
     def remove_coin_headers(self, arg, dirname, files):
         "remove the coin headers from the pivy Inventor directory"
@@ -437,11 +427,22 @@ class pivy_clean(clean):
         "the entry point for the distutils clean class"
         os.path.walk("Inventor", self.remove_coin_headers, None)
         # remove the SWIG generated wrappers
-        for wrapper_file in self.WRAPPER_FILES:
+        for wrapper_file in self.REMOVE_FILES:
             if os.path.isfile(wrapper_file):
                 print blue("removing %s" % wrapper_file)
                 os.remove(wrapper_file)
+
         clean.run(self)
+
+        if os.system(sys.executable + " scons" + os.sep + "scons.py -Qc"):
+            print red("Could not clean shared pivy_runtime library!")
+
+class pivy_install(install):        
+    def run(self):
+        "the entry point for the distutils install class"
+        install.run(self)
+        if os.system(sys.executable + " scons" + os.sep + "scons.py -Q install"):
+            print red("Could not install shared pivy_runtime library!")
 
 setup(name = "Pivy",
       version = PIVY_VERSION,
@@ -451,8 +452,9 @@ setup(name = "Pivy",
       author_email = "tamer@tammura.at",
       download_url="http://www.tammura.at/cvs.html",
       url = "http://pivy.tammura.at/",
-      cmdclass = {'build' : pivy_build,
-                  'clean' : pivy_clean},
+      cmdclass = {'build'   : pivy_build,
+                  'clean'   : pivy_clean,
+                  'install' : pivy_install},
       ext_modules = pivy_build.ext_modules,
       py_modules  = pivy_build.py_modules,
       classifiers = filter(None, PIVY_CLASSIFIERS.split("\n")),

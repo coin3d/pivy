@@ -44,15 +44,15 @@ env = Environment(ENV = os.environ,
 Help(opts.GenerateHelpText(env))
 
 if env['debug']:
-    env.Append(CCFLAGS = (str(Platform()) == "win32") and ['/Zi'] or ['-g'])
+    env.Append(CCFLAGS = (str(Platform()) == 'win32') and ['/Zi'] or ['-g'])
 else:
-    env.Append(CCFLAGS = (str(Platform()) == "win32") and ['/O2'] or ['-O2'])
+    env.Append(CCFLAGS = (str(Platform()) == 'win32') and ['/O2'] or ['-O2'])
 
-if str(Platform()) != "win32" and env['warnings']:
+if str(Platform()) != 'win32' and env['warnings']:
     env.Append(CCFLAGS = '-Wall')
 
 sopyscript_env = env.Copy()
-sopyscript_env.ParseConfig("coin-config --cppflags --libs --ldflags")
+sopyscript_env.ParseConfig('coin-config --cppflags --libs --ldflags')
 sopyscript_env.Append(CPPPATH = ['.', distutils.sysconfig.get_python_inc()])
 sopyscript_env.Append(LIBPATH = distutils.sysconfig.get_python_lib())
 sopyscript_env.Append(LIBS = 'pivy_runtime')

@@ -44,24 +44,24 @@ env = Environment(ENV = os.environ,
 Help(opts.GenerateHelpText(env))
 
 if env['debug']:
-    env.Append(CCFLAGS = (str(Platform()) == "win32") and ['/Zi'] or ['-g'])
+    env.Append(CCFLAGS = (str(Platform()) == 'win32') and ['/Zi'] or ['-g'])
 else:
-    env.Append(CCFLAGS = (str(Platform()) == "win32") and ['/O2'] or ['-O2'])
+    env.Append(CCFLAGS = (str(Platform()) == 'win32') and ['/O2'] or ['-O2'])
 
-if str(Platform()) != "win32" and env['warnings']:
+if str(Platform()) != 'win32' and env['warnings']:
     env.Append(CCFLAGS = '-Wall')
 
 env.Append(CPPPATH = [distutils.sysconfig.get_python_inc()])
-env.Append(SWIGFLAGS = "-runtime -python -noproxy")
+env.Append(SWIGFLAGS = '-runtime -python -noproxy')
 env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars()['LINKFORSHARED'])
 
-if str(Platform()) == "darwin":
-    env.Append(LINKFLAGS = "-install_name " + distutils.sysconfig.get_python_lib() + "/libpivy_runtime.dylib")
+if str(Platform()) == 'darwin':
+    env.Append(LINKFLAGS = '-install_name ' + distutils.sysconfig.get_python_lib() + '/libpivy_runtime.dylib')
 
 pivy_runtime = env.SharedLibrary('pivy_runtime',
                                  'interfaces/pivy_runtime.i')
 
-install = env.Alias("install",
+install = env.Alias('install',
                     env.Install(distutils.sysconfig.get_python_lib(),
                                 pivy_runtime))
 env.Depends(install, pivy_runtime)

@@ -44,11 +44,11 @@ env = Environment(ENV = os.environ,
 Help(opts.GenerateHelpText(env))
 
 if env['debug']:
-    env.Append(CCFLAGS = (str(Platform()) == "win32") and ['/Zi'] or ['-g'])
+    env.Append(CCFLAGS = (str(Platform()) == 'win32') and ['/Zi'] or ['-g'])
 else:
-    env.Append(CCFLAGS = (str(Platform()) == "win32") and ['/O2'] or ['-O2'])
+    env.Append(CCFLAGS = (str(Platform()) == 'win32') and ['/O2'] or ['-O2'])
 
-if str(Platform()) != "win32" and env['warnings']:
+if str(Platform()) != 'win32' and env['warnings']:
     env.Append(CCFLAGS = '-Wall')
 
 env.ParseConfig('coin-config --cppflags --libs --ldflags')
@@ -61,14 +61,14 @@ if str(Platform()) == 'posix':
     env.Append(LINKFLAGS = '-Wl,-R' + distutils.sysconfig.get_python_lib())
 
 PIVY_ROOT = '../..'
-SWIG_SUPPRESS_WARNINGS = "-w302,306,307,312,389,361,362,503,509,510"
-env.Append(SWIGFLAGS = "-noruntime -c++ -python -includeall -D__PIVY__ " +
-           "-I. -I%s -I%s/fake_headers -I/usr/local/include %s" %
+SWIG_SUPPRESS_WARNINGS = '-w302,306,307,312,389,361,362,503,509,510'
+env.Append(SWIGFLAGS = '-noruntime -c++ -python -includeall -D__PIVY__ ' +
+           '-I. -I%s -I%s/fake_headers -I/usr/local/include %s' %
            (PIVY_ROOT, PIVY_ROOT, SWIG_SUPPRESS_WARNINGS))
 
 lib = env.SharedLibrary('_shapescale', Split('shapescale.i ShapeScale.cpp'),
                         SHLIBPREFIX = '',
                         SHLIBSUFFIX = distutils.sysconfig.get_config_vars()['SO'],
-                        SWIGCXXFILESUFFIX = "_wrap.cpp")
+                        SWIGCXXFILESUFFIX = '_wrap.cpp')
 
 env.Clean(lib, Split('shapescale.py shapescale.pyc'))

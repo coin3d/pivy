@@ -64,7 +64,8 @@ if str(Platform()) == 'win32':
 else:
     examin_env.ParseConfig('soqt-config --cppflags --libs --ldflags')
 
-examin_env.Append(LIBPATH = distutils.sysconfig.get_python_lib())
+PIVY_ROOT = '../..'
+examin_env.Append(LIBPATH = [PIVY_ROOT, distutils.sysconfig.get_python_lib()])
 examin_env.Append(RPATH = distutils.sysconfig.get_python_lib())
 examin_env.Append(LIBS = 'pivy_runtime')
 examin_env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars().get('LINKFORSHARED', '').split() +

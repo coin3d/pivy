@@ -62,7 +62,7 @@ def get(*args):
 %typemap(argout) SbName & getFieldName_name {
   PyObject *o, *o2, *o3;
 
-  o = SWIG_NewPointerObj((void *) $1, SWIGTYPE_p_SbName, 1);
+  o = SWIG_NewPointerObj((void *) $1, $1_descriptor, 1);
 
   if ((!$result) || ($result == Py_None)) {
 	$result = o;
@@ -81,9 +81,8 @@ def get(*args):
 	Py_DECREF(o3);
   }
 }
-
 %typemap(in,numinputs=0) SbName & getFieldName_name (SbName *temp) {
-    $1 = new SbName();
+    $1 = new $1_basetype();
 }
 #endif
 

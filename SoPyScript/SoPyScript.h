@@ -29,8 +29,19 @@
  *
  **/
 
-#ifndef COIN_SOPIVYSCRIPT_H
-#define COIN_SOPIVYSCRIPT_H
+#ifndef PIVY_SOPYSCRIPT_H
+#define PIVY_SOPYSCRIPT_H
+
+#ifdef WIN32
+  #ifdef PYSCRIPT_EXPORTS
+    #define PYSCRIPT_API __declspec(dllexport)
+  #else
+    #define PYSCRIPT_API __declspec(dllimport)
+  #endif
+#else
+  #define PYSCRIPT_API
+#endif
+
 
 #include <Inventor/fields/SoSFBool.h>
 #include <Inventor/fields/SoSFString.h>
@@ -42,7 +53,7 @@ class SoSensor;
 
 typedef void SoPyScriptEvaluateCB(void * closure, SoPyScript * node);
 
-class COIN_DLL_API SoPyScript : public SoNode {
+class PYSCRIPT_API SoPyScript : public SoNode {
   typedef SoNode inherited;
     
 public:
@@ -93,4 +104,4 @@ private:
   friend class SoPyScriptP;
 };
 
-#endif // !COIN_SOPIVYSCRIPT_H
+#endif // !PIVY_SOPYSCRIPT_H

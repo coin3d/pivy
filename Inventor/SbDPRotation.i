@@ -12,11 +12,11 @@
   }
 }
 
-%rename(SbDPRotation_vec_d) SbDPRotation::SbDPRotation(const SbVec3f & axis, const double radians);
+%rename(SbDPRotation_vec_d) SbDPRotation::SbDPRotation(const SbVec3d & axis, const double radians);
 %rename(SbDPRotation_arr) SbDPRotation::SbDPRotation(const double q[4]);
 %rename(SbDPRotation_dddd) SbDPRotation::SbDPRotation(const double q0, const double q1, const double q2, const double q3);
 %rename(SbDPRotation_mat) SbDPRotation::SbDPRotation(const SbMatrix & m);
-%rename(SbDPRotation_vec_vec) SbDPRotation::SbDPRotation(const SbVec3f & rotateFrom, const SbVec3f & rotateTo);
+%rename(SbDPRotation_vec_vec) SbDPRotation::SbDPRotation(const SbVec3d & rotateFrom, const SbVec3d & rotateTo);
 
 %feature("shadow") SbDPRotation::SbDPRotation %{
 def __init__(self,*args):
@@ -24,6 +24,8 @@ def __init__(self,*args):
    if len(args) == 1:
       if isinstance(args[0], SbMatrix):
          newobj = apply(_pivy.new_SbDPRotation_mat,args)
+      elif isinstance(args[0], SbDPRotation):
+         newobj = _pivy.new_SbDPRotation_arr(args[0].getValue())
       else:
          newobj = apply(_pivy.new_SbDPRotation_arr,args)
    elif len(args) == 2:
@@ -42,19 +44,21 @@ def __init__(self,*args):
 %}
 
 %rename(setValue_arr) SbDPRotation::setValue(const double q[4]);
-%rename(setValue_mat) SbDPRotation::setValue(const SbMatrix & m);
-%rename(setValue_vec_d) SbDPRotation::setValue(const SbVec3f & axis, const double radians);
-%rename(setValue_vec_vec) SbDPRotation::setValue(const SbVec3f & rotateFrom, const SbVec3f & rotateTo);
+%rename(setValue_mat) SbDPRotation::setValue(const SbDPMatrix & m);
+%rename(setValue_vec_d) SbDPRotation::setValue(const SbVec3d & axis, const double radians);
+%rename(setValue_vec_vec) SbDPRotation::setValue(const SbVec3d & rotateFrom, const SbVec3d & rotateTo);
 
 %feature("shadow") SbDPRotation::setValue(const double q0, const double q1, const double q2, const double q3) %{
 def setValue(*args):
    if len(args) == 2:
       if isinstance(args[1], SbMatrix):
          return apply(_pivy.SbDPRotation_setValue_mat,args)
+      elif isinstance(args[1], SbDPRotation):
+         return _pivy.SbDPRotation_setValue_arr(args[0], args[1].getValue())
       else:
          return apply(_pivy.SbDPRotation_setValue_arr,args)
    elif len(args) == 3:
-      if isinstance(args[2], SbVec3f):
+      if isinstance(args[2], SbVec3d):
          return apply(_pivy.SbDPRotation_setValue_vec_vec,args)
       else:
          return apply(_pivy.SbDPRotation_setValue_vec_d,args)
@@ -94,6 +98,19 @@ def setValue(*args):
     };
 }
 
+%apply float * OUTPUT { double & q0, double & q1, double & q2, double & q3, double & radians};
+
+/* the next 2 typemaps handle the return value for getMatrix and getAxisAngle ~ getValue */
+%typemap(in,numinputs=0) SbVec3d & axis, SbDPMatrix & matrix {
+    $1 = new $1_basetype();
+}
+%typemap(argout) SbVec3d & axis, SbDPMatrix & matrix {
+  $result = SWIG_NewPointerObj((void *) $1, $1_descriptor, 1);
+}
+/* undo effect of in typemap for setValue calls */
+%typemap(in) const SbVec3d & axis = SWIGTYPE &;
+%typemap(argout) const SbVec3d & axis {};
+
 %ignore SbDPRotation::getValue(double & q0, double & q1, double & q2, double & q3) const;
-%ignore SbDPRotation::getValue(SbVec3f & axis, double & radians) const;
-%ignore SbDPRotation::getValue(SbMatrix & matrix) const;
+%rename(getAxisAngle) SbDPRotation::getValue(SbVec3d & axis, double & radians) const;
+%rename(getMatrix) SbDPRotation::getValue(SbDPMatrix & matrix) const;

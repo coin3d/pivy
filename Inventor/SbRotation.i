@@ -24,6 +24,8 @@ def __init__(self,*args):
    if len(args) == 1:
       if isinstance(args[0], SbMatrix):
          newobj = apply(_pivy.new_SbRotation_mat,args)
+      elif isinstance(args[0], SbRotation):
+         newobj = _pivy.new_SbRotation_arr(args[0].getValue())
       else:
          newobj = apply(_pivy.new_SbRotation_arr,args)
    elif len(args) == 2:
@@ -51,6 +53,8 @@ def setValue(*args):
    if len(args) == 2:
       if isinstance(args[1], SbMatrix):
          return apply(_pivy.SbRotation_setValue_mat,args)
+      elif isinstance(args[1], SbRotation):
+         return _pivy.SbRotation_setValue_arr(args[0], args[1].getValue())
       else:
          return apply(_pivy.SbRotation_setValue_arr,args)
    elif len(args) == 3:
@@ -94,6 +98,19 @@ def setValue(*args):
     };
 }
 
+%apply float * OUTPUT { float & q0, float & q1, float & q2, float & q3, float & radians};
+
+/* the next 2 typemaps handle the return value for getMatrix and getAxisAngle ~ getValue */
+%typemap(in,numinputs=0) SbVec3f & axis, SbMatrix & matrix {
+    $1 = new $1_basetype();
+}
+%typemap(argout) SbVec3f & axis, SbMatrix & matrix {
+  $result = SWIG_NewPointerObj((void *) $1, $1_descriptor, 1);
+}
+/* undo effect of in typemap for setValue calls */
+%typemap(in) const SbVec3f & axis = SWIGTYPE &;
+%typemap(argout) const SbVec3f & axis {};
+
 %ignore SbRotation::getValue(float & q0, float & q1, float & q2, float & q3) const;
-%ignore SbRotation::getValue(SbVec3f & axis, float & radians) const;
-%ignore SbRotation::getValue(SbMatrix & matrix) const;
+%rename(getAxisAngle) SbRotation::getValue(SbVec3f & axis, float & radians) const;
+%rename(getMatrix) SbRotation::getValue(SbMatrix & matrix) const;

@@ -57,7 +57,10 @@ convert_SbMat_array(PyObject *input, SbMat temp)
 def __init__(self,*args):
    newobj = None
    if len(args) == 1:
-      newobj = apply(_pivy.new_SbMatrix_SbMat,args)
+      if isinstance(args[0],SbMatrix):
+         newobj = _pivy.new_SbMatrix_SbMat(args[0].getValue())
+      else:
+         newobj = apply(_pivy.new_SbMatrix_SbMat,args)
    elif len(args) == 16:
       newobj = apply(_pivy.new_SbMatrix_f16,args)
    else:
@@ -68,10 +71,17 @@ def __init__(self,*args):
       del newobj.thisown
 %}
 
+%feature("shadow") SbMatrix::setValue(const SbMat * m) %{
+def setValue(*args):
+   if isinstance(args[1], SbMatrix):
+      return _pivy.SbMatrix_setValue(args[0], args[1].getValue())
+   return _pivy.SbMatrix_setValue(*args)
+%}
+
 %rename(det3_i6) SbMatrix::det3(int r1, int r2, int r3,
                                 int c1, int c2, int c3) const;
 
-%feature("shadow") SbMatrix::setScale(const float s) %{
+%feature("shadow") SbMatrix::det3() %{
 def det3(*args):
    if len(args) == 7:
       return apply(_pivy.SbMatrix_det3_i6,args)

@@ -46,7 +46,7 @@
 #       of the point set.
 #
 
-from sogui import *
+from soqt import *
 from pivy import *
 from qt import *
 import sys
@@ -74,7 +74,7 @@ def myProjectPoint(myRenderArea, mousex, mousey):
     p0, p1 = myViewVolume.projectPointToLine(SbVec2f(x,y))
 
     # Midpoint of the line intersects a plane thru the origin
-    intersection = SbVec3f.div(SbVec3f_add(p0, p1), 2.0)
+    intersection = SbVec3f_div(SbVec3f_add(p0, p1), 2.0)
 
     return intersection
 
@@ -109,7 +109,6 @@ def tickerCallback(myCamera, sensor):
     myCamera.orientation.setValue(
         SbRotation_mul(myCamera.orientation.getValue(), rot))
     
-
 ###############################################################
 # CODE FOR The Inventor Mentor STARTS HERE  (part 1)
 
@@ -136,7 +135,7 @@ def myAppEventHandler(myRenderArea, anyevent):
 
     else:
         handled = FALSE
-   
+
     return handled
 
 # CODE FOR The Inventor Mentor ENDS HERE
@@ -152,7 +151,7 @@ def main():
     print "\tRight: deletes all the points"
 
     # Initialize Inventor and Qt
-    appWindow = SoGui.init(sys.argv[0])
+    appWindow = SoQt.init(sys.argv[0])
     if appWindow == None:
         sys.exit(1)
 
@@ -187,7 +186,7 @@ def main():
     myTicker.setInterval(UPDATE_RATE)
 
     # Create a render area for viewing the scene
-    myRenderArea = SoGuiRenderArea(appWindow)
+    myRenderArea = SoQtRenderArea(appWindow)
     myRenderArea.setSceneGraph(root)
     myRenderArea.setTitle("My Event Handler")
 
@@ -203,8 +202,8 @@ def main():
 
     # Show our application window, and loop forever...
     myRenderArea.show()
-    SoGui.show(appWindow)
-    SoGui.mainLoop()
+    SoQt.show(appWindow)
+    SoQt.mainLoop()
 
 if __name__ == "__main__":
     main()

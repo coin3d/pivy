@@ -127,8 +127,7 @@ Pivy_PythonInteractiveLoop(void *data) {
     }
 
     /* if no QEvent could be created through sip return a swig QEvent type */
-    if (PyErr_ExceptionMatches(PyExc_ImportError) || !$result) {
-      PyErr_Clear();
+    if ((PyErr_ExceptionMatches(PyExc_ImportError) && PyErr_Clear()) || !$result) {
       $result = SWIG_NewPointerObj((void *)($1), SWIGTYPE_p_QEvent, 0);
     }
   }
@@ -176,8 +175,7 @@ Pivy_PythonInteractiveLoop(void *data) {
     }
 
     /* if no QWidget could be created through sip return a swig QWidget type */
-    if (PyErr_ExceptionMatches(PyExc_ImportError) || !$result) {
-      PyErr_Clear();
+    if ((PyErr_ExceptionMatches(PyExc_ImportError) && PyErr_Clear()) || !$result) {
       $result = SWIG_NewPointerObj((void *)($1), SWIGTYPE_p_QWidget, 0);
     }
   }
@@ -213,8 +211,7 @@ Pivy_PythonInteractiveLoop(void *data) {
     }
   }
 
-  if (PyErr_ExceptionMatches(PyExc_ImportError) || !$1) {
-    PyErr_Clear();
+  if ((PyErr_ExceptionMatches(PyExc_ImportError) && PyErr_Clear()) || !$1) {
     if ((SWIG_ConvertPtr($input, (void **)(&$1), SWIGTYPE_p_QEvent,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
   }
 }
@@ -252,8 +249,7 @@ Pivy_PythonInteractiveLoop(void *data) {
       }
     }
   
-    if (PyErr_ExceptionMatches(PyExc_ImportError) || !$1) {
-      PyErr_Clear();
+    if ((PyErr_ExceptionMatches(PyExc_ImportError) && PyErr_Clear()) || !$1) {
       if ((SWIG_ConvertPtr($input, (void **)(&$1), SWIGTYPE_p_QWidget,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
     }
   }  

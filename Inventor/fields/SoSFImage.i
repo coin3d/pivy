@@ -3,20 +3,6 @@
   $2 = (int *)malloc(sizeof(int));
 }
 
-/* %typemap(in) const unsigned char * pixels { */
-/*   int len; */
-/*   short dim0, dim1; */
-/*   arg2->getValue(dim0,dim1); */
-/*   len = dim0 * dim1 * arg3; */
-
-/*   if (!PyString_Check($input)) { */
-/*     PyErr_SetString(PyExc_ValueError,"Expected a string"); */
-/*     return NULL; */
-/*   } */
-
-/*   PyString_AsStringAndSize($input, (char**)&$1, &len); */
-/* } */
-
 %extend SoSFImage {
   void setValue(const SbVec2s & size, const int nc,
                 PyObject * pixels)
@@ -24,7 +10,6 @@
     int len = size[0] * size[1] * nc;
     unsigned char * image;
 
-    printf("SoSFImage::setValue() len: %d\n", len);
     PyString_AsStringAndSize(pixels, (char **)&image, &len);
     self->setValue(size, nc, image);
   }

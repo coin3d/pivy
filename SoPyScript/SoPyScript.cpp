@@ -87,7 +87,7 @@ class GlobalLock {
   public:
     GlobalLock(void) : state(PyGILState_Ensure()) {}
     ~GlobalLock() { PyGILState_Release(state); }
-  protected:
+  private:
     PyGILState_STATE state;
 };
 

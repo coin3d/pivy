@@ -157,7 +157,7 @@ class pivy_build(build):
     CXX_INCS = ""
     CXX_LIBS = ""
     if sys.platform == "win32":
-    	CXX_INCS = "-DPIVY_WIN32 "
+        CXX_INCS = "-DPIVY_WIN32 "
     else:
         CXX_LIBS = "-lswigpy" + " "
 
@@ -260,7 +260,7 @@ class pivy_build(build):
         fd.close()
         print blue("%s" % version)
         if not version in self.SUPPORTED_SWIG_VERSIONS:
-            print yellow("Warning: Pivy has only been tested with the following" + \
+            print yellow("Warning: Pivy has only been tested with the following " + \
                          "SWIG versions: %s." % " ".join(self.SUPPORTED_SWIG_VERSIONS))
 
     def copy_and_swigify_coin_headers(self, coin_includedir, dirname, files):
@@ -330,7 +330,7 @@ class pivy_build(build):
             config_cmd = self.MODULES[module][1]
 
             if sys.platform == "win32":
-            	INCLUDE_DIR = os.getenv("COIN3DDIR") + "\\include"
+                INCLUDE_DIR = os.getenv("COIN3DDIR") + "\\include"
                 CPP_FLAGS = "-I" + INCLUDE_DIR +  " " + \
                             "-I" + os.getenv("COIN3DDIR") + "\\include\\Inventor\\annex" + \
                             " /DSOWIN_DLL /DCOIN_DLL /wd4244 /wd4049"
@@ -359,8 +359,8 @@ class pivy_build(build):
                                                                             module))
 
             library_dirs = None
-	    libraries = None
-	    if sys.platform == "win32":
+            libraries = None
+            if sys.platform == "win32":
                 library_dirs=[self.build_temp + os.path.sep + (self.debug and 'Debug' or 'Release')]
                 libraries=['pivy_swigpy']
 
@@ -373,14 +373,15 @@ class pivy_build(build):
 
     def run(self):
         "the entry point for the distutils build class"
-	if sys.platform == "win32" and not os.getenv("COIN3DDIR"):
-	    print "Please set the COIN3DDIR environment variable to your Coin root directory! ** Aborting **"
-	    sys.exit(1)
+        if sys.platform == "win32" and not os.getenv("COIN3DDIR"):
+            print "Please set the COIN3DDIR environment variable to your Coin root directory! ** Aborting **"
+            sys.exit(1)
         self.pivy_configure()
         self.swig_generate()
 
-        self.ext_modules.insert(0, Extension("pivy_swigpy", ["pivy_swigpy.c"],
-                                              extra_compile_args=["/DSWIG_GLOBAL"]))
+        if sys.platform == "win32": 
+            self.ext_modules.insert(0, Extension("pivy_swigpy", ["pivy_swigpy.c"],
+                                                 extra_compile_args=["/DSWIG_GLOBAL"]))
 
         for cmd_name in self.get_sub_commands():
             self.run_command(cmd_name)
@@ -391,7 +392,7 @@ class pivy_clean(clean):
                      'soqt_wrap.cxx',
                      'sogtk_wrap.cxx',
                      'soxt_wrap.cxx',
-		     'sowin_wrap.cxx')
+                     'sowin_wrap.cxx')
 
     def remove_coin_headers(self, arg, dirname, files):
         "remove the coin headers from the pivy Inventor directory"

@@ -137,7 +137,7 @@ SoPyScript::initClass(void)
                          SoNode::nextActionMethodIndex++);
  
     SoNode::setCompatibilityTypes(SoPyScript::getClassTypeId(),
-                                  SoNode::COIN_2_0|SoNode::COIN_2_2|SoNode::COIN_2_3|SoNode::COIN_2_4);
+                                  SoNode::COIN_2_0|SoNode::COIN_2_2|SoNode::COIN_2_3);
 
     SoAudioRenderAction::addMethod(SoPyScript::getClassTypeId(), SoNode::audioRenderS);
 

@@ -67,7 +67,7 @@ DARWIN_OPTS = "-bundle -bundle_loader %s" % sys.executable
 
 SWIG = "swig"
 SWIG_SUPPRESS_WARNINGS = "-w302,306,307,312,389,362,503,509,510"
-SWIG_PARAMS = SWIG_SUPPRESS_WARNINGS + " -v -c++ -python -includeall " + \
+SWIG_PARAMS = "-v -c++ -python -includeall " + \
               "-D__PIVY__ %s -I. -Ifake_headers -I%s %s -o pivy_wrap.cxx pivy.i"
 MODULE_NAME = "_pivy.so"
 
@@ -212,10 +212,10 @@ def configure():
 
 def build():
     "build Pivy"
-    write_log(SWIG + " " + SWIG_PARAMS %
+    write_log(SWIG + " " + SWIG_SUPPRESS_WARNINGS + " " + SWIG_PARAMS %
               (SOGUI_DEF, do_os_popen("coin-config --includedir"),
                CXX_INCS) + "\n")
-    if not os.system(SWIG + " " + SWIG_PARAMS %
+    if not os.system(SWIG + " " + SWIG_SUPPRESS_WARNINGS + " " + SWIG_PARAMS %
                      (SOGUI_DEF, do_os_popen("coin-config --includedir"),
                       CXX_INCS)):
         OPTS = ""
@@ -247,27 +247,31 @@ def usage():
                      "\n--with-soqt      \tuse SoQt GUI binding [default]"
                      "\n--with-soxt      \tuse SoXt GUI binding"                     
                      "\n--with-sogtk     \tuse SoGtk GUI binding"
+                     "\n-w, --warn       \tdon't suppress SWIG warnings"
                      "\n-h, --help       \tprint this message and exit"
                      "\n-v, --version    \tprint version and exit"
                      "\n\nPlease report bugs to <tamer@tammura.at>.\n")
     
 def option_check():
     "check for options"
-    global SOGUI, SOGUI_DEF
+    global SOGUI, SOGUI_DEF, SWIG_SUPPRESS_WARNINGS
     
     try:
-        (options, arguments) = getopt.getopt(sys.argv[1:], "",
+        (options, arguments) = getopt.getopt(sys.argv[1:], "whv",
                                              ["with-soqt", "with-sogtk",
-                                              "with-soxt", "help", "version"])
+                                              "with-soxt", "warn", "help",
+                                              "version"])
         for opt in options:
             if opt[0] == "--with-soqt":
                 SOGUI = ("SoQt", "soqt-config")
-                SOGUI_DEF = "-DPIVY_USE_SOQT"                
+                SOGUI_DEF = "-DPIVY_USE_SOQT"
             elif opt[0] == "--with-soxt":
                 SOGUI = ("SoXt", "soxt-config")
                 SOGUI_DEF = "-DPIVY_USE_SOXT"
             elif opt[0] == "--with-sogtk":
-                SOGUI = ("SoGtk", "sogtk-config")                
+                SOGUI = ("SoGtk", "sogtk-config")
+            elif opt[0] in ("-w", "--warn"):
+                SWIG_SUPPRESS_WARNINGS = ""
             elif opt[0] in ("-h", "--help"):
                 SOGUI_DEF = "-DPIVY_USE_SOGTK"
                 usage(); sys.exit(0)

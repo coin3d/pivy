@@ -82,7 +82,7 @@ def get(*args):
   }
 }
 
-%typemap(ignore) SbName & getFieldName_name (SbName *temp) {
+%typemap(in,numinputs=0) SbName & getFieldName_name (SbName *temp) {
     $1 = new SbName();
 }
 #endif

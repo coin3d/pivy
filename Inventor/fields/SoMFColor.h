@@ -25,6 +25,21 @@
 #include <Inventor/SbColor.h>
 
 #ifdef __PIVY__
+%typemap(in) float rgb[][3] (float (*temp)[3]) {
+  int len;
+
+  if (PySequence_Check($input)) {
+	len  = PySequence_Length($input);
+
+	temp = (float (*)[3]) malloc(len*3*sizeof(float));
+	convert_SoMFVec3f_array($input, len, temp);
+  
+	$1 = temp;
+  } else {
+	PyErr_SetString(PyExc_TypeError, "expected a sequence.");
+  }
+}
+
 %typemap(in) float hsv[3] (float temp[3]) {
   convert_SbVec3f_array($input, temp);
   $1 = temp;

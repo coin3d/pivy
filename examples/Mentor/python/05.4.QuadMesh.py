@@ -1,157 +1,146 @@
-/*
- *
- *  Copyright (C) 2000 Silicon Graphics, Inc.  All Rights Reserved. 
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  Further, this software is distributed without any warranty that it is
- *  free of the rightful claim of any third person regarding infringement
- *  or the like.  Any license provided herein, whether implied or
- *  otherwise, applies only to this software file.  Patent licenses, if
- *  any, provided herein do not apply to combinations of this program with
- *  other software, or any other product whatsoever.
- * 
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *  Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
- *  Mountain View, CA  94043, or:
- * 
- *  http://www.sgi.com 
- * 
- *  For further information regarding this notice, see: 
- * 
- *  http://oss.sgi.com/projects/GenInfo/NoticeExplan/
- *
- */
+#!/usr/bin/env python
 
-/*--------------------------------------------------------------
- *  This is an example from the Inventor Mentor,
- *  chapter 5, example 4.
- *
- *  This example creates the St. Louis Arch using a QuadMesh.
- *------------------------------------------------------------*/
+###
+# Copyright (c) 2002, Tamer Fahmy <tamer@tammura.at>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#   * Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#   * Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived
+#     from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES LOSS OF USE,
+# DATA, OR PROFITS OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 
-#include <stdlib.h>
-#include <Inventor/Xt/SoXt.h>
-#include <Inventor/Xt/viewers/SoXtExaminerViewer.h>
-#include <Inventor/nodes/SoCoordinate3.h>
-#include <Inventor/nodes/SoMaterial.h>
-#include <Inventor/nodes/SoQuadMesh.h>
-#include <Inventor/nodes/SoSeparator.h>
+###
+# This is an example from the Inventor Mentor,
+# chapter 5, example 4.
+#
+# This example creates the St. Louis Arch using a QuadMesh.
+#
 
-//////////////////////////////////////////////////////////////
-// CODE FOR The Inventor Mentor STARTS HERE
+from pivy import *
+import sys
 
-// Positions of all of the vertices:
-static float vertexPositions[160][3] =
-{  // 1st row
-   {-13.0,  0.0, 1.5}, {-10.3, 13.7, 1.2}, { -7.6, 21.7, 1.0}, 
-   { -5.0, 26.1, 0.8}, { -2.3, 28.2, 0.6}, { -0.3, 28.8, 0.5},
-   {  0.3, 28.8, 0.5}, {  2.3, 28.2, 0.6}, {  5.0, 26.1, 0.8}, 
-   {  7.6, 21.7, 1.0}, { 10.3, 13.7, 1.2}, { 13.0,  0.0, 1.5},
-   // 2nd row
-   {-10.0,  0.0, 1.5}, { -7.9, 13.2, 1.2}, { -5.8, 20.8, 1.0}, 
-   { -3.8, 25.0, 0.8}, { -1.7, 27.1, 0.6}, { -0.2, 27.6, 0.5},
-   {  0.2, 27.6, 0.5}, {  1.7, 27.1, 0.6}, {  3.8, 25.0, 0.8}, 
-   {  5.8, 20.8, 1.0}, {  7.9, 13.2, 1.2}, { 10.0,  0.0, 1.5},
-   // 3rd row
-   {-10.0,  0.0,-1.5}, { -7.9, 13.2,-1.2}, { -5.8, 20.8,-1.0}, 
-   { -3.8, 25.0,-0.8}, { -1.7, 27.1,-0.6}, { -0.2, 27.6,-0.5},
-   {  0.2, 27.6,-0.5}, {  1.7, 27.1,-0.6}, {  3.8, 25.0,-0.8}, 
-   {  5.8, 20.8,-1.0}, {  7.9, 13.2,-1.2}, { 10.0,  0.0,-1.5},
-   // 4th row 
-   {-13.0,  0.0,-1.5}, {-10.3, 13.7,-1.2}, { -7.6, 21.7,-1.0}, 
-   { -5.0, 26.1,-0.8}, { -2.3, 28.2,-0.6}, { -0.3, 28.8,-0.5},
-   {  0.3, 28.8,-0.5}, {  2.3, 28.2,-0.6}, {  5.0, 26.1,-0.8}, 
-   {  7.6, 21.7,-1.0}, { 10.3, 13.7,-1.2}, { 13.0,  0.0,-1.5},
-   // 5th row
-   {-13.0,  0.0, 1.5}, {-10.3, 13.7, 1.2}, { -7.6, 21.7, 1.0}, 
-   { -5.0, 26.1, 0.8}, { -2.3, 28.2, 0.6}, { -0.3, 28.8, 0.5},
-   {  0.3, 28.8, 0.5}, {  2.3, 28.2, 0.6}, {  5.0, 26.1, 0.8}, 
-   {  7.6, 21.7, 1.0}, { 10.3, 13.7, 1.2}, { 13.0,  0.0, 1.5}
-};
+##############################################################
+## CODE FOR The Inventor Mentor STARTS HERE
 
-// Routine to create a scene graph representing an arch.
-SoSeparator *
-makeArch()
-{
-   SoSeparator *result = new SoSeparator;
-   result->ref();
+# Positions of all of the vertices:
+vertexPositions = (
+   # 1st row
+   (-13.0,  0.0, 1.5), (-10.3, 13.7, 1.2), ( -7.6, 21.7, 1.0), 
+   ( -5.0, 26.1, 0.8), ( -2.3, 28.2, 0.6), ( -0.3, 28.8, 0.5),
+   (  0.3, 28.8, 0.5), (  2.3, 28.2, 0.6), (  5.0, 26.1, 0.8), 
+   (  7.6, 21.7, 1.0), ( 10.3, 13.7, 1.2), ( 13.0,  0.0, 1.5),
+   # 2nd row
+   (-10.0,  0.0, 1.5), ( -7.9, 13.2, 1.2), ( -5.8, 20.8, 1.0), 
+   ( -3.8, 25.0, 0.8), ( -1.7, 27.1, 0.6), ( -0.2, 27.6, 0.5),
+   (  0.2, 27.6, 0.5), (  1.7, 27.1, 0.6), (  3.8, 25.0, 0.8), 
+   (  5.8, 20.8, 1.0), (  7.9, 13.2, 1.2), ( 10.0,  0.0, 1.5),
+   # 3rd row
+   (-10.0,  0.0,-1.5), ( -7.9, 13.2,-1.2), ( -5.8, 20.8,-1.0), 
+   ( -3.8, 25.0,-0.8), ( -1.7, 27.1,-0.6), ( -0.2, 27.6,-0.5),
+   (  0.2, 27.6,-0.5), (  1.7, 27.1,-0.6), (  3.8, 25.0,-0.8), 
+   (  5.8, 20.8,-1.0), (  7.9, 13.2,-1.2), ( 10.0,  0.0,-1.5),
+   # 4th row 
+   (-13.0,  0.0,-1.5), (-10.3, 13.7,-1.2), ( -7.6, 21.7,-1.0), 
+   ( -5.0, 26.1,-0.8), ( -2.3, 28.2,-0.6), ( -0.3, 28.8,-0.5),
+   (  0.3, 28.8,-0.5), (  2.3, 28.2,-0.6), (  5.0, 26.1,-0.8), 
+   (  7.6, 21.7,-1.0), ( 10.3, 13.7,-1.2), ( 13.0,  0.0,-1.5),
+   # 5th row
+   (-13.0,  0.0, 1.5), (-10.3, 13.7, 1.2), ( -7.6, 21.7, 1.0), 
+   ( -5.0, 26.1, 0.8), ( -2.3, 28.2, 0.6), ( -0.3, 28.8, 0.5),
+   (  0.3, 28.8, 0.5), (  2.3, 28.2, 0.6), (  5.0, 26.1, 0.8), 
+   (  7.6, 21.7, 1.0), ( 10.3, 13.7, 1.2), ( 13.0,  0.0, 1.5)
+)
 
-#ifdef IV_STRICT
-   // This is the preferred code for Inventor 2.1 
+# set this variable to 0 if you want to use the other method
+IV_STRICT = 0
 
-   // Using the new SoVertexProperty node is more efficient
-   SoVertexProperty *myVertexProperty = new SoVertexProperty;
+# Routine to create a scene graph representing an arch.
+def makeArch():
+   result = SoSeparator()
+   result.ref()
 
-   // Define the material
-   myVertexProperty->orderedRGBA.setValue(SbColor(.78, .57, .11).getPackedValue());
+   if IV_STRICT:
+	   # This is the preferred code for Inventor 2.1 
 
-   // Define coordinates for vertices
-   myVertexProperty->vertex.setValues(0, 60, vertexPositions);
+	   # Using the new SoVertexProperty node is more efficient
+	   myVertexProperty = SoVertexProperty()
 
-   // Define the QuadMesh.
-   SoQuadMesh *myQuadMesh = new SoQuadMesh;
-   myQuadMesh->verticesPerRow = 12;
+	   # Define the material
+	   myVertexProperty.orderedRGBA.setValue(SbColor(.78, .57, .11).getPackedValue())
 
-   myQuadMesh->verticesPerColumn = 5;
+	   # Define coordinates for vertices
+	   myVertexProperty.vertex.setValues(0, 60, vertexPositions)
 
-   myQuadMesh->vertexProperty.setValue(myVertexProperty);
-   result->addChild(myQuadMesh);
+	   # Define the QuadMesh.
+	   myQuadMesh = SoQuadMesh()
+	   myQuadMesh.verticesPerRow(12)
 
-#else
-   // Define the material
-   SoMaterial *myMaterial = new SoMaterial;
-   myMaterial->diffuseColor.setValue(.78, .57, .11);
-   result->addChild(myMaterial);
+	   myQuadMesh.verticesPerColumn(5)
 
-   // Define coordinates for vertices
-   SoCoordinate3 *myCoords = new SoCoordinate3;
-   myCoords->point.setValues(0, 60, vertexPositions);
-   result->addChild(myCoords);
+	   myQuadMesh.vertexProperty.setValue(myVertexProperty)
+	   result.addChild(myQuadMesh)
 
-   // Define the QuadMesh.
-   SoQuadMesh *myQuadMesh = new SoQuadMesh;
-   myQuadMesh->verticesPerRow = 12;
-#endif
+   else:
+	   # Define the material
+	   myMaterial = SoMaterial()
+	   myMaterial.diffuseColor.setValue(.78, .57, .11)
+	   result.addChild(myMaterial)
 
-   myQuadMesh->verticesPerColumn = 5;
-   result->addChild(myQuadMesh);
+	   # Define coordinates for vertices
+	   myCoords = SoCoordinate3()
+	   myCoords.point.setValues(0, 60, vertexPositions)
+	   result.addChild(myCoords)
 
-   result->unrefNoDelete();
-   return result;
-}
+	   # Define the QuadMesh.
+	   myQuadMesh = SoQuadMesh()
+	   myQuadMesh.verticesPerRow(12)
 
-// CODE FOR The Inventor Mentor ENDS HERE
-//////////////////////////////////////////////////////////////
+	   myQuadMesh.verticesPerColumn(5)
+	   result.addChild(myQuadMesh)
 
-void
-main(int, char **argv)
-{
-   // Initialize Inventor and Xt
-   Widget myWindow = SoXt::init(argv[0]);
-   if (myWindow == NULL) exit(1);
+   result.unrefNoDelete()
+   return result
 
-   SoSeparator *root = makeArch();
-   root->ref();
+## CODE FOR The Inventor Mentor ENDS HERE
+##############################################################
 
-   SoXtExaminerViewer *myViewer = 
-            new SoXtExaminerViewer(myWindow);
-   myViewer->setSceneGraph(root);
-   myViewer->setTitle("Quad Mesh: Arch");
-   myViewer->show();
-   myViewer->viewAll();
+def main():
+	# Initialize Inventor and Gtk
+	myWindow = SoGtk_init(sys.argv[0])
+	if myWindow == None: sys.exit(1)
 
-   SoXt::show(myWindow);
-   SoXt::mainLoop();
-}
+	root = makeArch()
+	root.ref()
+
+	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer.setSceneGraph(root)
+	myViewer.setTitle("Quad Mesh: Arch")
+	myViewer.show()
+	myViewer.viewAll()
+
+	SoGtk_show(myWindow)
+	SoGtk_mainLoop()
+
+if __name__ == "__main__":
+	main()

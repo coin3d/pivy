@@ -1,188 +1,172 @@
-/*
- *
- *  Copyright (C) 2000 Silicon Graphics, Inc.  All Rights Reserved. 
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  Further, this software is distributed without any warranty that it is
- *  free of the rightful claim of any third person regarding infringement
- *  or the like.  Any license provided herein, whether implied or
- *  otherwise, applies only to this software file.  Patent licenses, if
- *  any, provided herein do not apply to combinations of this program with
- *  other software, or any other product whatsoever.
- * 
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *  Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
- *  Mountain View, CA  94043, or:
- * 
- *  http://www.sgi.com 
- * 
- *  For further information regarding this notice, see: 
- * 
- *  http://oss.sgi.com/projects/GenInfo/NoticeExplan/
- *
- */
+#!/usr/bin/env python
 
-/*--------------------------------------------------------------
- *  This is an example from the Inventor Mentor,
- *  chapter 5, example 2.
- *
- *  This example creates an IndexedFaceSet. It creates 
- *  the first stellation of the dodecahedron.
- *------------------------------------------------------------*/
+###
+# Copyright (c) 2002, Tamer Fahmy <tamer@tammura.at>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#   * Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#   * Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived
+#     from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 
-#include <stdlib.h>
-#include <Inventor/Xt/SoXt.h>
-#include <Inventor/Xt/viewers/SoXtExaminerViewer.h>
-#include <Inventor/nodes/SoCoordinate3.h>
-#include <Inventor/nodes/SoIndexedFaceSet.h>
-#include <Inventor/nodes/SoMaterial.h>
-#include <Inventor/nodes/SoMaterialBinding.h>
-#include <Inventor/nodes/SoSeparator.h>
+###
+# This is an example from the Inventor Mentor,
+# chapter 5, example 2.
+#
+# This example creates an IndexedFaceSet. It creates 
+# the first stellation of the dodecahedron.
+#
 
-//////////////////////////////////////////////////////////////
-// CODE FOR The Inventor Mentor STARTS HERE
+from pivy import *
+import sys
 
-//
-// Positions of all of the vertices:
-//
-static float vertexPositions[12][3] =
-{
-   { 0.0000,  1.2142,  0.7453},  // top
+##############################################################
+## CODE FOR The Inventor Mentor STARTS HERE
 
-   { 0.0000,  1.2142, -0.7453},  // points surrounding top
-   {-1.2142,  0.7453,  0.0000},
-   {-0.7453,  0.0000,  1.2142}, 
-   { 0.7453,  0.0000,  1.2142}, 
-   { 1.2142,  0.7453,  0.0000},
+#
+# Positions of all of the vertices:
+#
+vertexPositions = (
+   ( 0.0000,  1.2142,  0.7453),  # top
 
-   { 0.0000, -1.2142,  0.7453},  // points surrounding bottom
-   {-1.2142, -0.7453,  0.0000}, 
-   {-0.7453,  0.0000, -1.2142},
-   { 0.7453,  0.0000, -1.2142}, 
-   { 1.2142, -0.7453,  0.0000}, 
+   ( 0.0000,  1.2142, -0.7453),  # points surrounding top
+   (-1.2142,  0.7453,  0.0000),
+   (-0.7453,  0.0000,  1.2142), 
+   ( 0.7453,  0.0000,  1.2142), 
+   ( 1.2142,  0.7453,  0.0000),
 
-   { 0.0000, -1.2142, -0.7453}, // bottom
-};
+   ( 0.0000, -1.2142,  0.7453),  # points surrounding bottom
+   (-1.2142, -0.7453,  0.0000), 
+   (-0.7453,  0.0000, -1.2142),
+   ( 0.7453,  0.0000, -1.2142), 
+   ( 1.2142, -0.7453,  0.0000), 
 
-//
-// Connectivity, information; 12 faces with 5 vertices each },
-// (plus the end-of-face indicator for each face):
-//
+   ( 0.0000, -1.2142, -0.7453), # bottom
+)
 
-static int32_t indices[72] =
-{
-   1,  2,  3,  4, 5, SO_END_FACE_INDEX, // top face
+#
+# Connectivity, information 12 faces with 5 vertices each ),
+# (plus the end-of-face indicator for each face):
+#
 
-   0,  1,  8,  7, 3, SO_END_FACE_INDEX, // 5 faces about top
+indices = (
+   1,  2,  3,  4, 5, SO_END_FACE_INDEX, # top face
+
+   0,  1,  8,  7, 3, SO_END_FACE_INDEX, # 5 faces about top
    0,  2,  7,  6, 4, SO_END_FACE_INDEX,
    0,  3,  6, 10, 5, SO_END_FACE_INDEX,
    0,  4, 10,  9, 1, SO_END_FACE_INDEX,
    0,  5,  9,  8, 2, SO_END_FACE_INDEX, 
 
-    9,  5, 4, 6, 11, SO_END_FACE_INDEX, // 5 faces about bottom
+    9,  5, 4, 6, 11, SO_END_FACE_INDEX, # 5 faces about bottom
    10,  4, 3, 7, 11, SO_END_FACE_INDEX,
     6,  3, 2, 8, 11, SO_END_FACE_INDEX,
     7,  2, 1, 9, 11, SO_END_FACE_INDEX,
     8,  1, 5,10, 11, SO_END_FACE_INDEX,
 
-    6,  7, 8, 9, 10, SO_END_FACE_INDEX, // bottom face
-};
+    6,  7, 8, 9, 10, SO_END_FACE_INDEX, # bottom face
+)
  
-// Colors for the 12 faces
-static float colors[12][3] =
-{
-   {1.0, .0, 0}, { .0,  .0, 1.0}, {0, .7,  .7}, { .0, 1.0,  0},
-   { .7, .7, 0}, { .7,  .0,  .7}, {0, .0, 1.0}, { .7,  .0, .7},
-   { .7, .7, 0}, { .0, 1.0,  .0}, {0, .7,  .7}, {1.0,  .0,  0}
-};
+# Colors for the 12 faces
+colors = (
+   (1.0, .0, 0), ( .0,  .0, 1.0), (0, .7,  .7), ( .0, 1.0,  0),
+   ( .7, .7, 0), ( .7,  .0,  .7), (0, .0, 1.0), ( .7,  .0, .7),
+   ( .7, .7, 0), ( .0, 1.0,  .0), (0, .7,  .7), (1.0,  .0,  0)
+)
 
-// Routine to create a scene graph representing a dodecahedron
-SoSeparator *
-makeStellatedDodecahedron()
-{
-   SoSeparator *result = new SoSeparator;
-   result->ref();
+# set this variable to 0 if you want to use the other method
+IV_STRICT = 1
 
-#ifdef IV_STRICT
-   // This is the preferred code for Inventor 2.1
+# Routine to create a scene graph representing a dodecahedron
+def makeStellatedDodecahedron():
+	result = SoSeparator()
+	result.ref()
 
-   // Using the new SoVertexProperty node is more efficient
-   SoVertexProperty *myVertexProperty = new SoVertexProperty;
+	if IV_STRICT:
+		# This is the preferred code for Inventor 2.1
 
-   // Define colors for the faces
-   for (int i=0; i<12; i++)
-     myVertexProperty->orderedRGBA.set1Value(i, SbColor(colors[i]).getPackedValue());
-   myVertexProperty->materialBinding = SoMaterialBinding::PER_FACE;
+		# Using the new SoVertexProperty node is more efficient
+		myVertexProperty = SoVertexProperty()
 
-   // Define coordinates for vertices
-   myVertexProperty->vertex.setValues(0, 12, vertexPositions);
+		# Define colors for the faces
+		for i in range(12):
+			myVertexProperty.orderedRGBA.set1Value(i, SbColor(colors[i]).getPackedValue())
+			myVertexProperty.materialBinding(SoMaterialBinding.PER_FACE)
 
-   // Define the IndexedFaceSet, with indices into
-   // the vertices:
-   SoIndexedFaceSet *myFaceSet = new SoIndexedFaceSet;
-   myFaceSet->coordIndex.setValues(0, 72, indices);
+		# Define coordinates for vertices
+		myVertexProperty.vertex.setValues(0, 12, vertexPositions)
 
-   myFaceSet->vertexProperty.setValue(myVertexProperty);
-   result->addChild(myFaceSet);
+		# Define the IndexedFaceSet, with indices into
+		# the vertices:
+		myFaceSet = SoIndexedFaceSet()
+		myFaceSet.coordIndex.setValues(0, 72, indices)
 
-#else
-   // Define colors for the faces
-   SoMaterial *myMaterials = new SoMaterial;
-   myMaterials->diffuseColor.setValues(0, 12, colors);
-   result->addChild(myMaterials);
-   SoMaterialBinding *myMaterialBinding = new SoMaterialBinding;
-   myMaterialBinding->value = SoMaterialBinding::PER_FACE;
-   result->addChild(myMaterialBinding);
+		myFaceSet.vertexProperty.setValue(myVertexProperty)
+		result.addChild(myFaceSet)
 
-   // Define coordinates for vertices
-   SoCoordinate3 *myCoords = new SoCoordinate3;
-   myCoords->point.setValues(0, 12, vertexPositions);
-   result->addChild(myCoords);
+	else:
+		# Define colors for the faces
+		myMaterials = SoMaterial()
+		myMaterials.diffuseColor.setValues(0, 12, colors)
+		result.addChild(myMaterials)
+		myMaterialBinding = SoMaterialBinding()
+		myMaterialBinding.value(SoMaterialBinding.PER_FACE)
+		result.addChild(myMaterialBinding)
 
-   // Define the IndexedFaceSet, with indices into
-   // the vertices:
-   SoIndexedFaceSet *myFaceSet = new SoIndexedFaceSet;
-   myFaceSet->coordIndex.setValues(0, 72, indices);
-   result->addChild(myFaceSet);
-#endif
+		# Define coordinates for vertices
+		myCoords = SoCoordinate3()
+		myCoords.point.setValues(0, 12, vertexPositions)
+		result.addChild(myCoords)
 
-   result->unrefNoDelete();
-   return result;
-}
+		# Define the IndexedFaceSet, with indices into
+		# the vertices:
+		myFaceSet = SoIndexedFaceSet()
+		myFaceSet.coordIndex.setValues(0, 72, indices)
+		result.addChild(myFaceSet)
 
-// CODE FOR The Inventor Mentor ENDS HERE
-//////////////////////////////////////////////////////////////
+	result.unrefNoDelete()
+	return result
 
-void
-main(int, char **argv)
-{
-   // Initialize Inventor and Xt
-   Widget myWindow = SoXt::init(argv[0]);
-   if (myWindow == NULL) exit(1);
+## CODE FOR The Inventor Mentor ENDS HERE
+##############################################################
 
-   SoSeparator *root = makeStellatedDodecahedron();
-   root->ref();
+def main():
+	# Initialize Inventor and Gtk
+	myWindow = SoGtk_init(sys.argv[0])
+	if myWindow == None: sys.exit(1)
 
-   SoXtExaminerViewer *myViewer = 
-            new SoXtExaminerViewer(myWindow);
-   myViewer->setSceneGraph(root);
-   myViewer->setTitle("Indexed Face Set: Stellated Dodecahedron");
-   myViewer->show();
-   myViewer->viewAll();
+	root = makeStellatedDodecahedron()
+	root.ref()
 
-   SoXt::show(myWindow);
-   SoXt::mainLoop();
-}
+	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer.setSceneGraph(root)
+	myViewer.setTitle("Indexed Face Set: Stellated Dodecahedron")
+	myViewer.show()
+	myViewer.viewAll()
 
+	SoGtk_show(myWindow)
+	SoGtk_mainLoop()
+
+if __name__ == "__main__":
+	main()

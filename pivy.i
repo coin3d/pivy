@@ -586,7 +586,6 @@
 %rename(srcFrom) from;
 %rename(destTo) to;
 
-/*
 %typemap(in) SbName & {
   if (PyString_Check($input)) {
     $1 = new SbName(PyString_AsString($input));
@@ -594,7 +593,14 @@
     SWIG_ConvertPtr($input,(void **) &$1, SWIGTYPE_p_SbName,1);
   }
 }
-*/
+
+%typemap(in) SbString & {
+  if (PyString_Check($input)) {
+    $1 = new SbString(PyString_AsString($input));
+  } else {
+    SWIG_ConvertPtr($input,(void **) &$1, SWIGTYPE_p_SbString,1);
+  }
+}
 
 %include Inventor/SbBasic.h
 %include Inventor/SbPList.h

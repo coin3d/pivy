@@ -1,118 +1,107 @@
-/*
- *
- *  Copyright (C) 2000 Silicon Graphics, Inc.  All Rights Reserved. 
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  Further, this software is distributed without any warranty that it is
- *  free of the rightful claim of any third person regarding infringement
- *  or the like.  Any license provided herein, whether implied or
- *  otherwise, applies only to this software file.  Patent licenses, if
- *  any, provided herein do not apply to combinations of this program with
- *  other software, or any other product whatsoever.
- * 
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *  Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
- *  Mountain View, CA  94043, or:
- * 
- *  http://www.sgi.com 
- * 
- *  For further information regarding this notice, see: 
- * 
- *  http://oss.sgi.com/projects/GenInfo/NoticeExplan/
- *
- */
+#!/usr/bin/env python
 
-/*--------------------------------------------------------------
- *  This is an example from the Inventor Mentor,
- *  chapter 5, example 6.
- *
- *  This example shows the effect of different order of
- *  operation of transforms.  The left object is first
- *  scaled, then rotated, and finally translated to the left.  
- *  The right object is first rotated, then scaled, and finally
- *  translated to the right.
- *------------------------------------------------------------*/
+###
+# Copyright (c) 2002, Tamer Fahmy <tamer@tammura.at>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#   * Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#   * Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived
+#     from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES LOSS OF USE,
+# DATA, OR PROFITS OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 
-#include <stdlib.h>
-#include <Inventor/Xt/SoXt.h>
-#include <Inventor/Xt/viewers/SoXtExaminerViewer.h>
-#include <Inventor/SoDB.h>
-#include <Inventor/nodes/SoMaterial.h>
-#include <Inventor/nodes/SoRotationXYZ.h>
-#include <Inventor/nodes/SoScale.h>
-#include <Inventor/nodes/SoSeparator.h>
-#include <Inventor/nodes/SoTranslation.h>
+###
+# This is an example from the Inventor Mentor,
+# chapter 5, example 6.
+#
+# This example shows the effect of different order of
+# operation of transforms.  The left object is first
+# scaled, then rotated, and finally translated to the left.  
+# The right object is first rotated, then scaled, and finally
+# translated to the right.
+#
 
-void
-main(int, char **argv)
-{
-   // Initialize Inventor and Xt
-   Widget myWindow = SoXt::init(argv[0]);
-   if (myWindow == NULL) exit(1);
+from pivy import *
+import sys
 
-   SoSeparator *root = new SoSeparator;
-   root->ref();
+def main():
+	# Initialize Inventor and Gtk
+	myWindow = SoGtk_init(sys.argv[0])
+	if myWindow == None: sys.exit(1)
 
-   // Create two separators, for left and right objects.
-   SoSeparator *leftSep = new SoSeparator;
-   SoSeparator *rightSep = new SoSeparator;
-   root->addChild(leftSep);
-   root->addChild(rightSep);
+	root = SoSeparator()
+	root.ref()
 
-   // Create the transformation nodes
-   SoTranslation *leftTranslation  = new SoTranslation;
-   SoTranslation *rightTranslation = new SoTranslation;
-   SoRotationXYZ *myRotation = new SoRotationXYZ;
-   SoScale *myScale = new SoScale;
+	# Create two separators, for left and right objects.
+	leftSep = SoSeparator()
+	rightSep = SoSeparator()
+	root.addChild(leftSep)
+	root.addChild(rightSep)
 
-   // Fill in the values
-   leftTranslation->translation.setValue(-1.0, 0.0, 0.0);
-   rightTranslation->translation.setValue(1.0, 0.0, 0.0);
-   myRotation->angle = M_PI/2;   // 90 degrees
-   myRotation->axis = SoRotationXYZ::X;
-   myScale->scaleFactor.setValue(2., 1., 3.);
+	# Create the transformation nodes
+	leftTranslation  = SoTranslation()
+	rightTranslation = SoTranslation()
+	myRotation = SoRotationXYZ()
+	myScale = SoScale()
 
-   // Add transforms to the scene.
-   leftSep->addChild(leftTranslation);   // left graph
-   leftSep->addChild(myRotation);        // then rotated
-   leftSep->addChild(myScale);           // first scaled
+	# Fill in the values
+	leftTranslation.translation.setValue(-1.0, 0.0, 0.0)
+	rightTranslation.translation.setValue(1.0, 0.0, 0.0)
+	myRotation.angle(M_PI/2)   # 90 degrees
+	myRotation.axis(SoRotationXYZ.X)
+	myScale.scaleFactor.setValue(2., 1., 3.)
 
-   rightSep->addChild(rightTranslation); // right graph
-   rightSep->addChild(myScale);          // then scaled
-   rightSep->addChild(myRotation);       // first rotated
+	# Add transforms to the scene.
+	leftSep.addChild(leftTranslation)   # left graph
+	leftSep.addChild(myRotation)        # then rotated
+	leftSep.addChild(myScale)           # first scaled
 
-   // Read an object from file. (as in example 4.2.Lights)
-   SoInput myInput;
-   if (!myInput.openFile("/usr/share/src/Inventor/examples/data/temple.iv")) 
-      exit (1);
-   SoSeparator *fileContents = SoDB::readAll(&myInput);
-   if (fileContents == NULL) 
-      exit (1);
+	rightSep.addChild(rightTranslation) # right graph
+	rightSep.addChild(myScale)          # then scaled
+	rightSep.addChild(myRotation)       # first rotated
 
-   // Add an instance of the object under each separator.
-   leftSep->addChild(fileContents);
-   rightSep->addChild(fileContents);
+	# Read an object from file. (as in example 4.2.Lights)
+	myInput = SoInput()
+	if not myInput.openFile("temple.iv"):
+		sys.exit(1)
 
-   // Construct a renderArea and display the scene.
-   SoXtExaminerViewer *myViewer = 
-            new SoXtExaminerViewer(myWindow);
-   myViewer->setSceneGraph(root);
-   myViewer->setTitle("Transform Ordering");
-   myViewer->viewAll();
-   myViewer->show();
+	fileContents = SoDB_readAll(myInput)
+	if fileContents == None: 
+		sys.exit(1)
 
-   SoXt::show(myWindow);
-   SoXt::mainLoop();
-}
+	# Add an instance of the object under each separator.
+	leftSep.addChild(fileContents)
+	rightSep.addChild(fileContents)
+
+	# Construct a renderArea and display the scene.
+	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer.setSceneGraph(root)
+	myViewer.setTitle("Transform Ordering")
+	myViewer.show()
+	myViewer.viewAll()
+
+	SoGtk_show(myWindow)
+	SoGtk_mainLoop()
+
+if __name__ == "__main__":
+	main()

@@ -68,6 +68,7 @@ norms = (
    (0, .0739, -.9973), ( .9972, .0739, 0),#rear, right quads
 )
 
+# set this variable to 0 if you want to use the other method
 IV_STRICT = 1
 
 def makeObeliskFaceSet():
@@ -91,13 +92,11 @@ def makeObeliskFaceSet():
 	   myVertexProperty.vertex.setValues(0, 28, vertices)
 
 	   # Define the FaceSet
-	   myFaceSet = SoSeparator()
-	   #myFaceSet = SoFaceSet()
-           print "here2"
-	   #myFaceSet.numVertices.setValues(0, 8, numvertices)
+	   myFaceSet = SoFaceSet()
+	   myFaceSet.numVertices.setValues(0, 8, numvertices)
  
-	   #myFaceSet.vertexProperty.setValue(myVertexProperty)
-	   #obelisk.addChild(myFaceSet)
+	   myFaceSet.vertexProperty.setValue(myVertexProperty)
+	   obelisk.addChild(myFaceSet)
 
    else:
 	   # Define the normals used:
@@ -105,7 +104,7 @@ def makeObeliskFaceSet():
 	   myNormals.vector.setValues(0, 8, norms)
 	   obelisk.addChild(myNormals)
 	   myNormalBinding = SoNormalBinding()
-	   myNormalBinding.value = SoNormalBinding_PER_FACE
+	   myNormalBinding.value(SoNormalBinding.PER_FACE)
 	   obelisk.addChild(myNormalBinding)
 
 	   # Define material for obelisk
@@ -150,4 +149,3 @@ def main():
 
 if __name__ == "__main__":
 	main()
-

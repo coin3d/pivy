@@ -31,36 +31,38 @@ convert_SoMFVec3f_array(PyObject *input, int len, float temp[][3])
 {
   int i,j;
 
-  if (PySequence_Check(input)) {
-	for (i=0; i<len; i++) {
-	  PyObject *oi = PySequence_GetItem(input,i);
+  for (i=0; i<len; i++) {
+	PyObject *oi = PySequence_GetItem(input,i);
 
-	  for (j=0; j<3; j++) {
-		PyObject *oj = PySequence_GetItem(oi,j);
+	for (j=0; j<3; j++) {
+	  PyObject *oj = PySequence_GetItem(oi,j);
 
-		if (PyNumber_Check(oj)) {
-		  temp[i][j] = (float) PyFloat_AsDouble(oi);
-		} else {
-		  PyErr_SetString(PyExc_ValueError,"Sequence elements must be numbers");
-		  free(temp);       
-		  return;
-		}
+	  if (PyNumber_Check(oj)) {
+		temp[i][j] = (float) PyFloat_AsDouble(oj);
+	  } else {
+		PyErr_SetString(PyExc_ValueError,"Sequence elements must be numbers");
+		free(temp);       
+		return;
 	  }
 	}
-	return;
-  } else {
-	PyErr_SetString(PyExc_TypeError, "expected a sequence.");
-    return;
-  }  
+  }
+  return;
 }
 %}
 
 %typemap(in) float xyz[][3] (float (*temp)[3]) {
-  int len = PySequence_Length($input);
+  int len;
 
-  temp = (float (*)[3]) malloc(len*3*sizeof(float));
-  convert_SoMFVec3f_array($input, len, temp);
-  $1 = temp;
+  if (PySequence_Check($input)) {
+	len  = PySequence_Length($input);
+
+	temp = (float (*)[3]) malloc(len*3*sizeof(float));
+	convert_SoMFVec3f_array($input, len, temp);
+  
+	$1 = temp;
+  } else {
+	PyErr_SetString(PyExc_TypeError, "expected a sequence.");
+  }
 }
 
 %typemap(in) float xyz[3] (float temp[3]) {
@@ -94,11 +96,11 @@ def set1Value(*args):
 
 %rename(setValues_i_i_vec) SoMFVec3f::setValues(int const ,int const ,SbVec3f const *);
 
-%feature("shadow") SoMFColor::setValues(const int start, const int num, const float xyz[][3]) %{
+%feature("shadow") SoMFVec3f::setValues(const int start, const int num, const float xyz[][3]) %{
 def setValues(*args):
    if isinstance(args[3], SbVec3f):
-      return apply(pivyc.SoMFColor_setValues_i_i_vec,args)
-   return apply(pivyc.SoMFColor_setValues,args)
+      return apply(pivyc.SoMFVec3f_setValues_i_i_vec,args)
+   return apply(pivyc.SoMFVec3f_setValues,args)
 %}
 #endif
 

@@ -62,9 +62,9 @@ def main():
     if fileContents == None:
         sys.exit(1)
 
-    eatAt = cast(SoNode.getByName("EatAt"), "SoSeparator")
-    josie = cast(SoNode.getByName("Josies"), "SoSeparator")
-    frame = cast(SoNode.getByName("Frame"), "SoSeparator")
+    eatAt = SoNode.getByName("EatAt")
+    josie = SoNode.getByName("Josies")
+    frame = SoNode.getByName("Frame")
 
 #############################################################
 # CODE FOR The Inventor Mentor STARTS HERE

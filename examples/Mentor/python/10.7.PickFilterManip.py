@@ -57,7 +57,7 @@ def findXform(p):
     returnPath = p.copy(0, p.getLength() - 1)
 
     # Get the parent of the selected shape
-    g = cast(p.getNodeFromTail(1), "SoGroup")
+    g = p.getNodeFromTail(1)
     tailNodeIndex = p.getIndexFromTail(0)
 
     # Check if there is already a transform node
@@ -115,7 +115,7 @@ def deselCB(void, path):
     manipPath.ref()
 
     # Replace the manipulator with a transform 
-    manip = cast(manipPath.getTail(), "SoTransformManip")
+    manip = manipPath.getTail()
     manip.replaceManip(manipPath, SoTransform())
     manip.unref()
 

@@ -42,9 +42,7 @@ from pivy import *
 import sys
 
 # Callback that reports whenever the viewer's position changes.
-def cameraChangedCB(data, sensor):
-    viewerCamera = cast(data, "SoCamera")
-
+def cameraChangedCB(viewerCamera, sensor):
     cameraPosition = viewerCamera.position.getValue()
     print "Camera position: (%g,%g,%g)" % (cameraPosition[0],
                                            cameraPosition[1],

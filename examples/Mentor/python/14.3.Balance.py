@@ -64,7 +64,7 @@ import sys
 #    scale (to tip it) and then compensating (making the strings
 #    vertical again) by rotating the string parts in the opposite
 #    direction.
-def tipTheBalance(userData, # The nodekit representing 'support', the
+def tipTheBalance(support, # The nodekit representing 'support', the
                   # fulcrum of the balance. Passed in during
                   # main routine, below. 
                   eventCB):
@@ -77,14 +77,11 @@ def tipTheBalance(userData, # The nodekit representing 'support', the
        SoKeyboardEvent.isKeyPressEvent(ev, SoKeyboardEvent.LEFT_ARROW):
         startRot, beamIncrement, stringIncrement = SbRotation(), SbRotation(), SbRotation()
         
-        # Get the different nodekits from the userData.
-        support = cast(userData, "SoShapeKit")
-
         # These three parts are extracted based on knowledge of the
         # motion hierarchy (see the diagram in the main routine.
-        beam1   = cast(support.getPart("childList[0]",TRUE), "SoShapeKit")
-        string1 = cast(beam1.getPart("childList[0]",TRUE), "SoShapeKit")
-        string2 = cast(beam1.getPart("childList[1]",TRUE), "SoShapeKit")
+        beam1   = support.getPart("childList[0]",TRUE)
+        string1 = beam1.getPart("childList[0]",TRUE)
+        string2 = beam1.getPart("childList[1]",TRUE)
 
         # Set angular increments to be .1 Radians about the Z-Axis
         # The strings rotate opposite the beam, and the two types
@@ -99,17 +96,17 @@ def tipTheBalance(userData, # The nodekit representing 'support', the
         # Use SO_GET_PART to find the transform for each of the 
         # rotating parts and modify their rotations.
 
-        xf = cast(beam1.getPart("transform", TRUE), "SoTransform")
+        xf = beam1.getPart("transform", TRUE)
         startRot = xf.rotation.getValue()
         startRot *= beamIncrement
         xf.rotation.setValue(startRot)
 
-        xf = cast(string1.getPart("transform", TRUE), "SoTransform")
+        xf = string1.getPart("transform", TRUE)
         startRot = xf.rotation.getValue()
         startRot *= stringIncrement
         xf.rotation.setValue(startRot)
 
-        xf = cast(string2.getPart("transform", TRUE), "SoTransform")
+        xf = string2.getPart("transform", TRUE)
         startRot = xf.rotation.getValue()
         startRot *= stringIncrement     
         xf.rotation.setValue(startRot)
@@ -199,7 +196,7 @@ def main():
     myRenderArea = SoGuiRenderArea(myWindow)
 
     # Get camera from scene and tell it to viewAll...
-    myCamera = cast(myScene.getPart("cameraList[0].camera", TRUE), "SoPerspectiveCamera")
+    myCamera = myScene.getPart("cameraList[0].camera", TRUE)
     myCamera.viewAll(myScene, myRenderArea.getViewportRegion())
 
     myRenderArea.setSceneGraph(myScene)

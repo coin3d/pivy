@@ -44,8 +44,7 @@ from pivy import *
 import sys
 
 # This routine is called for every mouse button event.
-def myMousePressCB(userData, eventCB):
-    gate = cast(userData, "SoGate")
+def myMousePressCB(gate, eventCB):
     event = eventCB.getEvent()
 
     # Check for mouse button being pressed

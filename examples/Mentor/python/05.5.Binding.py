@@ -172,10 +172,10 @@ def main():
 
     if IV_STRICT:
         # Get the indexed face set for editing
-        myIndexedFaceSet = cast(root.getChild(0), "SoIndexedFaceSet")
+        myIndexedFaceSet = root.getChild(0)
 
         # Get the SoVertexProperty node for editing the material binding
-        myVertexProperty = cast(myIndexedFaceSet.vertexProperty.getValue(), "SoVertexProperty")
+        myVertexProperty = myIndexedFaceSet.vertexProperty.getValue()
 
 ##############################################################
 ## CODE FOR The Inventor Mentor STARTS HERE (Inventor 2.1)
@@ -204,10 +204,10 @@ def main():
 
     else:   # old style
         # Get the material binding node for editing
-        myBinding = cast(root.getChild(0), "SoMaterialBinding")
+        myBinding = root.getChild(0)
 
         # Get the indexed face set for editing
-        myIndexedFaceSet = cast(root.getChild(3), "SoIndexedFaceSet")
+        myIndexedFaceSet = root.getChild(3)
 
 ##############################################################
 ## CODE FOR The Inventor Mentor STARTS HERE

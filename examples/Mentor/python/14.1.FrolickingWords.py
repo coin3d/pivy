@@ -90,17 +90,17 @@ def main():
                         "oC = vec3f(fabs(ta),fabs(tb),.5)")
 
     # Connect the transforms from the calculators...
-    happyXf = cast(happyKit.getPart("transform",TRUE), "SoTransform")
+    happyXf = happyKit.getPart("transform",TRUE)
     happyXf.translation.connectFrom(happyCalc.oA)
     happyXf.scaleFactor.connectFrom(happyCalc.oB)
-    niceXf = cast(niceKit.getPart("transform",TRUE), "SoTransform")
+    niceXf = niceKit.getPart("transform",TRUE)
     niceXf.translation.connectFrom(niceCalc.oA)
     niceXf.scaleFactor.connectFrom(niceCalc.oB)
 
     # Connect the materials from the calculators...
-    happyMtl = cast(happyKit.getPart("material",TRUE), "SoMaterial")
+    happyMtl = happyKit.getPart("material",TRUE)
     happyMtl.diffuseColor.connectFrom(happyCalc.oC)
-    niceMtl = cast(niceKit.getPart("material",TRUE), "SoMaterial")
+    niceMtl = niceKit.getPart("material",TRUE)
     niceMtl.diffuseColor.connectFrom(niceCalc.oC)
 
     myViewer = SoGuiExaminerViewer(myWindow)

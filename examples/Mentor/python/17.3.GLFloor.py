@@ -89,7 +89,7 @@ def buildFloor():
 
 # Callback used by GLX window
 def waitForNotify(Display, e, arg):
-    return e.type == MapNotify and e.xmap.window == cast(arg, "Window")
+    return e.type == MapNotify and e.xmap.window == arg
 
 # Create and initialize GLX window.
 def openWindow():
@@ -212,7 +212,7 @@ def main():
     # and finally apply a reset to that lazy element.
 
     state = myRenderAction.getState()
-    lazyElt = cast(SoLazyElement_getInstance(state), "SoGLLazyElement")
+    lazyElt = SoLazyElement_getInstance(state)
     lazyElt.reset(state, (SoLazyElement.DIFFUSE_MASK)|(SoLazyElement.LIGHT_MODEL_MASK))
 
     time.sleep(5)

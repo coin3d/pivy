@@ -71,7 +71,7 @@ def writePickedPath(root, viewport, cursorPosition):
 
 # This routine is called for every mouse button event.
 def myMousePressCB(userData, eventCB):
-    root = cast(userData, "SoSeparator")
+    root = userData
     event = eventCB.getEvent()
 
     # Check for mouse button being pressed  

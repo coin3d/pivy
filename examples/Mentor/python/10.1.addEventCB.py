@@ -65,7 +65,7 @@ def myScaleSelection(selection, sf):
         # transform to modify
         for j in range(selectedPath.getLength()):
             if xform != None: break
-            n = cast(selectedPath.getNodeFromTail(j), "SoNode")
+            n = selectedPath.getNodeFromTail(j)
 
             if n.isOfType(SoCube.getClassTypeId()):
                 xform = cubeTransform
@@ -86,9 +86,8 @@ def myScaleSelection(selection, sf):
 
 # If the event is down arrow, then scale down every object 
 # in the selection list if the event is up arrow, scale up.
-# The userData is the selectionRoot from main().
-def myKeyPressCB(userData, eventCB):
-    selection = cast(userData, "SoSelection")
+# The userData = selection is the selectionRoot from main().
+def myKeyPressCB(selection, eventCB):
     event = eventCB.getEvent()
 
     # check for the Up and Down arrow keys being pressed

@@ -66,8 +66,8 @@ def myProjectPoint(myRenderArea, mousex, mousey):
     y = float(size[1] - mousey) / size[1]
    
     # Get the camera and view volume
-    root = cast(myRenderArea.getSceneGraph(), "SoGroup")
-    myCamera = cast(root.getChild(0), "SoCamera")
+    root = myRenderArea.getSceneGraph()
+    myCamera = root.getChild(0)
     myViewVolume = myCamera.getViewVolume()
    
     # Project the mouse point to a line
@@ -79,24 +79,23 @@ def myProjectPoint(myRenderArea, mousex, mousey):
     return intersection
 
 def myAddPoint(myRenderArea, point):
-    root = cast(myRenderArea.getSceneGraph(), "SoGroup")
-    coord = cast(root.getChild(2), "SoCoordinate3")
-    myPointSet = cast(root.getChild(3), "SoPointSet")
+    root = myRenderArea.getSceneGraph()
+    coord = root.getChild(2)
+    myPointSet = root.getChild(3)
    
     coord.point.set1Value(coord.point.getNum(), point)
     myPointSet.numPoints.setValue(coord.point.getNum())
 
 def myClearPoints(myRenderArea):
-    root = cast(myRenderArea.getSceneGraph(), "SoGroup")
-    coord = cast(root.getChild(2), "SoCoordinate3")
-    myPointSet = cast(root.getChild(3), "SoPointSet")
+    root = myRenderArea.getSceneGraph()
+    coord = root.getChild(2)
+    myPointSet = root.getChild(3)
    
     # Delete all values starting from 0
     coord.point.deleteValues(0) 
     myPointSet.numPoints.setValue(0)
 
-def tickerCallback(userData, sensor):
-    myCamera = cast(userData, "SoCamera")
+def tickerCallback(myCamera, sensor):
     mtx = SbMatrix()
 
     # Adjust the position
@@ -114,8 +113,7 @@ def tickerCallback(userData, sensor):
 ###############################################################
 # CODE FOR The Inventor Mentor STARTS HERE  (part 1)
 
-def myAppEventHandler(userData, anyevent):
-    myRenderArea = cast(userData, "SoQtRenderArea")
+def myAppEventHandler(myRenderArea, anyevent):
     handled = TRUE
 
     if anyevent.type() == QEvent.MouseButtonPress:

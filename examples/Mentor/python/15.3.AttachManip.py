@@ -106,7 +106,7 @@ def createTransformPath(inputPath):
     # kit all the way down to the transform. It creates the
     # transform if necessary.
     if tail.isOfType(SoBaseKit.getClassTypeId()):
-        kit = cast(tail, "SoBaseKit")
+        kit = tail
         return kit.createPathToPart("transform",TRUE,inputPath)
 
     editXf = None
@@ -119,7 +119,7 @@ def createTransformPath(inputPath):
         # 'parent' is node above tail. Search under parent right
         # to left for a transform. If we find a 'movable' node
         # insert a transform just left of tail.  
-        parent = cast(inputPath.getNode(pathLength - 2), "SoGroup")
+        parent = inputPath.getNode(pathLength - 2)
         tailIndx = parent.findChild(tail)
 
         for i in range(tailIndx, -1, -1):
@@ -127,7 +127,7 @@ def createTransformPath(inputPath):
                 break
             myNode = parent.getChild(i)
             if myNode.isOfType(SoTransform.getClassTypeId()):
-                editXf = cast(myNode, "SoTransform")
+                editXf = myNode
             elif i != tailIndx and isTransformable(myNode):
                 break
 
@@ -143,13 +143,13 @@ def createTransformPath(inputPath):
         # Search the children from left to right for transform 
         # nodes. Stop the search if we come to a movable node.
         # and insert a transform before it.
-        parent = cast(tail, "SoGroup")
+        parent = tail
         for i in range(parent.getNumChildren()):
             if editXf != NULL:
                 break
             myNode = parent.getChild(i)
             if myNode.isOfType(SoTransform.getClassTypeId()):
-                editXf = cast(myNode, "SoTransform")
+                editXf = myNode
             elif isTransformable(myNode):
                 break
 
@@ -227,13 +227,13 @@ def deselectionCallback(void, # user data is not used
 # about to begin manipulation.
 def dragStartCallback(myMaterial, # user data
                       dragger):   # callback data not used
-    (cast(myMaterial, "SoMaterial")).diffuseColor.setValue(1,.2,.2)
+    myMaterial.diffuseColor.setValue(1,.2,.2)
 
 # This is called when a manipulator is
 # done manipulating.
 def dragFinishCallback(myMaterial, # user data
                        dragger):   # callback data not used
-    (cast(myMaterial, "SoMaterial")).diffuseColor.setValue(.8,.8,.8)
+    myMaterial.diffuseColor.setValue(.8,.8,.8)
 
 def main():
     global myHandleBox, myTrackball, myTransformBox
@@ -264,7 +264,7 @@ def main():
         sys.exit(1)
     myWrapperKit.setPart("contents",objectFromFile)
     myWrapperKit.set("transform { translation 3 -1 0 }")
-    wrapperMat = cast(myWrapperKit.getPart("material",TRUE), "SoMaterial")
+    wrapperMat = myWrapperKit.getPart("material",TRUE)
     wrapperMat.diffuseColor.setValue(.8, .8, .8)
 
     # Create a cube with its own transform.

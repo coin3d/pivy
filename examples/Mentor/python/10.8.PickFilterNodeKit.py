@@ -77,7 +77,7 @@ def buildScene():
     for i in range(12):
         k = SoShapeKit()
         k.setPart("shape", SoCube())
-        xf = cast(k.getPart("transform", TRUE), "SoTransform")
+        xf = k.getPart("transform", TRUE)
         xf.translation.setValue(8*math.sin(i*M_PI/6), 8*math.cos(i*M_PI/6), 0.0)
         g.addChild(k)
 
@@ -85,10 +85,10 @@ def buildScene():
 
 # Update the material editor to reflect the selected object
 def selectCB(userData, path):
-    kit = cast(path.getTail(), "SoShapeKit")
-    kitMtl = cast(kit.getPart("material", TRUE), "SoMaterial")
+    kit = path.getTail()
+    kitMtl = kit.getPart("material", TRUE)
 
-    # ud = cast(userData, "UserData")
+    # ud = userData
     userData.ignore = TRUE
     userData.editor.setMaterial(kitMtl)
     userData.ignore = FALSE
@@ -101,7 +101,7 @@ def mtlChangeCB(userData, mtl):
     # user changes the material, and when we change it
     # through a call to SoGuiMaterialEditor.setMaterial.
     # In this latter case, we ignore the callback invocation
-    # ud = cast(userData, "UserData")
+    # ud = userData
 
     if userData.ignore:
         return
@@ -112,8 +112,8 @@ def mtlChangeCB(userData, mtl):
     # be a shape kit.
     for i in range(sel.getNumSelected()):
         p = sel.getPath(i)
-        kit = cast(p.getTail(), "SoShapeKit")
-        kitMtl = cast(kit.getPart("material", TRUE), "SoMaterial")
+        kit = p.getTail()
+        kitMtl = kit.getPart("material", TRUE)
         kitMtl.copyFieldValues(mtl)
 
 def main():

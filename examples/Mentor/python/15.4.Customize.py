@@ -150,7 +150,7 @@ def main():
     myCalc.expression("oA = vec3f(A[0],B[0],C[0])")
 
     # Connect the the translation in textKit from myCalc
-    textXf = cast(textKit.getPart("transform",TRUE), "SoTransform")
+    textXf = textKit.getPart("transform",TRUE)
     textXf.translation.connectFrom(myCalc.oA)
 
     myViewer = SoGuiExaminerViewer(myWindow)

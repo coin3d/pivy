@@ -136,7 +136,7 @@ def myCallbackRoutine(void, action):
     # "Open Inventor 2.1 Porting and Performance Tips"
   
     # state = action.getState()
-    # lazyElt = cast(SoLazyElement.getInstance(state), "SoGLLazyElement")
+    # lazyElt = SoLazyElement.getInstance(state)
     # lazyElt.reset(state, (SoLazyElement.DIFFUSE_MASK)|(SoLazyElement.LIGHT_MODEL_MASK))
 
 def main():

@@ -99,7 +99,7 @@ def main():
     #
     myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setNormalVisual(vis)
-    myViewer.setColorMap(0, 3, cast(colors, "SbColor"))
+    myViewer.setColorMap(0, 3, colors)
     myViewer.setSceneGraph(scene)
     myViewer.setTitle("Color Index Mode")
    

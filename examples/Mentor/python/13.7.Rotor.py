@@ -88,6 +88,8 @@ def main():
     myViewer.setSceneGraph(root)
     myViewer.setTitle("Windmill")
     myViewer.show()
+
+    SoDB.setRealTimeInterval(1/120.0)
     
     # Loop forever
     SoGui.show(myWindow)

@@ -46,10 +46,11 @@ def RemoveCube():
    # 'Root'.  In a real application, isOfType() would probably
    # be used to make sure the nodes are of the correct type
    # before doing the cast.
+   # In Pivy no cast is necessary as it gets autocasted for you.
 
-   myRoot = cast(SoNode.getByName("Root"), "SoSeparator")
+   myRoot = SoNode.getByName("Root")
 
-   myCube = cast(SoNode.getByName("MyCube"), "SoCube")
+   myCube = SoNode.getByName("MyCube")
    
    myRoot.removeChild(myCube)
 

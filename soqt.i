@@ -56,10 +56,7 @@
 #include <Inventor/Qt/viewers/SoQtFlyViewer.h>
 #include <Inventor/Qt/viewers/SoQtConstrainedViewer.h>
 #include <Inventor/Qt/viewers/SoQtFullViewer.h>
-#include <Inventor/Qt/widgets/Gradient.h>
 #include <Inventor/Qt/widgets/SoQtThumbWheel.h>
-#include <Inventor/Qt/widgets/SoQtColorTableEditor.h>
-#include <Inventor/Qt/widgets/SoQtGradientDialog.h>
 #include <Inventor/Qt/widgets/SoQtPopupMenu.h>
 #include <Inventor/Qt/SoQtComponent.h>
 #include <Inventor/Qt/SoQtCursor.h>

@@ -56,7 +56,6 @@ env.ParseConfig('coin-config --cppflags --libs --ldflags')
 env.Append(CPPPATH=['.', distutils.sysconfig.get_python_inc()])
 env.Append(LIBPATH = distutils.sysconfig.get_python_lib())
 env.Append(LIBS = 'pivy_runtime')
-env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars()['BLDLIBRARY'].split())
 if str(Platform()) == 'posix':
     env.Append(LINKFLAGS = '-Wl,-R' + distutils.sysconfig.get_python_lib())
 

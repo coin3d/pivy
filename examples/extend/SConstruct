@@ -94,6 +94,8 @@ env.Append(SWIGFLAGS = "-v -noruntime -c++ -python -includeall -D__PIVY__ " +
            (PIVY_ROOT, PIVY_ROOT, SWIG_SUPPRESS_WARNINGS))
 
 lib = env.SharedLibrary('_shapescale', Split('shapescale.i ShapeScale.cpp'),
-                        SHLIBPREFIX='', SWIGCXXFILESUFFIX="_wrap.cpp")
+                        SHLIBPREFIX='',
+                        SHLIBSUFFIX=distutils.sysconfig.get_config_vars()['SO'],
+                        SWIGCXXFILESUFFIX="_wrap.cpp")
 
 env.Clean(lib, Split('shapescale.py shapescale.pyc'))

@@ -31,26 +31,38 @@
 %module soqt
 
 %{
+#if defined(_WIN32) || defined(__WIN32__)
+#include <windows.h>
+#undef max
+#undef ERROR
+#undef DELETE
+#undef ANY
+#endif
+
 #include <Inventor/Qt/devices/SoQtDevice.h>
 #include <Inventor/Qt/devices/SoQtKeyboard.h>
-#include <Inventor/Qt/devices/SoQtMouse.h>
 #include <Inventor/Qt/devices/SoQtSpaceball.h>
-#include <Inventor/Qt/editors/SoQtColorEditor.h>
-#include <Inventor/Qt/nodes/SoGuiColorEditor.h>
-#include <Inventor/Qt/viewers/SoQtViewer.h>
-#include <Inventor/Qt/viewers/SoQtFullViewer.h>
-#include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
-#include <Inventor/Qt/viewers/SoQtPlaneViewer.h>
-#include <Inventor/Qt/viewers/SoQtConstrainedViewer.h>
-#include <Inventor/Qt/viewers/SoQtFlyViewer.h>
-#include <Inventor/Qt/widgets/SoQtPopupMenu.h>
-#include <Inventor/Qt/SoQtColorEditor.h>
-#include <Inventor/Qt/SoQt.h>
+#include <Inventor/Qt/devices/SoQtMouse.h>
 #include <Inventor/Qt/SoQtBasic.h>
+#include <Inventor/Qt/nodes/SoGuiColorEditor.h>
+#include <Inventor/Qt/editors/SoQtColorEditor.h>
 #include <Inventor/Qt/SoQtObject.h>
-#include <Inventor/Qt/SoQtCursor.h>
-#include <Inventor/Qt/SoQtComponent.h>
+#include <Inventor/Qt/SoQt.h>
 #include <Inventor/Qt/SoQtGLWidget.h>
+#include <Inventor/Qt/SoQtColorEditor.h>
+#include <Inventor/Qt/viewers/SoQtPlaneViewer.h>
+#include <Inventor/Qt/viewers/SoQtViewer.h>
+#include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
+#include <Inventor/Qt/viewers/SoQtFlyViewer.h>
+#include <Inventor/Qt/viewers/SoQtConstrainedViewer.h>
+#include <Inventor/Qt/viewers/SoQtFullViewer.h>
+#include <Inventor/Qt/widgets/Gradient.h>
+#include <Inventor/Qt/widgets/SoQtThumbWheel.h>
+#include <Inventor/Qt/widgets/SoQtColorTableEditor.h>
+#include <Inventor/Qt/widgets/SoQtGradientDialog.h>
+#include <Inventor/Qt/widgets/SoQtPopupMenu.h>
+#include <Inventor/Qt/SoQtComponent.h>
+#include <Inventor/Qt/SoQtCursor.h>
 #include <Inventor/Qt/SoQtRenderArea.h>
 
 #include <Inventor/SbDPMatrix.h>
@@ -58,6 +70,8 @@
 #include <Inventor/SbVec2d.h>
 #include <Inventor/C/threads/thread.h>
 
+/* make CustomCursor in SoQtCursor known to SWIG */
+typedef SoQtCursor::CustomCursor CustomCursor;
 
 /* FIXME: there is a major pitfall reg. this solution, namely
  * thread safety! reconsider! 20030626 tamer.
@@ -66,7 +80,6 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
   PyRun_InteractiveLoop(stdin, "<stdin>");
   return NULL;
 }
-
 %}
 
 /* include the typemaps common to all pivy modules */
@@ -74,22 +87,22 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
 
 %include Inventor/Qt/devices/SoQtDevice.h
 %include Inventor/Qt/devices/SoQtKeyboard.h
-%include Inventor/Qt/devices/SoQtMouse.h
 %include Inventor/Qt/devices/SoQtSpaceball.h
-%include Inventor/Qt/editors/SoQtColorEditor.h
-%include Inventor/Qt/nodes/SoGuiColorEditor.h
-%include Inventor/Qt/viewers/SoQtViewer.h
-%include Inventor/Qt/viewers/SoQtFullViewer.h
-%include Inventor/Qt/viewers/SoQtExaminerViewer.h
-%include Inventor/Qt/viewers/SoQtPlaneViewer.h
-%include Inventor/Qt/viewers/SoQtConstrainedViewer.h
-%include Inventor/Qt/viewers/SoQtFlyViewer.h
-%include Inventor/Qt/widgets/SoQtPopupMenu.h
-%include Inventor/Qt/SoQtColorEditor.h
-%include Inventor/Qt/SoQt.h
+%include Inventor/Qt/devices/SoQtMouse.h
 %include Inventor/Qt/SoQtBasic.h
+%include Inventor/Qt/nodes/SoGuiColorEditor.h
+%include Inventor/Qt/editors/SoQtColorEditor.h
 %include Inventor/Qt/SoQtObject.h
-%include Inventor/Qt/SoQtCursor.h
-%include Inventor/Qt/SoQtComponent.h
+%include Inventor/Qt/SoQt.h
 %include Inventor/Qt/SoQtGLWidget.h
+%include Inventor/Qt/SoQtColorEditor.h
+%include Inventor/Qt/viewers/SoQtPlaneViewer.h
+%include Inventor/Qt/viewers/SoQtViewer.h
+%include Inventor/Qt/viewers/SoQtExaminerViewer.h
+%include Inventor/Qt/viewers/SoQtFlyViewer.h
+%include Inventor/Qt/viewers/SoQtConstrainedViewer.h
+%include Inventor/Qt/viewers/SoQtFullViewer.h
+%include Inventor/Qt/widgets/SoQtPopupMenu.h
+%include Inventor/Qt/SoQtComponent.h
+%include Inventor/Qt/SoQtCursor.h
 %include Inventor/Qt/SoQtRenderArea.h

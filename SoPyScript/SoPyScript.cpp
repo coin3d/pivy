@@ -118,15 +118,20 @@ SoType SoPyScript::classTypeId;
 void
 SoPyScript::initClass(void)
 {
-  SoPyScript::classTypeId =
-    SoType::createType(SoNode::getClassTypeId(),
-                       SbName("SoPyScript"),
-                       SoPyScript::createInstance,
-                       SoNode::nextActionMethodIndex++);
-  SoNode::setCompatibilityTypes(SoPyScript::getClassTypeId(),
-                                SoNode::COIN_2_0|SoNode::COIN_2_2|SoNode::COIN_2_3|SoNode::COIN_2_4);
+  if (SoType::fromName("SoPyScript").isBad()) {
+    SoPyScript::classTypeId =
+      SoType::createType(SoNode::getClassTypeId(),
+                         SbName("SoPyScript"),
+                         SoPyScript::createInstance,
+                         SoNode::nextActionMethodIndex++);
+ 
+    SoNode::setCompatibilityTypes(SoPyScript::getClassTypeId(),
+                                  SoNode::COIN_2_0|SoNode::COIN_2_2|SoNode::COIN_2_3|SoNode::COIN_2_4);
 
-  Py_Initialize();
+    SoAudioRenderAction::addMethod(SoPyScript::getClassTypeId(), SoNode::audioRenderS);
+
+    Py_Initialize();
+  }
 }
 
 SoPyScript::SoPyScript(void)

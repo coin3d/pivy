@@ -53,14 +53,22 @@
 #include <Inventor/SbBox.h>
 #include <Inventor/SbBSPTree.h>
 #include <Inventor/SbLinear.h>
+#include <Inventor/SbDPLinear.h>
 #include <Inventor/SoLists.h>
-#include <Inventor/SbBox2f.h>
 #include <Inventor/SbBox2s.h>
+#include <Inventor/SbBox3s.h>
+#include <Inventor/SbBox2f.h>
+#include <Inventor/SbBox2d.h>
 #include <Inventor/SbBox3f.h>
+#include <Inventor/SbClip.h>
 #include <Inventor/SbColor.h>
 #include <Inventor/SbColor4f.h>
 #include <Inventor/SbCylinder.h>
 #include <Inventor/SbDict.h>
+#include <Inventor/SbDPLine.h>
+#include <Inventor/SbDPMatrix.h>
+#include <Inventor/SbDPPlane.h>
+#include <Inventor/SbDPRotation.h>
 #include <Inventor/SbHeap.h>
 #include <Inventor/SbImage.h>
 #include <Inventor/SbLine.h>
@@ -73,21 +81,46 @@
 #include <Inventor/SbString.h>
 #include <Inventor/SbTesselator.h>
 #include <Inventor/SbTime.h>
-#include <Inventor/SbVec2f.h>
 #include <Inventor/SbVec2s.h>
+#include <Inventor/SbVec2f.h>
+#include <Inventor/SbVec2d.h>
+#include <Inventor/SbVec3s.h>
 #include <Inventor/SbVec3f.h>
+#include <Inventor/SbVec3d.h>
 #include <Inventor/SbVec4f.h>
+#include <Inventor/SbVec4d.h>
 #include <Inventor/SbViewVolume.h>
+#include <Inventor/SbDPViewVolume.h>
 #include <Inventor/SbViewportRegion.h>
 #include <Inventor/SbXfBox3f.h>
-
+#include <Inventor/C/tidbits.h>
+#include <Inventor/C/basic.h>
+#include <Inventor/C/base/hash.h>
+#include <Inventor/C/base/heap.h>
+#include <Inventor/C/base/memalloc.h>
+#include <Inventor/C/base/rbptree.h>
+#include <Inventor/C/base/time.h>
+#include <Inventor/C/base/string.h>
+#include <Inventor/C/base/list.h>
+#include <Inventor/C/errors/error.h>
+#include <Inventor/C/errors/debugerror.h>
+#include <Inventor/C/glue/gl.h>
+#include <Inventor/C/glue/dl.h>
+#include <Inventor/C/threads/common.h>
+#include <Inventor/C/threads/thread.h>
+#include <Inventor/C/threads/mutex.h>
+#include <Inventor/C/threads/condvar.h>
+#include <Inventor/C/threads/rwmutex.h>
+#include <Inventor/C/threads/storage.h>
+#include <Inventor/C/threads/worker.h>
+#include <Inventor/C/threads/wpool.h>
+#include <Inventor/C/threads/sched.h>
+#include <Inventor/C/threads/sync.h>
+#include <Inventor/C/threads/fifo.h>
+#include <Inventor/C/threads/barrier.h>
 #include <Inventor/lock/SoLockMgr.h>
-
+#include <Inventor/system/gl.h>
 #include <Inventor/system/inttypes.h>
-
-#include <Inventor/VRMLnodes/SoVRMLInterpOutput.h>
-#include <Inventor/VRMLnodes/SoVRMLInterpolator.h>
-
 #include <Inventor/actions/SoSubAction.h>
 #include <Inventor/actions/SoActions.h>
 #include <Inventor/actions/SoAction.h>
@@ -102,20 +135,21 @@
 #include <Inventor/actions/SoPickAction.h>
 #include <Inventor/actions/SoRayPickAction.h>
 #include <Inventor/actions/SoSearchAction.h>
+#include <Inventor/actions/SoToVRMLAction.h>
+#include <Inventor/actions/SoToVRML2Action.h>
 #include <Inventor/actions/SoWriteAction.h>
-
-/* #include <Inventor/bundles/SoBundle.h> */
-/* #include <Inventor/bundles/SoMaterialBundle.h> */
-/* #include <Inventor/bundles/SoTextureCoordinateBundle.h> */
-
-/* #include <Inventor/caches/SoBoundingBoxCache.h> */
-/* #include <Inventor/caches/SoCache.h> */
-/* #include <Inventor/caches/SoConvexDataCache.h> */
-/* #include <Inventor/caches/SoGLCacheList.h> */
-/* #include <Inventor/caches/SoGLRenderCache.h> */
-/* #include <Inventor/caches/SoNormalCache.h> */
-/* #include <Inventor/caches/SoTextureCoordinateCache.h> */
-
+#include <Inventor/actions/SoAudioRenderAction.h>
+#include <Inventor/bundles/SoBundle.h>
+#include <Inventor/bundles/SoMaterialBundle.h>
+#include <Inventor/bundles/SoNormalBundle.h>
+#include <Inventor/bundles/SoTextureCoordinateBundle.h>
+#include <Inventor/caches/SoBoundingBoxCache.h>
+#include <Inventor/caches/SoCache.h>
+#include <Inventor/caches/SoConvexDataCache.h>
+#include <Inventor/caches/SoGLCacheList.h>
+#include <Inventor/caches/SoGLRenderCache.h>
+#include <Inventor/caches/SoNormalCache.h>
+#include <Inventor/caches/SoTextureCoordinateCache.h>
 #include <Inventor/details/SoSubDetail.h>
 #include <Inventor/details/SoDetail.h>
 #include <Inventor/details/SoDetails.h>
@@ -127,7 +161,6 @@
 #include <Inventor/details/SoNodeKitDetail.h>
 #include <Inventor/details/SoPointDetail.h>
 #include <Inventor/details/SoTextDetail.h>
-
 #include <Inventor/draggers/SoDragger.h>
 #include <Inventor/draggers/SoCenterballDragger.h>
 #include <Inventor/draggers/SoDirectionalLightDragger.h>
@@ -150,107 +183,105 @@
 #include <Inventor/draggers/SoTransformerDragger.h>
 #include <Inventor/draggers/SoTranslate1Dragger.h>
 #include <Inventor/draggers/SoTranslate2Dragger.h>
-
-/* #include <Inventor/elements/SoSubElement.h> */
-/* #include <Inventor/elements/SoElements.h> */
-/* #include <Inventor/elements/SoAccumulatedElement.h> */
-/* #include <Inventor/elements/SoAmbientColorElement.h> */
-/* #include <Inventor/elements/SoAnnoText3CharOrientElement.h> */
-/* #include <Inventor/elements/SoAnnoText3FontSizeHintElement.h> */
-/* #include <Inventor/elements/SoAnnoText3RenderPrintElement.h> */
-/* #include <Inventor/elements/SoBBoxModelMatrixElement.h> */
-/* #include <Inventor/elements/SoCacheElement.h> */
-/* #include <Inventor/elements/SoClipPlaneElement.h> */
-/* #include <Inventor/elements/SoComplexityElement.h> */
-/* #include <Inventor/elements/SoComplexityTypeElement.h> */
-/* #include <Inventor/elements/SoCoordinateElement.h> */
-/* #include <Inventor/elements/SoCreaseAngleElement.h> */
-/* #include <Inventor/elements/SoCullElement.h> */
-/* #include <Inventor/elements/SoGLColorIndexElement.h> */
-/* #include <Inventor/elements/SoDecimationPercentageElement.h> */
-/* #include <Inventor/elements/SoDecimationTypeElement.h> */
-/* #include <Inventor/elements/SoDiffuseColorElement.h> */
-/* #include <Inventor/elements/SoDrawStyleElement.h> */
-/* #include <Inventor/elements/SoElement.h> */
-/* #include <Inventor/elements/SoEmissiveColorElement.h> */
-/* #include <Inventor/elements/SoEnvironmentElement.h> */
-/* #include <Inventor/elements/SoFloatElement.h> */
-/* #include <Inventor/elements/SoFocalDistanceElement.h> */
-/* #include <Inventor/elements/SoFontNameElement.h> */
-/* #include <Inventor/elements/SoFontSizeElement.h> */
-/* #include <Inventor/elements/SoGLAmbientColorElement.h> */
-/* #include <Inventor/elements/SoGLCacheContextElement.h> */
-/* #include <Inventor/elements/SoGLClipPlaneElement.h> */
-/* #include <Inventor/elements/SoGLCoordinateElement.h> */
-/* #include <Inventor/elements/SoGLDiffuseColorElement.h> */
-/* #include <Inventor/elements/SoGLDrawStyleElement.h> */
-/* #include <Inventor/elements/SoGLEmissiveColorElement.h> */
-/* #include <Inventor/elements/SoGLEnvironmentElement.h> */
-/* #include <Inventor/elements/SoGLLazyElement.h> */
-/* #include <Inventor/elements/SoGLLightIdElement.h> */
-/* #include <Inventor/elements/SoGLLightModelElement.h> */
-/* #include <Inventor/elements/SoGLLinePatternElement.h> */
-/* #include <Inventor/elements/SoGLLineWidthElement.h> */
-/* #include <Inventor/elements/SoGLModelMatrixElement.h> */
-/* #include <Inventor/elements/SoGLNormalElement.h> */
-/* #include <Inventor/elements/SoGLNormalizeElement.h> */
-/* #include <Inventor/elements/SoGLPointSizeElement.h> */
-/* #include <Inventor/elements/SoGLPolygonOffsetElement.h> */
-/* #include <Inventor/elements/SoGLPolygonStippleElement.h> */
-/* #include <Inventor/elements/SoGLProjectionMatrixElement.h> */
-/* #include <Inventor/elements/SoGLRenderPassElement.h> */
-/* #include <Inventor/elements/SoGLShadeModelElement.h> */
-/* #include <Inventor/elements/SoGLShapeHintsElement.h> */
-/* #include <Inventor/elements/SoGLShininessElement.h> */
-/* #include <Inventor/elements/SoGLSpecularColorElement.h> */
-/* #include <Inventor/elements/SoGLTextureCoordinateElement.h> */
-/* #include <Inventor/elements/SoGLTextureEnabledElement.h> */
-/* #include <Inventor/elements/SoGLTextureImageElement.h> */
-/* #include <Inventor/elements/SoGLTextureMatrixElement.h> */
-/* #include <Inventor/elements/SoGLUpdateAreaElement.h> */
-/* #include <Inventor/elements/SoGLViewingMatrixElement.h> */
-/* #include <Inventor/elements/SoGLViewportRegionElement.h> */
-/* #include <Inventor/elements/SoInt32Element.h> */
-/* #include <Inventor/elements/SoLazyElement.h> */
-/* #include <Inventor/elements/SoLightAttenuationElement.h> */
-/* #include <Inventor/elements/SoLightElement.h> */
-/* #include <Inventor/elements/SoLightModelElement.h> */
-/* #include <Inventor/elements/SoLinePatternElement.h> */
-/* #include <Inventor/elements/SoLineWidthElement.h> */
-/* #include <Inventor/elements/SoLocalBBoxMatrixElement.h> */
-/* #include <Inventor/elements/SoMaterialBindingElement.h> */
-/* #include <Inventor/elements/SoModelMatrixElement.h> */
-/* #include <Inventor/elements/SoNormalBindingElement.h> */
-/* #include <Inventor/elements/SoNormalElement.h> */
-/* #include <Inventor/elements/SoOverrideElement.h> */
-/* #include <Inventor/elements/SoPickRayElement.h> */
-/* #include <Inventor/elements/SoPickStyleElement.h> */
-/* #include <Inventor/elements/SoPointSizeElement.h> */
-/* #include <Inventor/elements/SoPolygonOffsetElement.h> */
-/* #include <Inventor/elements/SoProfileCoordinateElement.h> */
-/* #include <Inventor/elements/SoProfileElement.h> */
-/* #include <Inventor/elements/SoProjectionMatrixElement.h> */
-/* #include <Inventor/elements/SoReplacedElement.h> */
-/* #include <Inventor/elements/SoShapeHintsElement.h> */
-/* #include <Inventor/elements/SoShapeStyleElement.h> */
-/* #include <Inventor/elements/SoShininessElement.h> */
-/* #include <Inventor/elements/SoSpecularColorElement.h> */
-/* #include <Inventor/elements/SoSwitchElement.h> */
-/* #include <Inventor/elements/SoTextOutlineEnabledElement.h> */
-/* #include <Inventor/elements/SoTextureCoordinateBindingElement.h> */
-/* #include <Inventor/elements/SoTextureCoordinateElement.h> */
-/* #include <Inventor/elements/SoTextureImageElement.h> */
-/* #include <Inventor/elements/SoTextureMatrixElement.h> */
-/* #include <Inventor/elements/SoTextureOverrideElement.h> */
-/* #include <Inventor/elements/SoTextureQualityElement.h> */
-/* #include <Inventor/elements/SoTransparencyElement.h> */
-/* #include <Inventor/elements/SoUnitsElement.h> */
-/* #include <Inventor/elements/SoViewVolumeElement.h> */
-/* #include <Inventor/elements/SoViewingMatrixElement.h> */
-/* #include <Inventor/elements/SoViewportRegionElement.h> */
-/* #include <Inventor/elements/SoWindowElement.h> */
-
+#include <Inventor/elements/SoGLCacheContextElement.h>
+#include <Inventor/elements/SoGLClipPlaneElement.h>
+#include <Inventor/elements/SoGLColorIndexElement.h>
+#include <Inventor/elements/SoGLCoordinateElement.h>
+#include <Inventor/elements/SoGLDrawStyleElement.h>
+#include <Inventor/elements/SoGLEnvironmentElement.h>
+#include <Inventor/elements/SoGLLazyElement.h>
+#include <Inventor/elements/SoGLLightIdElement.h>
+#include <Inventor/elements/SoGLLinePatternElement.h>
+#include <Inventor/elements/SoGLLineWidthElement.h>
+#include <Inventor/elements/SoGLModelMatrixElement.h>
+#include <Inventor/elements/SoGLNormalElement.h>
+#include <Inventor/elements/SoGLPointSizeElement.h>
+#include <Inventor/elements/SoGLPolygonOffsetElement.h>
+#include <Inventor/elements/SoGLProjectionMatrixElement.h>
+#include <Inventor/elements/SoGLRenderPassElement.h>
+#include <Inventor/elements/SoGLShapeHintsElement.h>
+#include <Inventor/elements/SoGLTextureCoordinateElement.h>
+#include <Inventor/elements/SoGLTextureEnabledElement.h>
+#include <Inventor/elements/SoGLTexture3EnabledElement.h>
+#include <Inventor/elements/SoGLTextureImageElement.h>
+#include <Inventor/elements/SoGLTextureMatrixElement.h>
+#include <Inventor/elements/SoGLUpdateAreaElement.h>
+#include <Inventor/elements/SoGLViewingMatrixElement.h>
+#include <Inventor/elements/SoGLViewportRegionElement.h>
+#include <Inventor/elements/SoSubElement.h>
+#include <Inventor/elements/SoElements.h>
+#include <Inventor/elements/SoAccumulatedElement.h>
+#include <Inventor/elements/SoAmbientColorElement.h>
+#include <Inventor/elements/SoAnnoText3CharOrientElement.h>
+#include <Inventor/elements/SoAnnoText3FontSizeHintElement.h>
+#include <Inventor/elements/SoAnnoText3RenderPrintElement.h>
+#include <Inventor/elements/SoBBoxModelMatrixElement.h>
+#include <Inventor/elements/SoCacheElement.h>
+#include <Inventor/elements/SoClipPlaneElement.h>
+#include <Inventor/elements/SoComplexityElement.h>
+#include <Inventor/elements/SoComplexityTypeElement.h>
+#include <Inventor/elements/SoCoordinateElement.h>
+#include <Inventor/elements/SoCreaseAngleElement.h>
+#include <Inventor/elements/SoCullElement.h>
+#include <Inventor/elements/SoDecimationPercentageElement.h>
+#include <Inventor/elements/SoDecimationTypeElement.h>
+#include <Inventor/elements/SoDiffuseColorElement.h>
+#include <Inventor/elements/SoDrawStyleElement.h>
+#include <Inventor/elements/SoElement.h>
+#include <Inventor/elements/SoEmissiveColorElement.h>
+#include <Inventor/elements/SoEnvironmentElement.h>
+#include <Inventor/elements/SoFloatElement.h>
+#include <Inventor/elements/SoFocalDistanceElement.h>
+#include <Inventor/elements/SoFontNameElement.h>
+#include <Inventor/elements/SoFontSizeElement.h>
+#include <Inventor/elements/SoInt32Element.h>
+#include <Inventor/elements/SoLazyElement.h>
+#include <Inventor/elements/SoLightAttenuationElement.h>
+#include <Inventor/elements/SoLightElement.h>
+#include <Inventor/elements/SoLightModelElement.h>
+#include <Inventor/elements/SoLinePatternElement.h>
+#include <Inventor/elements/SoLineWidthElement.h>
+#include <Inventor/elements/SoLocalBBoxMatrixElement.h>
+#include <Inventor/elements/SoMaterialBindingElement.h>
+#include <Inventor/elements/SoModelMatrixElement.h>
+#include <Inventor/elements/SoNormalBindingElement.h>
+#include <Inventor/elements/SoNormalElement.h>
+#include <Inventor/elements/SoOverrideElement.h>
+#include <Inventor/elements/SoPickRayElement.h>
+#include <Inventor/elements/SoPickStyleElement.h>
+#include <Inventor/elements/SoPointSizeElement.h>
+#include <Inventor/elements/SoPolygonOffsetElement.h>
+#include <Inventor/elements/SoProfileCoordinateElement.h>
+#include <Inventor/elements/SoProfileElement.h>
+#include <Inventor/elements/SoProjectionMatrixElement.h>
+#include <Inventor/elements/SoReplacedElement.h>
+#include <Inventor/elements/SoShapeHintsElement.h>
+#include <Inventor/elements/SoShapeStyleElement.h>
+#include <Inventor/elements/SoShininessElement.h>
+#include <Inventor/elements/SoSpecularColorElement.h>
+#include <Inventor/elements/SoSwitchElement.h>
+#include <Inventor/elements/SoTextOutlineEnabledElement.h>
+#include <Inventor/elements/SoTextureCoordinateBindingElement.h>
+#include <Inventor/elements/SoTextureCoordinateElement.h>
+#include <Inventor/elements/SoTextureEnabledElement.h>
+#include <Inventor/elements/SoTexture3EnabledElement.h>
+#include <Inventor/elements/SoTextureImageElement.h>
+#include <Inventor/elements/SoTextureMatrixElement.h>
+#include <Inventor/elements/SoTextureOverrideElement.h>
+#include <Inventor/elements/SoTextureQualityElement.h>
+#include <Inventor/elements/SoTransparencyElement.h>
+#include <Inventor/elements/SoUnitsElement.h>
+#include <Inventor/elements/SoViewVolumeElement.h>
+#include <Inventor/elements/SoViewingMatrixElement.h>
+#include <Inventor/elements/SoViewportRegionElement.h>
+#include <Inventor/elements/SoWindowElement.h>
+#include <Inventor/elements/SoListenerPositionElement.h>
+#include <Inventor/elements/SoListenerOrientationElement.h>
+#include <Inventor/elements/SoListenerGainElement.h>
+#include <Inventor/elements/SoListenerDopplerElement.h>
+#include <Inventor/elements/SoSoundElement.h>
 #include <Inventor/engines/SoSubEngine.h>
+#include <Inventor/engines/SoSubNodeEngine.h>
 #include <Inventor/engines/SoEngines.h>
 #include <Inventor/engines/SoBoolOperation.h>
 #include <Inventor/engines/SoCalculator.h>
@@ -280,6 +311,7 @@
 #include <Inventor/engines/SoInterpolateVec2f.h>
 #include <Inventor/engines/SoInterpolateVec3f.h>
 #include <Inventor/engines/SoInterpolateVec4f.h>
+#include <Inventor/engines/SoNodeEngine.h>
 #include <Inventor/engines/SoOnOff.h>
 #include <Inventor/engines/SoOneShot.h>
 #include <Inventor/engines/SoOutputData.h>
@@ -287,13 +319,11 @@
 #include <Inventor/engines/SoTimeCounter.h>
 #include <Inventor/engines/SoTransformVec3f.h>
 #include <Inventor/engines/SoTriggerAny.h>
-
 #include <Inventor/errors/SoErrors.h>
 #include <Inventor/errors/SoDebugError.h>
 #include <Inventor/errors/SoError.h>
 #include <Inventor/errors/SoMemoryError.h>
 #include <Inventor/errors/SoReadError.h>
-
 #include <Inventor/events/SoSubEvent.h>
 #include <Inventor/events/SoButtonEvent.h>
 #include <Inventor/events/SoEvent.h>
@@ -303,7 +333,6 @@
 #include <Inventor/events/SoMotion3Event.h>
 #include <Inventor/events/SoMouseButtonEvent.h>
 #include <Inventor/events/SoSpaceballButtonEvent.h>
-
 #include <Inventor/fields/SoSubField.h>
 #include <Inventor/fields/SoFields.h>
 #include <Inventor/fields/SoField.h>
@@ -331,17 +360,19 @@
 #include <Inventor/fields/SoMFUShort.h>
 #include <Inventor/fields/SoMFVec2f.h>
 #include <Inventor/fields/SoMFVec3f.h>
+#include <Inventor/fields/SoMFVec3d.h>
 #include <Inventor/fields/SoMFVec4f.h>
 #include <Inventor/fields/SoMField.h>
 #include <Inventor/fields/SoSFBitMask.h>
 #include <Inventor/fields/SoSFBool.h>
+#include <Inventor/fields/SoSFBox3s.h>
 #include <Inventor/fields/SoSFColor.h>
 #include <Inventor/fields/SoSFEngine.h>
 #include <Inventor/fields/SoSFEnum.h>
 #include <Inventor/fields/SoSFFloat.h>
 #include <Inventor/fields/SoSFImage.h>
+#include <Inventor/fields/SoSFImage3.h>
 #include <Inventor/fields/SoSFInt32.h>
-#include <Inventor/fields/SoSFLong.h>
 #include <Inventor/fields/SoSFMatrix.h>
 #include <Inventor/fields/SoSFName.h>
 #include <Inventor/fields/SoSFNode.h>
@@ -355,11 +386,13 @@
 #include <Inventor/fields/SoSFUInt32.h>
 #include <Inventor/fields/SoSFULong.h>
 #include <Inventor/fields/SoSFUShort.h>
+#include <Inventor/fields/SoSFVec2s.h>
 #include <Inventor/fields/SoSFVec2f.h>
+#include <Inventor/fields/SoSFVec3s.h>
 #include <Inventor/fields/SoSFVec3f.h>
+#include <Inventor/fields/SoSFVec3d.h>
 #include <Inventor/fields/SoSFVec4f.h>
 #include <Inventor/fields/SoSField.h>
-
 #include <Inventor/manips/SoClipPlaneManip.h>
 #include <Inventor/manips/SoDirectionalLightManip.h>
 #include <Inventor/manips/SoPointLightManip.h>
@@ -372,22 +405,28 @@
 #include <Inventor/manips/SoTrackballManip.h>
 #include <Inventor/manips/SoTransformBoxManip.h>
 #include <Inventor/manips/SoTransformerManip.h>
-
 #include <Inventor/misc/SoAuditorList.h>
 #include <Inventor/misc/SoBase.h>
 #include <Inventor/misc/SoBasic.h>
 #include <Inventor/misc/SoByteStream.h>
 #include <Inventor/misc/SoCallbackList.h>
 #include <Inventor/misc/SoChildList.h>
+#include <Inventor/misc/SoContextHandler.h>
+#include <Inventor/misc/SoGLImage.h>
+#include <Inventor/misc/SoGLBigImage.h>
 #include <Inventor/misc/SoNormalGenerator.h>
 #include <Inventor/misc/SoNotification.h>
+#include <Inventor/misc/SoNotRec.h>
+#include <Inventor/misc/SoProto.h>
+#include <Inventor/misc/SoProtoInstance.h>
 #include <Inventor/misc/SoTranReceiver.h>
 #include <Inventor/misc/SoState.h>
 #include <Inventor/misc/SoTranscribe.h>
 #include <Inventor/misc/SoTranSender.h>
 #include <Inventor/misc/SoLightPath.h>
 #include <Inventor/misc/SoTempPath.h>
-
+#include <Inventor/misc/SoGlyph.h>
+#include <Inventor/misc/SoAudioDevice.h>
 #include <Inventor/lists/SbList.h>
 #include <Inventor/lists/SbPList.h>
 #include <Inventor/lists/SbIntList.h>
@@ -406,8 +445,6 @@
 #include <Inventor/lists/SoPathList.h>
 #include <Inventor/lists/SoPickedPointList.h>
 #include <Inventor/lists/SoTypeList.h>
-#include <Inventor/lists/SoVRMLInterpOutputList.h>
-
 #include <Inventor/nodekits/SoSubKit.h>
 #include <Inventor/nodekits/SoNodeKit.h>
 #include <Inventor/nodekits/SoNodeKitListPart.h>
@@ -421,13 +458,11 @@
 #include <Inventor/nodekits/SoSeparatorKit.h>
 #include <Inventor/nodekits/SoShapeKit.h>
 #include <Inventor/nodekits/SoWrapperKit.h>
-
 #include <Inventor/nodes/SoSubNode.h>
 #include <Inventor/nodes/SoNodes.h>
 #include <Inventor/nodes/SoAnnotation.h>
 #include <Inventor/nodes/SoAntiSquish.h>
 #include <Inventor/nodes/SoArray.h>
-#include <Inventor/nodes/SoAsciiText.h>
 #include <Inventor/nodes/SoBaseColor.h>
 #include <Inventor/nodes/SoBlinker.h>
 #include <Inventor/nodes/SoCallback.h>
@@ -435,11 +470,8 @@
 #include <Inventor/nodes/SoClipPlane.h>
 #include <Inventor/nodes/SoColorIndex.h>
 #include <Inventor/nodes/SoComplexity.h>
-#include <Inventor/nodes/SoCone.h>
 #include <Inventor/nodes/SoCoordinate3.h>
 #include <Inventor/nodes/SoCoordinate4.h>
-#include <Inventor/nodes/SoCube.h>
-#include <Inventor/nodes/SoCylinder.h>
 #include <Inventor/nodes/SoDirectionalLight.h>
 #include <Inventor/nodes/SoDrawStyle.h>
 #include <Inventor/nodes/SoEnvironment.h>
@@ -450,13 +482,6 @@
 #include <Inventor/nodes/SoFont.h>
 #include <Inventor/nodes/SoFontStyle.h>
 #include <Inventor/nodes/SoGroup.h>
-#include <Inventor/nodes/SoImage.h>
-#include <Inventor/nodes/SoIndexedFaceSet.h>
-#include <Inventor/nodes/SoIndexedLineSet.h>
-#include <Inventor/nodes/SoIndexedNurbsCurve.h>
-#include <Inventor/nodes/SoIndexedNurbsSurface.h>
-#include <Inventor/nodes/SoIndexedShape.h>
-#include <Inventor/nodes/SoIndexedTriangleStripSet.h>
 #include <Inventor/nodes/SoInfo.h>
 #include <Inventor/nodes/SoLOD.h>
 #include <Inventor/nodes/SoLabel.h>
@@ -465,6 +490,7 @@
 #include <Inventor/nodes/SoLightModel.h>
 #include <Inventor/nodes/SoLineSet.h>
 #include <Inventor/nodes/SoLinearProfile.h>
+#include <Inventor/nodes/SoListener.h>
 #include <Inventor/nodes/SoLocateHighlight.h>
 #include <Inventor/nodes/SoMarkerSet.h>
 #include <Inventor/nodes/SoMaterial.h>
@@ -472,12 +498,9 @@
 #include <Inventor/nodes/SoMatrixTransform.h>
 #include <Inventor/nodes/SoMultipleCopy.h>
 #include <Inventor/nodes/SoNode.h>
-#include <Inventor/nodes/SoNonIndexedShape.h>
 #include <Inventor/nodes/SoNormal.h>
 #include <Inventor/nodes/SoNormalBinding.h>
-#include <Inventor/nodes/SoNurbsCurve.h>
 #include <Inventor/nodes/SoNurbsProfile.h>
-#include <Inventor/nodes/SoNurbsSurface.h>
 #include <Inventor/nodes/SoOrthographicCamera.h>
 #include <Inventor/nodes/SoPackedColor.h>
 #include <Inventor/nodes/SoPathSwitch.h>
@@ -485,12 +508,10 @@
 #include <Inventor/nodes/SoPerspectiveCamera.h>
 #include <Inventor/nodes/SoPickStyle.h>
 #include <Inventor/nodes/SoPointLight.h>
-#include <Inventor/nodes/SoPointSet.h>
 #include <Inventor/nodes/SoPolygonOffset.h>
 #include <Inventor/nodes/SoProfile.h>
 #include <Inventor/nodes/SoProfileCoordinate2.h>
 #include <Inventor/nodes/SoProfileCoordinate3.h>
-#include <Inventor/nodes/SoQuadMesh.h>
 #include <Inventor/nodes/SoResetTransform.h>
 #include <Inventor/nodes/SoRotation.h>
 #include <Inventor/nodes/SoRotationXYZ.h>
@@ -498,49 +519,66 @@
 #include <Inventor/nodes/SoScale.h>
 #include <Inventor/nodes/SoSelection.h>
 #include <Inventor/nodes/SoSeparator.h>
-#include <Inventor/nodes/SoShape.h>
 #include <Inventor/nodes/SoShapeHints.h>
 #include <Inventor/nodes/SoShuttle.h>
-#include <Inventor/nodes/SoSphere.h>
 #include <Inventor/nodes/SoSpotLight.h>
 #include <Inventor/nodes/SoSurroundScale.h>
 #include <Inventor/nodes/SoSwitch.h>
-#include <Inventor/nodes/SoText2.h>
-#include <Inventor/nodes/SoText3.h>
 #include <Inventor/nodes/SoTexture2.h>
+#include <Inventor/nodes/SoTexture3.h>
 #include <Inventor/nodes/SoTexture2Transform.h>
+#include <Inventor/nodes/SoTexture3Transform.h>
 #include <Inventor/nodes/SoTextureCoordinate2.h>
+#include <Inventor/nodes/SoTextureCoordinate3.h>
 #include <Inventor/nodes/SoTextureCoordinateBinding.h>
 #include <Inventor/nodes/SoTextureCoordinateDefault.h>
 #include <Inventor/nodes/SoTextureCoordinateEnvironment.h>
 #include <Inventor/nodes/SoTextureCoordinateFunction.h>
 #include <Inventor/nodes/SoTextureCoordinatePlane.h>
+#include <Inventor/nodes/SoTextureScalePolicy.h>
 #include <Inventor/nodes/SoTransform.h>
+#include <Inventor/nodes/SoTransparencyType.h>
 #include <Inventor/nodes/SoTransformSeparator.h>
 #include <Inventor/nodes/SoTransformation.h>
 #include <Inventor/nodes/SoTranslation.h>
-#include <Inventor/nodes/SoTriangleStripSet.h>
 #include <Inventor/nodes/SoUnits.h>
 #include <Inventor/nodes/SoVertexProperty.h>
-#include <Inventor/nodes/SoVertexShape.h>
 #include <Inventor/nodes/SoWWWAnchor.h>
 #include <Inventor/nodes/SoWWWInline.h>
-
-
-
-/* #include <Inventor/projectors/SbProjectors.h> */
-/* #include <Inventor/projectors/SbCylinderPlaneProjector.h> */
-/* #include <Inventor/projectors/SbCylinderProjector.h> */
-/* #include <Inventor/projectors/SbCylinderSectionProjector.h> */
-/* #include <Inventor/projectors/SbCylinderSheetProjector.h> */
-/* #include <Inventor/projectors/SbLineProjector.h> */
-/* #include <Inventor/projectors/SbPlaneProjector.h> */
-/* #include <Inventor/projectors/SbProjector.h> */
-/* #include <Inventor/projectors/SbSpherePlaneProjector.h> */
-/* #include <Inventor/projectors/SbSphereProjector.h> */
-/* #include <Inventor/projectors/SbSphereSectionProjector.h> */
-/* #include <Inventor/projectors/SbSphereSheetProjector.h> */
-
+#include <Inventor/nodes/SoAsciiText.h>
+#include <Inventor/nodes/SoCone.h>
+#include <Inventor/nodes/SoCube.h>
+#include <Inventor/nodes/SoCylinder.h>
+#include <Inventor/nodes/SoImage.h>
+#include <Inventor/nodes/SoIndexedFaceSet.h>
+#include <Inventor/nodes/SoIndexedLineSet.h>
+#include <Inventor/nodes/SoIndexedNurbsCurve.h>
+#include <Inventor/nodes/SoIndexedNurbsSurface.h>
+#include <Inventor/nodes/SoIndexedShape.h>
+#include <Inventor/nodes/SoIndexedTriangleStripSet.h>
+#include <Inventor/nodes/SoNonIndexedShape.h>
+#include <Inventor/nodes/SoNurbsCurve.h>
+#include <Inventor/nodes/SoNurbsSurface.h>
+#include <Inventor/nodes/SoPointSet.h>
+#include <Inventor/nodes/SoQuadMesh.h>
+#include <Inventor/nodes/SoShape.h>
+#include <Inventor/nodes/SoSphere.h>
+#include <Inventor/nodes/SoText2.h>
+#include <Inventor/nodes/SoText3.h>
+#include <Inventor/nodes/SoTriangleStripSet.h>
+#include <Inventor/nodes/SoVertexShape.h>
+#include <Inventor/projectors/SbProjectors.h>
+#include <Inventor/projectors/SbCylinderPlaneProjector.h>
+#include <Inventor/projectors/SbCylinderProjector.h>
+#include <Inventor/projectors/SbCylinderSectionProjector.h>
+#include <Inventor/projectors/SbCylinderSheetProjector.h>
+#include <Inventor/projectors/SbLineProjector.h>
+#include <Inventor/projectors/SbPlaneProjector.h>
+#include <Inventor/projectors/SbProjector.h>
+#include <Inventor/projectors/SbSpherePlaneProjector.h>
+#include <Inventor/projectors/SbSphereProjector.h>
+#include <Inventor/projectors/SbSphereSectionProjector.h>
+#include <Inventor/projectors/SbSphereSheetProjector.h>
 #include <Inventor/sensors/SoSensors.h>
 #include <Inventor/sensors/SoAlarmSensor.h>
 #include <Inventor/sensors/SoDataSensor.h>
@@ -554,18 +592,96 @@
 #include <Inventor/sensors/SoSensorManager.h>
 #include <Inventor/sensors/SoTimerQueueSensor.h>
 #include <Inventor/sensors/SoTimerSensor.h>
-
+#include <Inventor/threads/SbThread.h>
+#include <Inventor/threads/SbMutex.h>
+#include <Inventor/threads/SbRWMutex.h>
+#include <Inventor/threads/SbCondVar.h>
+#include <Inventor/threads/SbStorage.h>
+#include <Inventor/threads/SbTypedStorage.h>
+#include <Inventor/threads/SbFifo.h>
+#include <Inventor/threads/SbBarrier.h>
+#include <Inventor/threads/SbThreadAutoLock.h>
+#include <Inventor/VRMLnodes/SoVRML.h>
+#include <Inventor/VRMLnodes/SoVRMLAnchor.h>
+#include <Inventor/VRMLnodes/SoVRMLAppearance.h>
+#include <Inventor/VRMLnodes/SoVRMLAudioClip.h>
+#include <Inventor/VRMLnodes/SoVRMLBackground.h>
+#include <Inventor/VRMLnodes/SoVRMLBillboard.h>
+#include <Inventor/VRMLnodes/SoVRMLBox.h>
+#include <Inventor/VRMLnodes/SoVRMLCollision.h>
+#include <Inventor/VRMLnodes/SoVRMLColor.h>
+#include <Inventor/VRMLnodes/SoVRMLColorInterpolator.h>
+#include <Inventor/VRMLnodes/SoVRMLCone.h>
+#include <Inventor/VRMLnodes/SoVRMLCoordinate.h>
+#include <Inventor/VRMLnodes/SoVRMLCoordinateInterpolator.h>
+#include <Inventor/VRMLnodes/SoVRMLCylinder.h>
+#include <Inventor/VRMLnodes/SoVRMLCylinderSensor.h>
+#include <Inventor/VRMLnodes/SoVRMLDirectionalLight.h>
+#include <Inventor/VRMLnodes/SoVRMLDragSensor.h>
+#include <Inventor/VRMLnodes/SoVRMLElevationGrid.h>
+#include <Inventor/VRMLnodes/SoVRMLExtrusion.h>
+#include <Inventor/VRMLnodes/SoVRMLFog.h>
+#include <Inventor/VRMLnodes/SoVRMLFontStyle.h>
+#include <Inventor/VRMLnodes/SoVRMLGeometry.h>
+#include <Inventor/VRMLnodes/SoVRMLGroup.h>
+#include <Inventor/VRMLnodes/SoVRMLImageTexture.h>
+#include <Inventor/VRMLnodes/SoVRMLIndexedFaceSet.h>
+#include <Inventor/VRMLnodes/SoVRMLIndexedLine.h>
+#include <Inventor/VRMLnodes/SoVRMLIndexedLineSet.h>
+#include <Inventor/VRMLnodes/SoVRMLIndexedShape.h>
+#include <Inventor/VRMLnodes/SoVRMLInline.h>
+#include <Inventor/VRMLnodes/SoVRMLInterpolator.h>
+#include <Inventor/VRMLnodes/SoVRMLLOD.h>
+#include <Inventor/VRMLnodes/SoVRMLLight.h>
+#include <Inventor/VRMLnodes/SoVRMLMacros.h>
+#include <Inventor/VRMLnodes/SoVRMLMaterial.h>
+#include <Inventor/VRMLnodes/SoVRMLMovieTexture.h>
+#include <Inventor/VRMLnodes/SoVRMLNavigationInfo.h>
+#include <Inventor/VRMLnodes/SoVRMLNodes.h>
+#include <Inventor/VRMLnodes/SoVRMLNormal.h>
+#include <Inventor/VRMLnodes/SoVRMLNormalInterpolator.h>
+#include <Inventor/VRMLnodes/SoVRMLOrientationInterpolator.h>
+#include <Inventor/VRMLnodes/SoVRMLParent.h>
+#include <Inventor/VRMLnodes/SoVRMLPixelTexture.h>
+#include <Inventor/VRMLnodes/SoVRMLPlaneSensor.h>
+#include <Inventor/VRMLnodes/SoVRMLPointLight.h>
+#include <Inventor/VRMLnodes/SoVRMLPointSet.h>
+#include <Inventor/VRMLnodes/SoVRMLPositionInterpolator.h>
+#include <Inventor/VRMLnodes/SoVRMLProximitySensor.h>
+#include <Inventor/VRMLnodes/SoVRMLScalarInterpolator.h>
+#include <Inventor/VRMLnodes/SoVRMLScript.h>
+#include <Inventor/VRMLnodes/SoVRMLSensor.h>
+#include <Inventor/VRMLnodes/SoVRMLShape.h>
+#include <Inventor/VRMLnodes/SoVRMLSound.h>
+#include <Inventor/VRMLnodes/SoVRMLSphere.h>
+#include <Inventor/VRMLnodes/SoVRMLSphereSensor.h>
+#include <Inventor/VRMLnodes/SoVRMLSpotLight.h>
+#include <Inventor/VRMLnodes/SoVRMLSubInterpolator.h>
+#include <Inventor/VRMLnodes/SoVRMLSwitch.h>
+#include <Inventor/VRMLnodes/SoVRMLText.h>
+#include <Inventor/VRMLnodes/SoVRMLTexture.h>
+#include <Inventor/VRMLnodes/SoVRMLTextureCoordinate.h>
+#include <Inventor/VRMLnodes/SoVRMLTextureTransform.h>
+#include <Inventor/VRMLnodes/SoVRMLTimeSensor.h>
+#include <Inventor/VRMLnodes/SoVRMLTouchSensor.h>
+#include <Inventor/VRMLnodes/SoVRMLTransform.h>
+#include <Inventor/VRMLnodes/SoVRMLVertexLine.h>
+#include <Inventor/VRMLnodes/SoVRMLVertexPoint.h>
+#include <Inventor/VRMLnodes/SoVRMLVertexShape.h>
+#include <Inventor/VRMLnodes/SoVRMLViewpoint.h>
+#include <Inventor/VRMLnodes/SoVRMLVisibilitySensor.h>
+#include <Inventor/VRMLnodes/SoVRMLWorldInfo.h>
+#include <Inventor/Qt/SoQt.h>
+#include <Inventor/Qt/SoQtBasic.h>
+#include <Inventor/Qt/SoQtObject.h>
+#include <Inventor/Qt/SoQtCursor.h>
+#include <Inventor/Qt/SoQtComponent.h>
+#include <Inventor/Qt/SoQtGLWidget.h>
+#include <Inventor/Qt/SoQtRenderArea.h>
 #include <Inventor/Qt/devices/SoQtDevice.h>
 #include <Inventor/Qt/devices/SoQtKeyboard.h>
 #include <Inventor/Qt/devices/SoQtMouse.h>
 #include <Inventor/Qt/devices/SoQtSpaceball.h>
-#include <Inventor/Qt/SoQtBasic.h>
-#include <Inventor/Qt/SoQtComponent.h>
-#include <Inventor/Qt/SoQtCursor.h>
-#include <Inventor/Qt/SoQtGLWidget.h>
-#include <Inventor/Qt/SoQt.h>
-#include <Inventor/Qt/SoQtObject.h>
-#include <Inventor/Qt/SoQtRenderArea.h>
 #include <Inventor/Qt/viewers/SoQtViewer.h>
 #include <Inventor/Qt/viewers/SoQtConstrainedViewer.h>
 #include <Inventor/Qt/viewers/SoQtFullViewer.h>
@@ -573,7 +689,6 @@
 #include <Inventor/Qt/viewers/SoQtFlyViewer.h>
 #include <Inventor/Qt/viewers/SoQtPlaneViewer.h>
 #include <Inventor/Qt/widgets/SoQtPopupMenu.h>
-
 /* #include <Inventor/Gtk/SoGtkGraphEditor.h> */
 /* #include <Inventor/Gtk/SoGtkRoster.h> */
 /* #include <Inventor/Gtk/SoGtk.h> */
@@ -584,17 +699,36 @@
 /* #include <Inventor/Gtk/SoGtkGLWidget.h> */
 /* #include <Inventor/Gtk/SoGtkRenderArea.h> */
 /* #include <Inventor/Gtk/devices/SoGtkDevice.h> */
-/* #include <Inventor/Gtk/devices/SoGtkInputFocus.h> */
 /* #include <Inventor/Gtk/devices/SoGtkKeyboard.h> */
 /* #include <Inventor/Gtk/devices/SoGtkMouse.h> */
 /* #include <Inventor/Gtk/devices/SoGtkSpaceball.h> */
 /* #include <Inventor/Gtk/widgets/SoGtkPopupMenu.h> */
-/* #include <Inventor/Gtk/viewers/SoGtkFullViewer.h> */
-/* #include <Inventor/Gtk/viewers/SoGtkExaminerViewer.h> */
-/* #include <Inventor/Gtk/viewers/SoGtkPlaneViewer.h> */
 /* #include <Inventor/Gtk/viewers/SoGtkViewer.h> */
 /* #include <Inventor/Gtk/viewers/SoGtkConstrainedViewer.h> */
+/* #include <Inventor/Gtk/viewers/SoGtkFullViewer.h> */
+/* #include <Inventor/Gtk/viewers/SoGtkExaminerViewer.h> */
 /* #include <Inventor/Gtk/viewers/SoGtkFlyViewer.h> */
+/* #include <Inventor/Gtk/viewers/SoGtkPlaneViewer.h> */
+/* #include <Inventor/Xt/SoXtResource.h> */
+/* #include <Inventor/Xt/SoXt.h> */
+/* #include <Inventor/Xt/SoXtBasic.h> */
+/* #include <Inventor/Xt/SoXtObject.h> */
+/* #include <Inventor/Xt/SoXtCursor.h> */
+/* #include <Inventor/Xt/SoXtComponent.h> */
+/* #include <Inventor/Xt/SoXtGLWidget.h> */
+/* #include <Inventor/Xt/SoXtRenderArea.h> */
+/* #include <Inventor/Xt/devices/SoXtDevice.h> */
+/* #include <Inventor/Xt/devices/SoXtKeyboard.h> */
+/* #include <Inventor/Xt/devices/SoXtMouse.h> */
+/* #include <Inventor/Xt/devices/SoXtSpaceball.h> */
+/* #include <Inventor/Xt/devices/SoXtLinuxJoystick.h> */
+/* #include <Inventor/Xt/widgets/SoXtPopupMenu.h> */
+/* #include <Inventor/Xt/viewers/SoXtViewer.h> */
+/* #include <Inventor/Xt/viewers/SoXtConstrainedViewer.h> */
+/* #include <Inventor/Xt/viewers/SoXtFullViewer.h> */
+/* #include <Inventor/Xt/viewers/SoXtExaminerViewer.h> */
+/* #include <Inventor/Xt/viewers/SoXtFlyViewer.h> */
+/* #include <Inventor/Xt/viewers/SoXtPlaneViewer.h> */
 
 PyObject *
 cast(PyObject *self, PyObject *args)
@@ -636,6 +770,30 @@ cast(PyObject *self, PyObject *args)
  **/
 
 %include "typemaps.i"
+
+/* ignore the following methods */
+%ignore SoQt::init(int & argc, char ** argv, const char * appname, const char * classname = "SoQt");
+%ignore SoQt::init(QWidget * toplevelwidget);
+/* %ignore SoGtk::init(int argc, char ** argv, const char * appname, const char * classname = "SoGtk"); */
+/* %ignore SoGtk::init(GtkWidget * toplevelwidget); */
+/* %ignore SoXt::init(int argc, char ** argv, const char * appname, const char * classname = "SoXt"); */
+/* %ignore SoXt::init(Widget * toplevelwidget); */
+
+%ignore SoVRMLAudioClip::getDefaultIntroPause();
+%ignore SoVRMLAudioClip::getDefaultPauseBetweenTracks();
+%ignore SoVRMLAudioClip::getDefaultSampleRate();
+%ignore SoVRMLAudioClip::getDefaultTimerInterval();
+%ignore SoLazyElement::getAlphaTest(SoState * state);
+%ignore SoGLColorIndexElement::get(const int index) const;
+%ignore SoGLColorIndexElement::getDefault(void);
+
+/* if SWIG thinks the class is abstract, then it refuses to 
+ * generate constructors of any kind. the following %feature
+ * declarations take care about this for the classes we still
+ * want a constructor for.
+ */
+%feature("notabstract") SoComposeVec3f;
+%feature("notabstract") SoBoolOperation;
 
 %native(cast) PyObject *cast(PyObject *self, PyObject *args);
 
@@ -699,14 +857,22 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/SbBox.h
 %include Inventor/SbBSPTree.h
 %include Inventor/SbLinear.h
+%include Inventor/SbDPLinear.h
 %include Inventor/SoLists.h
-%include Inventor/SbBox2f.h
 %include Inventor/SbBox2s.h
+%include Inventor/SbBox3s.h
+%include Inventor/SbBox2f.h
+%include Inventor/SbBox2d.h
 %include Inventor/SbBox3f.h
+%include Inventor/SbClip.h
 %include Inventor/SbColor.h
 %include Inventor/SbColor4f.h
 %include Inventor/SbCylinder.h
 %include Inventor/SbDict.h
+%include Inventor/SbDPLine.h
+%include Inventor/SbDPMatrix.h
+%include Inventor/SbDPPlane.h
+%include Inventor/SbDPRotation.h
 %include Inventor/SbHeap.h
 %include Inventor/SbImage.h
 %include Inventor/SbLine.h
@@ -719,21 +885,46 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/SbString.h
 %include Inventor/SbTesselator.h
 %include Inventor/SbTime.h
-%include Inventor/SbVec2f.h
 %include Inventor/SbVec2s.h
+%include Inventor/SbVec2f.h
+%include Inventor/SbVec2d.h
+%include Inventor/SbVec3s.h
 %include Inventor/SbVec3f.h
+%include Inventor/SbVec3d.h
 %include Inventor/SbVec4f.h
+%include Inventor/SbVec4d.h
 %include Inventor/SbViewVolume.h
+%include Inventor/SbDPViewVolume.h
 %include Inventor/SbViewportRegion.h
 %include Inventor/SbXfBox3f.h
-
+%include Inventor/C/tidbits.h
+%include Inventor/C/basic.h
+%include Inventor/C/base/hash.h
+%include Inventor/C/base/heap.h
+%include Inventor/C/base/memalloc.h
+%include Inventor/C/base/rbptree.h
+%include Inventor/C/base/time.h
+%include Inventor/C/base/string.h
+%include Inventor/C/base/list.h
+%include Inventor/C/errors/error.h
+%include Inventor/C/errors/debugerror.h
+%include Inventor/C/glue/gl.h
+%include Inventor/C/glue/dl.h
+%include Inventor/C/threads/common.h
+%include Inventor/C/threads/thread.h
+%include Inventor/C/threads/mutex.h
+%include Inventor/C/threads/condvar.h
+%include Inventor/C/threads/rwmutex.h
+%include Inventor/C/threads/storage.h
+%include Inventor/C/threads/worker.h
+%include Inventor/C/threads/wpool.h
+%include Inventor/C/threads/sched.h
+%include Inventor/C/threads/sync.h
+%include Inventor/C/threads/fifo.h
+%include Inventor/C/threads/barrier.h
 %include Inventor/lock/SoLockMgr.h
-
+%include Inventor/system/gl.h
 %include Inventor/system/inttypes.h
-
-%include Inventor/VRMLnodes/SoVRMLInterpOutput.h
-%include Inventor/VRMLnodes/SoVRMLInterpolator.h
-
 %include Inventor/actions/SoSubAction.h
 %include Inventor/actions/SoActions.h
 %include Inventor/actions/SoAction.h
@@ -748,20 +939,21 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/actions/SoPickAction.h
 %include Inventor/actions/SoRayPickAction.h
 %include Inventor/actions/SoSearchAction.h
+%include Inventor/actions/SoToVRMLAction.h
+%include Inventor/actions/SoToVRML2Action.h
 %include Inventor/actions/SoWriteAction.h
-
-/* %include Inventor/bundles/SoBundle.h */
-/* %include Inventor/bundles/SoMaterialBundle.h */
-/* %include Inventor/bundles/SoTextureCoordinateBundle.h */
-
-/* %include Inventor/caches/SoBoundingBoxCache.h */
-/* %include Inventor/caches/SoCache.h */
-/* %include Inventor/caches/SoConvexDataCache.h */
-/* %include Inventor/caches/SoGLCacheList.h */
-/* %include Inventor/caches/SoGLRenderCache.h */
-/* %include Inventor/caches/SoNormalCache.h */
-/* %include Inventor/caches/SoTextureCoordinateCache.h */
-
+%include Inventor/actions/SoAudioRenderAction.h
+%include Inventor/bundles/SoBundle.h
+%include Inventor/bundles/SoMaterialBundle.h
+%include Inventor/bundles/SoNormalBundle.h
+%include Inventor/bundles/SoTextureCoordinateBundle.h
+%include Inventor/caches/SoBoundingBoxCache.h
+%include Inventor/caches/SoCache.h
+%include Inventor/caches/SoConvexDataCache.h
+%include Inventor/caches/SoGLCacheList.h
+%include Inventor/caches/SoGLRenderCache.h
+%include Inventor/caches/SoNormalCache.h
+%include Inventor/caches/SoTextureCoordinateCache.h
 %include Inventor/details/SoSubDetail.h
 %include Inventor/details/SoDetail.h
 %include Inventor/details/SoDetails.h
@@ -773,7 +965,6 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/details/SoNodeKitDetail.h
 %include Inventor/details/SoPointDetail.h
 %include Inventor/details/SoTextDetail.h
-
 %include Inventor/draggers/SoDragger.h
 %include Inventor/draggers/SoCenterballDragger.h
 %include Inventor/draggers/SoDirectionalLightDragger.h
@@ -796,107 +987,105 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/draggers/SoTransformerDragger.h
 %include Inventor/draggers/SoTranslate1Dragger.h
 %include Inventor/draggers/SoTranslate2Dragger.h
-
-/* %include Inventor/elements/SoSubElement.h */
-/* %include Inventor/elements/SoElements.h */
-/* %include Inventor/elements/SoAccumulatedElement.h */
-/* %include Inventor/elements/SoAmbientColorElement.h */
-/* %include Inventor/elements/SoAnnoText3CharOrientElement.h */
-/* %include Inventor/elements/SoAnnoText3FontSizeHintElement.h */
-/* %include Inventor/elements/SoAnnoText3RenderPrintElement.h */
-/* %include Inventor/elements/SoBBoxModelMatrixElement.h */
-/* %include Inventor/elements/SoCacheElement.h */
-/* %include Inventor/elements/SoClipPlaneElement.h */
-/* %include Inventor/elements/SoComplexityElement.h */
-/* %include Inventor/elements/SoComplexityTypeElement.h */
-/* %include Inventor/elements/SoCoordinateElement.h */
-/* %include Inventor/elements/SoCreaseAngleElement.h */
-/* %include Inventor/elements/SoCullElement.h */
-/* %include Inventor/elements/SoGLColorIndexElement.h */
-/* %include Inventor/elements/SoDecimationPercentageElement.h */
-/* %include Inventor/elements/SoDecimationTypeElement.h */
-/* %include Inventor/elements/SoDiffuseColorElement.h */
-/* %include Inventor/elements/SoDrawStyleElement.h */
-/* %include Inventor/elements/SoElement.h */
-/* %include Inventor/elements/SoEmissiveColorElement.h */
-/* %include Inventor/elements/SoEnvironmentElement.h */
-/* %include Inventor/elements/SoFloatElement.h */
-/* %include Inventor/elements/SoFocalDistanceElement.h */
-/* %include Inventor/elements/SoFontNameElement.h */
-/* %include Inventor/elements/SoFontSizeElement.h */
-/* %include Inventor/elements/SoGLAmbientColorElement.h */
-/* %include Inventor/elements/SoGLCacheContextElement.h */
-/* %include Inventor/elements/SoGLClipPlaneElement.h */
-/* %include Inventor/elements/SoGLCoordinateElement.h */
-/* %include Inventor/elements/SoGLDiffuseColorElement.h */
-/* %include Inventor/elements/SoGLDrawStyleElement.h */
-/* %include Inventor/elements/SoGLEmissiveColorElement.h */
-/* %include Inventor/elements/SoGLEnvironmentElement.h */
-/* %include Inventor/elements/SoGLLazyElement.h */
-/* %include Inventor/elements/SoGLLightIdElement.h */
-/* %include Inventor/elements/SoGLLightModelElement.h */
-/* %include Inventor/elements/SoGLLinePatternElement.h */
-/* %include Inventor/elements/SoGLLineWidthElement.h */
-/* %include Inventor/elements/SoGLModelMatrixElement.h */
-/* %include Inventor/elements/SoGLNormalElement.h */
-/* %include Inventor/elements/SoGLNormalizeElement.h */
-/* %include Inventor/elements/SoGLPointSizeElement.h */
-/* %include Inventor/elements/SoGLPolygonOffsetElement.h */
-/* %include Inventor/elements/SoGLPolygonStippleElement.h */
-/* %include Inventor/elements/SoGLProjectionMatrixElement.h */
-/* %include Inventor/elements/SoGLRenderPassElement.h */
-/* %include Inventor/elements/SoGLShadeModelElement.h */
-/* %include Inventor/elements/SoGLShapeHintsElement.h */
-/* %include Inventor/elements/SoGLShininessElement.h */
-/* %include Inventor/elements/SoGLSpecularColorElement.h */
-/* %include Inventor/elements/SoGLTextureCoordinateElement.h */
-/* %include Inventor/elements/SoGLTextureEnabledElement.h */
-/* %include Inventor/elements/SoGLTextureImageElement.h */
-/* %include Inventor/elements/SoGLTextureMatrixElement.h */
-/* %include Inventor/elements/SoGLUpdateAreaElement.h */
-/* %include Inventor/elements/SoGLViewingMatrixElement.h */
-/* %include Inventor/elements/SoGLViewportRegionElement.h */
-/* %include Inventor/elements/SoInt32Element.h */
-/* %include Inventor/elements/SoLazyElement.h */
-/* %include Inventor/elements/SoLightAttenuationElement.h */
-/* %include Inventor/elements/SoLightElement.h */
-/* %include Inventor/elements/SoLightModelElement.h */
-/* %include Inventor/elements/SoLinePatternElement.h */
-/* %include Inventor/elements/SoLineWidthElement.h */
-/* %include Inventor/elements/SoLocalBBoxMatrixElement.h */
-/* %include Inventor/elements/SoMaterialBindingElement.h */
-/* %include Inventor/elements/SoModelMatrixElement.h */
-/* %include Inventor/elements/SoNormalBindingElement.h */
-/* %include Inventor/elements/SoNormalElement.h */
-/* %include Inventor/elements/SoOverrideElement.h */
-/* %include Inventor/elements/SoPickRayElement.h */
-/* %include Inventor/elements/SoPickStyleElement.h */
-/* %include Inventor/elements/SoPointSizeElement.h */
-/* %include Inventor/elements/SoPolygonOffsetElement.h */
-/* %include Inventor/elements/SoProfileCoordinateElement.h */
-/* %include Inventor/elements/SoProfileElement.h */
-/* %include Inventor/elements/SoProjectionMatrixElement.h */
-/* %include Inventor/elements/SoReplacedElement.h */
-/* %include Inventor/elements/SoShapeHintsElement.h */
-/* %include Inventor/elements/SoShapeStyleElement.h */
-/* %include Inventor/elements/SoShininessElement.h */
-/* %include Inventor/elements/SoSpecularColorElement.h */
-/* %include Inventor/elements/SoSwitchElement.h */
-/* %include Inventor/elements/SoTextOutlineEnabledElement.h */
-/* %include Inventor/elements/SoTextureCoordinateBindingElement.h */
-/* %include Inventor/elements/SoTextureCoordinateElement.h */
-/* %include Inventor/elements/SoTextureImageElement.h */
-/* %include Inventor/elements/SoTextureMatrixElement.h */
-/* %include Inventor/elements/SoTextureOverrideElement.h */
-/* %include Inventor/elements/SoTextureQualityElement.h */
-/* %include Inventor/elements/SoTransparencyElement.h */
-/* %include Inventor/elements/SoUnitsElement.h */
-/* %include Inventor/elements/SoViewVolumeElement.h */
-/* %include Inventor/elements/SoViewingMatrixElement.h */
-/* %include Inventor/elements/SoViewportRegionElement.h */
-/* %include Inventor/elements/SoWindowElement.h */
-
+%include Inventor/elements/SoGLCacheContextElement.h
+%include Inventor/elements/SoGLClipPlaneElement.h
+%include Inventor/elements/SoGLColorIndexElement.h
+%include Inventor/elements/SoGLCoordinateElement.h
+%include Inventor/elements/SoGLDrawStyleElement.h
+%include Inventor/elements/SoGLEnvironmentElement.h
+%include Inventor/elements/SoGLLazyElement.h
+%include Inventor/elements/SoGLLightIdElement.h
+%include Inventor/elements/SoGLLinePatternElement.h
+%include Inventor/elements/SoGLLineWidthElement.h
+%include Inventor/elements/SoGLModelMatrixElement.h
+%include Inventor/elements/SoGLNormalElement.h
+%include Inventor/elements/SoGLPointSizeElement.h
+%include Inventor/elements/SoGLPolygonOffsetElement.h
+%include Inventor/elements/SoGLProjectionMatrixElement.h
+%include Inventor/elements/SoGLRenderPassElement.h
+%include Inventor/elements/SoGLShapeHintsElement.h
+%include Inventor/elements/SoGLTextureCoordinateElement.h
+%include Inventor/elements/SoGLTextureEnabledElement.h
+%include Inventor/elements/SoGLTexture3EnabledElement.h
+%include Inventor/elements/SoGLTextureImageElement.h
+%include Inventor/elements/SoGLTextureMatrixElement.h
+%include Inventor/elements/SoGLUpdateAreaElement.h
+%include Inventor/elements/SoGLViewingMatrixElement.h
+%include Inventor/elements/SoGLViewportRegionElement.h
+%include Inventor/elements/SoSubElement.h
+%include Inventor/elements/SoElements.h
+%include Inventor/elements/SoAccumulatedElement.h
+%include Inventor/elements/SoAmbientColorElement.h
+%include Inventor/elements/SoAnnoText3CharOrientElement.h
+%include Inventor/elements/SoAnnoText3FontSizeHintElement.h
+%include Inventor/elements/SoAnnoText3RenderPrintElement.h
+%include Inventor/elements/SoBBoxModelMatrixElement.h
+%include Inventor/elements/SoCacheElement.h
+%include Inventor/elements/SoClipPlaneElement.h
+%include Inventor/elements/SoComplexityElement.h
+%include Inventor/elements/SoComplexityTypeElement.h
+%include Inventor/elements/SoCoordinateElement.h
+%include Inventor/elements/SoCreaseAngleElement.h
+%include Inventor/elements/SoCullElement.h
+%include Inventor/elements/SoDecimationPercentageElement.h
+%include Inventor/elements/SoDecimationTypeElement.h
+%include Inventor/elements/SoDiffuseColorElement.h
+%include Inventor/elements/SoDrawStyleElement.h
+%include Inventor/elements/SoElement.h
+%include Inventor/elements/SoEmissiveColorElement.h
+%include Inventor/elements/SoEnvironmentElement.h
+%include Inventor/elements/SoFloatElement.h
+%include Inventor/elements/SoFocalDistanceElement.h
+%include Inventor/elements/SoFontNameElement.h
+%include Inventor/elements/SoFontSizeElement.h
+%include Inventor/elements/SoInt32Element.h
+%include Inventor/elements/SoLazyElement.h
+%include Inventor/elements/SoLightAttenuationElement.h
+%include Inventor/elements/SoLightElement.h
+%include Inventor/elements/SoLightModelElement.h
+%include Inventor/elements/SoLinePatternElement.h
+%include Inventor/elements/SoLineWidthElement.h
+%include Inventor/elements/SoLocalBBoxMatrixElement.h
+%include Inventor/elements/SoMaterialBindingElement.h
+%include Inventor/elements/SoModelMatrixElement.h
+%include Inventor/elements/SoNormalBindingElement.h
+%include Inventor/elements/SoNormalElement.h
+%include Inventor/elements/SoOverrideElement.h
+%include Inventor/elements/SoPickRayElement.h
+%include Inventor/elements/SoPickStyleElement.h
+%include Inventor/elements/SoPointSizeElement.h
+%include Inventor/elements/SoPolygonOffsetElement.h
+%include Inventor/elements/SoProfileCoordinateElement.h
+%include Inventor/elements/SoProfileElement.h
+%include Inventor/elements/SoProjectionMatrixElement.h
+%include Inventor/elements/SoReplacedElement.h
+%include Inventor/elements/SoShapeHintsElement.h
+%include Inventor/elements/SoShapeStyleElement.h
+%include Inventor/elements/SoShininessElement.h
+%include Inventor/elements/SoSpecularColorElement.h
+%include Inventor/elements/SoSwitchElement.h
+%include Inventor/elements/SoTextOutlineEnabledElement.h
+%include Inventor/elements/SoTextureCoordinateBindingElement.h
+%include Inventor/elements/SoTextureCoordinateElement.h
+%include Inventor/elements/SoTextureEnabledElement.h
+%include Inventor/elements/SoTexture3EnabledElement.h
+%include Inventor/elements/SoTextureImageElement.h
+%include Inventor/elements/SoTextureMatrixElement.h
+%include Inventor/elements/SoTextureOverrideElement.h
+%include Inventor/elements/SoTextureQualityElement.h
+%include Inventor/elements/SoTransparencyElement.h
+%include Inventor/elements/SoUnitsElement.h
+%include Inventor/elements/SoViewVolumeElement.h
+%include Inventor/elements/SoViewingMatrixElement.h
+%include Inventor/elements/SoViewportRegionElement.h
+%include Inventor/elements/SoWindowElement.h
+%include Inventor/elements/SoListenerPositionElement.h
+%include Inventor/elements/SoListenerOrientationElement.h
+%include Inventor/elements/SoListenerGainElement.h
+%include Inventor/elements/SoListenerDopplerElement.h
+%include Inventor/elements/SoSoundElement.h
 %include Inventor/engines/SoSubEngine.h
+%include Inventor/engines/SoSubNodeEngine.h
 %include Inventor/engines/SoEngines.h
 %include Inventor/engines/SoBoolOperation.h
 %include Inventor/engines/SoCalculator.h
@@ -926,6 +1115,7 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/engines/SoInterpolateVec2f.h
 %include Inventor/engines/SoInterpolateVec3f.h
 %include Inventor/engines/SoInterpolateVec4f.h
+%include Inventor/engines/SoNodeEngine.h
 %include Inventor/engines/SoOnOff.h
 %include Inventor/engines/SoOneShot.h
 %include Inventor/engines/SoOutputData.h
@@ -933,13 +1123,11 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/engines/SoTimeCounter.h
 %include Inventor/engines/SoTransformVec3f.h
 %include Inventor/engines/SoTriggerAny.h
-
 %include Inventor/errors/SoErrors.h
 %include Inventor/errors/SoDebugError.h
 %include Inventor/errors/SoError.h
 %include Inventor/errors/SoMemoryError.h
 %include Inventor/errors/SoReadError.h
-
 %include Inventor/events/SoSubEvent.h
 %include Inventor/events/SoButtonEvent.h
 %include Inventor/events/SoEvent.h
@@ -949,7 +1137,6 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/events/SoMotion3Event.h
 %include Inventor/events/SoMouseButtonEvent.h
 %include Inventor/events/SoSpaceballButtonEvent.h
-
 %include Inventor/fields/SoSubField.h
 %include Inventor/fields/SoFields.h
 %include Inventor/fields/SoField.h
@@ -977,17 +1164,19 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/fields/SoMFUShort.h
 %include Inventor/fields/SoMFVec2f.h
 %include Inventor/fields/SoMFVec3f.h
+%include Inventor/fields/SoMFVec3d.h
 %include Inventor/fields/SoMFVec4f.h
 %include Inventor/fields/SoMField.h
 %include Inventor/fields/SoSFBitMask.h
 %include Inventor/fields/SoSFBool.h
+%include Inventor/fields/SoSFBox3s.h
 %include Inventor/fields/SoSFColor.h
 %include Inventor/fields/SoSFEngine.h
 %include Inventor/fields/SoSFEnum.h
 %include Inventor/fields/SoSFFloat.h
 %include Inventor/fields/SoSFImage.h
+%include Inventor/fields/SoSFImage3.h
 %include Inventor/fields/SoSFInt32.h
-%include Inventor/fields/SoSFLong.h
 %include Inventor/fields/SoSFMatrix.h
 %include Inventor/fields/SoSFName.h
 %include Inventor/fields/SoSFNode.h
@@ -1001,11 +1190,13 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/fields/SoSFUInt32.h
 %include Inventor/fields/SoSFULong.h
 %include Inventor/fields/SoSFUShort.h
+%include Inventor/fields/SoSFVec2s.h
 %include Inventor/fields/SoSFVec2f.h
+%include Inventor/fields/SoSFVec3s.h
 %include Inventor/fields/SoSFVec3f.h
+%include Inventor/fields/SoSFVec3d.h
 %include Inventor/fields/SoSFVec4f.h
 %include Inventor/fields/SoSField.h
-
 %include Inventor/manips/SoClipPlaneManip.h
 %include Inventor/manips/SoDirectionalLightManip.h
 %include Inventor/manips/SoPointLightManip.h
@@ -1018,22 +1209,28 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/manips/SoTrackballManip.h
 %include Inventor/manips/SoTransformBoxManip.h
 %include Inventor/manips/SoTransformerManip.h
-
 %include Inventor/misc/SoAuditorList.h
 %include Inventor/misc/SoBase.h
 %include Inventor/misc/SoBasic.h
 %include Inventor/misc/SoByteStream.h
 %include Inventor/misc/SoCallbackList.h
 %include Inventor/misc/SoChildList.h
+%include Inventor/misc/SoContextHandler.h
+%include Inventor/misc/SoGLImage.h
+%include Inventor/misc/SoGLBigImage.h
 %include Inventor/misc/SoNormalGenerator.h
 %include Inventor/misc/SoNotification.h
+%include Inventor/misc/SoNotRec.h
+%include Inventor/misc/SoProto.h
+%include Inventor/misc/SoProtoInstance.h
 %include Inventor/misc/SoTranReceiver.h
 %include Inventor/misc/SoState.h
 %include Inventor/misc/SoTranscribe.h
 %include Inventor/misc/SoTranSender.h
 %include Inventor/misc/SoLightPath.h
 %include Inventor/misc/SoTempPath.h
-
+%include Inventor/misc/SoGlyph.h
+%include Inventor/misc/SoAudioDevice.h
 %include Inventor/lists/SbList.h
 %include Inventor/lists/SbPList.h
 %include Inventor/lists/SbIntList.h
@@ -1052,8 +1249,6 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/lists/SoPathList.h
 %include Inventor/lists/SoPickedPointList.h
 %include Inventor/lists/SoTypeList.h
-%include Inventor/lists/SoVRMLInterpOutputList.h
-
 %include Inventor/nodekits/SoSubKit.h
 %include Inventor/nodekits/SoNodeKit.h
 %include Inventor/nodekits/SoNodeKitListPart.h
@@ -1067,13 +1262,11 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/nodekits/SoSeparatorKit.h
 %include Inventor/nodekits/SoShapeKit.h
 %include Inventor/nodekits/SoWrapperKit.h
-
 %include Inventor/nodes/SoSubNode.h
 %include Inventor/nodes/SoNodes.h
 %include Inventor/nodes/SoAnnotation.h
 %include Inventor/nodes/SoAntiSquish.h
 %include Inventor/nodes/SoArray.h
-%include Inventor/nodes/SoAsciiText.h
 %include Inventor/nodes/SoBaseColor.h
 %include Inventor/nodes/SoBlinker.h
 %include Inventor/nodes/SoCallback.h
@@ -1081,11 +1274,8 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/nodes/SoClipPlane.h
 %include Inventor/nodes/SoColorIndex.h
 %include Inventor/nodes/SoComplexity.h
-%include Inventor/nodes/SoCone.h
 %include Inventor/nodes/SoCoordinate3.h
 %include Inventor/nodes/SoCoordinate4.h
-%include Inventor/nodes/SoCube.h
-%include Inventor/nodes/SoCylinder.h
 %include Inventor/nodes/SoDirectionalLight.h
 %include Inventor/nodes/SoDrawStyle.h
 %include Inventor/nodes/SoEnvironment.h
@@ -1096,13 +1286,6 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/nodes/SoFont.h
 %include Inventor/nodes/SoFontStyle.h
 %include Inventor/nodes/SoGroup.h
-%include Inventor/nodes/SoImage.h
-%include Inventor/nodes/SoIndexedFaceSet.h
-%include Inventor/nodes/SoIndexedLineSet.h
-%include Inventor/nodes/SoIndexedNurbsCurve.h
-%include Inventor/nodes/SoIndexedNurbsSurface.h
-%include Inventor/nodes/SoIndexedShape.h
-%include Inventor/nodes/SoIndexedTriangleStripSet.h
 %include Inventor/nodes/SoInfo.h
 %include Inventor/nodes/SoLOD.h
 %include Inventor/nodes/SoLabel.h
@@ -1111,6 +1294,7 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/nodes/SoLightModel.h
 %include Inventor/nodes/SoLineSet.h
 %include Inventor/nodes/SoLinearProfile.h
+%include Inventor/nodes/SoListener.h
 %include Inventor/nodes/SoLocateHighlight.h
 %include Inventor/nodes/SoMarkerSet.h
 %include Inventor/nodes/SoMaterial.h
@@ -1118,12 +1302,9 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/nodes/SoMatrixTransform.h
 %include Inventor/nodes/SoMultipleCopy.h
 %include Inventor/nodes/SoNode.h
-%include Inventor/nodes/SoNonIndexedShape.h
 %include Inventor/nodes/SoNormal.h
 %include Inventor/nodes/SoNormalBinding.h
-%include Inventor/nodes/SoNurbsCurve.h
 %include Inventor/nodes/SoNurbsProfile.h
-%include Inventor/nodes/SoNurbsSurface.h
 %include Inventor/nodes/SoOrthographicCamera.h
 %include Inventor/nodes/SoPackedColor.h
 %include Inventor/nodes/SoPathSwitch.h
@@ -1131,12 +1312,10 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/nodes/SoPerspectiveCamera.h
 %include Inventor/nodes/SoPickStyle.h
 %include Inventor/nodes/SoPointLight.h
-%include Inventor/nodes/SoPointSet.h
 %include Inventor/nodes/SoPolygonOffset.h
 %include Inventor/nodes/SoProfile.h
 %include Inventor/nodes/SoProfileCoordinate2.h
 %include Inventor/nodes/SoProfileCoordinate3.h
-%include Inventor/nodes/SoQuadMesh.h
 %include Inventor/nodes/SoResetTransform.h
 %include Inventor/nodes/SoRotation.h
 %include Inventor/nodes/SoRotationXYZ.h
@@ -1144,47 +1323,66 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/nodes/SoScale.h
 %include Inventor/nodes/SoSelection.h
 %include Inventor/nodes/SoSeparator.h
-%include Inventor/nodes/SoShape.h
 %include Inventor/nodes/SoShapeHints.h
 %include Inventor/nodes/SoShuttle.h
-%include Inventor/nodes/SoSphere.h
 %include Inventor/nodes/SoSpotLight.h
 %include Inventor/nodes/SoSurroundScale.h
 %include Inventor/nodes/SoSwitch.h
-%include Inventor/nodes/SoText2.h
-%include Inventor/nodes/SoText3.h
 %include Inventor/nodes/SoTexture2.h
+%include Inventor/nodes/SoTexture3.h
 %include Inventor/nodes/SoTexture2Transform.h
+%include Inventor/nodes/SoTexture3Transform.h
 %include Inventor/nodes/SoTextureCoordinate2.h
+%include Inventor/nodes/SoTextureCoordinate3.h
 %include Inventor/nodes/SoTextureCoordinateBinding.h
 %include Inventor/nodes/SoTextureCoordinateDefault.h
 %include Inventor/nodes/SoTextureCoordinateEnvironment.h
 %include Inventor/nodes/SoTextureCoordinateFunction.h
 %include Inventor/nodes/SoTextureCoordinatePlane.h
+%include Inventor/nodes/SoTextureScalePolicy.h
 %include Inventor/nodes/SoTransform.h
+%include Inventor/nodes/SoTransparencyType.h
 %include Inventor/nodes/SoTransformSeparator.h
 %include Inventor/nodes/SoTransformation.h
 %include Inventor/nodes/SoTranslation.h
-%include Inventor/nodes/SoTriangleStripSet.h
 %include Inventor/nodes/SoUnits.h
 %include Inventor/nodes/SoVertexProperty.h
-%include Inventor/nodes/SoVertexShape.h
 %include Inventor/nodes/SoWWWAnchor.h
 %include Inventor/nodes/SoWWWInline.h
-
-/* %include Inventor/projectors/SbProjectors.h */
-/* %include Inventor/projectors/SbCylinderPlaneProjector.h */
-/* %include Inventor/projectors/SbCylinderProjector.h */
-/* %include Inventor/projectors/SbCylinderSectionProjector.h */
-/* %include Inventor/projectors/SbCylinderSheetProjector.h */
-/* %include Inventor/projectors/SbLineProjector.h */
-/* %include Inventor/projectors/SbPlaneProjector.h */
-/* %include Inventor/projectors/SbProjector.h */
-/* %include Inventor/projectors/SbSpherePlaneProjector.h */
-/* %include Inventor/projectors/SbSphereProjector.h */
-/* %include Inventor/projectors/SbSphereSectionProjector.h */
-/* %include Inventor/projectors/SbSphereSheetProjector.h */
-
+%include Inventor/nodes/SoAsciiText.h
+%include Inventor/nodes/SoCone.h
+%include Inventor/nodes/SoCube.h
+%include Inventor/nodes/SoCylinder.h
+%include Inventor/nodes/SoImage.h
+%include Inventor/nodes/SoIndexedFaceSet.h
+%include Inventor/nodes/SoIndexedLineSet.h
+%include Inventor/nodes/SoIndexedNurbsCurve.h
+%include Inventor/nodes/SoIndexedNurbsSurface.h
+%include Inventor/nodes/SoIndexedShape.h
+%include Inventor/nodes/SoIndexedTriangleStripSet.h
+%include Inventor/nodes/SoNonIndexedShape.h
+%include Inventor/nodes/SoNurbsCurve.h
+%include Inventor/nodes/SoNurbsSurface.h
+%include Inventor/nodes/SoPointSet.h
+%include Inventor/nodes/SoQuadMesh.h
+%include Inventor/nodes/SoShape.h
+%include Inventor/nodes/SoSphere.h
+%include Inventor/nodes/SoText2.h
+%include Inventor/nodes/SoText3.h
+%include Inventor/nodes/SoTriangleStripSet.h
+%include Inventor/nodes/SoVertexShape.h
+%include Inventor/projectors/SbProjectors.h
+%include Inventor/projectors/SbCylinderPlaneProjector.h
+%include Inventor/projectors/SbCylinderProjector.h
+%include Inventor/projectors/SbCylinderSectionProjector.h
+%include Inventor/projectors/SbCylinderSheetProjector.h
+%include Inventor/projectors/SbLineProjector.h
+%include Inventor/projectors/SbPlaneProjector.h
+%include Inventor/projectors/SbProjector.h
+%include Inventor/projectors/SbSpherePlaneProjector.h
+%include Inventor/projectors/SbSphereProjector.h
+%include Inventor/projectors/SbSphereSectionProjector.h
+%include Inventor/projectors/SbSphereSheetProjector.h
 %include Inventor/sensors/SoSensors.h
 %include Inventor/sensors/SoAlarmSensor.h
 %include Inventor/sensors/SoDataSensor.h
@@ -1198,18 +1396,96 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/sensors/SoSensorManager.h
 %include Inventor/sensors/SoTimerQueueSensor.h
 %include Inventor/sensors/SoTimerSensor.h
-
+%include Inventor/threads/SbThread.h
+%include Inventor/threads/SbMutex.h
+%include Inventor/threads/SbRWMutex.h
+%include Inventor/threads/SbCondVar.h
+%include Inventor/threads/SbStorage.h
+%include Inventor/threads/SbTypedStorage.h
+%include Inventor/threads/SbFifo.h
+%include Inventor/threads/SbBarrier.h
+%include Inventor/threads/SbThreadAutoLock.h
+%include Inventor/VRMLnodes/SoVRML.h
+%include Inventor/VRMLnodes/SoVRMLAnchor.h
+%include Inventor/VRMLnodes/SoVRMLAppearance.h
+%include Inventor/VRMLnodes/SoVRMLAudioClip.h
+%include Inventor/VRMLnodes/SoVRMLBackground.h
+%include Inventor/VRMLnodes/SoVRMLBillboard.h
+%include Inventor/VRMLnodes/SoVRMLBox.h
+%include Inventor/VRMLnodes/SoVRMLCollision.h
+%include Inventor/VRMLnodes/SoVRMLColor.h
+%include Inventor/VRMLnodes/SoVRMLColorInterpolator.h
+%include Inventor/VRMLnodes/SoVRMLCone.h
+%include Inventor/VRMLnodes/SoVRMLCoordinate.h
+%include Inventor/VRMLnodes/SoVRMLCoordinateInterpolator.h
+%include Inventor/VRMLnodes/SoVRMLCylinder.h
+%include Inventor/VRMLnodes/SoVRMLCylinderSensor.h
+%include Inventor/VRMLnodes/SoVRMLDirectionalLight.h
+%include Inventor/VRMLnodes/SoVRMLDragSensor.h
+%include Inventor/VRMLnodes/SoVRMLElevationGrid.h
+%include Inventor/VRMLnodes/SoVRMLExtrusion.h
+%include Inventor/VRMLnodes/SoVRMLFog.h
+%include Inventor/VRMLnodes/SoVRMLFontStyle.h
+%include Inventor/VRMLnodes/SoVRMLGeometry.h
+%include Inventor/VRMLnodes/SoVRMLGroup.h
+%include Inventor/VRMLnodes/SoVRMLImageTexture.h
+%include Inventor/VRMLnodes/SoVRMLIndexedFaceSet.h
+%include Inventor/VRMLnodes/SoVRMLIndexedLine.h
+%include Inventor/VRMLnodes/SoVRMLIndexedLineSet.h
+%include Inventor/VRMLnodes/SoVRMLIndexedShape.h
+%include Inventor/VRMLnodes/SoVRMLInline.h
+%include Inventor/VRMLnodes/SoVRMLInterpolator.h
+%include Inventor/VRMLnodes/SoVRMLLOD.h
+%include Inventor/VRMLnodes/SoVRMLLight.h
+%include Inventor/VRMLnodes/SoVRMLMacros.h
+%include Inventor/VRMLnodes/SoVRMLMaterial.h
+%include Inventor/VRMLnodes/SoVRMLMovieTexture.h
+%include Inventor/VRMLnodes/SoVRMLNavigationInfo.h
+%include Inventor/VRMLnodes/SoVRMLNodes.h
+%include Inventor/VRMLnodes/SoVRMLNormal.h
+%include Inventor/VRMLnodes/SoVRMLNormalInterpolator.h
+%include Inventor/VRMLnodes/SoVRMLOrientationInterpolator.h
+%include Inventor/VRMLnodes/SoVRMLParent.h
+%include Inventor/VRMLnodes/SoVRMLPixelTexture.h
+%include Inventor/VRMLnodes/SoVRMLPlaneSensor.h
+%include Inventor/VRMLnodes/SoVRMLPointLight.h
+%include Inventor/VRMLnodes/SoVRMLPointSet.h
+%include Inventor/VRMLnodes/SoVRMLPositionInterpolator.h
+%include Inventor/VRMLnodes/SoVRMLProximitySensor.h
+%include Inventor/VRMLnodes/SoVRMLScalarInterpolator.h
+%include Inventor/VRMLnodes/SoVRMLScript.h
+%include Inventor/VRMLnodes/SoVRMLSensor.h
+%include Inventor/VRMLnodes/SoVRMLShape.h
+%include Inventor/VRMLnodes/SoVRMLSound.h
+%include Inventor/VRMLnodes/SoVRMLSphere.h
+%include Inventor/VRMLnodes/SoVRMLSphereSensor.h
+%include Inventor/VRMLnodes/SoVRMLSpotLight.h
+%include Inventor/VRMLnodes/SoVRMLSubInterpolator.h
+%include Inventor/VRMLnodes/SoVRMLSwitch.h
+%include Inventor/VRMLnodes/SoVRMLText.h
+%include Inventor/VRMLnodes/SoVRMLTexture.h
+%include Inventor/VRMLnodes/SoVRMLTextureCoordinate.h
+%include Inventor/VRMLnodes/SoVRMLTextureTransform.h
+%include Inventor/VRMLnodes/SoVRMLTimeSensor.h
+%include Inventor/VRMLnodes/SoVRMLTouchSensor.h
+%include Inventor/VRMLnodes/SoVRMLTransform.h
+%include Inventor/VRMLnodes/SoVRMLVertexLine.h
+%include Inventor/VRMLnodes/SoVRMLVertexPoint.h
+%include Inventor/VRMLnodes/SoVRMLVertexShape.h
+%include Inventor/VRMLnodes/SoVRMLViewpoint.h
+%include Inventor/VRMLnodes/SoVRMLVisibilitySensor.h
+%include Inventor/VRMLnodes/SoVRMLWorldInfo.h
+%include Inventor/Qt/SoQt.h
+%include Inventor/Qt/SoQtBasic.h
+%include Inventor/Qt/SoQtObject.h
+%include Inventor/Qt/SoQtCursor.h
+%include Inventor/Qt/SoQtComponent.h
+%include Inventor/Qt/SoQtGLWidget.h
+%include Inventor/Qt/SoQtRenderArea.h
 %include Inventor/Qt/devices/SoQtDevice.h
 %include Inventor/Qt/devices/SoQtKeyboard.h
 %include Inventor/Qt/devices/SoQtMouse.h
 %include Inventor/Qt/devices/SoQtSpaceball.h
-%include Inventor/Qt/SoQtBasic.h
-%include Inventor/Qt/SoQtComponent.h
-%include Inventor/Qt/SoQtCursor.h
-%include Inventor/Qt/SoQtGLWidget.h
-%include Inventor/Qt/SoQt.h
-%include Inventor/Qt/SoQtObject.h
-%include Inventor/Qt/SoQtRenderArea.h
 %include Inventor/Qt/viewers/SoQtViewer.h
 %include Inventor/Qt/viewers/SoQtConstrainedViewer.h
 %include Inventor/Qt/viewers/SoQtFullViewer.h
@@ -1217,27 +1493,43 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/Qt/viewers/SoQtFlyViewer.h
 %include Inventor/Qt/viewers/SoQtPlaneViewer.h
 %include Inventor/Qt/widgets/SoQtPopupMenu.h
-
-/* %include Inventor/Gtk/SoGtkBasic.h */
+/* %include Inventor/Gtk/SoGtkGraphEditor.h */
+/* %include Inventor/Gtk/SoGtkRoster.h */
 /* %include Inventor/Gtk/SoGtk.h */
+/* %include Inventor/Gtk/SoGtkBasic.h */
 /* %include Inventor/Gtk/SoGtkObject.h */
 /* %include Inventor/Gtk/SoGtkCursor.h */
 /* %include Inventor/Gtk/SoGtkComponent.h */
-/* %include Inventor/Gtk/SoGtkRoster.h */
-/* %include Inventor/Gtk/SoGtkGraphEditor.h */
 /* %include Inventor/Gtk/SoGtkGLWidget.h */
 /* %include Inventor/Gtk/SoGtkRenderArea.h */
-/* %include Inventor/Gtk/SoGtkRoster.h */
-/* %include Inventor/Gtk/SoGtkGraphEditor.h */
 /* %include Inventor/Gtk/devices/SoGtkDevice.h */
-/* %include Inventor/Gtk/devices/SoGtkInputFocus.h */
 /* %include Inventor/Gtk/devices/SoGtkKeyboard.h */
 /* %include Inventor/Gtk/devices/SoGtkMouse.h */
 /* %include Inventor/Gtk/devices/SoGtkSpaceball.h */
 /* %include Inventor/Gtk/widgets/SoGtkPopupMenu.h */
 /* %include Inventor/Gtk/viewers/SoGtkViewer.h */
-/* %include Inventor/Gtk/viewers/SoGtkFullViewer.h */
 /* %include Inventor/Gtk/viewers/SoGtkConstrainedViewer.h */
+/* %include Inventor/Gtk/viewers/SoGtkFullViewer.h */
 /* %include Inventor/Gtk/viewers/SoGtkExaminerViewer.h */
-/* %include Inventor/Gtk/viewers/SoGtkPlaneViewer.h */
 /* %include Inventor/Gtk/viewers/SoGtkFlyViewer.h */
+/* %include Inventor/Gtk/viewers/SoGtkPlaneViewer.h */
+/* %include Inventor/Xt/SoXtResource.h */
+/* %include Inventor/Xt/SoXt.h */
+/* %include Inventor/Xt/SoXtBasic.h */
+/* %include Inventor/Xt/SoXtObject.h */
+/* %include Inventor/Xt/SoXtCursor.h */
+/* %include Inventor/Xt/SoXtComponent.h */
+/* %include Inventor/Xt/SoXtGLWidget.h */
+/* %include Inventor/Xt/SoXtRenderArea.h */
+/* %include Inventor/Xt/devices/SoXtDevice.h */
+/* %include Inventor/Xt/devices/SoXtKeyboard.h */
+/* %include Inventor/Xt/devices/SoXtMouse.h */
+/* %include Inventor/Xt/devices/SoXtSpaceball.h */
+/* %include Inventor/Xt/devices/SoXtLinuxJoystick.h */
+/* %include Inventor/Xt/widgets/SoXtPopupMenu.h */
+/* %include Inventor/Xt/viewers/SoXtViewer.h */
+/* %include Inventor/Xt/viewers/SoXtConstrainedViewer.h */
+/* %include Inventor/Xt/viewers/SoXtFullViewer.h */
+/* %include Inventor/Xt/viewers/SoXtExaminerViewer.h */
+/* %include Inventor/Xt/viewers/SoXtFlyViewer.h */
+/* %include Inventor/Xt/viewers/SoXtPlaneViewer.h */

@@ -46,12 +46,8 @@
 #       of the point set.
 #
 
-# FIXME: think of a way to interface pivy to pygtk and pygnome to make
-#        the lowlevel GDK events useful and working. maybe think of a
-#        better solution to make it independent of the used toolkit!
-
 from pivy import *
-from GDK import *
+from qt import *
 import sys
 
 # Timer sensor 
@@ -119,28 +115,30 @@ def myAppEventHandler(userData, anyevent):
 	myRenderArea = cast(userData, "SoQtRenderArea")
 	handled = TRUE
 
-	print anyevent
-	if anyevent.type == GDK.BUTTON_PRESS:
-		myButtonEvent = anyevent # cast(anyevent, "XButtonEvent")
+	# print anyevent
+	# FIXME: find  way to bridge to PyQt to allow QEvent querying. 20030303 tamer.
+	anyevent = QEvent(QEvent.None)
+	if anyevent.type == QEvent.MouseButtonPress:
+		myButtonEvent = cast(anyevent, "QMouseEvent")
 		
-		if myButtonEvent.button == GDK.LEFTBUTTON:
+		if myButtonEvent.button() == QMouseEvent.LeftButton:
 			vec = myProjectPoint(myRenderArea, myButtonEvent.x, myButtonEvent.y)
 			myAddPoint(myRenderArea, vec)
-		elif myButtonEvent.button == GDK.MIDDLEBUTTON:
+		elif myButtonEvent.button() == QMouseEvent.MidButton:
 			myTicker.schedule()  # start spinning the camera
-		elif myButtonEvent.button == GDK.RIGHTBUTTON:
+		elif myButtonEvent.button() == QMouseEvent.RightButton:
 			myClearPoints(myRenderArea)  # clear the point set
       
-	elif anyevent.type == GDK.BUTTON_RELEASE:
-		myButtonEvent = anyevent # cast(anyevent, "XButtonEvent")
+	elif anyevent.type == QEvent.MouseButtonRelease:
+		myButtonEvent = cast(anyevent, "QMouseEvent")
 		
-		if myButtonEvent.button == GDK.MIDDLEBUTTON:
+		if myButtonEvent.button() == QMouseEvent.MidButton:
 			myTicker.unschedule()  # stop spinning the camera
       
-	elif anyevent.type == GDK.MOTION_NOTIFY:
-		myMotionEvent = anyevent # cast(anyevent, "XMotionEvent")
+	elif anyevent.type == QEvent.MouseMove:
+		myMotionEvent = cast(anyevent, "QMouseEvent")
 		
-		if myMotionEvent.state & GDK.BUTTON1_MASK:
+		if myMotionEvent.state() == QMouseEvent.LeftButton:
 			vec = myProjectPoint(myRenderArea, myMotionEvent.x, myMotionEvent.y)
 			myAddPoint(myRenderArea, vec)
       
@@ -153,6 +151,8 @@ def myAppEventHandler(userData, anyevent):
 ###############################################################
 
 def main():
+	print "\n- Warning: This example is currently not fully functional!"
+	print "- Still it shows how things could be achieved.\n"
 	# Print out usage instructions
 	print "Mouse buttons:"
 	print "\tLeft (with mouse motion): adds points"
@@ -203,7 +203,7 @@ def main():
 ###############################################################
 # CODE FOR The Inventor Mentor STARTS HERE  (part 2)
 
-    # Have render area send events to us instead of the scene 
+        # Have render area send events to us instead of the scene 
 	# graph.  We pass the render area as user data.
 	myRenderArea.setPythonEventCallback(myAppEventHandler, myRenderArea)
 

@@ -74,7 +74,7 @@ def myProjectPoint(myRenderArea, mousex, mousey):
     p0, p1 = myViewVolume.projectPointToLine(SbVec2f(x,y))
 
     # Midpoint of the line intersects a plane thru the origin
-    intersection = SbVec3f_div(SbVec3f_add(p0, p1), 2.0)
+    intersection = (p0 + p1) / 2.0
 
     return intersection
 
@@ -106,8 +106,7 @@ def tickerCallback(myCamera, sensor):
     myCamera.position.setValue(pos)
 
     # Adjust the orientation
-    myCamera.orientation.setValue(
-        SbRotation_mul(myCamera.orientation.getValue(), rot))
+    myCamera.orientation.setValue(myCamera.orientation.getValue() * rot)
     
 ###############################################################
 # CODE FOR The Inventor Mentor STARTS HERE  (part 1)

@@ -1,0 +1,1 @@
+%rename(SoNodeKitPath_eq) operator==(const SoNodeKitPath & p1, const SoNodeKitPath & p2);

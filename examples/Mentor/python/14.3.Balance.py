@@ -64,149 +64,149 @@ import sys
 #    vertical again) by rotating the string parts in the opposite
 #    direction.
 def tipTheBalance(userData, # The nodekit representing 'support', the
-				  # fulcrum of the balance. Passed in during
-				  # main routine, below. 
-				  eventCB):
+                  # fulcrum of the balance. Passed in during
+                  # main routine, below. 
+                  eventCB):
 
-	ev = eventCB.getEvent()
+    ev = eventCB.getEvent()
 
-	# Which Key was pressed?
-	# If Right or Left Arrow key, then continue...
-	if SoKeyboardEvent_isKeyPressEvent(ev, SoKeyboardEvent.RIGHT_ARROW) or \
-	   SoKeyboardEvent_isKeyPressEvent(ev, SoKeyboardEvent.LEFT_ARROW):
-		startRot, beamIncrement, stringIncrement = SbRotation(), SbRotation(), SbRotation()
-		
-		# Get the different nodekits from the userData.
-		support = cast(userData, "SoShapeKit")
+    # Which Key was pressed?
+    # If Right or Left Arrow key, then continue...
+    if SoKeyboardEvent_isKeyPressEvent(ev, SoKeyboardEvent.RIGHT_ARROW) or \
+       SoKeyboardEvent_isKeyPressEvent(ev, SoKeyboardEvent.LEFT_ARROW):
+        startRot, beamIncrement, stringIncrement = SbRotation(), SbRotation(), SbRotation()
+        
+        # Get the different nodekits from the userData.
+        support = cast(userData, "SoShapeKit")
 
-		# These three parts are extracted based on knowledge of the
-		# motion hierarchy (see the diagram in the main routine.
-		beam1   = cast(support.getPart("childList[0]",TRUE), "SoShapeKit")
-		string1 = cast(beam1.getPart("childList[0]",TRUE), "SoShapeKit")
-		string2 = cast(beam1.getPart("childList[1]",TRUE), "SoShapeKit")
+        # These three parts are extracted based on knowledge of the
+        # motion hierarchy (see the diagram in the main routine.
+        beam1   = cast(support.getPart("childList[0]",TRUE), "SoShapeKit")
+        string1 = cast(beam1.getPart("childList[0]",TRUE), "SoShapeKit")
+        string2 = cast(beam1.getPart("childList[1]",TRUE), "SoShapeKit")
 
-		# Set angular increments to be .1 Radians about the Z-Axis
-		# The strings rotate opposite the beam, and the two types
-		# of key press produce opposite effects.
-		if SoKeyboardEvent_isKeyPressEvent(ev, SoKeyboardEvent.RIGHT_ARROW):
-			beamIncrement.setValue(SbVec3f(0, 0, 1), -.1)
-			stringIncrement.setValue(SbVec3f(0, 0, 1), .1)
-		else:
-			beamIncrement.setValue(SbVec3f(0, 0, 1), .1)
-			stringIncrement.setValue(SbVec3f(0, 0, 1), -.1)
+        # Set angular increments to be .1 Radians about the Z-Axis
+        # The strings rotate opposite the beam, and the two types
+        # of key press produce opposite effects.
+        if SoKeyboardEvent_isKeyPressEvent(ev, SoKeyboardEvent.RIGHT_ARROW):
+            beamIncrement.setValue(SbVec3f(0, 0, 1), -.1)
+            stringIncrement.setValue(SbVec3f(0, 0, 1), .1)
+        else:
+            beamIncrement.setValue(SbVec3f(0, 0, 1), .1)
+            stringIncrement.setValue(SbVec3f(0, 0, 1), -.1)
 
-		# Use SO_GET_PART to find the transform for each of the 
-		# rotating parts and modify their rotations.
+        # Use SO_GET_PART to find the transform for each of the 
+        # rotating parts and modify their rotations.
 
-		xf = cast(beam1.getPart("transform", TRUE), "SoTransform")
-		startRot = xf.rotation.getValue()
-		startRot *= beamIncrement
-		xf.rotation.setValue(startRot)
+        xf = cast(beam1.getPart("transform", TRUE), "SoTransform")
+        startRot = xf.rotation.getValue()
+        startRot *= beamIncrement
+        xf.rotation.setValue(startRot)
 
-		xf = cast(string1.getPart("transform", TRUE), "SoTransform")
-		startRot = xf.rotation.getValue()
-		startRot *= stringIncrement
-		xf.rotation.setValue(startRot)
+        xf = cast(string1.getPart("transform", TRUE), "SoTransform")
+        startRot = xf.rotation.getValue()
+        startRot *= stringIncrement
+        xf.rotation.setValue(startRot)
 
-		xf = cast(string2.getPart("transform", TRUE), "SoTransform")
-		startRot = xf.rotation.getValue()
-		startRot *= stringIncrement		
-		xf.rotation.setValue(startRot)
+        xf = cast(string2.getPart("transform", TRUE), "SoTransform")
+        startRot = xf.rotation.getValue()
+        startRot *= stringIncrement     
+        xf.rotation.setValue(startRot)
 
-		eventCB.setHandled()
+        eventCB.setHandled()
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])  
-	if myWindow == None: sys.exit(1)     
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])  
+    if myWindow == None: sys.exit(1)     
 
-	myScene = SoSceneKit()
-	myScene.ref()
+    myScene = SoSceneKit()
+    myScene.ref()
 
-	myScene.setPart("lightList[0]", SoLightKit())
-	myScene.setPart("cameraList[0]", SoCameraKit())
-	myScene.setCameraNumber(0)
+    myScene.setPart("lightList[0]", SoLightKit())
+    myScene.setPart("cameraList[0]", SoCameraKit())
+    myScene.setCameraNumber(0)
 
-	# Create the Balance Scale -- put each part in the 
-	# childList of its parent, to build up this hierarchy:
-	#
-	#                    myScene
-	#                       |
-	#                     support
-	#                       |
-	#                     beam
-	#                       |
-	#                   --------
-	#                   |       |
-	#                string1  string2
-	#                   |       |
-	#                tray1     tray2
+    # Create the Balance Scale -- put each part in the 
+    # childList of its parent, to build up this hierarchy:
+    #
+    #                    myScene
+    #                       |
+    #                     support
+    #                       |
+    #                     beam
+    #                       |
+    #                   --------
+    #                   |       |
+    #                string1  string2
+    #                   |       |
+    #                tray1     tray2
 
-	support = SoShapeKit()
-	support.setPart("shape", SoCone())
-	support.set("shape { height 3 bottomRadius .3 }")
-	myScene.setPart("childList[0]", support)
+    support = SoShapeKit()
+    support.setPart("shape", SoCone())
+    support.set("shape { height 3 bottomRadius .3 }")
+    myScene.setPart("childList[0]", support)
 
-	beam = SoShapeKit()
-	beam.setPart("shape", SoCube())
-	beam.set("shape { width 3 height .2 depth .2 }")
-	beam.set("transform { translation 0 1.5 0 } ")
-	support.setPart("childList[0]", beam)
+    beam = SoShapeKit()
+    beam.setPart("shape", SoCube())
+    beam.set("shape { width 3 height .2 depth .2 }")
+    beam.set("transform { translation 0 1.5 0 } ")
+    support.setPart("childList[0]", beam)
 
-	string1 = SoShapeKit()
-	string1.setPart("shape", SoCylinder())
-	string1.set("shape { radius .05 height 2}")
-	string1.set("transform { translation -1.5 -1 0 }")
-	string1.set("transform { center 0 1 0 }")
-	beam.setPart("childList[0]", string1)
+    string1 = SoShapeKit()
+    string1.setPart("shape", SoCylinder())
+    string1.set("shape { radius .05 height 2}")
+    string1.set("transform { translation -1.5 -1 0 }")
+    string1.set("transform { center 0 1 0 }")
+    beam.setPart("childList[0]", string1)
 
-	string2 = SoShapeKit()
-	string2.setPart("shape", SoCylinder())
-	string2.set("shape { radius .05 height 2}")
-	string2.set("transform { translation 1.5 -1 0 } ")
-	string2.set("transform { center 0 1 0 } ")
-	beam.setPart("childList[1]", string2)
+    string2 = SoShapeKit()
+    string2.setPart("shape", SoCylinder())
+    string2.set("shape { radius .05 height 2}")
+    string2.set("transform { translation 1.5 -1 0 } ")
+    string2.set("transform { center 0 1 0 } ")
+    beam.setPart("childList[1]", string2)
 
-	tray1 = SoShapeKit()
-	tray1.setPart("shape", SoCylinder())
-	tray1.set("shape { radius .75 height .1 }")
-	tray1.set("transform { translation 0 -1 0 } ")
-	string1.setPart("childList[0]", tray1)
+    tray1 = SoShapeKit()
+    tray1.setPart("shape", SoCylinder())
+    tray1.set("shape { radius .75 height .1 }")
+    tray1.set("transform { translation 0 -1 0 } ")
+    string1.setPart("childList[0]", tray1)
 
-	tray2 = SoShapeKit()
-	tray2.setPart("shape", SoCylinder())
-	tray2.set("shape { radius .75 height .1 }")
-	tray2.set("transform { translation 0 -1 0 } ")
-	string2.setPart("childList[0]", tray2)
+    tray2 = SoShapeKit()
+    tray2.setPart("shape", SoCylinder())
+    tray2.set("shape { radius .75 height .1 }")
+    tray2.set("transform { translation 0 -1 0 } ")
+    string2.setPart("childList[0]", tray2)
 
-	# Add EventCallback so Balance Responds to Events
-	myCallbackNode = SoEventCallback()
-	myCallbackNode.addPythonEventCallback(SoKeyboardEvent_getClassTypeId(),
-										  tipTheBalance, support)
-	support.setPart("callbackList[0]", myCallbackNode)
+    # Add EventCallback so Balance Responds to Events
+    myCallbackNode = SoEventCallback()
+    myCallbackNode.addPythonEventCallback(SoKeyboardEvent_getClassTypeId(),
+                                          tipTheBalance, support)
+    support.setPart("callbackList[0]", myCallbackNode)
 
-	# Add Instructions as Text in the Scene...
-	myText = SoShapeKit()
-	myText.setPart("shape", SoText2())
-	myText.set("shape { string \"Press Left or Right Arrow Key\" }")
-	myText.set("shape { justification CENTER }")
-	myText.set("font { name \"Helvetica-Bold\" }")
-	myText.set("font { size 16.0 }")
-	myText.set("transform { translation 0 -2 0 }")
-	myScene.setPart("childList[1]", myText)
+    # Add Instructions as Text in the Scene...
+    myText = SoShapeKit()
+    myText.setPart("shape", SoText2())
+    myText.set("shape { string \"Press Left or Right Arrow Key\" }")
+    myText.set("shape { justification CENTER }")
+    myText.set("font { name \"Helvetica-Bold\" }")
+    myText.set("font { size 16.0 }")
+    myText.set("transform { translation 0 -2 0 }")
+    myScene.setPart("childList[1]", myText)
 
-	myRenderArea = SoQtRenderArea(myWindow)
+    myRenderArea = SoQtRenderArea(myWindow)
 
-	# Get camera from scene and tell it to viewAll...
-	myCamera = cast(myScene.getPart("cameraList[0].camera", TRUE), "SoPerspectiveCamera")
-	myCamera.viewAll(myScene, myRenderArea.getViewportRegion())
+    # Get camera from scene and tell it to viewAll...
+    myCamera = cast(myScene.getPart("cameraList[0].camera", TRUE), "SoPerspectiveCamera")
+    myCamera.viewAll(myScene, myRenderArea.getViewportRegion())
 
-	myRenderArea.setSceneGraph(myScene)
-	myRenderArea.setTitle("Balance Scale Made of Nodekits")
-	myRenderArea.show()
+    myRenderArea.setSceneGraph(myScene)
+    myRenderArea.setTitle("Balance Scale Made of Nodekits")
+    myRenderArea.show()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

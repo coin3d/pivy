@@ -45,52 +45,52 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	root = SoSeparator()
-	root.ref()
+    root = SoSeparator()
+    root.ref()
 
-	# Add a directional light
-	myDirLight = SoDirectionalLight()
-	myDirLight.direction.setValue(0, -1, -1)
-	myDirLight.color.setValue(1, 0, 0)
-	root.addChild(myDirLight)
+    # Add a directional light
+    myDirLight = SoDirectionalLight()
+    myDirLight.direction.setValue(0, -1, -1)
+    myDirLight.color.setValue(1, 0, 0)
+    root.addChild(myDirLight)
 
-	# Put the shuttle and the light below a transform separator.
-	# A transform separator pushes and pops the transformation 
-	# just like a separator node, but other aspects of the state 
-	# are not pushed and popped. So the shuttle's translation 
-	# will affect only the light. But the light will shine on 
-	# the rest of the scene.
-	myTransformSeparator = SoTransformSeparator()
-	root.addChild(myTransformSeparator)
+    # Put the shuttle and the light below a transform separator.
+    # A transform separator pushes and pops the transformation 
+    # just like a separator node, but other aspects of the state 
+    # are not pushed and popped. So the shuttle's translation 
+    # will affect only the light. But the light will shine on 
+    # the rest of the scene.
+    myTransformSeparator = SoTransformSeparator()
+    root.addChild(myTransformSeparator)
 
-	# A shuttle node translates back and forth between the two
-	# fields translation0 and translation1.  
-	# This moves the light.
-	myShuttle = SoShuttle()
-	myTransformSeparator.addChild(myShuttle)
-	myShuttle.translation0.setValue(-2, -1, 3)
-	myShuttle.translation1.setValue( 1,  2, -3)
+    # A shuttle node translates back and forth between the two
+    # fields translation0 and translation1.  
+    # This moves the light.
+    myShuttle = SoShuttle()
+    myTransformSeparator.addChild(myShuttle)
+    myShuttle.translation0.setValue(-2, -1, 3)
+    myShuttle.translation1.setValue( 1,  2, -3)
 
-	# Add the point light below the transformSeparator
-	myPointLight = SoPointLight()
-	myTransformSeparator.addChild(myPointLight)
-	myPointLight.color.setValue(0, 1, 0)
+    # Add the point light below the transformSeparator
+    myPointLight = SoPointLight()
+    myTransformSeparator.addChild(myPointLight)
+    myPointLight.color.setValue(0, 1, 0)
 
-	root.addChild(SoCone())
+    root.addChild(SoCone())
 
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("Lights")
-	myViewer.setHeadlight(FALSE)
-	myViewer.show()
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("Lights")
+    myViewer.setHeadlight(FALSE)
+    myViewer.show()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()
 

@@ -44,87 +44,87 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])  
-	if myWindow == None: sys.exit(1)     
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])  
+    if myWindow == None: sys.exit(1)     
 
-	root = SoSeparator()
-	root.ref()
+    root = SoSeparator()
+    root.ref()
 
-	# Add a camera and light
-	myCamera = SoPerspectiveCamera()
-	myCamera.position.setValue(-0.5, -3.0, 19.0)
-	myCamera.nearDistance(10.0)
-	myCamera.farDistance(26.0)
-	root.addChild(myCamera)
-	root.addChild(SoDirectionalLight())
+    # Add a camera and light
+    myCamera = SoPerspectiveCamera()
+    myCamera.position.setValue(-0.5, -3.0, 19.0)
+    myCamera.nearDistance(10.0)
+    myCamera.farDistance(26.0)
+    root.addChild(myCamera)
+    root.addChild(SoDirectionalLight())
 
-	# Rotate scene slightly to get better view
-	globalRotXYZ = SoRotationXYZ()
-	globalRotXYZ.axis(SoRotationXYZ.X)
-	globalRotXYZ.angle(M_PI/7)
-	root.addChild(globalRotXYZ)
+    # Rotate scene slightly to get better view
+    globalRotXYZ = SoRotationXYZ()
+    globalRotXYZ.axis(SoRotationXYZ.X)
+    globalRotXYZ.angle(M_PI/7)
+    root.addChild(globalRotXYZ)
 
-	# Read the background path from a file and add to the group
-	myInput = SoInput()
-	if not myInput.openFile("flowerPath.iv"):
-		sys.exit(1)
-	flowerPath = SoDB_readAll(myInput)
-	if flowerPath == None: sys.exit(1)
-	root.addChild(flowerPath)
+    # Read the background path from a file and add to the group
+    myInput = SoInput()
+    if not myInput.openFile("flowerPath.iv"):
+        sys.exit(1)
+    flowerPath = SoDB_readAll(myInput)
+    if flowerPath == None: sys.exit(1)
+    root.addChild(flowerPath)
 
 #############################################################
 # CODE FOR The Inventor Mentor STARTS HERE  
 
-	# Flower group
-	flowerGroup = SoSeparator()
-	root.addChild(flowerGroup)
+    # Flower group
+    flowerGroup = SoSeparator()
+    root.addChild(flowerGroup)
 
-	# Read the flower object from a file and add to the group
-	if not myInput.openFile("flower.iv"):
-		sys.exit(1)
-	flower= SoDB_readAll(myInput)
-	if flower == None: sys.exit(1)
+    # Read the flower object from a file and add to the group
+    if not myInput.openFile("flower.iv"):
+        sys.exit(1)
+    flower= SoDB_readAll(myInput)
+    if flower == None: sys.exit(1)
 
-	# Set up the flower transformations
-	danceTranslation = SoTranslation()
-	initialTransform = SoTransform()
-	flowerGroup.addChild(danceTranslation)
-	initialTransform.scaleFactor.setValue(10., 10., 10.)
-	initialTransform.translation.setValue(0., 0., 5.)
-	flowerGroup.addChild(initialTransform)
-	flowerGroup.addChild(flower)
+    # Set up the flower transformations
+    danceTranslation = SoTranslation()
+    initialTransform = SoTransform()
+    flowerGroup.addChild(danceTranslation)
+    initialTransform.scaleFactor.setValue(10., 10., 10.)
+    initialTransform.translation.setValue(0., 0., 5.)
+    flowerGroup.addChild(initialTransform)
+    flowerGroup.addChild(flower)
 
-	# Set up an engine to calculate the motion path:
-	# r = 5*cos(5*theta) x = r*cos(theta) z = r*sin(theta)
-	# Theta is incremented using a time counter engine,
-	# and converted to radians using an expression in
-	# the calculator engine.
-	calcXZ = SoCalculator()
-	thetaCounter = SoTimeCounter()
+    # Set up an engine to calculate the motion path:
+    # r = 5*cos(5*theta) x = r*cos(theta) z = r*sin(theta)
+    # Theta is incremented using a time counter engine,
+    # and converted to radians using an expression in
+    # the calculator engine.
+    calcXZ = SoCalculator()
+    thetaCounter = SoTimeCounter()
 
-	thetaCounter.max(360)
-	thetaCounter.step(4)
-	thetaCounter.frequency(0.075)
+    thetaCounter.max(360)
+    thetaCounter.step(4)
+    thetaCounter.frequency(0.075)
 
-	calcXZ.a.connectFrom(thetaCounter.output)    
-	calcXZ.expression.set1Value(0, "ta=a*M_PI/180") # theta
-	calcXZ.expression.set1Value(1, "tb=5*cos(5*ta)") # r
-	calcXZ.expression.set1Value(2, "td=tb*cos(ta)") # x 
-	calcXZ.expression.set1Value(3, "te=tb*sin(ta)") # z 
-	calcXZ.expression.set1Value(4, "oA=vec3f(td,0,te)") 
-	danceTranslation.translation.connectFrom(calcXZ.oA)
+    calcXZ.a.connectFrom(thetaCounter.output)    
+    calcXZ.expression.set1Value(0, "ta=a*M_PI/180") # theta
+    calcXZ.expression.set1Value(1, "tb=5*cos(5*ta)") # r
+    calcXZ.expression.set1Value(2, "td=tb*cos(ta)") # x 
+    calcXZ.expression.set1Value(3, "te=tb*sin(ta)") # z 
+    calcXZ.expression.set1Value(4, "oA=vec3f(td,0,te)") 
+    danceTranslation.translation.connectFrom(calcXZ.oA)
 
 # CODE FOR The Inventor Mentor ENDS HERE
 #############################################################
 
-	myRenderArea = SoQtRenderArea(myWindow)
-	myRenderArea.setSceneGraph(root)
-	myRenderArea.setTitle("Flower Dance")
-	myRenderArea.show()
+    myRenderArea = SoQtRenderArea(myWindow)
+    myRenderArea.setSceneGraph(root)
+    myRenderArea.setTitle("Flower Dance")
+    myRenderArea.show()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -45,71 +45,71 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])  
-	if myWindow == None: sys.exit(1)     
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])  
+    if myWindow == None: sys.exit(1)     
 
-	root = SoSeparator()
-	root.ref()
+    root = SoSeparator()
+    root.ref()
 
-	# Create shape kits with the words "HAPPY" and "NICE"
-	happyKit = SoShapeKit()
-	root.addChild(happyKit)
-	happyKit.setPart("shape", SoText3())
-	happyKit.set("shape { parts ALL string \"HAPPY\"}")
-	happyKit.set("font { size 2}")
+    # Create shape kits with the words "HAPPY" and "NICE"
+    happyKit = SoShapeKit()
+    root.addChild(happyKit)
+    happyKit.setPart("shape", SoText3())
+    happyKit.set("shape { parts ALL string \"HAPPY\"}")
+    happyKit.set("font { size 2}")
 
-	niceKit = SoShapeKit()
-	root.addChild(niceKit)
-	niceKit.setPart("shape", SoText3())
-	niceKit.set("shape { parts ALL string \"NICE\"}")
-	niceKit.set("font { size 2}")
+    niceKit = SoShapeKit()
+    root.addChild(niceKit)
+    niceKit.setPart("shape", SoText3())
+    niceKit.set("shape { parts ALL string \"NICE\"}")
+    niceKit.set("font { size 2}")
 
-	# Create the Elapsed Time engine
-	myTimer = SoElapsedTime()
-	myTimer.ref()
+    # Create the Elapsed Time engine
+    myTimer = SoElapsedTime()
+    myTimer.ref()
 
-	# Create two calculator - one for HAPPY, one for NICE.
-	happyCalc = SoCalculator()
-	happyCalc.ref()
-	happyCalc.a.connectFrom(myTimer.timeOut)
-	happyCalc.expression("ta=cos(2*a); tb=sin(2*a);"
-						 "oA = vec3f(3*pow(ta,3),3*pow(tb,3),1);"
-						 "oB = vec3f(fabs(ta)+.1,fabs(.5*fabs(tb))+.1,1);"
-						 "oC = vec3f(fabs(ta),fabs(tb),.5)")
+    # Create two calculator - one for HAPPY, one for NICE.
+    happyCalc = SoCalculator()
+    happyCalc.ref()
+    happyCalc.a.connectFrom(myTimer.timeOut)
+    happyCalc.expression("ta=cos(2*a); tb=sin(2*a);"
+                         "oA = vec3f(3*pow(ta,3),3*pow(tb,3),1);"
+                         "oB = vec3f(fabs(ta)+.1,fabs(.5*fabs(tb))+.1,1);"
+                         "oC = vec3f(fabs(ta),fabs(tb),.5)")
 
-	# The second calculator uses different arguments to
-	# sin() and cos(), so it moves out of phase.
-	niceCalc = SoCalculator()
-	niceCalc.ref()
-	niceCalc.a.connectFrom(myTimer.timeOut)
-	niceCalc.expression("ta=cos(2*a+2); tb=sin(2*a+2);"
-						"oA = vec3f(3*pow(ta,3),3*pow(tb,3),1);"
-						"oB = vec3f(fabs(ta)+.1,fabs(.5*fabs(tb))+.1,1);"
-						"oC = vec3f(fabs(ta),fabs(tb),.5)")
+    # The second calculator uses different arguments to
+    # sin() and cos(), so it moves out of phase.
+    niceCalc = SoCalculator()
+    niceCalc.ref()
+    niceCalc.a.connectFrom(myTimer.timeOut)
+    niceCalc.expression("ta=cos(2*a+2); tb=sin(2*a+2);"
+                        "oA = vec3f(3*pow(ta,3),3*pow(tb,3),1);"
+                        "oB = vec3f(fabs(ta)+.1,fabs(.5*fabs(tb))+.1,1);"
+                        "oC = vec3f(fabs(ta),fabs(tb),.5)")
 
-	# Connect the transforms from the calculators...
-	happyXf = cast(happyKit.getPart("transform",TRUE), "SoTransform")
-	happyXf.translation.connectFrom(happyCalc.oA)
-	happyXf.scaleFactor.connectFrom(happyCalc.oB)
-	niceXf = cast(niceKit.getPart("transform",TRUE), "SoTransform")
-	niceXf.translation.connectFrom(niceCalc.oA)
-	niceXf.scaleFactor.connectFrom(niceCalc.oB)
+    # Connect the transforms from the calculators...
+    happyXf = cast(happyKit.getPart("transform",TRUE), "SoTransform")
+    happyXf.translation.connectFrom(happyCalc.oA)
+    happyXf.scaleFactor.connectFrom(happyCalc.oB)
+    niceXf = cast(niceKit.getPart("transform",TRUE), "SoTransform")
+    niceXf.translation.connectFrom(niceCalc.oA)
+    niceXf.scaleFactor.connectFrom(niceCalc.oB)
 
-	# Connect the materials from the calculators...
-	happyMtl = cast(happyKit.getPart("material",TRUE), "SoMaterial")
-	happyMtl.diffuseColor.connectFrom(happyCalc.oC)
-	niceMtl = cast(niceKit.getPart("material",TRUE), "SoMaterial")
-	niceMtl.diffuseColor.connectFrom(niceCalc.oC)
+    # Connect the materials from the calculators...
+    happyMtl = cast(happyKit.getPart("material",TRUE), "SoMaterial")
+    happyMtl.diffuseColor.connectFrom(happyCalc.oC)
+    niceMtl = cast(niceKit.getPart("material",TRUE), "SoMaterial")
+    niceMtl.diffuseColor.connectFrom(niceCalc.oC)
 
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("Frolicking Words")
-	myViewer.viewAll()
-	myViewer.show()
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("Frolicking Words")
+    myViewer.viewAll()
+    myViewer.show()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -41,25 +41,25 @@ from pivy import *
 import sys
 
 def main():
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	root = SoSeparator()
-	root.ref()
-	myMaterial = SoMaterial()
-	myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)
-	root.addChild(myMaterial)
-	root.addChild(SoCone())
+    root = SoSeparator()
+    root.ref()
+    myMaterial = SoMaterial()
+    myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)
+    root.addChild(myMaterial)
+    root.addChild(SoCone())
 
-	# Set up viewer:
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("Examiner Viewer")
-	myViewer.show()
+    # Set up viewer:
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("Examiner Viewer")
+    myViewer.show()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()
 

@@ -41,31 +41,31 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	root = SoSeparator()
-	root.ref()
+    root = SoSeparator()
+    root.ref()
 
-	myCamera = SoPerspectiveCamera()
-	root.addChild(myCamera)             # child 0
-	root.addChild(SoDirectionalLight()) # child 1
-	root.addChild(SoTrackballManip())   # child 2
+    myCamera = SoPerspectiveCamera()
+    root.addChild(myCamera)             # child 0
+    root.addChild(SoDirectionalLight()) # child 1
+    root.addChild(SoTrackballManip())   # child 2
 
-	myMaterial = SoMaterial()
-	myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)
-	root.addChild(myMaterial)
-	root.addChild(SoCone())
+    myMaterial = SoMaterial()
+    myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)
+    root.addChild(myMaterial)
+    root.addChild(SoCone())
 
-	myRenderArea = SoQtRenderArea(myWindow)
-	myCamera.viewAll(root, myRenderArea.getViewportRegion())
-	myRenderArea.setSceneGraph(root)
-	myRenderArea.setTitle("Trackball")
-	myRenderArea.show()
+    myRenderArea = SoQtRenderArea(myWindow)
+    myCamera.viewAll(root, myRenderArea.getViewportRegion())
+    myRenderArea.setSceneGraph(root)
+    myRenderArea.setTitle("Trackball")
+    myRenderArea.show()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()

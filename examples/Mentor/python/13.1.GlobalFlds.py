@@ -43,34 +43,34 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])  
-	if myWindow == None: sys.exit(1)     
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])  
+    if myWindow == None: sys.exit(1)     
 
-	root = SoSeparator()
-	root.ref()
+    root = SoSeparator()
+    root.ref()
    
-	# Add a camera, light, and material
-	myCamera = SoPerspectiveCamera()
-	root.addChild(myCamera)
-	root.addChild(SoDirectionalLight())
-	myMaterial = SoMaterial()
-	myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)   
-	root.addChild(myMaterial)
+    # Add a camera, light, and material
+    myCamera = SoPerspectiveCamera()
+    root.addChild(myCamera)
+    root.addChild(SoDirectionalLight())
+    myMaterial = SoMaterial()
+    myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)   
+    root.addChild(myMaterial)
 
-	# Create a Text3 object, and connect to the realTime field
-	myText = SoText3()
-	root.addChild(myText)
-	myText.string.connectFrom(SoDB_getGlobalField("realTime"))
+    # Create a Text3 object, and connect to the realTime field
+    myText = SoText3()
+    root.addChild(myText)
+    myText.string.connectFrom(SoDB_getGlobalField("realTime"))
 
-	myRenderArea = SoQtRenderArea(myWindow)
-	myCamera.viewAll(root, myRenderArea.getViewportRegion())
-	myRenderArea.setSceneGraph(root)
-	myRenderArea.setTitle("Date & Time")
-	myRenderArea.show()
+    myRenderArea = SoQtRenderArea(myWindow)
+    myCamera.viewAll(root, myRenderArea.getViewportRegion())
+    myRenderArea.setSceneGraph(root)
+    myRenderArea.setTitle("Date & Time")
+    myRenderArea.show()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

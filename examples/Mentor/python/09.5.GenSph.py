@@ -47,63 +47,63 @@ import sys
 # CODE FOR The Inventor Mentor STARTS HERE
 
 def printVertex(vertex):
-	point = vertex.getPoint()
-	print "\tCoords     = (%g, %g, %g)" % (point[0], point[1], point[2])
+    point = vertex.getPoint()
+    print "\tCoords     = (%g, %g, %g)" % (point[0], point[1], point[2])
 
-	normal = vertex.getNormal()
-	print "\tNormal     = (%g, %g, %g)" % (normal[0], normal[1], normal[2])
+    normal = vertex.getNormal()
+    print "\tNormal     = (%g, %g, %g)" % (normal[0], normal[1], normal[2])
 
 def printHeaderCallback(void, callbackAction, node):
-	print "\n Sphere ",
-	# Print the node name (if it exists) and address
-	if not not node.getName():
-		print 'named "%s" ' % node.getName().getString(),
-	print "at address %r\n" % node.this
+    print "\n Sphere ",
+    # Print the node name (if it exists) and address
+    if not not node.getName():
+        print 'named "%s" ' % node.getName().getString(),
+    print "at address %r\n" % node.this
 
-	return SoCallbackAction.CONTINUE
+    return SoCallbackAction.CONTINUE
 
 def printTriangleCallback(void, callbackAction,
-						  vertex1, vertex2, vertex3):
-	print "Triangle:"
-	printVertex(vertex1)
-	printVertex(vertex2)
-	printVertex(vertex3)
+                          vertex1, vertex2, vertex3):
+    print "Triangle:"
+    printVertex(vertex1)
+    printVertex(vertex2)
+    printVertex(vertex3)
 
 def printSpheres(root):
-	myAction = SoCallbackAction()
-	
-	myAction.addPythonPreCallback(SoSphere_getClassTypeId(),
-								  printHeaderCallback, None)
-	myAction.addPythonTriangleCallback(SoSphere_getClassTypeId(), 
-									   printTriangleCallback, None)
+    myAction = SoCallbackAction()
+    
+    myAction.addPythonPreCallback(SoSphere_getClassTypeId(),
+                                  printHeaderCallback, None)
+    myAction.addPythonTriangleCallback(SoSphere_getClassTypeId(), 
+                                       printTriangleCallback, None)
 
-	myAction.apply(root)
-	
+    myAction.apply(root)
+    
 # CODE FOR The Inventor Mentor ENDS HERE
 ##############################################################
 
 def main():
-	# Initialize Inventor
-	SoDB_init()
+    # Initialize Inventor
+    SoDB_init()
 
-	# Make a scene containing a red sphere
-	root = SoSeparator()
-	myCamera = SoPerspectiveCamera()
-	myMaterial = SoMaterial()
-	root.ref()
-	root.addChild(myCamera)
-	root.addChild(SoDirectionalLight())
-	myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)   # Red
-	root.addChild(myMaterial)
-	root.addChild(SoSphere())
-	root.ref()
+    # Make a scene containing a red sphere
+    root = SoSeparator()
+    myCamera = SoPerspectiveCamera()
+    myMaterial = SoMaterial()
+    root.ref()
+    root.addChild(myCamera)
+    root.addChild(SoDirectionalLight())
+    myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)   # Red
+    root.addChild(myMaterial)
+    root.addChild(SoSphere())
+    root.ref()
 
-	# Write out the triangles that form the sphere in the scene
-	printSpheres(root)
+    # Write out the triangles that form the sphere in the scene
+    printSpheres(root)
 
-	root.unref()
-	return 0
+    root.unref()
+    return 0
 
 if __name__ == "__main__":
-	sys.exit(main())
+    sys.exit(main())
 

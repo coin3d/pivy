@@ -45,111 +45,111 @@ import sys
 IV_STRICT = 1
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	root = SoSeparator()
-	root.ref()
-	
-	# Choose a texture
-	brick = SoTexture2()
-	root.addChild(brick)
-	brick.filename.setValue("brick.1.rgb")
+    root = SoSeparator()
+    root.ref()
+    
+    # Choose a texture
+    brick = SoTexture2()
+    root.addChild(brick)
+    brick.filename.setValue("brick.1.rgb")
 
-	if IV_STRICT:
-		# This is the preferred code for Inventor 2.1 
+    if IV_STRICT:
+        # This is the preferred code for Inventor 2.1 
 
-		# Using the new SoVertexProperty node is more efficient
-		myVertexProperty = SoVertexProperty()
+        # Using the new SoVertexProperty node is more efficient
+        myVertexProperty = SoVertexProperty()
 
-		# Define the square's spatial coordinates
-		myVertexProperty.vertex.set1Value(0, SbVec3f(-3, -3, 0))
-		myVertexProperty.vertex.set1Value(1, SbVec3f( 3, -3, 0))
-		myVertexProperty.vertex.set1Value(2, SbVec3f( 3,  3, 0))
-		myVertexProperty.vertex.set1Value(3, SbVec3f(-3,  3, 0))
+        # Define the square's spatial coordinates
+        myVertexProperty.vertex.set1Value(0, SbVec3f(-3, -3, 0))
+        myVertexProperty.vertex.set1Value(1, SbVec3f( 3, -3, 0))
+        myVertexProperty.vertex.set1Value(2, SbVec3f( 3,  3, 0))
+        myVertexProperty.vertex.set1Value(3, SbVec3f(-3,  3, 0))
 
-		# Define the square's normal
-		myVertexProperty.normal.set1Value(0, SbVec3f(0, 0, 1))
+        # Define the square's normal
+        myVertexProperty.normal.set1Value(0, SbVec3f(0, 0, 1))
 
-		# Define the square's texture coordinates
-		myVertexProperty.texCoord.set1Value(0, SbVec2f(0, 0))
-		myVertexProperty.texCoord.set1Value(1, SbVec2f(1, 0))
-		myVertexProperty.texCoord.set1Value(2, SbVec2f(1, 1))
-		myVertexProperty.texCoord.set1Value(3, SbVec2f(0, 1))
+        # Define the square's texture coordinates
+        myVertexProperty.texCoord.set1Value(0, SbVec2f(0, 0))
+        myVertexProperty.texCoord.set1Value(1, SbVec2f(1, 0))
+        myVertexProperty.texCoord.set1Value(2, SbVec2f(1, 1))
+        myVertexProperty.texCoord.set1Value(3, SbVec2f(0, 1))
 
-		# SoTextureCoordinateBinding node is now obsolete--in Inventor 2.1,
-		# texture coordinates will always be generated if none are 
-		# provided.
-		#
-		# tBind = SoTextureCoordinateBinding()
-		# root.addChild(tBind)
-		# tBind.value(SoTextureCoordinateBinding.PER_VERTEX)
-		#
-		# Define normal binding
-		myVertexProperty.normalBinding(SoNormalBinding.OVERALL)
+        # SoTextureCoordinateBinding node is now obsolete--in Inventor 2.1,
+        # texture coordinates will always be generated if none are 
+        # provided.
+        #
+        # tBind = SoTextureCoordinateBinding()
+        # root.addChild(tBind)
+        # tBind.value(SoTextureCoordinateBinding.PER_VERTEX)
+        #
+        # Define normal binding
+        myVertexProperty.normalBinding(SoNormalBinding.OVERALL)
 
-		# Define a FaceSet
-		myFaceSet = SoFaceSet()
-		root.addChild(myFaceSet)
-		myFaceSet.numVertices.set1Value(0, 4)
+        # Define a FaceSet
+        myFaceSet = SoFaceSet()
+        root.addChild(myFaceSet)
+        myFaceSet.numVertices.set1Value(0, 4)
 
-		myFaceSet.vertexProperty.setValue(myVertexProperty)
+        myFaceSet.vertexProperty.setValue(myVertexProperty)
 
-	else:
-		# Define the square's spatial coordinates
-		coord = SoCoordinate3()
-		root.addChild(coord)
-		coord.point.set1Value(0, SbVec3f(-3, -3, 0))
-		coord.point.set1Value(1, SbVec3f( 3, -3, 0))
-		coord.point.set1Value(2, SbVec3f( 3,  3, 0))
-		coord.point.set1Value(3, SbVec3f(-3,  3, 0))
+    else:
+        # Define the square's spatial coordinates
+        coord = SoCoordinate3()
+        root.addChild(coord)
+        coord.point.set1Value(0, SbVec3f(-3, -3, 0))
+        coord.point.set1Value(1, SbVec3f( 3, -3, 0))
+        coord.point.set1Value(2, SbVec3f( 3,  3, 0))
+        coord.point.set1Value(3, SbVec3f(-3,  3, 0))
 
-		# Define the square's normal
-		normal = SoNormal()
-		root.addChild(normal)
-		normal.vector.set1Value(0, SbVec3f(0, 0, 1))
+        # Define the square's normal
+        normal = SoNormal()
+        root.addChild(normal)
+        normal.vector.set1Value(0, SbVec3f(0, 0, 1))
 
-		# Define the square's texture coordinates
-		texCoord = SoTextureCoordinate2()
-		root.addChild(texCoord)
-		texCoord.point.set1Value(0, SbVec2f(0, 0))
-		texCoord.point.set1Value(1, SbVec2f(1, 0))
-		texCoord.point.set1Value(2, SbVec2f(1, 1))
-		texCoord.point.set1Value(3, SbVec2f(0, 1))
+        # Define the square's texture coordinates
+        texCoord = SoTextureCoordinate2()
+        root.addChild(texCoord)
+        texCoord.point.set1Value(0, SbVec2f(0, 0))
+        texCoord.point.set1Value(1, SbVec2f(1, 0))
+        texCoord.point.set1Value(2, SbVec2f(1, 1))
+        texCoord.point.set1Value(3, SbVec2f(0, 1))
 
-		# Define normal binding
-		nBind = SoNormalBinding()
-		root.addChild(nBind)
-		nBind.value.setValue(SoNormalBinding.OVERALL)
+        # Define normal binding
+        nBind = SoNormalBinding()
+        root.addChild(nBind)
+        nBind.value.setValue(SoNormalBinding.OVERALL)
 
-		# SoTextureCoordinateBinding node is now obsolete--in Inventor 2.1,
-		# texture coordinates will always be generated if none are 
-		# provided.
-		#
-		# tBind = SoTextureCoordinateBinding()
-		# root.addChild(tBind)
-		# tBind.value.setValue(SoTextureCoordinateBinding.PER_VERTEX)
-		#
+        # SoTextureCoordinateBinding node is now obsolete--in Inventor 2.1,
+        # texture coordinates will always be generated if none are 
+        # provided.
+        #
+        # tBind = SoTextureCoordinateBinding()
+        # root.addChild(tBind)
+        # tBind.value.setValue(SoTextureCoordinateBinding.PER_VERTEX)
+        #
 
-		# Define a FaceSet
-		myFaceSet = SoFaceSet()
-		root.addChild(myFaceSet)
-		myFaceSet.numVertices.set1Value(0, 4)
+        # Define a FaceSet
+        myFaceSet = SoFaceSet()
+        root.addChild(myFaceSet)
+        myFaceSet.numVertices.set1Value(0, 4)
 
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("Texture Coordinates")
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("Texture Coordinates")
 
-	# In Inventor 2.1, if the machine does not have hardware texture
-	# mapping, we must override the default drawStyle to display textures.
-	myViewer.setDrawStyle(SoQtViewer.STILL, SoQtViewer.VIEW_AS_IS)
+    # In Inventor 2.1, if the machine does not have hardware texture
+    # mapping, we must override the default drawStyle to display textures.
+    myViewer.setDrawStyle(SoQtViewer.STILL, SoQtViewer.VIEW_AS_IS)
 
-	myViewer.show()
+    myViewer.show()
 
-	SoQt_show(myWindow)
- 	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()
 

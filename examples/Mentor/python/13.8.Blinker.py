@@ -42,60 +42,60 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])  
-	if myWindow == None: sys.exit(1)     
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])  
+    if myWindow == None: sys.exit(1)     
 
-	# Set up camera and light
-	root = SoSeparator()
-	root.ref()
-	myCamera = SoPerspectiveCamera()
-	root.addChild(myCamera)
-	root.addChild(SoDirectionalLight())
+    # Set up camera and light
+    root = SoSeparator()
+    root.ref()
+    myCamera = SoPerspectiveCamera()
+    root.addChild(myCamera)
+    root.addChild(SoDirectionalLight())
 
-	# Read in the parts of the sign from a file
-	myInput = SoInput()
-	if not myInput.openFile("eatAtJosies.iv"):
-		sys.exit(1)
-	fileContents = SoDB_readAll(myInput)
-	if fileContents == None:
-		sys.exit(1)
+    # Read in the parts of the sign from a file
+    myInput = SoInput()
+    if not myInput.openFile("eatAtJosies.iv"):
+        sys.exit(1)
+    fileContents = SoDB_readAll(myInput)
+    if fileContents == None:
+        sys.exit(1)
 
-	eatAt = cast(SoNode_getByName("EatAt"), "SoSeparator")
-	josie = cast(SoNode_getByName("Josies"), "SoSeparator")
-	frame = cast(SoNode_getByName("Frame"), "SoSeparator")
+    eatAt = cast(SoNode_getByName("EatAt"), "SoSeparator")
+    josie = cast(SoNode_getByName("Josies"), "SoSeparator")
+    frame = cast(SoNode_getByName("Frame"), "SoSeparator")
 
 #############################################################
 # CODE FOR The Inventor Mentor STARTS HERE
 
-	# Add the non-blinking part of the sign to the root
-	root.addChild(eatAt)
+    # Add the non-blinking part of the sign to the root
+    root.addChild(eatAt)
    
-	# Add the fast-blinking part to a blinker node
-	fastBlinker = SoBlinker()
-	root.addChild(fastBlinker)
-	fastBlinker.speed(2)  # blinks 2 times a second
-	fastBlinker.addChild(josie)
+    # Add the fast-blinking part to a blinker node
+    fastBlinker = SoBlinker()
+    root.addChild(fastBlinker)
+    fastBlinker.speed(2)  # blinks 2 times a second
+    fastBlinker.addChild(josie)
 
-	# Add the slow-blinking part to another blinker node
-	slowBlinker = SoBlinker()
-	root.addChild(slowBlinker)
-	slowBlinker.speed(0.5)  # 2 secs per cycle 1 on, 1 off
-	slowBlinker.addChild(frame)
+    # Add the slow-blinking part to another blinker node
+    slowBlinker = SoBlinker()
+    root.addChild(slowBlinker)
+    slowBlinker.speed(0.5)  # 2 secs per cycle 1 on, 1 off
+    slowBlinker.addChild(frame)
 
 # CODE FOR The Inventor Mentor ENDS HERE
 #############################################################
 
-	# Set up and display render area 
-	myRenderArea = SoQtRenderArea(myWindow)
-	myRegion = SbViewportRegion(myRenderArea.getSize()) 
-	myCamera.viewAll(root, myRegion)
+    # Set up and display render area 
+    myRenderArea = SoQtRenderArea(myWindow)
+    myRegion = SbViewportRegion(myRenderArea.getSize()) 
+    myCamera.viewAll(root, myRegion)
 
-	myRenderArea.setSceneGraph(root)
-	myRenderArea.setTitle("Neon")
-	myRenderArea.show()
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    myRenderArea.setSceneGraph(root)
+    myRenderArea.setTitle("Neon")
+    myRenderArea.show()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -45,72 +45,72 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])  
-	if myWindow == None: sys.exit(1)     
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])  
+    if myWindow == None: sys.exit(1)     
 
-	root = SoSeparator()
-	root.ref()
-	
-	# Add a camera and light
-	myCamera = SoPerspectiveCamera()
-	myCamera.position.setValue(-8.0, -7.0, 20.0)
-	myCamera.heightAngle(M_PI/2.5)
-	myCamera.nearDistance(15.0)
-	myCamera.farDistance(25.0)
-	root.addChild(myCamera)
-	root.addChild(SoDirectionalLight())
+    root = SoSeparator()
+    root.ref()
+    
+    # Add a camera and light
+    myCamera = SoPerspectiveCamera()
+    myCamera.position.setValue(-8.0, -7.0, 20.0)
+    myCamera.heightAngle(M_PI/2.5)
+    myCamera.nearDistance(15.0)
+    myCamera.farDistance(25.0)
+    root.addChild(myCamera)
+    root.addChild(SoDirectionalLight())
 
 ##############################################################
 # CODE FOR The Inventor Mentor STARTS HERE
 
-	# Set up transformations
-	jumpTranslation = SoTranslation()
-	root.addChild(jumpTranslation)
-	initialTransform = SoTransform()
-	initialTransform.translation.setValue(-20., 0., 0.)
-	initialTransform.scaleFactor.setValue(40., 40., 40.)
-	initialTransform.rotation.setValue(SbVec3f(1,0,0), M_PI/2.)
-	root.addChild(initialTransform)
+    # Set up transformations
+    jumpTranslation = SoTranslation()
+    root.addChild(jumpTranslation)
+    initialTransform = SoTransform()
+    initialTransform.translation.setValue(-20., 0., 0.)
+    initialTransform.scaleFactor.setValue(40., 40., 40.)
+    initialTransform.rotation.setValue(SbVec3f(1,0,0), M_PI/2.)
+    root.addChild(initialTransform)
 
-	# Read the man object from a file and add to the scene
-	myInput = SoInput()
-	if not myInput.openFile("jumpyMan.iv"):
-		sys.exit(1)
-	manObject = SoDB_readAll(myInput)
-	if manObject == None:
-		sys.exit(1)
-	root.addChild(manObject)
+    # Read the man object from a file and add to the scene
+    myInput = SoInput()
+    if not myInput.openFile("jumpyMan.iv"):
+        sys.exit(1)
+    manObject = SoDB_readAll(myInput)
+    if manObject == None:
+        sys.exit(1)
+    root.addChild(manObject)
 
-	# Create two counters, and connect to X and Y translations.
-	# The Y counter is small and high frequency.
-	# The X counter is large and low frequency.
-	# This results in small jumps across the screen, 
-	# left to right, again and again and again and ....
-	jumpHeightCounter = SoTimeCounter()
-	jumpWidthCounter = SoTimeCounter()
-	jump = SoComposeVec3f()
+    # Create two counters, and connect to X and Y translations.
+    # The Y counter is small and high frequency.
+    # The X counter is large and low frequency.
+    # This results in small jumps across the screen, 
+    # left to right, again and again and again and ....
+    jumpHeightCounter = SoTimeCounter()
+    jumpWidthCounter = SoTimeCounter()
+    jump = SoComposeVec3f()
 
-	jumpHeightCounter.max(4)
-	jumpHeightCounter.frequency(1.5)
-	jumpWidthCounter.max(40)
-	jumpWidthCounter.frequency(0.15)
+    jumpHeightCounter.max(4)
+    jumpHeightCounter.frequency(1.5)
+    jumpWidthCounter.max(40)
+    jumpWidthCounter.frequency(0.15)
 
-	jump.x.connectFrom(jumpWidthCounter.output)
-	jump.y.connectFrom(jumpHeightCounter.output)
-	jumpTranslation.translation.connectFrom(jump.vector)
+    jump.x.connectFrom(jumpWidthCounter.output)
+    jump.y.connectFrom(jumpHeightCounter.output)
+    jumpTranslation.translation.connectFrom(jump.vector)
 
 # CODE FOR The Inventor Mentor ENDS HERE
 ##############################################################
 
-	myRenderArea = SoQtRenderArea(myWindow)
-	myRegion = SbViewportRegion(myRenderArea.getSize()) 
-	myRenderArea.setSceneGraph(root)
-	myRenderArea.setTitle("Jumping Man")
-	myRenderArea.show()
+    myRenderArea = SoQtRenderArea(myWindow)
+    myRegion = SbViewportRegion(myRenderArea.getSize()) 
+    myRenderArea.setSceneGraph(root)
+    myRenderArea.setTitle("Jumping Man")
+    myRenderArea.show()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

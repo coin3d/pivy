@@ -97,150 +97,150 @@ IV_STRICT = 1
 
 # Routine to create a scene graph representing a dodecahedron
 def makeStellatedDodecahedron():
-	result = SoSeparator()
-	result.ref()
+    result = SoSeparator()
+    result.ref()
 
-	if IV_STRICT:
-		# This is the preferred code for Inventor 2.1 
+    if IV_STRICT:
+        # This is the preferred code for Inventor 2.1 
 
-		# Using the new SoVertexProperty node is more efficient
-		myVertexProperty = SoVertexProperty()
+        # Using the new SoVertexProperty node is more efficient
+        myVertexProperty = SoVertexProperty()
 
-		# The material binding.
-		myVertexProperty.materialBinding(SoMaterialBinding.PER_FACE)
+        # The material binding.
+        myVertexProperty.materialBinding(SoMaterialBinding.PER_FACE)
 
-		# Define colors for the faces
-		for i in range(12):
-			myVertexProperty.orderedRGBA.set1Value(i, SbColor(colors[i]).getPackedValue())
+        # Define colors for the faces
+        for i in range(12):
+            myVertexProperty.orderedRGBA.set1Value(i, SbColor(colors[i]).getPackedValue())
 
-		# Define coordinates for vertices
-		myVertexProperty.vertex.setValues(0, 12, vertexPositions)
+        # Define coordinates for vertices
+        myVertexProperty.vertex.setValues(0, 12, vertexPositions)
 
-		# Define the IndexedFaceSet, with indices into
-		# the vertices:
-		myFaceSet = SoIndexedFaceSet()
-		myFaceSet.coordIndex.setValues(0, 72, indices)
+        # Define the IndexedFaceSet, with indices into
+        # the vertices:
+        myFaceSet = SoIndexedFaceSet()
+        myFaceSet.coordIndex.setValues(0, 72, indices)
 
-		myFaceSet.vertexProperty.setValue(myVertexProperty)
-		result.addChild(myFaceSet)
+        myFaceSet.vertexProperty.setValue(myVertexProperty)
+        result.addChild(myFaceSet)
 
-	else:
-		# The material binding node.
-		myBinding = SoMaterialBinding()
-		myBinding.value(SoMaterialBinding.PER_FACE)
-		result.addChild(myBinding)
+    else:
+        # The material binding node.
+        myBinding = SoMaterialBinding()
+        myBinding.value(SoMaterialBinding.PER_FACE)
+        result.addChild(myBinding)
 
-		# Define colors for the faces
-		myMaterials = SoMaterial()
-		myMaterials.diffuseColor.setValues(0, 12, colors)
-		result.addChild(myMaterials)
+        # Define colors for the faces
+        myMaterials = SoMaterial()
+        myMaterials.diffuseColor.setValues(0, 12, colors)
+        result.addChild(myMaterials)
 
-		# Define coordinates for vertices
-		myCoords = SoCoordinate3()
-		myCoords.point.setValues(0, 12, vertexPositions)
-		result.addChild(myCoords)
+        # Define coordinates for vertices
+        myCoords = SoCoordinate3()
+        myCoords.point.setValues(0, 12, vertexPositions)
+        result.addChild(myCoords)
 
-		# Define the IndexedFaceSet, with indices into
-		# the vertices:
-		myFaceSet = SoIndexedFaceSet()
-		myFaceSet.coordIndex.setValues(0, 72, indices)
-		result.addChild(myFaceSet)
+        # Define the IndexedFaceSet, with indices into
+        # the vertices:
+        myFaceSet = SoIndexedFaceSet()
+        myFaceSet.coordIndex.setValues(0, 72, indices)
+        result.addChild(myFaceSet)
 
-	result.unrefNoDelete()
-	return result
+    result.unrefNoDelete()
+    return result
 
 
 def main():
-	whichBinding = 0
+    whichBinding = 0
 
-	if len(sys.argv) > 1: whichBinding = int(sys.argv[1])
+    if len(sys.argv) > 1: whichBinding = int(sys.argv[1])
 
-	if whichBinding > 2 or whichBinding < 0 or len(sys.argv) == 1:
-		sys.stderr.write("Argument must be 0, 1, or 2\n")
-		sys.stderr.write("\t0 = PER_FACE\n")
-		sys.stderr.write("\t1 = PER_VERTEX_INDEXED\n")
-		sys.stderr.write("\t2 = PER_FACE_INDEXED\n")
-		sys.exit(1)
+    if whichBinding > 2 or whichBinding < 0 or len(sys.argv) == 1:
+        sys.stderr.write("Argument must be 0, 1, or 2\n")
+        sys.stderr.write("\t0 = PER_FACE\n")
+        sys.stderr.write("\t1 = PER_VERTEX_INDEXED\n")
+        sys.stderr.write("\t2 = PER_FACE_INDEXED\n")
+        sys.exit(1)
 
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	root = makeStellatedDodecahedron()
-	root.ref()
+    root = makeStellatedDodecahedron()
+    root.ref()
 
-	if IV_STRICT:
-		# Get the indexed face set for editing
-		myIndexedFaceSet = cast(root.getChild(0), "SoIndexedFaceSet")
+    if IV_STRICT:
+        # Get the indexed face set for editing
+        myIndexedFaceSet = cast(root.getChild(0), "SoIndexedFaceSet")
 
-		# Get the SoVertexProperty node for editing the material binding
-		myVertexProperty = cast(myIndexedFaceSet.vertexProperty.getValue(), "SoVertexProperty")
+        # Get the SoVertexProperty node for editing the material binding
+        myVertexProperty = cast(myIndexedFaceSet.vertexProperty.getValue(), "SoVertexProperty")
 
 ##############################################################
 ## CODE FOR The Inventor Mentor STARTS HERE (Inventor 2.1)
 
-		# Which material to use to color the faces 
-		# half red & half blue
-		materialIndices = (
-			0, 0, 0, 0, 0, 0,
-			1, 1, 1, 1, 1, 1
-			)
+        # Which material to use to color the faces 
+        # half red & half blue
+        materialIndices = (
+            0, 0, 0, 0, 0, 0,
+            1, 1, 1, 1, 1, 1
+            )
 
-		if whichBinding == 0:
-			# Set up binding to use a different color for each face 
-			myVertexProperty.materialBinding(SoMaterialBinding.PER_FACE)
-		elif whichBinding == 1:
-			# Set up binding to use a different color at each 
-			# vertex, BUT, vertices shared between faces will 
-			# have the same color.
-			myVertexProperty.materialBinding(SoMaterialBinding.PER_VERTEX_INDEXED)
-		elif whichBinding == 2:
-			myVertexProperty.materialBinding(SoMaterialBinding.PER_FACE_INDEXED)
-			myIndexedFaceSet.materialIndex.setValues(0, 12, materialIndices)
+        if whichBinding == 0:
+            # Set up binding to use a different color for each face 
+            myVertexProperty.materialBinding(SoMaterialBinding.PER_FACE)
+        elif whichBinding == 1:
+            # Set up binding to use a different color at each 
+            # vertex, BUT, vertices shared between faces will 
+            # have the same color.
+            myVertexProperty.materialBinding(SoMaterialBinding.PER_VERTEX_INDEXED)
+        elif whichBinding == 2:
+            myVertexProperty.materialBinding(SoMaterialBinding.PER_FACE_INDEXED)
+            myIndexedFaceSet.materialIndex.setValues(0, 12, materialIndices)
 
 ## CODE FOR The Inventor Mentor ENDS HERE
 ##############################################################
 
-	else:   # old style
-		# Get the material binding node for editing
-		myBinding = cast(root.getChild(0), "SoMaterialBinding")
+    else:   # old style
+        # Get the material binding node for editing
+        myBinding = cast(root.getChild(0), "SoMaterialBinding")
 
-		# Get the indexed face set for editing
-		myIndexedFaceSet = cast(root.getChild(3), "SoIndexedFaceSet")
+        # Get the indexed face set for editing
+        myIndexedFaceSet = cast(root.getChild(3), "SoIndexedFaceSet")
 
 ##############################################################
 ## CODE FOR The Inventor Mentor STARTS HERE
 
-		# Which material to use to color the faces 
-		# half red & half blue
-		materialIndices = (
-			0, 0, 0, 0, 0, 0,
-			1, 1, 1, 1, 1, 1,
-			)
+        # Which material to use to color the faces 
+        # half red & half blue
+        materialIndices = (
+            0, 0, 0, 0, 0, 0,
+            1, 1, 1, 1, 1, 1,
+            )
 
-		if whichBinding == 0:
-			# Set up binding to use a different color for each face 
-			myBinding.value(SoMaterialBinding.PER_FACE)
-		elif whichBinding == 1:
-			# Set up binding to use a different color at each 
-			# vertex, BUT, vertices shared between faces will 
-			# have the same color.
-			myBinding.value(SoMaterialBinding.PER_VERTEX_INDEXED)
-		elif whichBinding == 2:
-			myBinding.value(SoMaterialBinding.PER_FACE_INDEXED)
-			myIndexedFaceSet.materialIndex.setValues(0, 12, materialIndices)
+        if whichBinding == 0:
+            # Set up binding to use a different color for each face 
+            myBinding.value(SoMaterialBinding.PER_FACE)
+        elif whichBinding == 1:
+            # Set up binding to use a different color at each 
+            # vertex, BUT, vertices shared between faces will 
+            # have the same color.
+            myBinding.value(SoMaterialBinding.PER_VERTEX_INDEXED)
+        elif whichBinding == 2:
+            myBinding.value(SoMaterialBinding.PER_FACE_INDEXED)
+            myIndexedFaceSet.materialIndex.setValues(0, 12, materialIndices)
 
 ## CODE FOR The Inventor Mentor ENDS HERE
 ##############################################################
 
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("Material Bindings")
-	myViewer.show()
-	myViewer.viewAll()
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("Material Bindings")
+    myViewer.show()
+    myViewer.viewAll()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()

@@ -81,43 +81,43 @@ def makeArch():
    result.ref()
 
    if IV_STRICT:
-	   # This is the preferred code for Inventor 2.1 
+       # This is the preferred code for Inventor 2.1 
 
-	   # Using the new SoVertexProperty node is more efficient
-	   myVertexProperty = SoVertexProperty()
+       # Using the new SoVertexProperty node is more efficient
+       myVertexProperty = SoVertexProperty()
 
-	   # Define the material
-	   myVertexProperty.orderedRGBA.setValue(SbColor(.78, .57, .11).getPackedValue())
+       # Define the material
+       myVertexProperty.orderedRGBA.setValue(SbColor(.78, .57, .11).getPackedValue())
 
-	   # Define coordinates for vertices
-	   myVertexProperty.vertex.setValues(0, 60, vertexPositions)
+       # Define coordinates for vertices
+       myVertexProperty.vertex.setValues(0, 60, vertexPositions)
 
-	   # Define the QuadMesh.
-	   myQuadMesh = SoQuadMesh()
-	   myQuadMesh.verticesPerRow(12)
+       # Define the QuadMesh.
+       myQuadMesh = SoQuadMesh()
+       myQuadMesh.verticesPerRow(12)
 
-	   myQuadMesh.verticesPerColumn(5)
+       myQuadMesh.verticesPerColumn(5)
 
-	   myQuadMesh.vertexProperty.setValue(myVertexProperty)
-	   result.addChild(myQuadMesh)
+       myQuadMesh.vertexProperty.setValue(myVertexProperty)
+       result.addChild(myQuadMesh)
 
    else:
-	   # Define the material
-	   myMaterial = SoMaterial()
-	   myMaterial.diffuseColor.setValue(.78, .57, .11)
-	   result.addChild(myMaterial)
+       # Define the material
+       myMaterial = SoMaterial()
+       myMaterial.diffuseColor.setValue(.78, .57, .11)
+       result.addChild(myMaterial)
 
-	   # Define coordinates for vertices
-	   myCoords = SoCoordinate3()
-	   myCoords.point.setValues(0, 60, vertexPositions)
-	   result.addChild(myCoords)
+       # Define coordinates for vertices
+       myCoords = SoCoordinate3()
+       myCoords.point.setValues(0, 60, vertexPositions)
+       result.addChild(myCoords)
 
-	   # Define the QuadMesh.
-	   myQuadMesh = SoQuadMesh()
-	   myQuadMesh.verticesPerRow(12)
+       # Define the QuadMesh.
+       myQuadMesh = SoQuadMesh()
+       myQuadMesh.verticesPerRow(12)
 
-	   myQuadMesh.verticesPerColumn(5)
-	   result.addChild(myQuadMesh)
+       myQuadMesh.verticesPerColumn(5)
+       result.addChild(myQuadMesh)
 
    result.unrefNoDelete()
    return result
@@ -126,21 +126,21 @@ def makeArch():
 ##############################################################
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	root = makeArch()
-	root.ref()
+    root = makeArch()
+    root.ref()
 
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("Quad Mesh: Arch")
-	myViewer.show()
-	myViewer.viewAll()
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("Quad Mesh: Arch")
+    myViewer.show()
+    myViewer.viewAll()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()

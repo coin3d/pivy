@@ -42,42 +42,42 @@ import sys
 
 # Callback that reports whenever the viewer's position changes.
 def cameraChangedCB(data, sensor):
-	viewerCamera = cast(data, "SoCamera")
+    viewerCamera = cast(data, "SoCamera")
 
-	cameraPosition = viewerCamera.position.getValue()
-	print "Camera position: (%g,%g,%g)" % (cameraPosition[0],
-										   cameraPosition[1],
-										   cameraPosition[2])
-	
+    cameraPosition = viewerCamera.position.getValue()
+    print "Camera position: (%g,%g,%g)" % (cameraPosition[0],
+                                           cameraPosition[1],
+                                           cameraPosition[2])
+    
 def main():
-	if len(sys.argv) != 2:
-		print >> sys.stderr, "Usage: %s filename.iv" % (sys.argv[0])
-		sys.exit(1)
+    if len(sys.argv) != 2:
+        print >> sys.stderr, "Usage: %s filename.iv" % (sys.argv[0])
+        sys.exit(1)
 
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	inputFile = SoInput()
-	if inputFile.openFile(sys.argv[1]) == 0:
-		print >> sys.stderr, "Could not open file %s" % (sys.argv[1])
-		sys.exit(1)
+    inputFile = SoInput()
+    if inputFile.openFile(sys.argv[1]) == 0:
+        print >> sys.stderr, "Could not open file %s" % (sys.argv[1])
+        sys.exit(1)
    
-	root = SoDB_readAll(inputFile)
-	root.ref()
+    root = SoDB_readAll(inputFile)
+    root.ref()
 
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("Camera Sensor")
-	myViewer.show()
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("Camera Sensor")
+    myViewer.show()
 
-	# Get the camera from the viewer, and attach a 
-	# field sensor to its position field:
-	camera = myViewer.getCamera()
-	mySensor = SoFieldSensor(cameraChangedCB, camera)
-	mySensor.attach(camera.position)
-	
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    # Get the camera from the viewer, and attach a 
+    # field sensor to its position field:
+    camera = myViewer.getCamera()
+    mySensor = SoFieldSensor(cameraChangedCB, camera)
+    mySensor.attach(camera.position)
+    
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -44,54 +44,54 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])  
-	if myWindow == None: sys.exit(1)     
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])  
+    if myWindow == None: sys.exit(1)     
 
-	root = SoSeparator()
-	root.ref()
+    root = SoSeparator()
+    root.ref()
 
-	# Add a camera and light
-	myCamera = SoPerspectiveCamera()
-	myCamera.position.setValue(-2.0, -2.0, 5.0)
-	myCamera.heightAngle(M_PI/2.5)
-	myCamera.nearDistance(2.0)
-	myCamera.farDistance(7.0)
-	root.addChild(myCamera)
-	root.addChild(SoDirectionalLight())
+    # Add a camera and light
+    myCamera = SoPerspectiveCamera()
+    myCamera.position.setValue(-2.0, -2.0, 5.0)
+    myCamera.heightAngle(M_PI/2.5)
+    myCamera.nearDistance(2.0)
+    myCamera.farDistance(7.0)
+    root.addChild(myCamera)
+    root.addChild(SoDirectionalLight())
 
-	# Set up transformations
-	slideTranslation = SoTranslation()
-	root.addChild(slideTranslation)
-	initialTransform = SoTransform()
-	initialTransform.translation.setValue(-5., 0., 0.)
-	initialTransform.scaleFactor.setValue(10., 10., 10.)
-	initialTransform.rotation.setValue(SbVec3f(1,0,0), M_PI/2.)
-	root.addChild(initialTransform)
+    # Set up transformations
+    slideTranslation = SoTranslation()
+    root.addChild(slideTranslation)
+    initialTransform = SoTransform()
+    initialTransform.translation.setValue(-5., 0., 0.)
+    initialTransform.scaleFactor.setValue(10., 10., 10.)
+    initialTransform.rotation.setValue(SbVec3f(1,0,0), M_PI/2.)
+    root.addChild(initialTransform)
 
-	# Read the figure object from a file and add to the scene
-	myInput = SoInput()
-	if not myInput.openFile("jumpyMan.iv"):
-		sys.exit (1)
-	figureObject = SoDB_readAll(myInput)
-	if figureObject == None:
-		sys.exit(1)
-	root.addChild(figureObject)
+    # Read the figure object from a file and add to the scene
+    myInput = SoInput()
+    if not myInput.openFile("jumpyMan.iv"):
+        sys.exit (1)
+    figureObject = SoDB_readAll(myInput)
+    if figureObject == None:
+        sys.exit(1)
+    root.addChild(figureObject)
 
-	# Make the X translation value change over time.
-	myCounter = SoElapsedTime()
-	slideDistance = SoComposeVec3f()
-	slideDistance.x.connectFrom(myCounter.timeOut)
-	slideTranslation.translation.connectFrom(slideDistance.vector)
+    # Make the X translation value change over time.
+    myCounter = SoElapsedTime()
+    slideDistance = SoComposeVec3f()
+    slideDistance.x.connectFrom(myCounter.timeOut)
+    slideTranslation.translation.connectFrom(slideDistance.vector)
 
-	myRenderArea = SoQtRenderArea(myWindow)
-	myRegion = SbViewportRegion(myRenderArea.getSize()) 
-	myRenderArea.setSceneGraph(root)
-	myRenderArea.setTitle("Sliding Man")
-	myRenderArea.show()
+    myRenderArea = SoQtRenderArea(myWindow)
+    myRegion = SbViewportRegion(myRenderArea.getSize()) 
+    myRenderArea.setSceneGraph(root)
+    myRenderArea.setTitle("Sliding Man")
+    myRenderArea.show()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

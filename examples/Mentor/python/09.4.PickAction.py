@@ -48,97 +48,97 @@ import sys
 # CODE FOR The Inventor Mentor STARTS HERE
 
 def writePickedPath(root, viewport, cursorPosition):
-	myPickAction = SoRayPickAction(viewport)
+    myPickAction = SoRayPickAction(viewport)
 
-	# Set an 8-pixel wide region around the pixel
-	myPickAction.setPoint(cursorPosition)
-	myPickAction.setRadius(8.0)
+    # Set an 8-pixel wide region around the pixel
+    myPickAction.setPoint(cursorPosition)
+    myPickAction.setRadius(8.0)
 
-	# Start a pick traversal
-	myPickAction.apply(root)
-	myPickedPoint = myPickAction.getPickedPoint()
-	if myPickedPoint == None: return FALSE
+    # Start a pick traversal
+    myPickAction.apply(root)
+    myPickedPoint = myPickAction.getPickedPoint()
+    if myPickedPoint == None: return FALSE
 
-	# Write out the path to the picked object
-	myWriteAction = SoWriteAction()
-	myWriteAction.apply(myPickedPoint.getPath())
+    # Write out the path to the picked object
+    myWriteAction = SoWriteAction()
+    myWriteAction.apply(myPickedPoint.getPath())
 
-	return TRUE
+    return TRUE
 
 # CODE FOR The Inventor Mentor ENDS HERE
 ###############################################################
 
 # This routine is called for every mouse button event.
 def myMousePressCB(userData, eventCB):
-	root = cast(userData, "SoSeparator")
-	event = eventCB.getEvent()
+    root = cast(userData, "SoSeparator")
+    event = eventCB.getEvent()
 
-	# Check for mouse button being pressed	
-	if SoMouseButtonEvent_isButtonPressEvent(event, SoMouseButtonEvent.ANY):
-		myRegion = eventCB.getAction().getViewportRegion()
-		writePickedPath(root, myRegion, event.getPosition(myRegion))
-		eventCB.setHandled()
+    # Check for mouse button being pressed  
+    if SoMouseButtonEvent_isButtonPressEvent(event, SoMouseButtonEvent.ANY):
+        myRegion = eventCB.getAction().getViewportRegion()
+        writePickedPath(root, myRegion, event.getPosition(myRegion))
+        eventCB.setHandled()
 
 def main():
-	myMouseEvent = SoMouseButtonEvent()
+    myMouseEvent = SoMouseButtonEvent()
 
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None:
-		sys.exit(1)
-	
-	root = SoSeparator()
-	root.ref()
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None:
+        sys.exit(1)
+    
+    root = SoSeparator()
+    root.ref()
 
-	# Add an event callback to catch mouse button presses.
-	# The callback is set up later on.
-	myEventCB = SoEventCallback()
-	root.addChild(myEventCB)
+    # Add an event callback to catch mouse button presses.
+    # The callback is set up later on.
+    myEventCB = SoEventCallback()
+    root.addChild(myEventCB)
 
-	# Read object data from a file
-	mySceneInput = SoInput()
-	if not mySceneInput.openFile("star.iv"):
-		sys.exit(1)
-	starObject = SoDB_readAll(mySceneInput)
-	if starObject == None: sys.exit(1)
-	mySceneInput.closeFile()
+    # Read object data from a file
+    mySceneInput = SoInput()
+    if not mySceneInput.openFile("star.iv"):
+        sys.exit(1)
+    starObject = SoDB_readAll(mySceneInput)
+    if starObject == None: sys.exit(1)
+    mySceneInput.closeFile()
 
-	# Add two copies of the star object, one white and one red
-	myRotation = SoRotationXYZ()
-	myRotation.axis.setValue(SoRotationXYZ.X)
-	myRotation.angle.setValue(M_PI/2.2)  # almost 90 degrees
-	root.addChild(myRotation)
+    # Add two copies of the star object, one white and one red
+    myRotation = SoRotationXYZ()
+    myRotation.axis.setValue(SoRotationXYZ.X)
+    myRotation.angle.setValue(M_PI/2.2)  # almost 90 degrees
+    root.addChild(myRotation)
 
-	root.addChild(starObject)  # first star object
+    root.addChild(starObject)  # first star object
 
-	myMaterial = SoMaterial()
-	myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)   # red
-	root.addChild(myMaterial)
-	myTranslation = SoTranslation()
-	myTranslation.translation.setValue(1., 0., 1.)
-	root.addChild(myTranslation)
-	root.addChild(starObject)  # second star object
+    myMaterial = SoMaterial()
+    myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)   # red
+    root.addChild(myMaterial)
+    myTranslation = SoTranslation()
+    myTranslation.translation.setValue(1., 0., 1.)
+    root.addChild(myTranslation)
+    root.addChild(starObject)  # second star object
 
-	# Create a render area in which to see our scene graph.
-	myViewer = SoQtExaminerViewer(myWindow)
+    # Create a render area in which to see our scene graph.
+    myViewer = SoQtExaminerViewer(myWindow)
 
-	# Turn off viewing to allow picking
-	myViewer.setViewing(0)
+    # Turn off viewing to allow picking
+    myViewer.setViewing(0)
 
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("Pick Actions & Paths")
-	myViewer.show()
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("Pick Actions & Paths")
+    myViewer.show()
 
-	# Set up the event callback. We want to pass the root of the
-	# entire scene graph (including the camera) as the userData,
-	# so we get the scene manager's version of the scene graph
-	# root.
-	myEventCB.addPythonEventCallback(SoMouseButtonEvent_getClassTypeId(),
-									 myMousePressCB,
-									 myViewer.getSceneManager().getSceneGraph())
+    # Set up the event callback. We want to pass the root of the
+    # entire scene graph (including the camera) as the userData,
+    # so we get the scene manager's version of the scene graph
+    # root.
+    myEventCB.addPythonEventCallback(SoMouseButtonEvent_getClassTypeId(),
+                                     myMousePressCB,
+                                     myViewer.getSceneManager().getSceneGraph())
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()

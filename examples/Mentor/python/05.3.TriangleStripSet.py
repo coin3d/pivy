@@ -89,77 +89,77 @@ IV_STRICT = 1
 
 # Routine to create a scene graph representing a pennant.
 def makePennant():
-	result = SoSeparator()
-	result.ref()
+    result = SoSeparator()
+    result.ref()
 
-	# A shape hints tells the ordering of polygons. 
-	# This insures double sided lighting.
-	myHints = SoShapeHints()
-	myHints.vertexOrdering(SoShapeHints.COUNTERCLOCKWISE)
-	result.addChild(myHints)
+    # A shape hints tells the ordering of polygons. 
+    # This insures double sided lighting.
+    myHints = SoShapeHints()
+    myHints.vertexOrdering(SoShapeHints.COUNTERCLOCKWISE)
+    result.addChild(myHints)
 
-	if IV_STRICT:
-		# This is the preferred code for Inventor 2.1 
+    if IV_STRICT:
+        # This is the preferred code for Inventor 2.1 
 
-		# Using the new SoVertexProperty node is more efficient
-		myVertexProperty = SoVertexProperty()
+        # Using the new SoVertexProperty node is more efficient
+        myVertexProperty = SoVertexProperty()
 
-		# Define colors for the strips
-		for i in range(2):
-			myVertexProperty.orderedRGBA.set1Value(i, SbColor(colors[i]).getPackedValue())
-			myVertexProperty.materialBinding(SoMaterialBinding.PER_PART)
+        # Define colors for the strips
+        for i in range(2):
+            myVertexProperty.orderedRGBA.set1Value(i, SbColor(colors[i]).getPackedValue())
+            myVertexProperty.materialBinding(SoMaterialBinding.PER_PART)
 
-		# Define coordinates for vertices
-		myVertexProperty.vertex.setValues(0, 40, vertexPositions)
+        # Define coordinates for vertices
+        myVertexProperty.vertex.setValues(0, 40, vertexPositions)
 
-		# Define the TriangleStripSet, made of two strips.
-		myStrips = SoTriangleStripSet()
-		myStrips.numVertices.setValues(0, 2, numVertices)
+        # Define the TriangleStripSet, made of two strips.
+        myStrips = SoTriangleStripSet()
+        myStrips.numVertices.setValues(0, 2, numVertices)
  
-		myStrips.vertexProperty.setValue(myVertexProperty)
-		result.addChild(myStrips)
+        myStrips.vertexProperty.setValue(myVertexProperty)
+        result.addChild(myStrips)
 
-	else:
-		# Define colors for the strips
-		myMaterials = SoMaterial()
-		myMaterials.diffuseColor.setValues(0, 2, colors)
-		result.addChild(myMaterials)
-		myMaterialBinding = SoMaterialBinding()
-		myMaterialBinding.value(SoMaterialBinding.PER_PART)
-		result.addChild(myMaterialBinding)
+    else:
+        # Define colors for the strips
+        myMaterials = SoMaterial()
+        myMaterials.diffuseColor.setValues(0, 2, colors)
+        result.addChild(myMaterials)
+        myMaterialBinding = SoMaterialBinding()
+        myMaterialBinding.value(SoMaterialBinding.PER_PART)
+        result.addChild(myMaterialBinding)
 
-		# Define coordinates for vertices
-		myCoords = SoCoordinate3()
-		myCoords.point.setValues(0, 40, vertexPositions)
-		result.addChild(myCoords)
+        # Define coordinates for vertices
+        myCoords = SoCoordinate3()
+        myCoords.point.setValues(0, 40, vertexPositions)
+        result.addChild(myCoords)
 
-		# Define the TriangleStripSet, made of two strips.
-		myStrips = SoTriangleStripSet()
-		myStrips.numVertices.setValues(0, 2, numVertices)
-		result.addChild(myStrips)
+        # Define the TriangleStripSet, made of two strips.
+        myStrips = SoTriangleStripSet()
+        myStrips.numVertices.setValues(0, 2, numVertices)
+        result.addChild(myStrips)
 
-	result.unrefNoDelete()
-	return result
+    result.unrefNoDelete()
+    return result
 
 ## CODE FOR The Inventor Mentor ENDS HERE
 ##############################################################
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	root = makePennant()
-	root.ref()
+    root = makePennant()
+    root.ref()
 
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("Triangle Strip Set: Pennant")
-	myViewer.show()
-	myViewer.viewAll()
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("Triangle Strip Set: Pennant")
+    myViewer.show()
+    myViewer.viewAll()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()

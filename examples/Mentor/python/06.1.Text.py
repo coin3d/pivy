@@ -42,65 +42,65 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	root = SoGroup()
-	root.ref()
+    root = SoGroup()
+    root.ref()
 
-	# Choose a font
-	myFont = SoFont()
-	myFont.name("Times-Roman")
-	myFont.size.setValue(24.0)
-	root.addChild(myFont)
+    # Choose a font
+    myFont = SoFont()
+    myFont.name("Times-Roman")
+    myFont.size.setValue(24.0)
+    root.addChild(myFont)
 
-	# Add the globe, a sphere with a texture map.
-	# Put it within a separator.
-	sphereSep = SoSeparator()
-	myTexture2 = SoTexture2()
-	sphereComplexity = SoComplexity()
-	sphereComplexity.value(0.55)
-	root.addChild(sphereSep)
-	sphereSep.addChild(myTexture2)
-	sphereSep.addChild(sphereComplexity)
-	sphereSep.addChild(SoSphere())
-	myTexture2.filename("globe.rgb")
+    # Add the globe, a sphere with a texture map.
+    # Put it within a separator.
+    sphereSep = SoSeparator()
+    myTexture2 = SoTexture2()
+    sphereComplexity = SoComplexity()
+    sphereComplexity.value(0.55)
+    root.addChild(sphereSep)
+    sphereSep.addChild(myTexture2)
+    sphereSep.addChild(sphereComplexity)
+    sphereSep.addChild(SoSphere())
+    myTexture2.filename("globe.rgb")
 
-	# Add Text2 for AFRICA, translated to proper location.
-	africaSep = SoSeparator()
-	africaTranslate = SoTranslation()
-	africaText = SoText2()
-	africaTranslate.translation.setValue(.25,.0,1.25)
-	africaText.string("AFRICA")
-	root.addChild(africaSep)
-	africaSep.addChild(africaTranslate)
-	africaSep.addChild(africaText)
+    # Add Text2 for AFRICA, translated to proper location.
+    africaSep = SoSeparator()
+    africaTranslate = SoTranslation()
+    africaText = SoText2()
+    africaTranslate.translation.setValue(.25,.0,1.25)
+    africaText.string("AFRICA")
+    root.addChild(africaSep)
+    africaSep.addChild(africaTranslate)
+    africaSep.addChild(africaText)
 
-	# Add Text2 for ASIA, translated to proper location.
-	asiaSep = SoSeparator()
-	asiaTranslate = SoTranslation()
-	asiaText = SoText2()
-	asiaTranslate.translation.setValue(.8,.8,0)
-	asiaText.string("ASIA")
-	root.addChild(asiaSep)
-	asiaSep.addChild(asiaTranslate)
-	asiaSep.addChild(asiaText)
+    # Add Text2 for ASIA, translated to proper location.
+    asiaSep = SoSeparator()
+    asiaTranslate = SoTranslation()
+    asiaText = SoText2()
+    asiaTranslate.translation.setValue(.8,.8,0)
+    asiaText.string("ASIA")
+    root.addChild(asiaSep)
+    asiaSep.addChild(asiaTranslate)
+    asiaSep.addChild(asiaText)
 
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("2D Text")
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("2D Text")
 
-	# In Inventor 2.1, if the machine does not have hardware texture
-	# mapping, we must override the default drawStyle to display textures.
-	myViewer.setDrawStyle(SoQtViewer.STILL, SoQtViewer.VIEW_AS_IS)
+    # In Inventor 2.1, if the machine does not have hardware texture
+    # mapping, we must override the default drawStyle to display textures.
+    myViewer.setDrawStyle(SoQtViewer.STILL, SoQtViewer.VIEW_AS_IS)
 
-	myViewer.show()
-	myViewer.viewAll()
+    myViewer.show()
+    myViewer.viewAll()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()
 

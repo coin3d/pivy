@@ -41,37 +41,37 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor. This returns a main window to use.
-	# If unsuccessful, exit.
+    # Initialize Inventor. This returns a main window to use.
+    # If unsuccessful, exit.
 
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	# Make a scene containing a red cone
-	root = SoSeparator()
-	myCamera = SoPerspectiveCamera()
-	myMaterial = SoMaterial()
-	root.ref()
-	root.addChild(myCamera)
-	root.addChild(SoDirectionalLight())
-	myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)   # Red
-	root.addChild(myMaterial)
-	root.addChild(SoCone())
+    # Make a scene containing a red cone
+    root = SoSeparator()
+    myCamera = SoPerspectiveCamera()
+    myMaterial = SoMaterial()
+    root.ref()
+    root.addChild(myCamera)
+    root.addChild(SoDirectionalLight())
+    myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)   # Red
+    root.addChild(myMaterial)
+    root.addChild(SoCone())
 
-	# Create a renderArea in which to see our scene graph.
-	# The render area will appear within the main window.
-	myRenderArea = SoQtRenderArea(myWindow)
+    # Create a renderArea in which to see our scene graph.
+    # The render area will appear within the main window.
+    myRenderArea = SoQtRenderArea(myWindow)
 
-	# Make myCamera see everything.
-	myCamera.viewAll(root, myRenderArea.getViewportRegion())
+    # Make myCamera see everything.
+    myCamera.viewAll(root, myRenderArea.getViewportRegion())
 
-	# Put our scene in myRenderArea, change the title
-	myRenderArea.setSceneGraph(root)
-	myRenderArea.setTitle("Hello Cone")
-	myRenderArea.show()
+    # Put our scene in myRenderArea, change the title
+    myRenderArea.setSceneGraph(root)
+    myRenderArea.setTitle("Hello Cone")
+    myRenderArea.show()
 
-	SoQt_show(myWindow)  # Display main window
-	SoQt_mainLoop()    # Main Inventor event loop
+    SoQt_show(myWindow)  # Display main window
+    SoQt_mainLoop()    # Main Inventor event loop
 
 if __name__ == "__main__":
-	main()
+    main()

@@ -50,9 +50,9 @@ import sys
 # This will create a double buffered color index window
 # with the maximum number of bits and a zbuffer.
 attribList = (GLX_DOUBLEBUFFER, 
-			  GLX_BUFFER_SIZE, 1, 
-			  GLX_DEPTH_SIZE, 1, 
-			  None)
+              GLX_BUFFER_SIZE, 1, 
+              GLX_DEPTH_SIZE, 1, 
+              None)
 
 # list of colors to load in the color map
 colors = ((.2, .2, .2), (.5, 1, .5), (.5, .5, 1))
@@ -70,41 +70,41 @@ Separator {
 }"""
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
    
-	# read the scene graph in
-	input = SoInput()
-	input.setBuffer(sceneBuffer)
-	scene = SoDB_readAll(input) 
-	if not scene:
-		print "Couldn't read scene"
-		sys.exit(1)
+    # read the scene graph in
+    input = SoInput()
+    input.setBuffer(sceneBuffer)
+    scene = SoDB_readAll(input) 
+    if not scene:
+        print "Couldn't read scene"
+        sys.exit(1)
 
-	# create the color index visual
-	vis = glXChooseVisual(QtDisplay(myWindow), 
-						  XScreenNumberOfScreen(QtScreen(myWindow)),
-						  attribList)
-	if not vis:
-		print "Couldn't create visual"
-		sys.exit(1)
+    # create the color index visual
+    vis = glXChooseVisual(QtDisplay(myWindow), 
+                          XScreenNumberOfScreen(QtScreen(myWindow)),
+                          attribList)
+    if not vis:
+        print "Couldn't create visual"
+        sys.exit(1)
    
-	# allocate the viewer, set the scene, the visual and
-	# load the color map with the wanted colors.
-	#
-	# Color 0 will be used for the background (default) while
-	# color 1 and 2 are used by the objects.
-	#
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setNormalVisual(vis)
-	myViewer.setColorMap(0, 3, cast(colors, "SbColor"))
-	myViewer.setSceneGraph(scene)
-	myViewer.setTitle("Color Index Mode")
+    # allocate the viewer, set the scene, the visual and
+    # load the color map with the wanted colors.
+    #
+    # Color 0 will be used for the background (default) while
+    # color 1 and 2 are used by the objects.
+    #
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setNormalVisual(vis)
+    myViewer.setColorMap(0, 3, cast(colors, "SbColor"))
+    myViewer.setSceneGraph(scene)
+    myViewer.setTitle("Color Index Mode")
    
-	# Show the viewer and loop forever...
-	myViewer.show()
-	QtRealizeWidget(myWindow)
-	SoQt_mainLoop()
+    # Show the viewer and loop forever...
+    myViewer.show()
+    QtRealizeWidget(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

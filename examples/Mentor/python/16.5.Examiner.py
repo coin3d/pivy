@@ -43,29 +43,29 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
    
-	# Build the viewer in the applications main window
-	myViewer = SoQtExaminerViewer(myWindow)
+    # Build the viewer in the applications main window
+    myViewer = SoQtExaminerViewer(myWindow)
    
-	# Read the geometry from a file and add to the scene
-	myInput = SoInput()
-	if not myInput.openFile("dogDish.iv"):
-		sys.exit(1)
-	geomObject = SoDB_readAll(myInput)
-	if geomObject == None:
-		sys.exit(1)
+    # Read the geometry from a file and add to the scene
+    myInput = SoInput()
+    if not myInput.openFile("dogDish.iv"):
+        sys.exit(1)
+    geomObject = SoDB_readAll(myInput)
+    if geomObject == None:
+        sys.exit(1)
    
-	# Attach the viewer to the scene graph
-	myViewer.setSceneGraph(geomObject)
+    # Attach the viewer to the scene graph
+    myViewer.setSceneGraph(geomObject)
    
-	# Show the main window
-	myViewer.show()
-	SoQt_show(myWindow)
+    # Show the main window
+    myViewer.show()
+    SoQt_show(myWindow)
 
-	# Loop forever
-	SoQt_mainLoop()
+    # Loop forever
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

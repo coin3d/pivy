@@ -44,64 +44,64 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	root = SoSeparator()
-	root.ref()
+    root = SoSeparator()
+    root.ref()
 
-	# Create a blinker node and put it in the scene. A blinker
-	# switches between its children at timed intervals.
-	myBlinker = SoBlinker()
-	root.addChild(myBlinker)
+    # Create a blinker node and put it in the scene. A blinker
+    # switches between its children at timed intervals.
+    myBlinker = SoBlinker()
+    root.addChild(myBlinker)
 
-	# Create three cameras. Their positions will be set later.
-	# This is because the viewAll method depends on the size
-	# of the render area, which has not been created yet.
-	orthoViewAll = SoOrthographicCamera()
-	perspViewAll = SoPerspectiveCamera()
-	perspOffCenter = SoPerspectiveCamera()
-	myBlinker.addChild(orthoViewAll)
-	myBlinker.addChild(perspViewAll)
-	myBlinker.addChild(perspOffCenter)
+    # Create three cameras. Their positions will be set later.
+    # This is because the viewAll method depends on the size
+    # of the render area, which has not been created yet.
+    orthoViewAll = SoOrthographicCamera()
+    perspViewAll = SoPerspectiveCamera()
+    perspOffCenter = SoPerspectiveCamera()
+    myBlinker.addChild(orthoViewAll)
+    myBlinker.addChild(perspViewAll)
+    myBlinker.addChild(perspOffCenter)
 
-	# Create a light
-	root.addChild(SoDirectionalLight())
+    # Create a light
+    root.addChild(SoDirectionalLight())
 
-	# Read the object from a file and add to the scene
-	myInput = SoInput()
-	if not myInput.openFile("parkbench.iv"):
-		sys.exit(1)
+    # Read the object from a file and add to the scene
+    myInput = SoInput()
+    if not myInput.openFile("parkbench.iv"):
+        sys.exit(1)
 
-	fileContents = SoDB_readAll(myInput)
-	if fileContents == None:
-		sys.exit(1)
+    fileContents = SoDB_readAll(myInput)
+    if fileContents == None:
+        sys.exit(1)
 
-	myMaterial = SoMaterial()
-	myMaterial.diffuseColor.setValue(0.8, 0.23, 0.03) 
-	root.addChild(myMaterial)
-	root.addChild(fileContents)
+    myMaterial = SoMaterial()
+    myMaterial.diffuseColor.setValue(0.8, 0.23, 0.03) 
+    root.addChild(myMaterial)
+    root.addChild(fileContents)
 
-	myRenderArea = SoQtRenderArea(myWindow)
+    myRenderArea = SoQtRenderArea(myWindow)
 
-	# Establish camera positions. 
-	# First do a viewAll on all three cameras.  
-	# Then modify the position of the off-center camera.
-	myRegion = SbViewportRegion(myRenderArea.getSize())
-	orthoViewAll.viewAll(root, myRegion)
-	perspViewAll.viewAll(root, myRegion)
-	perspOffCenter.viewAll(root, myRegion)
-	initialPos = perspOffCenter.position.getValue()
-	x,y,z = initialPos.getValue()
-	perspOffCenter.position.setValue(x+x/2., y+y/2., z+z/4.)
+    # Establish camera positions. 
+    # First do a viewAll on all three cameras.  
+    # Then modify the position of the off-center camera.
+    myRegion = SbViewportRegion(myRenderArea.getSize())
+    orthoViewAll.viewAll(root, myRegion)
+    perspViewAll.viewAll(root, myRegion)
+    perspOffCenter.viewAll(root, myRegion)
+    initialPos = perspOffCenter.position.getValue()
+    x,y,z = initialPos.getValue()
+    perspOffCenter.position.setValue(x+x/2., y+y/2., z+z/4.)
 
-	myRenderArea.setSceneGraph(root)
-	myRenderArea.setTitle("Cameras")
-	myRenderArea.show()
+    myRenderArea.setSceneGraph(root)
+    myRenderArea.setTitle("Cameras")
+    myRenderArea.show()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()

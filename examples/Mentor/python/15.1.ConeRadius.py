@@ -45,40 +45,40 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])  
-	if myWindow == None: sys.exit(1)     
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])  
+    if myWindow == None: sys.exit(1)     
 
-	root = SoSeparator()
-	root.ref()
+    root = SoSeparator()
+    root.ref()
 
-	# Create myDragger with an initial translation of (1,0,0)
-	myDragger = SoTranslate1Dragger()
-	root.addChild(myDragger)
-	myDragger.translation.setValue(1,0,0)
+    # Create myDragger with an initial translation of (1,0,0)
+    myDragger = SoTranslate1Dragger()
+    root.addChild(myDragger)
+    myDragger.translation.setValue(1,0,0)
 
-	# Place an SoCone above myDragger
-	myTransform = SoTransform()
-	myCone = SoCone()
-	root.addChild(myTransform)
-	root.addChild(myCone)
-	myTransform.translation.setValue(0,3,0)
+    # Place an SoCone above myDragger
+    myTransform = SoTransform()
+    myCone = SoCone()
+    root.addChild(myTransform)
+    root.addChild(myCone)
+    myTransform.translation.setValue(0,3,0)
 
-	# SoDecomposeVec3f engine extracts myDragger's x-component
-	# The result is connected to myCone's bottomRadius.
-	myEngine = SoDecomposeVec3f()
-	myEngine.vector.connectFrom(myDragger.translation)
-	myCone.bottomRadius.connectFrom(myEngine.x)
+    # SoDecomposeVec3f engine extracts myDragger's x-component
+    # The result is connected to myCone's bottomRadius.
+    myEngine = SoDecomposeVec3f()
+    myEngine.vector.connectFrom(myDragger.translation)
+    myCone.bottomRadius.connectFrom(myEngine.x)
 
-	# Display them in a viewer
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("Dragger Edits Cone Radius")
-	myViewer.viewAll()
-	myViewer.show()
+    # Display them in a viewer
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("Dragger Edits Cone Radius")
+    myViewer.viewAll()
+    myViewer.show()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

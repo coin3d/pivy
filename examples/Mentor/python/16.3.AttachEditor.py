@@ -43,51 +43,51 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])  
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])  
    
-	# Build the render area in the applications main window
-	myRenderArea = SoQtRenderArea(myWindow)
-	myRenderArea.setSize(SbVec2s(200, 200))
+    # Build the render area in the applications main window
+    myRenderArea = SoQtRenderArea(myWindow)
+    myRenderArea.setSize(SbVec2s(200, 200))
    
-	# Build the material editor in its own window
-	myEditor = SoQtMaterialEditor()
+    # Build the material editor in its own window
+    myEditor = SoQtMaterialEditor()
    
-	# Create a scene graph
-	root =SoSeparator()
-	myCamera = SoPerspectiveCamera()
-	myMaterial = SoMaterial()
+    # Create a scene graph
+    root =SoSeparator()
+    myCamera = SoPerspectiveCamera()
+    myMaterial = SoMaterial()
    
-	root.ref()
-	myCamera.position.setValue(0.212482, -0.881014, 2.5)
-	myCamera.heightAngle(M_PI/4)
-	root.addChild(myCamera)
-	root.addChild(SoDirectionalLight())
-	root.addChild(myMaterial)
+    root.ref()
+    myCamera.position.setValue(0.212482, -0.881014, 2.5)
+    myCamera.heightAngle(M_PI/4)
+    root.addChild(myCamera)
+    root.addChild(SoDirectionalLight())
+    root.addChild(myMaterial)
 
-	# Read the geometry from a file and add to the scene
-	myInput = SoInput()
-	if not myInput.openFile("dogDish.iv"):
-		sys.exit(1)
-	geomObject = SoDB_readAll(myInput)
-	if geomObject == None:
-		sys.exit(1)
-	root.addChild(geomObject)
+    # Read the geometry from a file and add to the scene
+    myInput = SoInput()
+    if not myInput.openFile("dogDish.iv"):
+        sys.exit(1)
+    geomObject = SoDB_readAll(myInput)
+    if geomObject == None:
+        sys.exit(1)
+    root.addChild(geomObject)
    
-	# Set the scene graph 
-	myRenderArea.setSceneGraph(root)
+    # Set the scene graph 
+    myRenderArea.setSceneGraph(root)
    
-	# Attach material editor to the material
-	myEditor.attach(myMaterial)
+    # Attach material editor to the material
+    myEditor.attach(myMaterial)
    
-	# Show the application window and the material editor
-	myRenderArea.setTitle("Attach Editor")
-	myRenderArea.show()
-	SoQt_show(myWindow)
-	myEditor.show()
+    # Show the application window and the material editor
+    myRenderArea.setTitle("Attach Editor")
+    myRenderArea.show()
+    SoQt_show(myWindow)
+    myEditor.show()
 
-	# Loop forever
-	SoQt_mainLoop()
+    # Loop forever
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

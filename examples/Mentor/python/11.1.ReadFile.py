@@ -47,42 +47,42 @@ import sys
 # CODE FOR The Inventor Mentor STARTS HERE
 
 def readFile(filename):
-	# Open the input file
-	mySceneInput = SoInput()
-	if not mySceneInput.openFile(filename):
-		print >> sys.stderr, "Cannot open file %s" % (filename)
-		return None
+    # Open the input file
+    mySceneInput = SoInput()
+    if not mySceneInput.openFile(filename):
+        print >> sys.stderr, "Cannot open file %s" % (filename)
+        return None
 
-	# Read the whole file into the database
-	myGraph = SoDB_readAll(mySceneInput)
-	if myGraph == None:
-		print >> sys.stderr, "Problem reading file"
-		return None
-	
-	mySceneInput.closeFile()
-	return myGraph
+    # Read the whole file into the database
+    myGraph = SoDB_readAll(mySceneInput)
+    if myGraph == None:
+        print >> sys.stderr, "Problem reading file"
+        return None
+    
+    mySceneInput.closeFile()
+    return myGraph
 
 # CODE FOR The Inventor Mentor ENDS HERE
 #############################################################
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
 
-	# Read the file
-	scene = readFile("bookshelf.iv")
+    # Read the file
+    scene = readFile("bookshelf.iv")
 
-	# Create a viewer
-	myViewer = SoQtExaminerViewer(myWindow)
+    # Create a viewer
+    myViewer = SoQtExaminerViewer(myWindow)
 
-	# attach and show viewer
-	myViewer.setSceneGraph(scene)
-	myViewer.setTitle("File Reader")
-	myViewer.show()
+    # attach and show viewer
+    myViewer.setSceneGraph(scene)
+    myViewer.setTitle("File Reader")
+    myViewer.show()
     
-	# Loop forever
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    # Loop forever
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -100,32 +100,32 @@ dodecahedron = """Separator {
 
 # Routine to create a scene graph representing a dodecahedron
 def makeDodecahedron():
-	# Read from the string.
-	input = SoInput()
-	input.setBuffer(dodecahedron)
+    # Read from the string.
+    input = SoInput()
+    input.setBuffer(dodecahedron)
 
-	result = SoDB_readAll(input)
+    result = SoDB_readAll(input)
 
-	return result
+    return result
 
 # CODE FOR The Inventor Mentor ENDS HERE
 #############################################################
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	root = makeDodecahedron()
-	root.ref()
+    root = makeDodecahedron()
+    root.ref()
 
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("String Reader")
-	myViewer.show()
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("String Reader")
+    myViewer.show()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -76,51 +76,51 @@ def makeObeliskFaceSet():
    obelisk.ref()
 
    if IV_STRICT:
-	   # This is the preferred code for Inventor 2.1
+       # This is the preferred code for Inventor 2.1
  
-	   # Using the new SoVertexProperty node is more efficient
-	   myVertexProperty = SoVertexProperty()
+       # Using the new SoVertexProperty node is more efficient
+       myVertexProperty = SoVertexProperty()
 
-	   # Define the normals used:
-	   myVertexProperty.normal.setValues(0, 8, norms)
-	   myVertexProperty.normalBinding(SoNormalBinding.PER_FACE)
+       # Define the normals used:
+       myVertexProperty.normal.setValues(0, 8, norms)
+       myVertexProperty.normalBinding(SoNormalBinding.PER_FACE)
 
-	   # Define material for obelisk
-	   myVertexProperty.orderedRGBA.setValue(SbColor(.4,.4,.4).getPackedValue())
+       # Define material for obelisk
+       myVertexProperty.orderedRGBA.setValue(SbColor(.4,.4,.4).getPackedValue())
 
-	   # Define coordinates for vertices
-	   myVertexProperty.vertex.setValues(0, 28, vertices)
+       # Define coordinates for vertices
+       myVertexProperty.vertex.setValues(0, 28, vertices)
 
-	   # Define the FaceSet
-	   myFaceSet = SoFaceSet()
-	   myFaceSet.numVertices.setValues(0, 8, numvertices)
+       # Define the FaceSet
+       myFaceSet = SoFaceSet()
+       myFaceSet.numVertices.setValues(0, 8, numvertices)
  
-	   myFaceSet.vertexProperty.setValue(myVertexProperty)
-	   obelisk.addChild(myFaceSet)
+       myFaceSet.vertexProperty.setValue(myVertexProperty)
+       obelisk.addChild(myFaceSet)
 
    else:
-	   # Define the normals used:
-	   myNormals = SoNormal()
-	   myNormals.vector.setValues(0, 8, norms)
-	   obelisk.addChild(myNormals)
-	   myNormalBinding = SoNormalBinding()
-	   myNormalBinding.value(SoNormalBinding.PER_FACE)
-	   obelisk.addChild(myNormalBinding)
+       # Define the normals used:
+       myNormals = SoNormal()
+       myNormals.vector.setValues(0, 8, norms)
+       obelisk.addChild(myNormals)
+       myNormalBinding = SoNormalBinding()
+       myNormalBinding.value(SoNormalBinding.PER_FACE)
+       obelisk.addChild(myNormalBinding)
 
-	   # Define material for obelisk
-	   myMaterial = SoMaterial()
-	   myMaterial.diffuseColor.setValue(.4, .4, .4)
-	   obelisk.addChild(myMaterial)
+       # Define material for obelisk
+       myMaterial = SoMaterial()
+       myMaterial.diffuseColor.setValue(.4, .4, .4)
+       obelisk.addChild(myMaterial)
 
-	   # Define coordinates for vertices
-	   myCoords = SoCoordinate3()
-	   myCoords.point.setValues(0, 28, vertices)
-	   obelisk.addChild(myCoords)
+       # Define coordinates for vertices
+       myCoords = SoCoordinate3()
+       myCoords.point.setValues(0, 28, vertices)
+       obelisk.addChild(myCoords)
 
-	   # Define the FaceSet
-	   myFaceSet = SoFaceSet()
-	   myFaceSet.numVertices.setValues(0, 8, numvertices)
-	   obelisk.addChild(myFaceSet)
+       # Define the FaceSet
+       myFaceSet = SoFaceSet()
+       myFaceSet.numVertices.setValues(0, 8, numvertices)
+       obelisk.addChild(myFaceSet)
 
    obelisk.unrefNoDelete()
    return obelisk
@@ -129,23 +129,23 @@ def makeObeliskFaceSet():
 ##############################################################
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	root = SoSeparator()
-	root.ref()
+    root = SoSeparator()
+    root.ref()
 
-	root.addChild(makeObeliskFaceSet())
+    root.addChild(makeObeliskFaceSet())
 
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("Face Set: Obelisk")
-	myViewer.show()
-	myViewer.viewAll()
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("Face Set: Obelisk")
+    myViewer.show()
+    myViewer.viewAll()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()

@@ -42,78 +42,78 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	root = SoGroup()
-	root.ref()
+    root = SoGroup()
+    root.ref()
 
-	# Choose a font
-	myFont = SoFont()
-	myFont.name("Times-Roman")
-	myFont.size.setValue(.2)
-	root.addChild(myFont)
+    # Choose a font
+    myFont = SoFont()
+    myFont.name("Times-Roman")
+    myFont.size.setValue(.2)
+    root.addChild(myFont)
 
-	# We'll color the front of the text white, and the sides 
-	# dark grey. So use a materialBinding of PER_PART and
-	# two diffuseColor values in the material node.
-	myMaterial = SoMaterial()
-	myBinding = SoMaterialBinding()
-	myMaterial.diffuseColor.set1Value(0,SbColor(1,1,1))
-	myMaterial.diffuseColor.set1Value(1,SbColor(.1,.1,.1))
-	myBinding.value(SoMaterialBinding.PER_PART)
-	root.addChild(myMaterial)
-	root.addChild(myBinding)
+    # We'll color the front of the text white, and the sides 
+    # dark grey. So use a materialBinding of PER_PART and
+    # two diffuseColor values in the material node.
+    myMaterial = SoMaterial()
+    myBinding = SoMaterialBinding()
+    myMaterial.diffuseColor.set1Value(0,SbColor(1,1,1))
+    myMaterial.diffuseColor.set1Value(1,SbColor(.1,.1,.1))
+    myBinding.value(SoMaterialBinding.PER_PART)
+    root.addChild(myMaterial)
+    root.addChild(myBinding)
 
-	# Create the globe
-	sphereSep = SoSeparator()
-	myTexture2 = SoTexture2()
-	sphereComplexity = SoComplexity()
-	sphereComplexity.value(0.55)
-	root.addChild(sphereSep)
-	sphereSep.addChild(myTexture2)
-	sphereSep.addChild(sphereComplexity)
-	sphereSep.addChild(SoSphere())
-	myTexture2.filename("globe.rgb")
+    # Create the globe
+    sphereSep = SoSeparator()
+    myTexture2 = SoTexture2()
+    sphereComplexity = SoComplexity()
+    sphereComplexity.value(0.55)
+    root.addChild(sphereSep)
+    sphereSep.addChild(myTexture2)
+    sphereSep.addChild(sphereComplexity)
+    sphereSep.addChild(SoSphere())
+    myTexture2.filename("globe.rgb")
 
-	# Add Text3 for AFRICA, transformed to proper location.
-	africaSep = SoSeparator()
-	africaTransform = SoTransform()
-	africaText = SoText3()
-	africaTransform.rotation.setValue(SbVec3f(0,1,0),.4)
-	africaTransform.translation.setValue(.25,.0,1.25)
-	africaText.parts(SoText3.ALL)
-	africaText.string("AFRICA")
-	root.addChild(africaSep)
-	africaSep.addChild(africaTransform)
-	africaSep.addChild(africaText)
+    # Add Text3 for AFRICA, transformed to proper location.
+    africaSep = SoSeparator()
+    africaTransform = SoTransform()
+    africaText = SoText3()
+    africaTransform.rotation.setValue(SbVec3f(0,1,0),.4)
+    africaTransform.translation.setValue(.25,.0,1.25)
+    africaText.parts(SoText3.ALL)
+    africaText.string("AFRICA")
+    root.addChild(africaSep)
+    africaSep.addChild(africaTransform)
+    africaSep.addChild(africaText)
 
-	# Add Text3 for ASIA, transformed to proper location.
-	asiaSep = SoSeparator()
-	asiaTransform = SoTransform()
-	asiaText = SoText3()
-	asiaTransform.rotation.setValue(SbVec3f(0,1,0),1.5)
-	asiaTransform.translation.setValue(.8,.6,.5)
-	asiaText.parts(SoText3.ALL)
-	asiaText.string("ASIA")
-	root.addChild(asiaSep)
-	asiaSep.addChild(asiaTransform)
-	asiaSep.addChild(asiaText)
+    # Add Text3 for ASIA, transformed to proper location.
+    asiaSep = SoSeparator()
+    asiaTransform = SoTransform()
+    asiaText = SoText3()
+    asiaTransform.rotation.setValue(SbVec3f(0,1,0),1.5)
+    asiaTransform.translation.setValue(.8,.6,.5)
+    asiaText.parts(SoText3.ALL)
+    asiaText.string("ASIA")
+    root.addChild(asiaSep)
+    asiaSep.addChild(asiaTransform)
+    asiaSep.addChild(asiaText)
 
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("3D Text")
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("3D Text")
 
-	# In Inventor 2.1, if the machine does not have hardware texture
-	# mapping, we must override the default drawStyle to display textures.
-	myViewer.setDrawStyle(SoQtViewer.STILL, SoQtViewer.VIEW_AS_IS)
+    # In Inventor 2.1, if the machine does not have hardware texture
+    # mapping, we must override the default drawStyle to display textures.
+    myViewer.setDrawStyle(SoQtViewer.STILL, SoQtViewer.VIEW_AS_IS)
 
-	myViewer.show()
-	myViewer.viewAll()
+    myViewer.show()
+    myViewer.viewAll()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()

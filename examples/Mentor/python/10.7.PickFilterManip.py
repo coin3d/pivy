@@ -52,163 +52,163 @@ import sys
 # assume that the xform is always the node preceeding
 # the selected shape.
 def findXform(p):
-	# Copy the input path up to tail's parent.
-	returnPath = p.copy(0, p.getLength() - 1)
+    # Copy the input path up to tail's parent.
+    returnPath = p.copy(0, p.getLength() - 1)
 
-	# Get the parent of the selected shape
-	g = cast(p.getNodeFromTail(1), "SoGroup")
-	tailNodeIndex = p.getIndexFromTail(0)
+    # Get the parent of the selected shape
+    g = cast(p.getNodeFromTail(1), "SoGroup")
+    tailNodeIndex = p.getIndexFromTail(0)
 
-	# Check if there is already a transform node
-	if tailNodeIndex > 0:
-		n = g.getChild(tailNodeIndex - 1)
-		if n.isOfType(SoTransform_getClassTypeId()):
-			# Append to returnPath and return it.
-			returnPath.append(n)
-			return returnPath
+    # Check if there is already a transform node
+    if tailNodeIndex > 0:
+        n = g.getChild(tailNodeIndex - 1)
+        if n.isOfType(SoTransform_getClassTypeId()):
+            # Append to returnPath and return it.
+            returnPath.append(n)
+            return returnPath
 
-	# Otherwise, add a transform node.
-	xf = SoTransform()
-	g.insertChild(xf, tailNodeIndex) # right before the tail
-	# Append to returnPath and return it.
-	returnPath.append(xf)
-	return returnPath
+    # Otherwise, add a transform node.
+    xf = SoTransform()
+    g.insertChild(xf, tailNodeIndex) # right before the tail
+    # Append to returnPath and return it.
+    returnPath.append(xf)
+    return returnPath
 
 # Returns the manip affecting this path. In this example,
 # the manip is always preceeding the selected shape.
 def findManip(p):
-	# Copy the input path up to tail's parent.
-	returnPath = p.copy(0, p.getLength() - 1)
+    # Copy the input path up to tail's parent.
+    returnPath = p.copy(0, p.getLength() - 1)
 
-	# Get the index of the last node in the path.
-	tailNodeIndex = p.getIndexFromTail(0)
+    # Get the index of the last node in the path.
+    tailNodeIndex = p.getIndexFromTail(0)
 
-	# Append the left sibling of the tail to the returnPath
-	returnPath.append(tailNodeIndex - 1)
-	return returnPath
+    # Append the left sibling of the tail to the returnPath
+    returnPath.append(tailNodeIndex - 1)
+    return returnPath
 
 # Add a manipulator to the transform affecting this path
 # The first parameter, userData, is not used.
 def selCB(void, path):
-	if path.getLength() < 2: return
+    if path.getLength() < 2: return
     
-	# Find the transform affecting this object
-	xfPath = findXform(path)
-	xfPath.ref()
+    # Find the transform affecting this object
+    xfPath = findXform(path)
+    xfPath.ref()
     
-	# Replace the transform with a manipulator
-	manip = SoHandleBoxManip()
-	manip.ref()
-	manip.replaceNode(xfPath)
+    # Replace the transform with a manipulator
+    manip = SoHandleBoxManip()
+    manip.ref()
+    manip.replaceNode(xfPath)
 
-	# Unref the xfPath
-	xfPath.unref()
+    # Unref the xfPath
+    xfPath.unref()
 
 # Remove the manipulator affecting this path.
 # The first parameter, userData, is not used.
 def deselCB(void, path):
-	if path.getLength() < 2: return
+    if path.getLength() < 2: return
 
-	# Find the manipulator affecting this object
-	manipPath = findManip(path)
-	manipPath.ref()
+    # Find the manipulator affecting this object
+    manipPath = findManip(path)
+    manipPath.ref()
 
-	# Replace the manipulator with a transform 
-	manip = cast(manipPath.getTail(), "SoTransformManip")
-	manip.replaceManip(manipPath, SoTransform())
-	manip.unref()
+    # Replace the manipulator with a transform 
+    manip = cast(manipPath.getTail(), "SoTransformManip")
+    manip.replaceManip(manipPath, SoTransform())
+    manip.unref()
 
-	# Unref the manipPath
-	manipPath.unref()
+    # Unref the manipPath
+    manipPath.unref()
 
 ##############################################################
 # CODE FOR The Inventor Mentor STARTS HERE  (part 1)
 
 def pickFilterCB(void, pick):
-	filteredPath = None
+    filteredPath = None
     
-	# See if the picked object is a manipulator. 
-	# If so, change the path so it points to the object the manip
-	# is attached to.
-	p = pick.getPath()
-	n = p.getTail()
-	if n.isOfType(SoTransformManip_getClassTypeId()):
-		# Manip picked! We know the manip is attached
-		# to its next sibling. Set up and return that path.
-		manipIndex = p.getIndex(p.getLength() - 1)
-		filteredPath = p.copy(0, p.getLength() - 1)
-		filteredPath.append(manipIndex + 1) # get next sibling
-	else:
-		filteredPath = p
+    # See if the picked object is a manipulator. 
+    # If so, change the path so it points to the object the manip
+    # is attached to.
+    p = pick.getPath()
+    n = p.getTail()
+    if n.isOfType(SoTransformManip_getClassTypeId()):
+        # Manip picked! We know the manip is attached
+        # to its next sibling. Set up and return that path.
+        manipIndex = p.getIndex(p.getLength() - 1)
+        filteredPath = p.copy(0, p.getLength() - 1)
+        filteredPath.append(manipIndex + 1) # get next sibling
+    else:
+        filteredPath = p
 
-	return filteredPath
+    return filteredPath
 
 # CODE FOR The Inventor Mentor ENDS HERE  
 ##############################################################
 
 # Create a sample scene graph
 def myText(str, i, color):
-	sep  = SoSeparator()
-	col  = SoBaseColor()
-	xf   = SoTransform()
-	text = SoText3()
+    sep  = SoSeparator()
+    col  = SoBaseColor()
+    xf   = SoTransform()
+    text = SoText3()
    
-	col.rgb.setValue(color)
-	xf.translation.setValue(6.0 * i, 0.0, 0.0)
-	text.string(str)
-	text.parts(SoText3.FRONT | SoText3.SIDES)
-	text.justification(SoText3.CENTER)
-	sep.addChild(col)
-	sep.addChild(xf)
-	sep.addChild(text)
+    col.rgb.setValue(color)
+    xf.translation.setValue(6.0 * i, 0.0, 0.0)
+    text.string(str)
+    text.parts(SoText3.FRONT | SoText3.SIDES)
+    text.justification(SoText3.CENTER)
+    sep.addChild(col)
+    sep.addChild(xf)
+    sep.addChild(text)
    
-	return sep
+    return sep
 
 def buildScene():
-	scene = SoSeparator()
-	font  = SoFont()
+    scene = SoSeparator()
+    font  = SoFont()
    
-	font.size(10)
-	scene.addChild(font)
-	scene.addChild(myText("O",  0, SbColor(0, 0, 1)))
-	scene.addChild(myText("p",  1, SbColor(0, 1, 0)))
-	scene.addChild(myText("e",  2, SbColor(0, 1, 1)))
-	scene.addChild(myText("n",  3, SbColor(1, 0, 0)))
-	# Open Inventor is two words!
-	scene.addChild(myText("I",  5, SbColor(1, 0, 1)))
-	scene.addChild(myText("n",  6, SbColor(1, 1, 0)))
-	scene.addChild(myText("v",  7, SbColor(1, 1, 1)))
-	scene.addChild(myText("e",  8, SbColor(0, 0, 1)))
-	scene.addChild(myText("n",  9, SbColor(0, 1, 0)))
-	scene.addChild(myText("t", 10, SbColor(0, 1, 1)))
-	scene.addChild(myText("o", 11, SbColor(1, 0, 0)))
-	scene.addChild(myText("r", 12, SbColor(1, 0, 1)))
+    font.size(10)
+    scene.addChild(font)
+    scene.addChild(myText("O",  0, SbColor(0, 0, 1)))
+    scene.addChild(myText("p",  1, SbColor(0, 1, 0)))
+    scene.addChild(myText("e",  2, SbColor(0, 1, 1)))
+    scene.addChild(myText("n",  3, SbColor(1, 0, 0)))
+    # Open Inventor is two words!
+    scene.addChild(myText("I",  5, SbColor(1, 0, 1)))
+    scene.addChild(myText("n",  6, SbColor(1, 1, 0)))
+    scene.addChild(myText("v",  7, SbColor(1, 1, 1)))
+    scene.addChild(myText("e",  8, SbColor(0, 0, 1)))
+    scene.addChild(myText("n",  9, SbColor(0, 1, 0)))
+    scene.addChild(myText("t", 10, SbColor(0, 1, 1)))
+    scene.addChild(myText("o", 11, SbColor(1, 0, 0)))
+    scene.addChild(myText("r", 12, SbColor(1, 0, 1)))
    
-	return scene
+    return scene
 
 def main():
-	# Initialization
-	mainWindow = SoQt_init(sys.argv[0])
+    # Initialization
+    mainWindow = SoQt_init(sys.argv[0])
     
-	# Create a scene graph. Use the toggle selection policy.
-	sel = SoSelection()
-	sel.ref()
-	sel.policy.setValue(SoSelection.TOGGLE)
-	sel.addChild(buildScene())
+    # Create a scene graph. Use the toggle selection policy.
+    sel = SoSelection()
+    sel.ref()
+    sel.policy.setValue(SoSelection.TOGGLE)
+    sel.addChild(buildScene())
 
-	# Create a viewer
-	viewer = SoQtExaminerViewer(mainWindow)
-	viewer.setSceneGraph(sel)
-	viewer.setTitle("Select Through Manips")
-	viewer.show()
+    # Create a viewer
+    viewer = SoQtExaminerViewer(mainWindow)
+    viewer.setSceneGraph(sel)
+    viewer.setTitle("Select Through Manips")
+    viewer.show()
 
-	# Selection callbacks
-	sel.addPythonSelectionCallback(selCB)
-	sel.addPythonDeselectionCallback(deselCB)
-	sel.setPythonPickFilterCallback(pickFilterCB)
+    # Selection callbacks
+    sel.addPythonSelectionCallback(selCB)
+    sel.addPythonDeselectionCallback(deselCB)
+    sel.setPythonPickFilterCallback(pickFilterCB)
     
-	SoQt_show(mainWindow)
-	SoQt_mainLoop()
+    SoQt_show(mainWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -46,86 +46,86 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])  
-	if myWindow == None: sys.exit(1)     
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])  
+    if myWindow == None: sys.exit(1)     
 
-	root = SoSeparator()
-	root.ref()
+    root = SoSeparator()
+    root.ref()
 
-	# Create 3 translate1Draggers and place them in space.
-	xDragSep = SoSeparator()
-	yDragSep = SoSeparator()
-	zDragSep = SoSeparator()
-	root.addChild(xDragSep)
-	root.addChild(yDragSep)
-	root.addChild(zDragSep)
-	# Separators will each hold a different transform
-	xDragXf = SoTransform()
-	yDragXf = SoTransform()
-	zDragXf = SoTransform()
-	xDragXf.set("translation  0 -4 8")
-	yDragXf.set("translation -8  0 8 rotation 0 0 1  1.57")
-	zDragXf.set("translation -8 -4 0 rotation 0 1 0 -1.57")
-	xDragSep.addChild(xDragXf)
-	yDragSep.addChild(yDragXf)
-	zDragSep.addChild(zDragXf)
+    # Create 3 translate1Draggers and place them in space.
+    xDragSep = SoSeparator()
+    yDragSep = SoSeparator()
+    zDragSep = SoSeparator()
+    root.addChild(xDragSep)
+    root.addChild(yDragSep)
+    root.addChild(zDragSep)
+    # Separators will each hold a different transform
+    xDragXf = SoTransform()
+    yDragXf = SoTransform()
+    zDragXf = SoTransform()
+    xDragXf.set("translation  0 -4 8")
+    yDragXf.set("translation -8  0 8 rotation 0 0 1  1.57")
+    zDragXf.set("translation -8 -4 0 rotation 0 1 0 -1.57")
+    xDragSep.addChild(xDragXf)
+    yDragSep.addChild(yDragXf)
+    zDragSep.addChild(zDragXf)
 
-	# Add the draggers under the separators, after transforms
-	xDragger = SoTranslate1Dragger()
-	yDragger = SoTranslate1Dragger()
-	zDragger = SoTranslate1Dragger()
-	xDragSep.addChild(xDragger)
-	yDragSep.addChild(yDragger)
-	zDragSep.addChild(zDragger)
+    # Add the draggers under the separators, after transforms
+    xDragger = SoTranslate1Dragger()
+    yDragger = SoTranslate1Dragger()
+    zDragger = SoTranslate1Dragger()
+    xDragSep.addChild(xDragger)
+    yDragSep.addChild(yDragger)
+    zDragSep.addChild(zDragger)
 
-	# Create shape kit for the 3D text
-	# The text says 'Slide Cubes To Move Me'
-	textKit = SoShapeKit()
-	root.addChild(textKit)
-	myText3 = SoText3()
-	textKit.setPart("shape", myText3)
-	myText3.justification(SoText3.CENTER)
-	myText3.string.set1Value(0,"Slide Arrows")
-	myText3.string.set1Value(1,"To")
-	myText3.string.set1Value(2,"Move Me")
-	textKit.set("font { size 2}")
-	textKit.set("material { diffuseColor 1 1 0}")
+    # Create shape kit for the 3D text
+    # The text says 'Slide Cubes To Move Me'
+    textKit = SoShapeKit()
+    root.addChild(textKit)
+    myText3 = SoText3()
+    textKit.setPart("shape", myText3)
+    myText3.justification(SoText3.CENTER)
+    myText3.string.set1Value(0,"Slide Arrows")
+    myText3.string.set1Value(1,"To")
+    myText3.string.set1Value(2,"Move Me")
+    textKit.set("font { size 2}")
+    textKit.set("material { diffuseColor 1 1 0}")
 
-	# Create shape kit for surrounding box.
-	# It's an unpickable cube, sized as (16,8,16)
-	boxKit = SoShapeKit()
-	root.addChild(boxKit)
-	boxKit.setPart("shape", SoCube())
-	boxKit.set("drawStyle { style LINES }")
-	boxKit.set("pickStyle { style UNPICKABLE }")
-	boxKit.set("material { emissiveColor 1 0 1 }")
-	boxKit.set("shape { width 16 height 8 depth 16 }")
+    # Create shape kit for surrounding box.
+    # It's an unpickable cube, sized as (16,8,16)
+    boxKit = SoShapeKit()
+    root.addChild(boxKit)
+    boxKit.setPart("shape", SoCube())
+    boxKit.set("drawStyle { style LINES }")
+    boxKit.set("pickStyle { style UNPICKABLE }")
+    boxKit.set("material { emissiveColor 1 0 1 }")
+    boxKit.set("shape { width 16 height 8 depth 16 }")
 
-	# Create the calculator to make a translation
-	# for the text.  The x component of a translate1Dragger's 
-	# translation field shows how far it moved in that 
-	# direction. So our text's translation is:
-	# (xDragTranslate[0],yDragTranslate[0],zDragTranslate[0])
-	myCalc = SoCalculator()
-	myCalc.ref()
-	myCalc.A.connectFrom(xDragger.translation)
-	myCalc.B.connectFrom(yDragger.translation)
-	myCalc.C.connectFrom(zDragger.translation)
-	myCalc.expression("oA = vec3f(A[0],B[0],C[0])")
+    # Create the calculator to make a translation
+    # for the text.  The x component of a translate1Dragger's 
+    # translation field shows how far it moved in that 
+    # direction. So our text's translation is:
+    # (xDragTranslate[0],yDragTranslate[0],zDragTranslate[0])
+    myCalc = SoCalculator()
+    myCalc.ref()
+    myCalc.A.connectFrom(xDragger.translation)
+    myCalc.B.connectFrom(yDragger.translation)
+    myCalc.C.connectFrom(zDragger.translation)
+    myCalc.expression("oA = vec3f(A[0],B[0],C[0])")
 
-	# Connect the the translation in textKit from myCalc
-	textXf = cast(textKit.getPart("transform",TRUE), "SoTransform")
-	textXf.translation.connectFrom(myCalc.oA)
-	
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("Slider Box")
-	myViewer.viewAll()
-	myViewer.show()
+    # Connect the the translation in textKit from myCalc
+    textXf = cast(textKit.getPart("transform",TRUE), "SoTransform")
+    textXf.translation.connectFrom(myCalc.oA)
+    
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("Slider Box")
+    myViewer.viewAll()
+    myViewer.show()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

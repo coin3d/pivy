@@ -47,73 +47,73 @@ def makeWaterMolecule():
 ##############################################################
 #  CODE FOR The Inventor Mentor STARTS HERE
 
-	# Construct all parts
-	waterMolecule = SoGroup()  # water molecule
+    # Construct all parts
+    waterMolecule = SoGroup()  # water molecule
 
-	oxygen = SoGroup()         # oxygen atom
-	redPlastic = SoMaterial()
-	sphere1 = SoSphere()
-	
-	hydrogen1 = SoGroup()      # hydrogen atoms
-	hydrogen2 = SoGroup()
-	hydrogenXform1 = SoTransform()
-	hydrogenXform2 = SoTransform()
-	whitePlastic = SoMaterial()
-	sphere2 = SoSphere()
-	sphere3 = SoSphere()
-	
-	# Set all field values for the oxygen atom
-	redPlastic.ambientColor.setValue(1.0, 0.0, 0.0)
-	redPlastic.diffuseColor.setValue(1.0, 0.0, 0.0) 
-	redPlastic.specularColor.setValue(0.5, 0.5, 0.5)
-	redPlastic.shininess(0.5)
-	
-	# Set all field values for the hydrogen atoms
-	hydrogenXform1.scaleFactor.setValue(0.75, 0.75, 0.75)  
-	hydrogenXform1.translation.setValue(0.0, -1.2, 0.0)  
-	hydrogenXform2.translation.setValue(1.1852, 1.3877, 0.0)
-	whitePlastic.ambientColor.setValue(1.0, 1.0, 1.0)  
-	whitePlastic.diffuseColor.setValue(1.0, 1.0, 1.0) 
-	whitePlastic.specularColor.setValue(0.5, 0.5, 0.5)
-	whitePlastic.shininess(0.5)
-	
-	# Create a hierarchy
-	waterMolecule.addChild(oxygen)   
-	waterMolecule.addChild(hydrogen1)   
-	waterMolecule.addChild(hydrogen2)
-	
-	oxygen.addChild(redPlastic)
-	oxygen.addChild(sphere1)
-	hydrogen1.addChild(hydrogenXform1)
-	hydrogen1.addChild(whitePlastic)
-	hydrogen1.addChild(sphere2)
-	hydrogen2.addChild(hydrogenXform2)
-	hydrogen2.addChild(sphere3)
+    oxygen = SoGroup()         # oxygen atom
+    redPlastic = SoMaterial()
+    sphere1 = SoSphere()
+    
+    hydrogen1 = SoGroup()      # hydrogen atoms
+    hydrogen2 = SoGroup()
+    hydrogenXform1 = SoTransform()
+    hydrogenXform2 = SoTransform()
+    whitePlastic = SoMaterial()
+    sphere2 = SoSphere()
+    sphere3 = SoSphere()
+    
+    # Set all field values for the oxygen atom
+    redPlastic.ambientColor.setValue(1.0, 0.0, 0.0)
+    redPlastic.diffuseColor.setValue(1.0, 0.0, 0.0) 
+    redPlastic.specularColor.setValue(0.5, 0.5, 0.5)
+    redPlastic.shininess(0.5)
+    
+    # Set all field values for the hydrogen atoms
+    hydrogenXform1.scaleFactor.setValue(0.75, 0.75, 0.75)  
+    hydrogenXform1.translation.setValue(0.0, -1.2, 0.0)  
+    hydrogenXform2.translation.setValue(1.1852, 1.3877, 0.0)
+    whitePlastic.ambientColor.setValue(1.0, 1.0, 1.0)  
+    whitePlastic.diffuseColor.setValue(1.0, 1.0, 1.0) 
+    whitePlastic.specularColor.setValue(0.5, 0.5, 0.5)
+    whitePlastic.shininess(0.5)
+    
+    # Create a hierarchy
+    waterMolecule.addChild(oxygen)   
+    waterMolecule.addChild(hydrogen1)   
+    waterMolecule.addChild(hydrogen2)
+    
+    oxygen.addChild(redPlastic)
+    oxygen.addChild(sphere1)
+    hydrogen1.addChild(hydrogenXform1)
+    hydrogen1.addChild(whitePlastic)
+    hydrogen1.addChild(sphere2)
+    hydrogen2.addChild(hydrogenXform2)
+    hydrogen2.addChild(sphere3)
 
 ## CODE FOR The Inventor Mentor ENDS HERE
 ##############################################################
 
-	return waterMolecule
+    return waterMolecule
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	root = SoSeparator()
-	root.ref()
+    root = SoSeparator()
+    root.ref()
 
-	# This function contains our code fragment.
-	root.addChild(makeWaterMolecule())
+    # This function contains our code fragment.
+    root.addChild(makeWaterMolecule())
 
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("H two O")
-	myViewer.show()
-	myViewer.viewAll()
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("H two O")
+    myViewer.show()
+    myViewer.viewAll()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()

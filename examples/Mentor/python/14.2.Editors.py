@@ -51,76 +51,76 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])  
-	if myWindow == None: sys.exit(1)     
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])  
+    if myWindow == None: sys.exit(1)     
 
-	# SCENE!
-	myScene = SoSceneKit()
-	myScene.ref()
+    # SCENE!
+    myScene = SoSceneKit()
+    myScene.ref()
 
-	# LIGHTS! Add an SoLightKit to the "lightList." The 
-	# SoLightKit creates an SoDirectionalLight by default.
-	myScene.setPart("lightList[0]", SoLightKit())
+    # LIGHTS! Add an SoLightKit to the "lightList." The 
+    # SoLightKit creates an SoDirectionalLight by default.
+    myScene.setPart("lightList[0]", SoLightKit())
 
-	# CAMERA!! Add an SoCameraKit to the "cameraList." The 
-	# SoCameraKit creates an SoPerspectiveCamera by default.
-	myScene.setPart("cameraList[0]", SoCameraKit())
-	myScene.setCameraNumber(0)
+    # CAMERA!! Add an SoCameraKit to the "cameraList." The 
+    # SoCameraKit creates an SoPerspectiveCamera by default.
+    myScene.setPart("cameraList[0]", SoCameraKit())
+    myScene.setCameraNumber(0)
 
-	# Read an object from file. 
-	myInput = SoInput()
-	if not myInput.openFile("desk.iv"):
-		sys.exit(1)
-	fileContents = SoDB_readAll(myInput)
-	if fileContents == None: 
-		sys.exit(1)
+    # Read an object from file. 
+    myInput = SoInput()
+    if not myInput.openFile("desk.iv"):
+        sys.exit(1)
+    fileContents = SoDB_readAll(myInput)
+    if fileContents == None: 
+        sys.exit(1)
 
-	# OBJECT!! Create an SoWrapperKit and set its contents to
-	# be what you read from file.
-	myDesk =SoWrapperKit()
-	myDesk.setPart("contents", fileContents)
-	myScene.setPart("childList[0]", myDesk)
+    # OBJECT!! Create an SoWrapperKit and set its contents to
+    # be what you read from file.
+    myDesk =SoWrapperKit()
+    myDesk.setPart("contents", fileContents)
+    myScene.setPart("childList[0]", myDesk)
 
-	# Give the desk a good starting color
-	myDesk.set("material { diffuseColor .8 .3 .1 }")
+    # Give the desk a good starting color
+    myDesk.set("material { diffuseColor .8 .3 .1 }")
 
-	# MATERIAL EDITOR!!  Attach it to myDesk's material node.
-	# Use the SO_GET_PART macro to get this part from myDesk.
-	mtlEditor = SoQtMaterialEditor()
-	mtl = SO_GET_PART(myDesk,"material",SoMaterial())
-	mtlEditor.attach(mtl)
-	mtlEditor.setTitle("Material of Desk")
-	mtlEditor.show()
+    # MATERIAL EDITOR!!  Attach it to myDesk's material node.
+    # Use the SO_GET_PART macro to get this part from myDesk.
+    mtlEditor = SoQtMaterialEditor()
+    mtl = SO_GET_PART(myDesk,"material",SoMaterial())
+    mtlEditor.attach(mtl)
+    mtlEditor.setTitle("Material of Desk")
+    mtlEditor.show()
 
-	# DIRECTIONAL LIGHT EDITOR!! Attach it to the 
-	# SoDirectionalLight node within the SoLightKit we made.
-	ltEditor = SoQtDirectionalLightEditor()
-	ltPath = myScene.createPathToPart("lightList[0].light", TRUE)
-	ltEditor.attach(ltPath)
-	ltEditor.setTitle("Lighting of Desk")
-	ltEditor.show()
+    # DIRECTIONAL LIGHT EDITOR!! Attach it to the 
+    # SoDirectionalLight node within the SoLightKit we made.
+    ltEditor = SoQtDirectionalLightEditor()
+    ltPath = myScene.createPathToPart("lightList[0].light", TRUE)
+    ltEditor.attach(ltPath)
+    ltEditor.setTitle("Lighting of Desk")
+    ltEditor.show()
    
-	myRenderArea = SoQtRenderArea(myWindow)
+    myRenderArea = SoQtRenderArea(myWindow)
 
-	# Set up Camera with ViewAll...
-	# -- use the SO_GET_PART macro to get the camera node.
-	# -- viewall is a method on the 'camera' part of 
-	#    the cameraKit, not on the cameraKit itself.  So the part
-	#    we ask for is not 'cameraList[0]' (which is of type 
-	#    SoPerspectiveCameraKit), but 
-	#    'cameraList[0].camera' (which is of type 
-	#    SoPerspectiveCamera).
-	myCamera = SO_GET_PART(myScene, "cameraList[0].camera", SoPerspectiveCamera())
-	myRegion = SbViewportRegion(myRenderArea.getSize())
-	myCamera.viewAll(myScene, myRegion)
+    # Set up Camera with ViewAll...
+    # -- use the SO_GET_PART macro to get the camera node.
+    # -- viewall is a method on the 'camera' part of 
+    #    the cameraKit, not on the cameraKit itself.  So the part
+    #    we ask for is not 'cameraList[0]' (which is of type 
+    #    SoPerspectiveCameraKit), but 
+    #    'cameraList[0].camera' (which is of type 
+    #    SoPerspectiveCamera).
+    myCamera = SO_GET_PART(myScene, "cameraList[0].camera", SoPerspectiveCamera())
+    myRegion = SbViewportRegion(myRenderArea.getSize())
+    myCamera.viewAll(myScene, myRegion)
 
-	myRenderArea.setSceneGraph(myScene)
-	myRenderArea.setTitle("Main Window: Desk In A Scene Kit")
-	myRenderArea.show()
+    myRenderArea.setSceneGraph(myScene)
+    myRenderArea.setTitle("Main Window: Desk In A Scene Kit")
+    myRenderArea.show()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

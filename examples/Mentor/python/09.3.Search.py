@@ -45,42 +45,42 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor
-	SoDB_init()
-	
-	# Open and read input scene graph
-	sceneInput = SoInput()
-	if not sceneInput.openFile("bird.iv"):
-		return 1
+    # Initialize Inventor
+    SoDB_init()
+    
+    # Open and read input scene graph
+    sceneInput = SoInput()
+    if not sceneInput.openFile("bird.iv"):
+        return 1
 
-	root = SoDB_readAll(sceneInput)
-	if root == None:
-		return 1
-	root.ref()
+    root = SoDB_readAll(sceneInput)
+    if root == None:
+        return 1
+    root.ref()
 
 ##############################################################
 # CODE FOR The Inventor Mentor STARTS HERE
 
-	mySearchAction = SoSearchAction()
+    mySearchAction = SoSearchAction()
 
-	# Look for first existing light derived from class SoLight
-	mySearchAction.setType(SoLight_getClassTypeId())
-	mySearchAction.setInterest(SoSearchAction.FIRST)
+    # Look for first existing light derived from class SoLight
+    mySearchAction.setType(SoLight_getClassTypeId())
+    mySearchAction.setInterest(SoSearchAction.FIRST)
     
-	mySearchAction.apply(root)
-	if mySearchAction.getPath() == None: # No lights found
-		# Add a default directional light to the scene
-		myLight = SoDirectionalLight()
-		root.insertChild(myLight, 0)
+    mySearchAction.apply(root)
+    if mySearchAction.getPath() == None: # No lights found
+        # Add a default directional light to the scene
+        myLight = SoDirectionalLight()
+        root.insertChild(myLight, 0)
 
 # CODE FOR The Inventor Mentor ENDS HERE
 ##############################################################
 
-	myWriteAction = SoWriteAction()
-	myWriteAction.apply(root)
+    myWriteAction = SoWriteAction()
+    myWriteAction.apply(root)
 
-	root.unref()
-	return 0
+    root.unref()
+    return 0
 
 if __name__ == "__main__":
-	sys.exit(main())
+    sys.exit(main())

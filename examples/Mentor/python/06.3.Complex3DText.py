@@ -42,84 +42,84 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	root = SoGroup()
-	root.ref()
+    root = SoGroup()
+    root.ref()
 
-	# Set up camera 
-	myCamera = SoPerspectiveCamera()
-	myCamera.position.setValue(0, -(len(sys.argv) - 1) / 2, 10)
-	myCamera.nearDistance.setValue(5.0)
-	myCamera.farDistance.setValue(15.0)
-	root.addChild(myCamera)
+    # Set up camera 
+    myCamera = SoPerspectiveCamera()
+    myCamera.position.setValue(0, -(len(sys.argv) - 1) / 2, 10)
+    myCamera.nearDistance.setValue(5.0)
+    myCamera.farDistance.setValue(15.0)
+    root.addChild(myCamera)
 
-	# Let's make the front of the text white, 
-	# and the sides and back shiny yellow
-	myMaterial = SoMaterial()
-	colors = [SbColor()]*3
-	# diffuse
-	colors[0].setValue(1, 1, 1)
-	colors[1].setValue(1, 1, 0)
-	colors[2].setValue(1, 1, 0)
-	myMaterial.diffuseColor.setValues(0, 3, colors)
+    # Let's make the front of the text white, 
+    # and the sides and back shiny yellow
+    myMaterial = SoMaterial()
+    colors = [SbColor()]*3
+    # diffuse
+    colors[0].setValue(1, 1, 1)
+    colors[1].setValue(1, 1, 0)
+    colors[2].setValue(1, 1, 0)
+    myMaterial.diffuseColor.setValues(0, 3, colors)
 
-	# specular
-	colors[0].setValue(1, 1, 1)
-	# Note: Inventor 2.1 doesn't support multiple specular colors.
-	# 
+    # specular
+    colors[0].setValue(1, 1, 1)
+    # Note: Inventor 2.1 doesn't support multiple specular colors.
+    # 
     # colors[1].setValue(1, 1, 0)
     # colors[2].setValue(1, 1, 0)
     # myMaterial.specularColor.setValues(0, 3, colors)
-	#
-	myMaterial.specularColor.setValue(colors[0])
-	myMaterial.shininess.setValue(.1)
-	root.addChild(myMaterial)
+    #
+    myMaterial.specularColor.setValue(colors[0])
+    myMaterial.shininess.setValue(.1)
+    root.addChild(myMaterial)
 
-	# Choose a font likely to exist.
-	myFont = SoFont()
-	myFont.name("Times-Roman")
-	root.addChild(myFont)
+    # Choose a font likely to exist.
+    myFont = SoFont()
+    myFont.name("Times-Roman")
+    root.addChild(myFont)
 
-	# Specify a beveled cross-section for the text
-	myProfileCoords = SoProfileCoordinate2()
-	coords = [SbVec2f()]*4
-	coords[0].setValue( .00, .00)
-	coords[1].setValue( .25, .25)
-	coords[2].setValue(1.25, .25)
-	coords[3].setValue(1.50, .00)
-	myProfileCoords.point.setValues(0, 4, coords)
-	root.addChild(myProfileCoords)
+    # Specify a beveled cross-section for the text
+    myProfileCoords = SoProfileCoordinate2()
+    coords = [SbVec2f()]*4
+    coords[0].setValue( .00, .00)
+    coords[1].setValue( .25, .25)
+    coords[2].setValue(1.25, .25)
+    coords[3].setValue(1.50, .00)
+    myProfileCoords.point.setValues(0, 4, coords)
+    root.addChild(myProfileCoords)
 
-	myLinearProfile = SoLinearProfile()
-	index = (0, 1, 2, 3)
-	myLinearProfile.index.setValues(0, 4, index)
-	root.addChild(myLinearProfile)
+    myLinearProfile = SoLinearProfile()
+    index = (0, 1, 2, 3)
+    myLinearProfile.index.setValues(0, 4, index)
+    root.addChild(myLinearProfile)
 
-	# Set the material binding to PER_PART
-	myMaterialBinding = SoMaterialBinding()
-	myMaterialBinding.value.setValue(SoMaterialBinding.PER_PART)
-	root.addChild(myMaterialBinding)
+    # Set the material binding to PER_PART
+    myMaterialBinding = SoMaterialBinding()
+    myMaterialBinding.value.setValue(SoMaterialBinding.PER_PART)
+    root.addChild(myMaterialBinding)
 
-	# Add the text
-	myText3 = SoText3()
-	myText3.string.setValue("Beveled Text")
-	myText3.justification.setValue(SoText3.CENTER)
-	myText3.parts.setValue(SoText3.ALL)
+    # Add the text
+    myText3 = SoText3()
+    myText3.string.setValue("Beveled Text")
+    myText3.justification.setValue(SoText3.CENTER)
+    myText3.parts.setValue(SoText3.ALL)
    
-	root.addChild(myText3)
+    root.addChild(myText3)
 
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("Complex 3D Text")
-	myViewer.show()
-	myViewer.viewAll()
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("Complex 3D Text")
+    myViewer.show()
+    myViewer.viewAll()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()
 

@@ -44,49 +44,49 @@ import sys
 # CODE FOR The Inventor Mentor STARTS HERE
 
 def raiseFlagCallback(data, sensor):
-	# We know data is really a SoTransform node:
-	flagAngleXform = cast(data, "SoTransform")
+    # We know data is really a SoTransform node:
+    flagAngleXform = cast(data, "SoTransform")
 
-	# Rotate flag by 90 degrees about the Z axis:
-	flagAngleXform.rotation.setValue(SbVec3f(0,0,1), M_PI/2)
+    # Rotate flag by 90 degrees about the Z axis:
+    flagAngleXform.rotation.setValue(SbVec3f(0,0,1), M_PI/2)
 
 # CODE FOR The Inventor Mentor ENDS HERE
 ###########################################################
 
 
 def main():
-	myWindow = SoQt_init(sys.argv[0]) # pass the app name
-	if myWindow == None: sys.exit(1)
+    myWindow = SoQt_init(sys.argv[0]) # pass the app name
+    if myWindow == None: sys.exit(1)
 
 ###########################################################
 # CODE FOR The Inventor Mentor STARTS HERE
 
-	flagXform = SoTransform()
+    flagXform = SoTransform()
 
-	# Create an alarm that will call the flag-raising callback:
-	myAlarm = SoAlarmSensor(raiseFlagCallback, flagXform)
-	myAlarm.setTimeFromNow(12.0)  # 12 seconds
-	myAlarm.schedule()
+    # Create an alarm that will call the flag-raising callback:
+    myAlarm = SoAlarmSensor(raiseFlagCallback, flagXform)
+    myAlarm.setTimeFromNow(12.0)  # 12 seconds
+    myAlarm.schedule()
 
 # CODE FOR The Inventor Mentor ENDS HERE
 ###########################################################
 
-	root = SoSeparator()
-	root.ref()
-	root.addChild(flagXform)
-	myCone = SoCone()
-	myCone.bottomRadius(0.1)
-	root.addChild(myCone)
+    root = SoSeparator()
+    root.ref()
+    root.addChild(flagXform)
+    myCone = SoCone()
+    myCone.bottomRadius(0.1)
+    root.addChild(myCone)
 
-	myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoQtExaminerViewer(myWindow)
 
-	# Put our scene in myViewer, change the title
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("Raise The Cone")
-	myViewer.show()
+    # Put our scene in myViewer, change the title
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("Raise The Cone")
+    myViewer.show()
 
-	SoQt_show(myWindow)  # Display main window
-	SoQt_mainLoop()      # Main Inventor event loop
+    SoQt_show(myWindow)  # Display main window
+    SoQt_mainLoop()      # Main Inventor event loop
 
 if __name__ == "__main__":
     main()

@@ -100,73 +100,73 @@ IV_STRICT = 1
 
 # Routine to create a scene graph representing a dodecahedron
 def makeStellatedDodecahedron():
-	result = SoSeparator()
-	result.ref()
+    result = SoSeparator()
+    result.ref()
 
-	if IV_STRICT:
-		# This is the preferred code for Inventor 2.1
+    if IV_STRICT:
+        # This is the preferred code for Inventor 2.1
 
-		# Using the new SoVertexProperty node is more efficient
-		myVertexProperty = SoVertexProperty()
+        # Using the new SoVertexProperty node is more efficient
+        myVertexProperty = SoVertexProperty()
 
-		# Define colors for the faces
-		for i in range(12):
-			myVertexProperty.orderedRGBA.set1Value(i, SbColor(colors[i]).getPackedValue())
-			myVertexProperty.materialBinding(SoMaterialBinding.PER_FACE)
+        # Define colors for the faces
+        for i in range(12):
+            myVertexProperty.orderedRGBA.set1Value(i, SbColor(colors[i]).getPackedValue())
+            myVertexProperty.materialBinding(SoMaterialBinding.PER_FACE)
 
-		# Define coordinates for vertices
-		myVertexProperty.vertex.setValues(0, 12, vertexPositions)
+        # Define coordinates for vertices
+        myVertexProperty.vertex.setValues(0, 12, vertexPositions)
 
-		# Define the IndexedFaceSet, with indices into
-		# the vertices:
-		myFaceSet = SoIndexedFaceSet()
-		myFaceSet.coordIndex.setValues(0, 72, indices)
+        # Define the IndexedFaceSet, with indices into
+        # the vertices:
+        myFaceSet = SoIndexedFaceSet()
+        myFaceSet.coordIndex.setValues(0, 72, indices)
 
-		myFaceSet.vertexProperty.setValue(myVertexProperty)
-		result.addChild(myFaceSet)
+        myFaceSet.vertexProperty.setValue(myVertexProperty)
+        result.addChild(myFaceSet)
 
-	else:
-		# Define colors for the faces
-		myMaterials = SoMaterial()
-		myMaterials.diffuseColor.setValues(0, 12, colors)
-		result.addChild(myMaterials)
-		myMaterialBinding = SoMaterialBinding()
-		myMaterialBinding.value(SoMaterialBinding.PER_FACE)
-		result.addChild(myMaterialBinding)
+    else:
+        # Define colors for the faces
+        myMaterials = SoMaterial()
+        myMaterials.diffuseColor.setValues(0, 12, colors)
+        result.addChild(myMaterials)
+        myMaterialBinding = SoMaterialBinding()
+        myMaterialBinding.value(SoMaterialBinding.PER_FACE)
+        result.addChild(myMaterialBinding)
 
-		# Define coordinates for vertices
-		myCoords = SoCoordinate3()
-		myCoords.point.setValues(0, 12, vertexPositions)
-		result.addChild(myCoords)
+        # Define coordinates for vertices
+        myCoords = SoCoordinate3()
+        myCoords.point.setValues(0, 12, vertexPositions)
+        result.addChild(myCoords)
 
-		# Define the IndexedFaceSet, with indices into
-		# the vertices:
-		myFaceSet = SoIndexedFaceSet()
-		myFaceSet.coordIndex.setValues(0, 72, indices)
-		result.addChild(myFaceSet)
+        # Define the IndexedFaceSet, with indices into
+        # the vertices:
+        myFaceSet = SoIndexedFaceSet()
+        myFaceSet.coordIndex.setValues(0, 72, indices)
+        result.addChild(myFaceSet)
 
-	result.unrefNoDelete()
-	return result
+    result.unrefNoDelete()
+    return result
 
 ## CODE FOR The Inventor Mentor ENDS HERE
 ##############################################################
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	root = makeStellatedDodecahedron()
-	root.ref()
+    root = makeStellatedDodecahedron()
+    root.ref()
 
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("Indexed Face Set: Stellated Dodecahedron")
-	myViewer.show()
-	myViewer.viewAll()
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("Indexed Face Set: Stellated Dodecahedron")
+    myViewer.show()
+    myViewer.viewAll()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()

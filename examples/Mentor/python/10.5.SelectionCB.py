@@ -52,83 +52,83 @@ white   = (0.8, 0.8, 0.8)  # Color when not selected
 # We determine which object was selected, and change 
 # that objects material color.
 def mySelectionCB(void, selectionPath):
-	if selectionPath.getTail().isOfType(SoText3_getClassTypeId()):
-		textMaterial.diffuseColor.setValue(reddish)
-	elif selectionPath.getTail().isOfType(SoSphere_getClassTypeId()):
-		sphereMaterial.diffuseColor.setValue(reddish)
+    if selectionPath.getTail().isOfType(SoText3_getClassTypeId()):
+        textMaterial.diffuseColor.setValue(reddish)
+    elif selectionPath.getTail().isOfType(SoSphere_getClassTypeId()):
+        sphereMaterial.diffuseColor.setValue(reddish)
 
 # This routine is called whenever an object gets deselected. 
 # We determine which object was deselected, and reset 
 # that objects material color.
 def myDeselectionCB(void, deselectionPath):
-	if deselectionPath.getTail().isOfType(SoText3_getClassTypeId()):
-		textMaterial.diffuseColor.setValue(white)
-	elif deselectionPath.getTail().isOfType(SoSphere_getClassTypeId()):
-		sphereMaterial.diffuseColor.setValue(white)
+    if deselectionPath.getTail().isOfType(SoText3_getClassTypeId()):
+        textMaterial.diffuseColor.setValue(white)
+    elif deselectionPath.getTail().isOfType(SoSphere_getClassTypeId()):
+        sphereMaterial.diffuseColor.setValue(white)
 
 def main():
-	global textMaterial, sphereMaterial
-	
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    global textMaterial, sphereMaterial
+    
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	# Create and set up the selection node
-	selectionRoot = SoSelection()
-	selectionRoot.ref()
-	selectionRoot.policy(SoSelection.SINGLE)
-	selectionRoot.addPythonSelectionCallback(mySelectionCB)
-	selectionRoot.addPythonDeselectionCallback(myDeselectionCB)
+    # Create and set up the selection node
+    selectionRoot = SoSelection()
+    selectionRoot.ref()
+    selectionRoot.policy(SoSelection.SINGLE)
+    selectionRoot.addPythonSelectionCallback(mySelectionCB)
+    selectionRoot.addPythonDeselectionCallback(myDeselectionCB)
 
-	# Create the scene graph
-	root = SoSeparator()
-	selectionRoot.addChild(root)
+    # Create the scene graph
+    root = SoSeparator()
+    selectionRoot.addChild(root)
 
-	myCamera = SoPerspectiveCamera()
-	root.addChild(myCamera)
-	root.addChild(SoDirectionalLight())
+    myCamera = SoPerspectiveCamera()
+    root.addChild(myCamera)
+    root.addChild(SoDirectionalLight())
 
-	# Add a sphere node
-	sphereRoot = SoSeparator()
-	sphereTransform = SoTransform()
-	sphereTransform.translation.setValue(17., 17., 0.)
-	sphereTransform.scaleFactor.setValue(8., 8., 8.)
-	sphereRoot.addChild(sphereTransform)
+    # Add a sphere node
+    sphereRoot = SoSeparator()
+    sphereTransform = SoTransform()
+    sphereTransform.translation.setValue(17., 17., 0.)
+    sphereTransform.scaleFactor.setValue(8., 8., 8.)
+    sphereRoot.addChild(sphereTransform)
 
-	sphereMaterial = SoMaterial()
-	sphereMaterial.diffuseColor.setValue(.8, .8, .8)
-	sphereRoot.addChild(sphereMaterial)
-	sphereRoot.addChild(SoSphere())
-	root.addChild(sphereRoot)
+    sphereMaterial = SoMaterial()
+    sphereMaterial.diffuseColor.setValue(.8, .8, .8)
+    sphereRoot.addChild(sphereMaterial)
+    sphereRoot.addChild(SoSphere())
+    root.addChild(sphereRoot)
 
-	# Add a text node
-	textRoot = SoSeparator()
-	textTransform = SoTransform()
-	textTransform.translation.setValue(0., -1., 0.)
-	textRoot.addChild(textTransform)
+    # Add a text node
+    textRoot = SoSeparator()
+    textTransform = SoTransform()
+    textTransform.translation.setValue(0., -1., 0.)
+    textRoot.addChild(textTransform)
 
-	textMaterial = SoMaterial()
-	textMaterial.diffuseColor.setValue(.8, .8, .8)
-	textRoot.addChild(textMaterial)
-	textPickStyle = SoPickStyle()
-	textPickStyle.style.setValue(SoPickStyle.BOUNDING_BOX)
-	textRoot.addChild(textPickStyle)
-	myText = SoText3()
-	myText.string("rhubarb")
-	textRoot.addChild(myText)
-	root.addChild(textRoot)
+    textMaterial = SoMaterial()
+    textMaterial.diffuseColor.setValue(.8, .8, .8)
+    textRoot.addChild(textMaterial)
+    textPickStyle = SoPickStyle()
+    textPickStyle.style.setValue(SoPickStyle.BOUNDING_BOX)
+    textRoot.addChild(textPickStyle)
+    myText = SoText3()
+    myText.string("rhubarb")
+    textRoot.addChild(myText)
+    root.addChild(textRoot)
 
-	myRenderArea = SoQtRenderArea(myWindow)
-	myRenderArea.setSceneGraph(selectionRoot)
-	myRenderArea.setTitle("My Selection Callback")
-	myRenderArea.show()
+    myRenderArea = SoQtRenderArea(myWindow)
+    myRenderArea.setSceneGraph(selectionRoot)
+    myRenderArea.setTitle("My Selection Callback")
+    myRenderArea.show()
 
-	# Make the camera see the whole scene
-	myViewport = myRenderArea.getViewportRegion()
-	myCamera.viewAll(root, myViewport, 2.0)
+    # Make the camera see the whole scene
+    myViewport = myRenderArea.getViewportRegion()
+    myCamera.viewAll(root, myViewport, 2.0)
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

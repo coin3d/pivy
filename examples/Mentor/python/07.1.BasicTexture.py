@@ -42,34 +42,34 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	root = SoSeparator()
-	root.ref()
+    root = SoSeparator()
+    root.ref()
 
-	# Choose a texture 
-	rock = SoTexture2()
-	root.addChild(rock)
-	rock.filename.setValue("brick.1.rgb")
+    # Choose a texture 
+    rock = SoTexture2()
+    root.addChild(rock)
+    rock.filename.setValue("brick.1.rgb")
 
-	# Make a cube
-	root.addChild(SoCube())
+    # Make a cube
+    root.addChild(SoCube())
 
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("Default Texture Coords")
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("Default Texture Coords")
 
-	# In Inventor 2.1, if the machine does not have hardware texture
-	# mapping, we must override the default drawStyle to display textures.
-	myViewer.setDrawStyle(SoQtViewer.STILL, SoQtViewer.VIEW_AS_IS)
-	
-	myViewer.show()
-	myViewer.viewAll()
-	
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    # In Inventor 2.1, if the machine does not have hardware texture
+    # mapping, we must override the default drawStyle to display textures.
+    myViewer.setDrawStyle(SoQtViewer.STILL, SoQtViewer.VIEW_AS_IS)
+    
+    myViewer.show()
+    myViewer.viewAll()
+    
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()

@@ -41,40 +41,40 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	root = SoSeparator()
-	root.ref()
-	myCamera = SoPerspectiveCamera()
-	root.addChild(myCamera)
-	root.addChild(SoDirectionalLight())
-	
-	# This transformation is modified to rotate the cone
-	myRotXYZ = SoRotationXYZ()
-	root.addChild(myRotXYZ)
+    root = SoSeparator()
+    root.ref()
+    myCamera = SoPerspectiveCamera()
+    root.addChild(myCamera)
+    root.addChild(SoDirectionalLight())
+    
+    # This transformation is modified to rotate the cone
+    myRotXYZ = SoRotationXYZ()
+    root.addChild(myRotXYZ)
 
-	myMaterial = SoMaterial()
-	myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)   # Red
-	root.addChild(myMaterial)
-	root.addChild(SoCone())
+    myMaterial = SoMaterial()
+    myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)   # Red
+    root.addChild(myMaterial)
+    root.addChild(SoCone())
 
-	# An engine rotates the object. The output of myCounter 
+    # An engine rotates the object. The output of myCounter 
     # is the time in seconds since the program started.
-	# Connect this output to the angle field of myRotXYZ
-	myRotXYZ.axis(SoRotationXYZ.X)     # rotate about X axis
-	myCounter = SoElapsedTime()
-	myRotXYZ.angle.connectFrom(myCounter.timeOut)
+    # Connect this output to the angle field of myRotXYZ
+    myRotXYZ.axis(SoRotationXYZ.X)     # rotate about X axis
+    myCounter = SoElapsedTime()
+    myRotXYZ.angle.connectFrom(myCounter.timeOut)
 
-	myRenderArea = SoQtRenderArea(myWindow)
-	myCamera.viewAll(root, myRenderArea.getViewportRegion())
-	myRenderArea.setSceneGraph(root)
-	myRenderArea.setTitle("Engine Spin")
-	myRenderArea.show()
+    myRenderArea = SoQtRenderArea(myWindow)
+    myCamera.viewAll(root, myRenderArea.getViewportRegion())
+    myRenderArea.setSceneGraph(root)
+    myRenderArea.setTitle("Engine Spin")
+    myRenderArea.show()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()

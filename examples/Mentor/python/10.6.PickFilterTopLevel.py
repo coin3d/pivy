@@ -46,62 +46,62 @@ import sys
 
 # Pick the topmost node beneath the selection node
 def pickFilterCB(void, pick):
-	# See which child of selection got picked
-	p = pick.getPath()
-	
-	for i in range(p.getLength() - 1):
-		n = p.getNode(i)
-		if n.isOfType(SoSelection_getClassTypeId()):
-			break
+    # See which child of selection got picked
+    p = pick.getPath()
+    
+    for i in range(p.getLength() - 1):
+        n = p.getNode(i)
+        if n.isOfType(SoSelection_getClassTypeId()):
+            break
 
-	# Copy 2 nodes from the path:
-	# selection and the picked child
-	return p.copy(i, 2)
+    # Copy 2 nodes from the path:
+    # selection and the picked child
+    return p.copy(i, 2)
 
 def main():
-	# Initialization
-	mainWindow = SoQt_init(sys.argv[0])
+    # Initialization
+    mainWindow = SoQt_init(sys.argv[0])
     
-	# Open the data file
-	input = SoInput()
-	datafile = "parkbench.iv"
-	if not input.openFile(datafile):
-		print >> sys.stderr, "Cannot open %s for reading." % (datafile)
-		sys.exit(1)
+    # Open the data file
+    input = SoInput()
+    datafile = "parkbench.iv"
+    if not input.openFile(datafile):
+        print >> sys.stderr, "Cannot open %s for reading." % (datafile)
+        sys.exit(1)
 
-	# Read the input file
-	sep = SoSeparator()
-	sep.addChild(SoDB_readAll(input))
+    # Read the input file
+    sep = SoSeparator()
+    sep.addChild(SoDB_readAll(input))
    
-	# Create two selection roots - one will use the pick filter.
-	topLevelSel = SoSelection()
-	topLevelSel.addChild(sep)
-	topLevelSel.setPythonPickFilterCallback(pickFilterCB)
+    # Create two selection roots - one will use the pick filter.
+    topLevelSel = SoSelection()
+    topLevelSel.addChild(sep)
+    topLevelSel.setPythonPickFilterCallback(pickFilterCB)
 
-	defaultSel = SoSelection()
-	defaultSel.addChild(sep)
+    defaultSel = SoSelection()
+    defaultSel.addChild(sep)
 
-	# Create two viewers, one to show the pick filter for top level
-	# selection, the other to show default selection.
-	viewer1 = SoQtExaminerViewer(mainWindow)
-	viewer1.setSceneGraph(topLevelSel)
-	boxhra1 = SoBoxHighlightRenderAction()
-	viewer1.setGLRenderAction(boxhra1)
-	viewer1.redrawOnSelectionChange(topLevelSel)
-	viewer1.setTitle("Top Level Selection")
+    # Create two viewers, one to show the pick filter for top level
+    # selection, the other to show default selection.
+    viewer1 = SoQtExaminerViewer(mainWindow)
+    viewer1.setSceneGraph(topLevelSel)
+    boxhra1 = SoBoxHighlightRenderAction()
+    viewer1.setGLRenderAction(boxhra1)
+    viewer1.redrawOnSelectionChange(topLevelSel)
+    viewer1.setTitle("Top Level Selection")
 
-	viewer2 = SoQtExaminerViewer()
-	viewer2.setSceneGraph(defaultSel)
-	boxhra2 = SoBoxHighlightRenderAction()
-	viewer2.setGLRenderAction(boxhra2)
-	viewer2.redrawOnSelectionChange(defaultSel)
-	viewer2.setTitle("Default Selection")
+    viewer2 = SoQtExaminerViewer()
+    viewer2.setSceneGraph(defaultSel)
+    boxhra2 = SoBoxHighlightRenderAction()
+    viewer2.setGLRenderAction(boxhra2)
+    viewer2.redrawOnSelectionChange(defaultSel)
+    viewer2.setTitle("Default Selection")
 
-	viewer1.show()
-	viewer2.show()
+    viewer1.show()
+    viewer2.show()
    
-	SoQt_show(mainWindow)
-	SoQt_mainLoop()
+    SoQt_show(mainWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

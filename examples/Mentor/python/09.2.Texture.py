@@ -43,75 +43,75 @@ from pivy import *
 import sys
 
 def generateTextureMap(root, texture, textureWidth, textureHeight):
-	myViewport = SbViewportRegion(textureWidth, textureHeight)
+    myViewport = SbViewportRegion(textureWidth, textureHeight)
 
-	# Render the scene
-	myRenderer = SoOffscreenRenderer(myViewport)
-	myRenderer.setBackgroundColor(SbColor(0.3, 0.3, 0.3))
-	if not myRenderer.render(root):
-		del myRenderer
-		return FALSE
+    # Render the scene
+    myRenderer = SoOffscreenRenderer(myViewport)
+    myRenderer.setBackgroundColor(SbColor(0.3, 0.3, 0.3))
+    if not myRenderer.render(root):
+        del myRenderer
+        return FALSE
 
-	# Generate the texture
-	texture.image.setValue(SbVec2s(textureWidth, textureHeight),
-						   SoOffscreenRenderer.RGB, myRenderer.getBuffer())
+    # Generate the texture
+    texture.image.setValue(SbVec2s(textureWidth, textureHeight),
+                           SoOffscreenRenderer.RGB, myRenderer.getBuffer())
 
-	del myRenderer
-	return TRUE
+    del myRenderer
+    return TRUE
 
 def main():
-	# Initialize Inventor and Qt
-	appWindow = SoQt_init(sys.argv[0])
-	if appWindow == None:
-		sys.exit(1)
+    # Initialize Inventor and Qt
+    appWindow = SoQt_init(sys.argv[0])
+    if appWindow == None:
+        sys.exit(1)
 
-	# Make a scene from reading in a file
-	texRoot = SoSeparator()
-	input = SoInput()
+    # Make a scene from reading in a file
+    texRoot = SoSeparator()
+    input = SoInput()
 
-	texRoot.ref()
-	input.openFile("jumpyMan.iv")
-	result = SoDB_readAll(input)
+    texRoot.ref()
+    input.openFile("jumpyMan.iv")
+    result = SoDB_readAll(input)
 
-	myCamera = SoPerspectiveCamera()
-	rot = SoRotationXYZ()
-	rot.axis(SoRotationXYZ.X)
-	rot.angle(M_PI_2)
-	myCamera.position.setValue(SbVec3f(-0.2, -0.2, 2.0))
-	myCamera.scaleHeight(0.4) 
-	texRoot.addChild(myCamera)
-	texRoot.addChild(SoDirectionalLight())
-	texRoot.addChild(rot)
-	texRoot.addChild(result)
+    myCamera = SoPerspectiveCamera()
+    rot = SoRotationXYZ()
+    rot.axis(SoRotationXYZ.X)
+    rot.angle(M_PI_2)
+    myCamera.position.setValue(SbVec3f(-0.2, -0.2, 2.0))
+    myCamera.scaleHeight(0.4) 
+    texRoot.addChild(myCamera)
+    texRoot.addChild(SoDirectionalLight())
+    texRoot.addChild(rot)
+    texRoot.addChild(result)
 
-	# Generate the texture map
-	texture = SoTexture2()
-	texture.ref()
-	if generateTextureMap(texRoot, texture, 64, 64):
-		print "Successfully generated texture map"
-	else:
-		print "Could not generate texture map"
-	texRoot.unref()
+    # Generate the texture map
+    texture = SoTexture2()
+    texture.ref()
+    if generateTextureMap(texRoot, texture, 64, 64):
+        print "Successfully generated texture map"
+    else:
+        print "Could not generate texture map"
+    texRoot.unref()
 
-	# Make a scene with a cube and apply the texture to it
-	root = SoSeparator()
-	root.ref()
-	root.addChild(texture)
-	root.addChild(SoCube())
+    # Make a scene with a cube and apply the texture to it
+    root = SoSeparator()
+    root.ref()
+    root.addChild(texture)
+    root.addChild(SoCube())
 
-	# Initialize an Examiner Viewer
-	viewer = SoQtExaminerViewer(appWindow)
-	viewer.setSceneGraph(root)
-	viewer.setTitle("Offscreen Rendered Texture")
+    # Initialize an Examiner Viewer
+    viewer = SoQtExaminerViewer(appWindow)
+    viewer.setSceneGraph(root)
+    viewer.setTitle("Offscreen Rendered Texture")
 
-	# In Inventor 2.1, if the machine does not have hardware texture
-	# mapping, we must override the default drawStyle to display textures.
-	viewer.setDrawStyle(SoQtViewer.STILL, SoQtViewer.VIEW_AS_IS)
+    # In Inventor 2.1, if the machine does not have hardware texture
+    # mapping, we must override the default drawStyle to display textures.
+    viewer.setDrawStyle(SoQtViewer.STILL, SoQtViewer.VIEW_AS_IS)
 
-	viewer.show()
+    viewer.show()
 
-	SoQt_show(appWindow)
-	SoQt_mainLoop()
+    SoQt_show(appWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()

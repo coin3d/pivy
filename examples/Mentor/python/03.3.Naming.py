@@ -55,20 +55,20 @@ def RemoveCube():
 
 def main():
    SoDB_init()
-	
+    
    # Create some objects and give them names:
    root = SoSeparator()
    root.ref()
    root.setName("Root")
-	
+    
    myCube = SoCube()
    root.addChild(myCube)
    myCube.setName("MyCube")
-	
+    
    mySphere = SoSphere()
    root.addChild(mySphere)
    mySphere.setName("MySphere")
-	
+    
    RemoveCube()
 
 if __name__ == "__main__":

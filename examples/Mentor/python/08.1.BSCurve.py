@@ -162,7 +162,7 @@ def main():
     # Initialize Inventor and Qt
     appWindow = SoQt_init(sys.argv[0])
     if appWindow == None:
-	sys.exit(1)
+        sys.exit(1)
         
     root = SoSeparator()
     root.ref()

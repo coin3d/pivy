@@ -44,58 +44,58 @@ import sys
 
 #  This is called by the Material Editor when a value changes
 def myMaterialEditorCB(userData, newMtl):
-	myMtl = cast(userData, "SoMaterial")
+    myMtl = cast(userData, "SoMaterial")
 
-	# Copy all the fields from the new material
-	myMtl.copyFieldValues(newMtl)
+    # Copy all the fields from the new material
+    myMtl.copyFieldValues(newMtl)
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])  
-	if myWindow == None: sys.exit(1)     
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])  
+    if myWindow == None: sys.exit(1)     
 
-	# Build the render area in the applications main window
-	myRenderArea = SoQtRenderArea(myWindow)
-	myRenderArea.setSize(SbVec2s(200, 200))
+    # Build the render area in the applications main window
+    myRenderArea = SoQtRenderArea(myWindow)
+    myRenderArea.setSize(SbVec2s(200, 200))
    
-	# Build the Material Editor in its own window
-	myEditor = SoQtMaterialEditor()
+    # Build the Material Editor in its own window
+    myEditor = SoQtMaterialEditor()
    
-	# Create a scene graph
-	root = SoSeparator()
-	myCamera = SoPerspectiveCamera()
-	myMaterial = SoMaterial()
+    # Create a scene graph
+    root = SoSeparator()
+    myCamera = SoPerspectiveCamera()
+    myMaterial = SoMaterial()
    
-	root.ref()
-	myCamera.position.setValue(0.212482, -0.881014, 2.5)
-	myCamera.heightAngle(M_PI/4)
-	root.addChild(myCamera)
-	root.addChild(SoDirectionalLight())
-	root.addChild(myMaterial)
+    root.ref()
+    myCamera.position.setValue(0.212482, -0.881014, 2.5)
+    myCamera.heightAngle(M_PI/4)
+    root.addChild(myCamera)
+    root.addChild(SoDirectionalLight())
+    root.addChild(myMaterial)
 
-	# Read the geometry from a file and add to the scene
-	myInput = SoInput()
-	if not myInput.openFile("dogDish.iv"):
-		sys.exit(1)
-	geomObject = SoDB_readAll(myInput)
-	if geomObject == None:
-		sys.exit(1)
-	root.addChild(geomObject)
+    # Read the geometry from a file and add to the scene
+    myInput = SoInput()
+    if not myInput.openFile("dogDish.iv"):
+        sys.exit(1)
+    geomObject = SoDB_readAll(myInput)
+    if geomObject == None:
+        sys.exit(1)
+    root.addChild(geomObject)
 
-	# Add a callback for when the material changes
-	myEditor.addPythonMaterialChangedCallback(myMaterialEditorCB, myMaterial) 
+    # Add a callback for when the material changes
+    myEditor.addPythonMaterialChangedCallback(myMaterialEditorCB, myMaterial) 
 
-	# Set the scene graph
-	myRenderArea.setSceneGraph(root)
+    # Set the scene graph
+    myRenderArea.setSceneGraph(root)
 
-	# Show the main window and the Material Editor
-	myRenderArea.setTitle("Editor Callback")
-	myRenderArea.show()
-	SoQt_show(myWindow)
-	myEditor.show()
+    # Show the main window and the Material Editor
+    myRenderArea.setTitle("Editor Callback")
+    myRenderArea.show()
+    SoQt_show(myWindow)
+    myEditor.show()
 
-	# Loop forever
-	SoQt_mainLoop()
+    # Loop forever
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -45,63 +45,63 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Qt
-	myWindow = SoQt_init(sys.argv[0])
-	if myWindow == None: sys.exit(1)
+    # Initialize Inventor and Qt
+    myWindow = SoQt_init(sys.argv[0])
+    if myWindow == None: sys.exit(1)
 
-	root = SoSeparator()
-	root.ref()
+    root = SoSeparator()
+    root.ref()
 
-	# Create two separators, for left and right objects.
-	leftSep = SoSeparator()
-	rightSep = SoSeparator()
-	root.addChild(leftSep)
-	root.addChild(rightSep)
+    # Create two separators, for left and right objects.
+    leftSep = SoSeparator()
+    rightSep = SoSeparator()
+    root.addChild(leftSep)
+    root.addChild(rightSep)
 
-	# Create the transformation nodes
-	leftTranslation  = SoTranslation()
-	rightTranslation = SoTranslation()
-	myRotation = SoRotationXYZ()
-	myScale = SoScale()
+    # Create the transformation nodes
+    leftTranslation  = SoTranslation()
+    rightTranslation = SoTranslation()
+    myRotation = SoRotationXYZ()
+    myScale = SoScale()
 
-	# Fill in the values
-	leftTranslation.translation.setValue(-1.0, 0.0, 0.0)
-	rightTranslation.translation.setValue(1.0, 0.0, 0.0)
-	myRotation.angle(M_PI/2)   # 90 degrees
-	myRotation.axis(SoRotationXYZ.X)
-	myScale.scaleFactor.setValue(2., 1., 3.)
+    # Fill in the values
+    leftTranslation.translation.setValue(-1.0, 0.0, 0.0)
+    rightTranslation.translation.setValue(1.0, 0.0, 0.0)
+    myRotation.angle(M_PI/2)   # 90 degrees
+    myRotation.axis(SoRotationXYZ.X)
+    myScale.scaleFactor.setValue(2., 1., 3.)
 
-	# Add transforms to the scene.
-	leftSep.addChild(leftTranslation)   # left graph
-	leftSep.addChild(myRotation)        # then rotated
-	leftSep.addChild(myScale)           # first scaled
+    # Add transforms to the scene.
+    leftSep.addChild(leftTranslation)   # left graph
+    leftSep.addChild(myRotation)        # then rotated
+    leftSep.addChild(myScale)           # first scaled
 
-	rightSep.addChild(rightTranslation) # right graph
-	rightSep.addChild(myScale)          # then scaled
-	rightSep.addChild(myRotation)       # first rotated
+    rightSep.addChild(rightTranslation) # right graph
+    rightSep.addChild(myScale)          # then scaled
+    rightSep.addChild(myRotation)       # first rotated
 
-	# Read an object from file. (as in example 4.2.Lights)
-	myInput = SoInput()
-	if not myInput.openFile("temple.iv"):
-		sys.exit(1)
+    # Read an object from file. (as in example 4.2.Lights)
+    myInput = SoInput()
+    if not myInput.openFile("temple.iv"):
+        sys.exit(1)
 
-	fileContents = SoDB_readAll(myInput)
-	if fileContents == None: 
-		sys.exit(1)
+    fileContents = SoDB_readAll(myInput)
+    if fileContents == None: 
+        sys.exit(1)
 
-	# Add an instance of the object under each separator.
-	leftSep.addChild(fileContents)
-	rightSep.addChild(fileContents)
+    # Add an instance of the object under each separator.
+    leftSep.addChild(fileContents)
+    rightSep.addChild(fileContents)
 
-	# Construct a renderArea and display the scene.
-	myViewer = SoQtExaminerViewer(myWindow)
-	myViewer.setSceneGraph(root)
-	myViewer.setTitle("Transform Ordering")
-	myViewer.show()
-	myViewer.viewAll()
+    # Construct a renderArea and display the scene.
+    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer.setSceneGraph(root)
+    myViewer.setTitle("Transform Ordering")
+    myViewer.show()
+    myViewer.viewAll()
 
-	SoQt_show(myWindow)
-	SoQt_mainLoop()
+    SoQt_show(myWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()

@@ -44,9 +44,9 @@ from pivy import *
 import sys
 
 class callbackData:
-	vwr = None
-	filename = None
-	scene = None
+    vwr = None
+    filename = None
+    scene = None
 
 ##############################################################
 ## CODE FOR The Inventor Mentor STARTS HERE
@@ -57,65 +57,65 @@ def printToPostScript(root, file, viewer, printerDPI):
     # of pixels per inch of the screen device.  This size in
     # inches will be the size of the Postscript image that will
     # be generated.
-	vp  = viewer.getViewportRegion()
-	imagePixSize = vp.getViewportSizePixels()
-	imageInches = SbVec2f()
+    vp  = viewer.getViewportRegion()
+    imagePixSize = vp.getViewportSizePixels()
+    imageInches = SbVec2f()
 
-	pixPerInch = SoOffscreenRenderer_getScreenPixelsPerInch()
-	imageInches.setValue(imagePixSize[0] / pixPerInch,
+    pixPerInch = SoOffscreenRenderer_getScreenPixelsPerInch()
+    imageInches.setValue(imagePixSize[0] / pixPerInch,
                          imagePixSize[1] / pixPerInch)
 
     # The resolution to render the scene for the printer
     # is equal to the size of the image in inches times
     # the printer DPI
-	postScriptRes = SbVec2s()
-	postScriptRes.setValue(imageInches[0]*printerDPI,
+    postScriptRes = SbVec2s()
+    postScriptRes.setValue(imageInches[0]*printerDPI,
                            imageInches[1]*printerDPI)
 
     # Create a viewport to render the scene into.
-	myViewport = SbViewportRegion()
-	myViewport.setWindowSize(postScriptRes)
-	myViewport.setPixelsPerInch(printerDPI)
+    myViewport = SbViewportRegion()
+    myViewport.setWindowSize(postScriptRes)
+    myViewport.setPixelsPerInch(printerDPI)
     
     # Render the scene
-	myRenderer = SoOffscreenRenderer(myViewport)
+    myRenderer = SoOffscreenRenderer(myViewport)
 
-	if not myRenderer.render(root):
-		return FALSE
+    if not myRenderer.render(root):
+        return FALSE
 
     # Generate PostScript and write it to the given file
-	myRenderer.writeToPostScript(file)
+    myRenderer.writeToPostScript(file)
 
-	return TRUE
+    return TRUE
 
 # CODE FOR The Inventor Mentor ENDS HERE
 ##############################################################
 
 def processKeyEvents(data, cb):
-	if SoKeyboardEvent_isKeyPressEvent(cb.getEvent(), SoKeyboardEvent.P):
-		myFile = open(data.filename, "w")
+    if SoKeyboardEvent_isKeyPressEvent(cb.getEvent(), SoKeyboardEvent.P):
+        myFile = open(data.filename, "w")
 
-		if myFile == None:
-			sys.stderr.write("Cannot open output file\n")
-			sys.exit(1)
+        if myFile == None:
+            sys.stderr.write("Cannot open output file\n")
+            sys.exit(1)
 
-		sys.stdout.write("Printing scene... ")
-		sys.stdout.flush()
-		if not printToPostScript(data.scene, myFile, data.vwr, 75):
-			sys.stderr.write("Cannot print image\n")
-			myFile.close()
-			sys.exit(1)
+        sys.stdout.write("Printing scene... ")
+        sys.stdout.flush()
+        if not printToPostScript(data.scene, myFile, data.vwr, 75):
+            sys.stderr.write("Cannot print image\n")
+            myFile.close()
+            sys.exit(1)
 
-		myFile.close()
-		sys.stdout.write("  ...done printing.\n")
-		sys.stdout.flush()
-		cb.setHandled()
+        myFile.close()
+        sys.stdout.write("  ...done printing.\n")
+        sys.stdout.flush()
+        cb.setHandled()
 
 def main():
     # Initialize Inventor and Qt
     appWindow = SoQt_init(sys.argv[0])
     if appWindow == None:
-	sys.exit(1)
+        sys.exit(1)
         
     # Verify the command line arguments
     if len(sys.argv) != 3:

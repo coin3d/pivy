@@ -67,11 +67,6 @@ cast(PyObject * self, PyObject * args)
   return SWIG_NewPointerObj((void*)cast_obj, swig_type, 0);
 }
 
-char *
-add_so_prefix(const char * name) {
-  
-}
-
 /* an autocasting helper function */
 SWIGEXPORT(PyObject *)
 autocast_base(SoBase * base)

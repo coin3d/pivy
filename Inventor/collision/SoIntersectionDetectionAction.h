@@ -47,7 +47,7 @@ class SoIntersectionDetectionActionP;
 static SoCallbackAction::Response
 SoIntersectionVisitationPythonCB(void * closure, 
                                  const SoPath * where)
-   {
+{
   PyObject *func, *arglist;
   PyObject *result, *path;
   int iresult = 0;
@@ -82,8 +82,8 @@ SoIntersectionFilterPythonCB(void * closure,
   PyObject *result, *path1, *path2;
   int iresult = 0;
 
-  path1 = SWIG_NewPointerObj((void *) path1, SWIGTYPE_p_SoPath, 1);
-  path2 = SWIG_NewPointerObj((void *) path2, SWIGTYPE_p_SoPath, 1);
+  path1 = SWIG_NewPointerObj((void *) p1, SWIGTYPE_p_SoPath, 1);
+  path2 = SWIG_NewPointerObj((void *) p2, SWIGTYPE_p_SoPath, 1);
 
   /* the first item in the userdata sequence is the python callback
    * function; the second is the supplied userdata python object */
@@ -112,8 +112,8 @@ SoIntersectionPythonCB(void * closure,
   PyObject *result, *primitive1, *primitive2;
   int iresult = 0;
 
-  primitive1 = SWIG_NewPointerObj((void *) primitive1, SWIGTYPE_p_SoIntersectingPrimitive, 1);
-  primitive2 = SWIG_NewPointerObj((void *) primitive2, SWIGTYPE_p_SoIntersectingPrimitive, 1);
+  primitive1 = SWIG_NewPointerObj((void *) p1, SWIGTYPE_p_SoIntersectingPrimitive, 1);
+  primitive2 = SWIG_NewPointerObj((void *) p2, SWIGTYPE_p_SoIntersectingPrimitive, 1);
 
   /* the first item in the userdata sequence is the python callback
    * function; the second is the supplied userdata python object */

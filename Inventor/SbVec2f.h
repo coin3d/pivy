@@ -27,10 +27,10 @@
 #ifdef __PIVY__
 %{
 static void
-convert_SbVec2f_array(PyObject *input, float temp[][2])
+convert_SbVec2f_array(PyObject *input, float temp[2])
 {
   if (PySequence_Check(input)) {
-	if (!PyArg_ParseTuple(input, "ff", &(*temp)[0], &(*temp)[1])) {
+	if (!PyArg_ParseTuple(input, "ff", temp+0, temp+1)) {
 	  PyErr_SetString(PyExc_TypeError, "sequence must contain 2 float elements");
 	  return;
 	}
@@ -43,7 +43,7 @@ convert_SbVec2f_array(PyObject *input, float temp[][2])
 %}
 
 %typemap(in) float v[2] (float temp[2]) {
-  convert_SbVec2f_array($input, &temp);
+  convert_SbVec2f_array($input, temp);
   $1 = temp;
 }
 

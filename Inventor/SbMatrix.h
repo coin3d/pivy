@@ -33,14 +33,14 @@ typedef float SbMat[4][4];
 #ifdef __PIVY__
 %{
 static void
-convert_SbMat_array(PyObject *input, SbMat *temp)
+convert_SbMat_array(PyObject *input, SbMat temp)
 {
   if (PySequence_Check(input)) {
 	if (!PyArg_ParseTuple(input, "(ffff)(ffff)(ffff)(ffff)",
-						  &(*temp)[0][0], &(*temp)[0][1], &(*temp)[0][2], &(*temp)[0][3],
-						  &(*temp)[1][0], &(*temp)[1][1], &(*temp)[1][2], &(*temp)[1][3],
-						  &(*temp)[2][0], &(*temp)[2][1], &(*temp)[2][2], &(*temp)[2][3],
-						  &(*temp)[3][0], &(*temp)[3][1], &(*temp)[3][2], &(*temp)[3][3])) {
+						  &temp[0][0], &temp[0][1], &temp[0][2], &temp[0][3],
+						  &temp[1][0], &temp[1][1], &temp[1][2], &temp[1][3],
+						  &temp[2][0], &temp[2][1], &temp[2][2], &temp[2][3],
+						  &temp[3][0], &temp[3][1], &temp[3][2], &temp[3][3])) {
 	  PyErr_SetString(PyExc_TypeError, "sequence must contain 4 sequences where every sequence contains 4 float elements");
 	  return;
 	}
@@ -53,9 +53,26 @@ convert_SbMat_array(PyObject *input, SbMat *temp)
 %}
 
 %typemap(in) SbMat & (SbMat temp) {
-  convert_SbMat_array($input, &temp);
+  convert_SbMat_array($input, temp);
   $1 = &temp;
 }
+
+/**
+ * the ugliest workaround ever - the problem is an unnecessary cast of the
+ * swig code generator which spoils everything -> 
+ * result = (SbMatrix *)new SbMatrix((SbMat const &)*arg1);
+ **/
+%typemap(argout) SbMat & matrix %{
+  result = (SbMatrix *)new SbMatrix(*arg1);
+  resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_SbMatrix, 1);
+%}
+
+/**
+ * same workaround for the setValue member method :(((
+ **/
+%typemap(argout) SbMat & m %{
+  (arg1)->setValue(*arg2);
+%}
 
 %typemap(out) SbMat & {
   int i,j;
@@ -64,7 +81,7 @@ convert_SbMat_array(PyObject *input, SbMat *temp)
   for (i=0; i<4; i++) {
 	PyObject *oi = PyTuple_New(4);
 	for (j=0; j<4; j++) {
-	  PyObject *oj = PyFloat_FromDouble((double) (*$1)[i][j]);
+	  PyObject *oj = PyFloat_FromDouble((double)(*$1)[i][j]);
 	  PyTuple_SetItem(oi, j, oj);
 	}
 	PyTuple_SetItem($result, i, oi);	
@@ -162,6 +179,7 @@ public:
            const float a21, const float a22, const float a23, const float a24,
            const float a31, const float a32, const float a33, const float a34,
            const float a41, const float a42, const float a43, const float a44);
+
   SbMatrix(const SbMat & matrix);
 
 #ifndef __PIVY__

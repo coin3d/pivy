@@ -142,7 +142,7 @@ class pivy_build(build):
     SWIG = ((sys.platform == "win32" and "swig.exe") or "swig")
     SWIG_SUPPRESS_WARNINGS = "-w302,306,307,312,389,361,362,503,509,510"
     SWIG_PARAMS = "-noruntime -v -c++ -python -includeall " + \
-                  "-D__PIVY__ -I. -Ifake_headers -I%s -I/usr/include %s -o %s_wrap.cxx %s.i"
+                  "-D__PIVY__ -I. -Ifake_headers -I%s %s -o %s_wrap.cpp interfaces" + os.sep + "%s.i"
 
     SOGUI = ['SoQt', 'SoXt', 'SoGtk', 'SoWin']
     MODULES = {'pivy'  : ('_pivy',  'coin-config'),
@@ -340,10 +340,10 @@ class pivy_build(build):
     def swig_generate(self):
         "build all available modules and the runtime library"
 
-        if not os.path.isfile("pivy_runtime_wrap.cxx"):
-            print red("\n=== Generating pivy_runtime_wrap.cxx ===")
-            print blue(self.SWIG   + " -runtime -v -c++ -python -interface libpivy_runtime -o pivy_runtime_wrap.cxx pivy_runtime.i")
-            if os.system(self.SWIG + " -runtime -v -c++ -python -interface libpivy_runtime -o pivy_runtime_wrap.cxx pivy_runtime.i"):
+        if not os.path.isfile("pivy_runtime_wrap.cpp"):
+            print red("\n=== Generating pivy_runtime_wrap.cpp ===")
+            print blue(self.SWIG   + " -runtime -v -c++ -python -interface libpivy_runtime -o pivy_runtime_wrap.cpp interfaces" + os.sep + "pivy_runtime.i")
+            if os.system(self.SWIG + " -runtime -v -c++ -python -interface libpivy_runtime -o pivy_runtime_wrap.cpp interfaces" + os.sep + "pivy_runtime.i"):
                 print red("SWIG did not generate runtime wrapper successfully! ** Aborting **")
                 sys.exit(1)
 
@@ -351,10 +351,10 @@ class pivy_build(build):
             if sys.platform == "win32":
                 extra_compile_args = ["/DSWIG_GLOBAL", "/MT"]
             self.ext_modules.append(Extension("libpivy_runtime",
-                                              ["pivy_runtime_wrap.cxx"],
+                                              ["pivy_runtime_wrap.cpp"],
                                               extra_compile_args=extra_compile_args))
         else:
-            print red("=== pivy_runtime_wrap.cxx already exists! ===")
+            print red("=== pivy_runtime_wrap.cpp already exists! ===")
 
         self.py_modules.append("pivy_runtime")
         
@@ -374,8 +374,8 @@ class pivy_build(build):
                 CPP_FLAGS = self.do_os_popen("%s --cppflags" % config_cmd)
                 LDFLAGS_LIBS = self.do_os_popen("%s --ldflags --libs" % config_cmd)
                 
-            if not os.path.isfile(module.lower() + "_wrap.cxx"):
-                print red("\n=== Generating %s_wrap.cxx for %s ===\n" % (module.lower(), module))
+            if not os.path.isfile(module.lower() + "_wrap.cpp"):
+                print red("\n=== Generating %s_wrap.cpp for %s ===\n" % (module.lower(), module))
                 print blue(self.SWIG + " " + self.SWIG_SUPPRESS_WARNINGS + " " + self.SWIG_PARAMS %
                            (INCLUDE_DIR,
                             self.CXX_INCS,
@@ -388,17 +388,18 @@ class pivy_build(build):
                     print red("SWIG did not generate wrappers successfully! ** Aborting **")
                     sys.exit(1)
             else:
-                print red("=== %s_wrap.cxx for %s already exists! ===" % (module.lower(),
+                print red("=== %s_wrap.cpp for %s already exists! ===" % (module.lower(),
                                                                             module))
 
-            runtime_library_dirs = [get_python_lib()]
+            runtime_library_dirs = []
             libraries = ['pivy_runtime']
             if sys.platform == "win32":
                 library_dirs = [self.build_temp + os.path.sep + (self.debug and 'Debug' or 'Release')]
             else:
                 library_dirs = [os.getcwd() + os.path.sep + self.build_lib]
+                runtime_library_dirs = [get_python_lib()]
 
-            self.ext_modules.append(Extension(module_name, [module.lower() + "_wrap.cxx"],
+            self.ext_modules.append(Extension(module_name, [module.lower() + "_wrap.cpp"],
                                               library_dirs=library_dirs,
                                               runtime_library_dirs=runtime_library_dirs,
                                               libraries=libraries,
@@ -420,12 +421,12 @@ class pivy_build(build):
 
 
 class pivy_clean(clean):
-    WRAPPER_FILES = ('pivy_runtime_wrap.cxx',
-                     'pivy_wrap.cxx',
-                     'soqt_wrap.cxx',
-                     'sogtk_wrap.cxx',
-                     'soxt_wrap.cxx',
-                     'sowin_wrap.cxx')
+    WRAPPER_FILES = ('pivy_runtime_wrap.cpp',
+                     'pivy_wrap.cpp',
+                     'soqt_wrap.cpp',
+                     'sogtk_wrap.cpp',
+                     'soxt_wrap.cpp',
+                     'sowin_wrap.cpp')
 
     def remove_coin_headers(self, arg, dirname, files):
         "remove the coin headers from the pivy Inventor directory"

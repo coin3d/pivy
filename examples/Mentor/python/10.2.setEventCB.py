@@ -117,10 +117,6 @@ def myAppEventHandler(userData, anyevent):
     myRenderArea = cast(userData, "SoQtRenderArea")
     handled = TRUE
 
-    # FIXME: now i found a way to bridge into PyQt to allow QEvent querying.
-    #  but it seems PyQt doesn't provide a way to cast a QEvent to a
-    #  QMouseEvent. investigate or otherwise contribute or write your own
-    #  cast function. 20030703 tamer.
     if anyevent.type() == QEvent.MouseButtonPress:
         if anyevent.button() == QMouseEvent.LeftButton:
             vec = myProjectPoint(myRenderArea, anyevent.x(), anyevent.y())

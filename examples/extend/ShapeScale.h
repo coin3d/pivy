@@ -1,4 +1,4 @@
-// Copyright (C) 1998-2003 by Systems in Motion. All rights reserved.
+// Copyright (C) 1998-2004 by Systems in Motion. All rights reserved.
 
 #ifndef COIN_SHAPESCALE_H
 #define COIN_SHAPESCALE_H

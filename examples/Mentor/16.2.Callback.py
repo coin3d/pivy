@@ -45,7 +45,8 @@ import sys
 
 #  This is called by the Material Editor when a value changes
 def myMaterialEditorCB(userData, newMtl):
-    myMtl = cast(userData, "SoMaterial")
+    # In Pivy no cast is necessary as it gets autocasted for you.
+    myMtl = userData
 
     # Copy all the fields from the new material
     myMtl.copyFieldValues(newMtl)

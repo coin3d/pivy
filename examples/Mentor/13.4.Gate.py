@@ -49,7 +49,8 @@ import sys
 
 # This routine is called for every mouse button event.
 def myMousePressCB(userData, eventCB):
-    gate = cast(userData, "SoGate")
+    # In Pivy no cast is necessary as it gets autocasted for you.
+    gate = userData
     event = eventCB.getEvent()
 
     # Check for mouse button being pressed

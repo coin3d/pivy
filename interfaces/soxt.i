@@ -59,15 +59,22 @@
 #include <Inventor/Xt/SoXtColorEditor.h>
 #include <Inventor/Xt/SoXtMaterialEditor.h>
 
+#include <Inventor/SbDPMatrix.h>
+#include <Inventor/SbDPRotation.h>
+#include <Inventor/SbVec2d.h>
+#include <Inventor/C/threads/thread.h>
+
+/* make CustomCursor in SoXtCursor known to SWIG */
+typedef SoXtCursor::CustomCursor CustomCursor;
 
 /* FIXME: there is a major pitfall reg. this solution, namely
  * thread safety! reconsider! 20030626 tamer.
  */
-static void *Pivy_PythonInteractiveLoop(void *data) {
+static void *
+Pivy_PythonInteractiveLoop(void *data) {
   PyRun_InteractiveLoop(stdin, "<stdin>");
   return NULL;
 }
-
 %}
 
 /* include the typemaps common to all pivy modules */

@@ -129,16 +129,11 @@ def setTransform(*args):
    return apply(_pivy.SbMatrix_setTransform,args)
 %}
 
-%rename(getTransform_vec3) SbMatrix::getTransform(SbVec3f & translation, SbRotation & rotation,
+%ignore SbMatrix::getTransform(SbVec3f & translation, SbRotation & rotation,
 												  SbVec3f & scaleFactor, SbRotation & scaleOrientation,
 												  const SbVec3f & center) const;
 
-%feature("shadow") SbMatrix::getTransform(SbVec3f & t, SbRotation & r, SbVec3f & s, SbRotation & so) %{
-def getTransform(*args):
-   if len(args) == 2:
-      return apply(_pivy.SbMatrix_getTransform_vec3,args)
-   return apply(_pivy.SbMatrix_getTransform,args)
-%}
+%ignore SbMatrix::getTransform(SbVec3f & t, SbRotation & r, SbVec3f & s, SbRotation & so);
 
 %rename(multVecMatrix_vec4) SbMatrix::multVecMatrix(const SbVec4f & src, SbVec4f & dst) const;
 
@@ -236,6 +231,57 @@ public:
   void getTransform(SbVec3f & translation, SbRotation & rotation,
                     SbVec3f & scaleFactor, SbRotation & scaleOrientation,
                     const SbVec3f & center) const;
+
+#ifdef __PIVY__
+  %extend {
+     PyObject * getTransform() {
+        SbVec3f * t = new SbVec3f;
+        SbVec3f * s = new SbVec3f;
+        SbRotation * r = new SbRotation;
+        SbRotation * so = new SbRotation;
+        PyObject * result;
+
+        self->getTransform(*t, *r, *s, *so);
+        
+        result = PyTuple_New(4);
+        PyTuple_SetItem(result, 0,
+                        SWIG_NewPointerObj((void *) t, SWIGTYPE_p_SbVec3f, 1));
+        PyTuple_SetItem(result, 1,
+                        SWIG_NewPointerObj((void *) r, SWIGTYPE_p_SbRotation, 1));
+        PyTuple_SetItem(result, 2,
+                        SWIG_NewPointerObj((void *) s, SWIGTYPE_p_SbVec3f, 1));
+        PyTuple_SetItem(result, 3,
+                        SWIG_NewPointerObj((void *) so, SWIGTYPE_p_SbRotation, 1));
+        Py_INCREF(result);
+
+        return result;
+     }
+
+     PyObject * getTransform(SbVec3f & center) {
+        SbVec3f * t = new SbVec3f;
+        SbVec3f * s = new SbVec3f;
+        SbRotation * r = new SbRotation;
+        SbRotation * so = new SbRotation;
+        PyObject * result;
+
+        self->getTransform(*t, *r, *s, *so, center);
+        
+        result = PyTuple_New(4);
+        PyTuple_SetItem(result, 0,
+                        SWIG_NewPointerObj((void *) t, SWIGTYPE_p_SbVec3f, 1));
+        PyTuple_SetItem(result, 1,
+                        SWIG_NewPointerObj((void *) r, SWIGTYPE_p_SbRotation, 1));
+        PyTuple_SetItem(result, 2,
+                        SWIG_NewPointerObj((void *) s, SWIGTYPE_p_SbVec3f, 1));
+        PyTuple_SetItem(result, 3,
+                        SWIG_NewPointerObj((void *) so, SWIGTYPE_p_SbRotation, 1));
+        Py_INCREF(result);
+
+        return result;
+     }     
+  }
+#endif
+
   SbBool factor(SbMatrix & r, SbVec3f & s, SbMatrix & u, SbVec3f & t,
                 SbMatrix & proj);
   SbBool LUDecomposition(int index[4], float & d);

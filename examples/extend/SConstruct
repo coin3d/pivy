@@ -61,7 +61,7 @@ if str(Platform()) == 'win32':
     INCLUDE_DIR = os.getenv("COIN3DDIR") + os.sep + 'include'
 else:
     env.ParseConfig('coin-config --cppflags --libs --ldflags')
-    INCLUDE_DIR = os.popen('coin-config --includedir')
+    INCLUDE_DIR = os.popen('coin-config --includedir').read()
 
 env.Append(CPPPATH = ['.', distutils.sysconfig.get_python_inc()])
 env.Append(LIBPATH = distutils.sysconfig.get_python_lib())

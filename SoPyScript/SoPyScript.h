@@ -98,6 +98,8 @@ private:
   void initFieldData(void);
   virtual const SoFieldData * getFieldData(void) const;
 
+  void executePyScript(void);
+
   static void eval_cb(void * data, SoSensor *);
 
   SoPyScriptP * pimpl;

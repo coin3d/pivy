@@ -50,6 +50,17 @@
 
 #include "SoPyScript.h"
 
+/* Python code snippet to load in a URL through the urrlib module */ 
+#define PYTHON_URLLIB_URLOPEN "\
+import urllib\n\
+try:\n\
+  fd = urllib.urlopen(url.split()[0])\n\
+  script = fd.read()\n\
+  fd.close()\n\
+except:\n\
+  script = None\n\
+del url"
+
 /* SWIG runtime definitions */
 typedef void *(*swig_converter_func)(void *);
 typedef struct swig_type_info *(*swig_dycast_func)(void **);
@@ -415,23 +426,7 @@ SoPyScript::notify(SoNotList * list)
       PRIVATE(this)->oneshotSensor->setPriority(pri);
     }
     else if (f == &this->script) {
-      PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
-
-      /* strip out possible \r's that could come from win32 line endings */
-      SbString src = script.getValue();
-      SbString pyString;
-      for (int i=0; i < src.getLength(); i++) {
-        if (src[i] != '\r') { pyString += src[i]; }
-      }
-
-      PyRun_SimpleString((char *)pyString.getString());
-
-      if (coin_getenv("PIVY_DEBUG")) {
-        SoDebugError::postInfo("SoPyScript::readInstance",
-                             "script executed at full length!");
-      }
-
-      PyThreadState_Swap(tstate);
+      this->executePyScript();
     }
     else {
       PRIVATE(this)->oneshotSensor->schedule();
@@ -521,23 +516,7 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
     PRIVATE(this)->oneshotSensor->schedule();
   }
 
-  PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
-
-  /* strip out possible \r's that could come from win32 line endings */
-  SbString src = script.getValue();
-  SbString pyString;
-  for (int i=0; i < src.getLength(); i++) {
-    if (src[i] != '\r') { pyString += src[i]; }
-  }
-
-  PyRun_SimpleString((char *)pyString.getString());
-
-  if (coin_getenv("PIVY_DEBUG")) {
-    SoDebugError::postInfo("SoPyScript::readInstance",
-                           "script executed at full length!");
-  }
-
-  PyThreadState_Swap(tstate);
+  this->executePyScript();
 
   PRIVATE(this)->isReading = FALSE;
 
@@ -559,6 +538,46 @@ const SoFieldData *
 SoPyScript::getFieldData(void) const
 {
   return this->fielddata;
+}
+
+// loads and executes Python script contained in the script field
+void
+SoPyScript::executePyScript(void)
+{
+  PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
+
+  /* strip out possible \r's that could come from win32 line endings */
+  SbString src = script.getValue();
+  SbString pyString;
+  for (int i=0; i < src.getLength(); i++) {
+    if (src[i] != '\r') { pyString += src[i]; }
+  }
+
+  /* check if the script denotes an URL or path */
+  if (src.getLength()) {
+    PyObject * url = PyString_FromString(pyString.getString());
+    /* add the url to the global dict */
+    PyDict_SetItemString(PRIVATE(this)->global_module_dict, "url", url);
+
+    PyRun_SimpleString(PYTHON_URLLIB_URLOPEN);
+
+    PyObject * script_new = PyDict_GetItemString(PRIVATE(this)->global_module_dict, "script");
+    if (script_new != Py_None) {
+      pyString.makeEmpty();
+      pyString = PyString_AsString(script_new);
+    }
+
+    Py_DECREF(url);
+  }
+
+  PyRun_SimpleString((char *)pyString.getString());
+
+  if (coin_getenv("PIVY_DEBUG")) {
+    SoDebugError::postInfo("SoPyScript::executePyScript",
+                           "script executed at full length!");
+  }
+
+  PyThreadState_Swap(tstate);
 }
 
 // callback for oneshotSensor

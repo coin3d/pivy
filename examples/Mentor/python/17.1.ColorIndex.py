@@ -42,6 +42,8 @@
 #
 
 from pivy import *
+from OpenGL.GL import *
+from OpenGL.GLX import *
 import sys
 
 # window attribute list to create a color index visual.
@@ -69,12 +71,13 @@ Separator {
 
 def main():
 	# Initialize Inventor and Gtk
-	myWindow = SoGtk::init(argv[0])
+	myWindow = SoGtk_init(sys.argv[0])
    
 	# read the scene graph in
 	input = SoInput()
 	input.setBuffer(sceneBuffer)
-	if not SoDB_readAll(input) or scene == None:
+	scene = SoDB_readAll(input) 
+	if not scene:
 		print "Couldn't read scene"
 		sys.exit(1)
 
@@ -94,7 +97,7 @@ def main():
 	#
 	myViewer = SoGtkExaminerViewer(myWindow)
 	myViewer.setNormalVisual(vis)
-	myViewer.setColorMap(0, 3, (SbColor *) colors)
+	myViewer.setColorMap(0, 3, cast(colors, "SbColor"))
 	myViewer.setSceneGraph(scene)
 	myViewer.setTitle("Color Index Mode")
    

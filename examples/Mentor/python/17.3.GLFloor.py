@@ -39,13 +39,13 @@
 #
 
 from pivy import *
+from OpenGL.GL import *
 import sys, time
 
 WINWIDTH  = 400	
 WINHEIGHT = 400	
 
-floorObj = [[0.0]*3]*81
-
+floorObj = []
 
 # Build a Inventor scene with two objects and some light
 def buildScene(root):
@@ -83,9 +83,7 @@ def buildFloor():
 
 	for i in range(9):
 		for j in range(9):
-			floorObj[a][0] = -5.0 + j*1.25
-			floorObj[a][1] = 0.0
-			floorObj[a][2] = -5.0 + i*1.25
+			floorObj.append([-5.0 + j*1.25, 0.0, -5.0 + i*1.25])
 			a+=1
 
 # Callback used by GLX window
@@ -93,7 +91,7 @@ def waitForNotify(Display, e, arg):
 	return e.type == MapNotify and e.xmap.window == cast(arg, "Window")
 
 # Create and initialize GLX window.
-def openWindow(display, window):
+def openWindow():
 	attributeList = (GLX_RGBA,
 					 GLX_RED_SIZE, 1,
 					 GLX_GREEN_SIZE, 1,
@@ -125,10 +123,10 @@ def openWindow(display, window):
 	# Attach the GLX context to the window
 	glXMakeCurrent(display, window, cx)
 
+	return (display, window)
+
 
 # Draw the lines that make up the floor, using OpenGL
-def drawFloor():
-	# Draw the lines that make up the floor, using OpenGL
 def drawFloor():
 	global floorObj
 
@@ -139,6 +137,7 @@ def drawFloor():
 		glVertex3fv(floorObj[(i*18)+17])
 		glVertex3fv(floorObj[(i*18)+9])
 
+	i+=1
 	glVertex3fv(floorObj[i*18])
 	glVertex3fv(floorObj[(i*18)+8])
 	glEnd()
@@ -150,6 +149,7 @@ def drawFloor():
 		glVertex3fv(floorObj[(i*2)+73])
 		glVertex3fv(floorObj[(i*2)+1])
 
+	i+=1
 	glVertex3fv(floorObj[i*2])
 	glVertex3fv(floorObj[(i*2)+72])
 	glEnd()
@@ -167,9 +167,7 @@ def main():
 	buildFloor()
 
 	# Create and initialize window
-	Display *display
-	Window window
-	openWindow(display, window)
+	display, window = openWindow()
 	glEnable(GL_DEPTH_TEST)
 	glClearColor(0.8, 0.8, 0.8, 1.0)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)

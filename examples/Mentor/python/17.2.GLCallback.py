@@ -44,7 +44,7 @@ from pivy import *
 from OpenGL.GL import *
 import sys
 
-floorObj = [[0.0]*3]*81
+floorObj = []
 
 # Build a scene with two objects and some light
 def buildScene(root):
@@ -81,9 +81,7 @@ def buildFloor():
 
 	for i in range(9):
 		for j in range(9):
-			floorObj[a][0] = -5.0 + j*1.25
-			floorObj[a][1] = 0.0
-			floorObj[a][2] = -5.0 + i*1.25
+			floorObj.append([-5.0 + j*1.25, 0.0, -5.0 + i*1.25])
 			a+=1
 			
 # Draw the lines that make up the floor, using OpenGL
@@ -97,6 +95,7 @@ def drawFloor():
 		glVertex3fv(floorObj[(i*18)+17])
 		glVertex3fv(floorObj[(i*18)+9])
 
+	i+=1
 	glVertex3fv(floorObj[i*18])
 	glVertex3fv(floorObj[(i*18)+8])
 	glEnd()
@@ -108,6 +107,7 @@ def drawFloor():
 		glVertex3fv(floorObj[(i*2)+73])
 		glVertex3fv(floorObj[(i*2)+1])
 
+	i+=1
 	glVertex3fv(floorObj[i*2])
 	glVertex3fv(floorObj[(i*2)+72])
 	glEnd()

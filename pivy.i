@@ -606,9 +606,43 @@
 #include <Inventor/Gtk/viewers/SoGtkConstrainedViewer.h>
 #include <Inventor/Gtk/viewers/SoGtkFlyViewer.h>
 
+PyObject *
+cast(PyObject *self, PyObject *args)
+{
+  swig_type_info *swig_type = 0;
+  void *cast_obj = 0;
+  int type_len;
+  char *type, *ptr_type;
+  PyObject *obj;
+
+  if (!PyArg_ParseTuple(args,"Os", &obj, &type)) return NULL;
+  type_len = strlen(type);
+
+  /*
+   * add a pointer sign to the string coming from the interpreter
+   * e.g. "SoSeparator" becomes "SoSeparator *" - so that SWIG_TypeQuery()
+   * can do its job.
+   */
+  ptr_type = (char *) malloc(type_len+3);
+  if (ptr_type == NULL) return NULL;
+
+  memset(ptr_type, 0, type_len+3);
+  strncpy(ptr_type, type, type_len);
+  strcat(ptr_type, " *");
+
+  if ((swig_type = SWIG_TypeQuery(ptr_type)) == 0) { free(ptr_type); return NULL; }
+
+  free(ptr_type);
+
+  if ((SWIG_ConvertPtr(obj,(void **) &cast_obj, NULL, 1)) == -1) return NULL;
+
+  return SWIG_NewPointerObj((void *) cast_obj, swig_type, 0);
+}
 %}
 
 %include "typemaps.i"
+
+%native(cast) PyObject *cast(PyObject *self, PyObject *args);
 
 %rename(output) print(FILE * fp) const;
 %rename(output) print(FILE * const fp) const;
@@ -616,11 +650,14 @@
 %rename(srcFrom) from;
 %rename(destTo) to;
 
+/* generic typemaps to allow using a string instead of an instance
+ * within the python interpreter
+ */
 %typemap(in) SbName & {
   if (PyString_Check($input)) {
     $1 = new SbName(PyString_AsString($input));
   } else {
-    SWIG_ConvertPtr($input,(void **) &$1, SWIGTYPE_p_SbName,1);
+    SWIG_ConvertPtr($input,(void **) &$1, SWIGTYPE_p_SbName, 1);
   }
 }
 
@@ -628,7 +665,7 @@
   if (PyString_Check($input)) {
     $1 = new SbString(PyString_AsString($input));
   } else {
-    SWIG_ConvertPtr($input,(void **) &$1, SWIGTYPE_p_SbString,1);
+    SWIG_ConvertPtr($input,(void **) &$1, SWIGTYPE_p_SbString, 1);
   }
 }
 

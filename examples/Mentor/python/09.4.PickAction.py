@@ -73,21 +73,13 @@ def myMousePressCB(userData, eventCB):
 	root = userData # (SoSeparator *) userData
 	event = eventCB.getEvent()
 
-	myRegion = eventCB.getAction().getViewportRegion()	
-	print event.getNormalizedPosition(myRegion).getValue()
-	print event.getPosition().getValue()
-	print event.getPosition(myRegion).getValue()
-	print "muh"
-	print eventCB.thisown
-	writePickedPath(root, myRegion, event.getNormalizedPosition(myRegion))
-	eventCB.setHandled()
-
 	# Check for mouse button being pressed
-	if SO_MOUSE_PRESS_EVENT(event, ANY):
-		myRegion = eventCB.getAction().getViewportRegion()
-		writePickedPath(root, myRegion, event.getPosition(myRegion))
-		eventCB.setHandled()
+	#if SO_MOUSE_PRESS_EVENT(event, ANY):
+	#	myRegion = eventCB.getAction().getViewportRegion()
+	#	writePickedPath(root, myRegion, event.getPosition(myRegion))
+	#	eventCB.setHandled()
 	print "muh"
+	print "kuh"
 
 def main():
 	myMouseEvent = SoMouseButtonEvent()

@@ -1,0 +1,111 @@
+/**************************************************************************\
+ *
+ *  This file is part of the Coin 3D visualization library.
+ *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public License
+ *  version 2.1 as published by the Free Software Foundation. See the
+ *  file LICENSE.LGPL at the root directory of the distribution for
+ *  more details.
+ *
+ *  If you want to use Coin for applications not compatible with the
+ *  LGPL, please contact SIM to acquire a Professional Edition license.
+ *
+ *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
+ *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *
+\**************************************************************************/
+
+#ifndef COIN_SOGROUP_H
+#define COIN_SOGROUP_H
+
+#include <Inventor/nodes/SoSubNode.h>
+
+#ifdef __PIVY__
+%rename(SoGroup_i) SoGroup::SoGroup(int nchildren);
+
+%feature("shadow") SoGroup::SoGroup %{
+def __init__(self,*args):
+   if len(args) == 1:
+      self.this = apply(pivyc.new_SoGroup_i,args)
+      self.thisown = 1
+      return
+   self.this = apply(pivyc.new_SoGroup,args)
+   self.thisown = 1
+%}
+
+%rename(removeChild_nod) SoGroup::removeChild(SoNode * const child);
+
+%feature("shadow") SoGroup::removeChild(const int childindex) %{
+def removeChild(*args):
+   if isinstance(args[1], SoNode):
+      return apply(pivyc.SoGroup_removeChild_nod,args)
+   return apply(pivyc.SoGroup_removeChild,args)
+%}
+
+%rename(replaceChild_nod_nod) SoGroup::replaceChild(SoNode * const oldchild, SoNode * const newchild);
+
+%feature("shadow") SoGroup::replaceChild(const int index, SoNode * const newchild) %{
+def replaceChild(*args):
+   if isinstance(args[1], SoNode):
+      return apply(pivyc.SoGroup_replaceChild_nod_nod,args)
+   return apply(pivyc.SoGroup_replaceChild,args)
+%}
+#endif
+
+class COIN_DLL_API SoGroup : public SoNode {
+  typedef SoNode inherited;
+
+  SO_NODE_HEADER(SoGroup);
+
+public:
+  static void initClass(void);
+  SoGroup(void);
+
+  SoGroup(int nchildren);
+
+  void addChild(SoNode * const node);
+  void insertChild(SoNode * const child, const int newchildindex);
+  SoNode * getChild(const int index) const;
+  int findChild(const SoNode * const node) const;
+  int getNumChildren(void) const;
+  void removeChild(const int childindex);
+  void removeChild(SoNode * const child);
+  void removeAllChildren(void);
+  void replaceChild(const int index, SoNode * const newchild);
+  void replaceChild(SoNode * const oldchild, SoNode * const newchild);
+
+  virtual void doAction(SoAction * action);
+  virtual void GLRender(SoGLRenderAction * action);
+  virtual void callback(SoCallbackAction * action);
+  virtual void getBoundingBox(SoGetBoundingBoxAction * action);
+  virtual void getMatrix(SoGetMatrixAction * action);
+  virtual void handleEvent(SoHandleEventAction * action);
+  virtual void pick(SoPickAction * action);
+  virtual void search(SoSearchAction * action);
+  virtual void write(SoWriteAction * action);
+  virtual void getPrimitiveCount(SoGetPrimitiveCountAction * action);
+  SoChildList * getChildren(void) const;
+
+protected:
+  virtual ~SoGroup();
+
+  virtual SbBool readInstance(SoInput * in, unsigned short flags);
+  virtual SbBool readChildren(SoInput * in);
+
+  virtual void copyContents(const SoFieldContainer * from,
+                            SbBool copyconnections);
+
+  SoChildList * children;
+
+  // FIXME: there's a bug in Doxygen (at least with version 1.2.9)
+  // which causes the following statement to be regarded as a member
+  // variable. Remove this workaround when the bug has been
+  // fixed. 20011113 mortene.
+#ifndef DOXYGEN_SKIP_THIS
+  friend class SoUnknownNode; // Let SoUnknownNode access readChildren().
+#endif // DOXYGEN_SKIP_THIS
+};
+
+#endif // !COIN_SOGROUP_H

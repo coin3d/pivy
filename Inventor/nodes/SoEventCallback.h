@@ -53,6 +53,9 @@ SoEventPythonCallBack(void * userdata, SoEventCallback * node)
   result = PyEval_CallObject(func, arglist);
   Py_DECREF(arglist);
   Py_XDECREF(result);
+
+  printf("exiting SoEventPythonCallBack...\n");
+
   return /*void*/;
 }
 %}

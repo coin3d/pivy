@@ -30,7 +30,6 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-
 ###
 # This is an example from the Inventor Mentor,
 # chapter 3.
@@ -48,29 +47,29 @@ def RemoveCube():
    # be used to make sure the nodes are of the correct type
    # before doing the cast.
 
-   myRoot = SoNode_getByName(SbName("Root"))
+   myRoot = cast(SoNode_getByName("Root"), "SoSeparator")
 
-   myCube = SoNode_getByName(SbName("MyCube"))
-
+   myCube = cast(SoNode_getByName("MyCube"), "SoCube")
+   
    myRoot.removeChild(myCube)
 
 def main():
-	SoDB_init()
+   SoDB_init()
 	
-	# Create some objects and give them names:
-	root = SoSeparator()
-	root.ref()
-	root.setName(SbName("Root"))
+   # Create some objects and give them names:
+   root = SoSeparator()
+   root.ref()
+   root.setName("Root")
 	
-	myCube = SoCube()
-	root.addChild(myCube)
-	myCube.setName(SbName("MyCube"))
+   myCube = SoCube()
+   root.addChild(myCube)
+   myCube.setName("MyCube")
 	
-	mySphere = SoSphere()
-	root.addChild(mySphere)
-	mySphere.setName(SbName("MySphere"))
+   mySphere = SoSphere()
+   root.addChild(mySphere)
+   mySphere.setName("MySphere")
 	
-	RemoveCube()
+   RemoveCube()
 
 if __name__ == "__main__":
-	main()
+   main()

@@ -140,8 +140,7 @@ class pivy_build(build):
 """
 
     SWIG = ((sys.platform == "win32" and "swig.exe") or "swig")
-    # SWIG = "swig"
-    SWIG_SUPPRESS_WARNINGS = "-w302,306,307,312,389,362,503,509,510"
+    SWIG_SUPPRESS_WARNINGS = "-w302,306,307,312,389,361,362,503,509,510"
     SWIG_PARAMS = "-c -v -c++ -python -includeall " + \
                   "-D__PIVY__ -I. -Ifake_headers -I%s %s -o %s_wrap.cxx %s.i"
 
@@ -152,7 +151,8 @@ class pivy_build(build):
                'SoGtk' : ('_sogtk', 'sogtk-config'),
                'SoWin' : ('_sowin', 'sowin-config')}
 
-    SUPPORTED_SWIG_VERSIONS = ['1.3.19']
+    SUPPORTED_SWIG_VERSIONS = ['1.3.19', '1.3.21']
+    SWIG_VERSION = ""
     SWIG_COND_SYMBOLS = []
     CXX_INCS = ""
     CXX_LIBS = ""
@@ -252,6 +252,7 @@ class pivy_build(build):
 
     def check_swig_version(self, swig):
         "checks for the swig version."
+        global SWIG_VERSION
         if not self.check_cmd_exists(swig):
             sys.exit(1)
         print blue("Checking for SWIG version..."),
@@ -259,6 +260,7 @@ class pivy_build(build):
         version = fd.readlines()[1].strip().split(" ")[2]
         fd.close()
         print blue("%s" % version)
+        SWIG_VERSION = version
         if not version in self.SUPPORTED_SWIG_VERSIONS:
             print yellow("Warning: Pivy has only been tested with the following " + \
                          "SWIG versions: %s." % " ".join(self.SUPPORTED_SWIG_VERSIONS))
@@ -298,12 +300,18 @@ class pivy_build(build):
                     else:
                         print blue("[") + red("failed") + blue("]")
                     fd.close
-            # had to introduce this because windows is a piece of crap
-            elif sys.platform == "win32" and file[-4:] == ".fix":
+            # fixes for SWIG 1.3.21
+            elif SWIG_VERSION == '1.3.21' and file[-4:] == ".fix":
                 print red("Fixing ") + turquoise(os.path.join(dirname, file)),
                 print blue("to ") + turquoise(os.path.join(dirname, file)[:-4])
                 shutil.copyfile(os.path.join(dirname, file),
                                 os.path.join(dirname, file)[:-4])
+            # had to introduce this because windows is a piece of crap
+            elif sys.platform == "win32" and file[-6:] == ".win32":
+                print red("Fixing ") + turquoise(os.path.join(dirname, file)),
+                print blue("to ") + turquoise(os.path.join(dirname, file)[:-6])
+                shutil.copyfile(os.path.join(dirname, file),
+                                os.path.join(dirname, file)[:-6])
         
         if sys.platform == "win32":
             # copy coin2.dll and sowin1.dll to pivy directory

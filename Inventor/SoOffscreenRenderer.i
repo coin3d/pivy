@@ -43,3 +43,12 @@ def writeToRGB(*args):
          return apply(_pivy.SoOffscreenRenderer_writeToRGB_chr,args)
    return apply(_pivy.SoOffscreenRenderer_writeToRGB,args)
 %}
+
+%extend SoOffscreenRenderer {
+  PyObject * getBuffer() {
+    SbVec2s size = self->getViewportRegion().getWindowSize();
+
+    return PyString_FromStringAndSize((char *)self->getBuffer(),
+                                      size[0] * size[1] * self->getComponents());
+  }
+}

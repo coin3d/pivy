@@ -48,7 +48,7 @@
 
 from pivy import *
 from qt import *
-import sys, traceback
+import sys
 
 # Timer sensor 
 # Rotate 90 degrees every second, update 30 times a second
@@ -106,7 +106,8 @@ def tickerCallback(userData, sensor):
     myCamera.position.setValue(pos)
 
     # Adjust the orientation
-    myCamera.orientation.setValue(SbRotation_mul(myCamera.orientation.getValue(), rot))
+    myCamera.orientation.setValue(
+        SbRotation_mul(myCamera.orientation.getValue(), rot))
     
 
 ###############################################################

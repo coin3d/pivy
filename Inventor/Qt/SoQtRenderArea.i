@@ -17,18 +17,18 @@
  */
 
 typedef struct {
-	PyObject *mfunc;		/* The function. */
-	PyObject *mself;		/* Self if it is a bound method. */
-	PyObject *mclass;		/* The class. */
+  PyObject *mfunc;		/* The function. */
+  PyObject *mself;		/* Self if it is a bound method. */
+  PyObject *mclass;		/* The class. */
 } sipPyMethod;
-
+ 
 /*
  * Extra type specific information.
  */
 typedef struct {
-	const void *(*castfunc)(const void *,PyObject *);	/* Cast function. */
-	void *proxyfunc;		/* Create proxy function. */
-	struct _sipQtSignal *emitTable;	/* Emit table for Qt sigs (complex). */
+  const void *(*castfunc)(const void *,PyObject *);	/* Cast function. */
+  void *proxyfunc;		/* Create proxy function. */
+  struct _sipQtSignal *emitTable;	/* Emit table for Qt sigs (complex). */
 } sipExtraType;
 
 /*
@@ -36,10 +36,10 @@ typedef struct {
  */
 
 typedef struct {
-	char *name;			/* Name if a Qt or Python signal. */
-	PyObject *pyobj;		/* Signal or Qt slot object. */
-	sipPyMethod meth;		/* Python slot method, pyobj is NULL. */
-	PyObject *weakSlot;		/* A weak reference to the slot. */
+  char *name;			/* Name if a Qt or Python signal. */
+  PyObject *pyobj;		/* Signal or Qt slot object. */
+  sipPyMethod meth;		/* Python slot method, pyobj is NULL. */
+  PyObject *weakSlot;		/* A weak reference to the slot. */
 } sipSlot;
 
 /*
@@ -47,8 +47,8 @@ typedef struct {
  */
 
 typedef struct _sipPySigRx {
-	sipSlot rx;			/* The receiver. */
-	struct _sipPySigRx *next;	/* Next in the list. */
+  sipSlot rx;			/* The receiver. */
+  struct _sipPySigRx *next;	/* Next in the list. */
 } sipPySigRx;
 
 /*
@@ -56,9 +56,9 @@ typedef struct _sipPySigRx {
  */
 
 typedef struct _sipPySig {
-	char *name;			/* The name of the signal. */
-	sipPySigRx *rxlist;		/* The list of receivers. */
-	struct _sipPySig *next;		/* Next in the list. */
+  char *name;			/* The name of the signal. */
+  sipPySigRx *rxlist;		/* The list of receivers. */
+  struct _sipPySig *next;		/* Next in the list. */
 } sipPySig;
 
 /*
@@ -66,24 +66,24 @@ typedef struct _sipPySig {
  */
 
 typedef struct _sipThisType {
-	PyObject_HEAD
-	union {
-		const void *cppPtr;	/* C/C++ object pointer. */
-		const void *(*afPtr)();	/* Access function. */
-	} u;
-	int flags;			/* Object flags. */
-	PyObject *sipSelf;		/* The Python class instance. */
-	sipPySig *pySigList;		/* Python signal list (complex). */
-	sipExtraType *xType;		/* Extra type information. */
+  PyObject_HEAD
+  union {
+    const void *cppPtr;	/* C/C++ object pointer. */
+    const void *(*afPtr)();	/* Access function. */
+  } u;
+  int flags;			/* Object flags. */
+  PyObject *sipSelf;		/* The Python class instance. */
+  sipPySig *pySigList;		/* Python signal list (complex). */
+  sipExtraType *xType;		/* Extra type information. */
 } sipThisType;
-
+ 
 /*
  * Maps the name of a Qt signal to a wrapper function to emit it.
  */
 
 typedef struct _sipQtSignal {
-	char *st_name;
-	int (*st_emitfunc)(sipThisType *,PyObject *);
+  char *st_name;
+  int (*st_emitfunc)(sipThisType *,PyObject *);
 } sipQtSignal;
 
 
@@ -156,80 +156,80 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
      case QEvent::MouseButtonRelease:
      case QEvent::MouseButtonDblClick:
      case QEvent::MouseMove:
-        PyRun_SimpleString("qev = QMouseEvent(QEvent.MouseMove, QPoint(), QPoint(), Qt.NoButton, Qt.NoButton)");
-        event = (QMouseEvent *)event;
-		break;
-
+       PyRun_SimpleString("qev = QMouseEvent(QEvent.MouseMove, QPoint(), QPoint(), Qt.NoButton, Qt.NoButton)");
+       event = (QMouseEvent *)event;
+       break;
+       
      case QEvent::KeyPress:
      case QEvent::KeyRelease:
-        PyRun_SimpleString("qev = QKeyEvent(QEvent.KeyPress, 0, 0, 0)");
-        event = (QKeyEvent *)event;
-		break;
+       PyRun_SimpleString("qev = QKeyEvent(QEvent.KeyPress, 0, 0, 0)");
+       event = (QKeyEvent *)event;
+       break;
 
      case QEvent::FocusIn:
      case QEvent::FocusOut:
-        PyRun_SimpleString("qev = QFocusEvent(QEvent.FocusIn)");
-        event = (QFocusEvent *)event;
-		break;
-
+       PyRun_SimpleString("qev = QFocusEvent(QEvent.FocusIn)");
+       event = (QFocusEvent *)event;
+       break;
+                
      case QEvent::Paint:
-        PyRun_SimpleString("qev = QPaintEvent(QRegion())");
-        event = (QPaintEvent *)event;
-		break;
-
+       PyRun_SimpleString("qev = QPaintEvent(QRegion())");
+       event = (QPaintEvent *)event;
+       break;
+       
      case QEvent::Move:
-        PyRun_SimpleString("qev = QMoveEvent(QPoint(), QPoint())");
-        event = (QMoveEvent *)event;
-		break;
+       PyRun_SimpleString("qev = QMoveEvent(QPoint(), QPoint())");
+       event = (QMoveEvent *)event;
+       break;
 
      case QEvent::Resize:
-        PyRun_SimpleString("qev = QResizeEvent(QSize(), QSize())");
-        event = (QResizeEvent *)event;
-		break;
+       PyRun_SimpleString("qev = QResizeEvent(QSize(), QSize())");
+       event = (QResizeEvent *)event;
+       break;
 
      case QEvent::Close:
-        PyRun_SimpleString("qev = QCloseEvent()");
-        event = (QCloseEvent *)event;
-		break;
+       PyRun_SimpleString("qev = QCloseEvent()");
+       event = (QCloseEvent *)event;
+       break;
 
      case QEvent::Show:
-        PyRun_SimpleString("qev = QShowEvent()");
-        event = (QShowEvent *)event;
-		break;
+       PyRun_SimpleString("qev = QShowEvent()");
+       event = (QShowEvent *)event;
+       break;
 
      case QEvent::Hide:
-        PyRun_SimpleString("qev = QHideEvent()");
-        event = (QHideEvent *)event;
-		break;
+       PyRun_SimpleString("qev = QHideEvent()");
+       event = (QHideEvent *)event;
+       break;
 
      case QEvent::DragMove:
-        PyRun_SimpleString("qev = QDragMoveEvent(QPoint())");
-        event = (QDragMoveEvent *)event;
-		break;
+       PyRun_SimpleString("qev = QDragMoveEvent(QPoint())");
+       event = (QDragMoveEvent *)event;
+       break;
 
      case QEvent::DragEnter:
-        PyRun_SimpleString("qev = QDragEnterEvent(QPoint())");
-        event = (QDragEnterEvent *)event;
-		break;
+       PyRun_SimpleString("qev = QDragEnterEvent(QPoint())");
+       event = (QDragEnterEvent *)event;
+       break;
 
      case QEvent::DragLeave:
-        PyRun_SimpleString("qev = QDragLeaveEvent()");
-        event = (QDragLeaveEvent *)event;
-		break;
+       PyRun_SimpleString("qev = QDragLeaveEvent()");
+       event = (QDragLeaveEvent *)event;
+       break;
 
      case QEvent::Drop:
-        PyRun_SimpleString("qev = QDropEvent(QPoint())");
-        event = (QDropEvent *)event;
-		break;
+       PyRun_SimpleString("qev = QDropEvent(QPoint())");
+       event = (QDropEvent *)event;
+       break;
 
      case QEvent::ChildInserted:
      case QEvent::ChildRemoved:
-        PyRun_SimpleString("qev = QChildEvent(QEvent.ChildInserted, QObject())");
-        event = (QChildEvent *)event;
-        break;
+       PyRun_SimpleString("qev = QChildEvent(QEvent.ChildInserted, QObject())");
+       event = (QChildEvent *)event;
+       break;
 
      default:
-        PyRun_SimpleString("qev = QEvent(QEvent.None)");
+       PyRun_SimpleString("qev = QEvent(QEvent.None)");
   }
 
   PyObject *d = PyModule_GetDict(PyImport_AddModule("__main__"));
@@ -246,10 +246,10 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
   arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)closure, 1), qev);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
-	printf("SoQtRenderAreaEventPythonCB(void * closure, QEvent * event) failed!\n");
+    PyErr_Print();
   }
   else {
-	ires = PyInt_AsLong(result);
+    ires = PyInt_AsLong(result);
   }
 
   Py_DECREF(arglist);
@@ -261,8 +261,8 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
 
 %typemap(in) PyObject *pyfunc %{
   if (!PyCallable_Check($input)) {
-	PyErr_SetString(PyExc_TypeError, "need a callable object!");
-	return NULL;
+    PyErr_SetString(PyExc_TypeError, "need a callable object!");
+    return NULL;
   }
   $1 = $input;
 %}

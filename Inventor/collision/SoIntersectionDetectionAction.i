@@ -15,10 +15,10 @@ SoIntersectionVisitationPythonCB(void * closure,
   arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)closure, 1), path);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
-	printf("SoIntersectionVisitationPythonCB(void * closure, const SoPath * where) failed!\n");
+    PyErr_Print();
   }
   else {
-	iresult = PyInt_AsLong(result);
+    iresult = PyInt_AsLong(result);
   }
   
   Py_DECREF(arglist);
@@ -46,10 +46,10 @@ SoIntersectionFilterPythonCB(void * closure,
   arglist = Py_BuildValue("OOO", PyTuple_GetItem((PyObject *)closure, 1), path1, path2);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
-	printf("SoIntersectionFilterPythonCB(void * closure, const SoPath * p1, const SoPath * p2) failed!\n");
+    PyErr_Print();
   }
   else {
-	iresult = PyInt_AsLong(result);
+    iresult = PyInt_AsLong(result);
   }
   
   Py_DECREF(arglist);
@@ -76,10 +76,10 @@ SoIntersectionPythonCB(void * closure,
   arglist = Py_BuildValue("OOO", PyTuple_GetItem((PyObject *)closure, 1), primitive1, primitive2);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
-	printf("SoIntersectionPythonCB(void * closure, const SoIntersectingPrimitive * p1, const SoIntersectingPrimitive * p2) failed!\n");
+    PyErr_Print();
   }
   else {
-	iresult = PyInt_AsLong(result);
+    iresult = PyInt_AsLong(result);
   }
   
   Py_DECREF(arglist);
@@ -105,52 +105,52 @@ def apply(*args):
 /* add python specific callback functions */
 %extend SoIntersectionDetectionAction {
   void addVisitationCallback(SoType type, PyObject * pyfunc, PyObject * closure) {
-        PyObject *t = PyTuple_New(2);
-        PyTuple_SetItem(t, 0, pyfunc);
-        PyTuple_SetItem(t, 1, closure);
-        Py_INCREF(pyfunc);
-        Py_INCREF(closure);
-
-        self->addVisitationCallback(type, SoIntersectionVisitationPythonCB, (void *) t);       
+    PyObject *t = PyTuple_New(2);
+    PyTuple_SetItem(t, 0, pyfunc);
+    PyTuple_SetItem(t, 1, closure);
+    Py_INCREF(pyfunc);
+    Py_INCREF(closure);
+    
+    self->addVisitationCallback(type, SoIntersectionVisitationPythonCB, (void *) t);       
   }
 
   void removeVisitationCallback(SoType type, PyObject * pyfunc, PyObject * closure) {
-        PyObject *t = PyTuple_New(2);
-        PyTuple_SetItem(t, 0, pyfunc);
-        PyTuple_SetItem(t, 1, closure);
-        Py_INCREF(pyfunc);
-        Py_INCREF(closure);
-
-        self->removeVisitationCallback(type, SoIntersectionVisitationPythonCB, (void *) t);
+    PyObject *t = PyTuple_New(2);
+    PyTuple_SetItem(t, 0, pyfunc);
+    PyTuple_SetItem(t, 1, closure);
+    Py_INCREF(pyfunc);
+    Py_INCREF(closure);
+    
+    self->removeVisitationCallback(type, SoIntersectionVisitationPythonCB, (void *) t);
   }
 
   void setFilterCallback(PyObject * pyfunc, PyObject * closure = NULL) {
-        PyObject *t = PyTuple_New(2);
-        PyTuple_SetItem(t, 0, pyfunc);
-        PyTuple_SetItem(t, 1, closure);
-        Py_INCREF(pyfunc);
-        Py_INCREF(closure);
-
-        self->setFilterCallback(SoIntersectionFilterPythonCB, (void *) t);
+    PyObject *t = PyTuple_New(2);
+    PyTuple_SetItem(t, 0, pyfunc);
+    PyTuple_SetItem(t, 1, closure);
+    Py_INCREF(pyfunc);
+    Py_INCREF(closure);
+    
+    self->setFilterCallback(SoIntersectionFilterPythonCB, (void *) t);
   }
 
   void addIntersectionCallback(PyObject * pyfunc, PyObject * closure  = NULL) {
-        PyObject *t = PyTuple_New(2);
-        PyTuple_SetItem(t, 0, pyfunc);
-        PyTuple_SetItem(t, 1, closure);
-        Py_INCREF(pyfunc);
-        Py_INCREF(closure);
-
-        self->addIntersectionCallback(SoIntersectionPythonCB, (void *) t);
+    PyObject *t = PyTuple_New(2);
+    PyTuple_SetItem(t, 0, pyfunc);
+    PyTuple_SetItem(t, 1, closure);
+    Py_INCREF(pyfunc);
+    Py_INCREF(closure);
+    
+    self->addIntersectionCallback(SoIntersectionPythonCB, (void *) t);
   }
 
   void removeIntersectionCallback(PyObject * pyfunc, PyObject * closure  = NULL) {
-        PyObject *t = PyTuple_New(2);
-        PyTuple_SetItem(t, 0, pyfunc);
-        PyTuple_SetItem(t, 1, closure);
-        Py_INCREF(pyfunc);
-        Py_INCREF(closure);
-
-        self->removeIntersectionCallback(SoIntersectionPythonCB, (void *) t);
+    PyObject *t = PyTuple_New(2);
+    PyTuple_SetItem(t, 0, pyfunc);
+    PyTuple_SetItem(t, 1, closure);
+    Py_INCREF(pyfunc);
+    Py_INCREF(closure);
+    
+    self->removeIntersectionCallback(SoIntersectionPythonCB, (void *) t);
   }
 }

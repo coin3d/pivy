@@ -13,7 +13,7 @@ SoPythonCallBack(void * userdata, SoAction * action)
   arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)userdata, 1), acCB);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
-	printf("SoPythonCallBack(void * userdata, SoAction * action) failed!\n");
+    PyErr_Print();
   }
 
   Py_DECREF(arglist);
@@ -25,8 +25,8 @@ SoPythonCallBack(void * userdata, SoAction * action)
 
 %typemap(in) PyObject *pyfunc %{
   if (!PyCallable_Check($input)) {
-	PyErr_SetString(PyExc_TypeError, "need a callable object!");
-	return NULL;
+    PyErr_SetString(PyExc_TypeError, "need a callable object!");
+    return NULL;
   }
   $1 = $input;
 %}
@@ -36,7 +36,7 @@ SoPythonCallBack(void * userdata, SoAction * action)
   void setCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
     if (userdata == NULL) {
       Py_INCREF(Py_None);
-		userdata = Py_None;
+      userdata = Py_None;
     }
     
     PyObject *t = PyTuple_New(2);

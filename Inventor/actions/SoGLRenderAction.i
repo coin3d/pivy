@@ -11,7 +11,7 @@ SoGLRenderPassPythonCB(void * userdata)
   arglist = Py_BuildValue("O", PyTuple_GetItem((PyObject *)userdata, 1));
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
-	printf("SoGLRenderPassPythonCB(void * userdata) failed!\n");
+    PyErr_Print();
   }
 
   Py_DECREF(arglist);
@@ -33,7 +33,7 @@ SoGLRenderAbortPythonCB(void * userdata)
   arglist = Py_BuildValue("O", PyTuple_GetItem((PyObject *)userdata, 1));
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
-	printf("SoGLRenderAbortPythonCB(void * userdata) failed!\n");
+    PyErr_Print();
   }
 
   res = (SoGLRenderAction::AbortCode)PyInt_AsLong(result);
@@ -58,7 +58,7 @@ SoGLPreRenderPythonCB(void * userdata, class SoGLRenderAction * action)
   arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)userdata, 1), acCB);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
-    printf("SoGLPreRenderPythonCB(void * userdata, SoGLRenderAction * action) failed!\n");
+    PyErr_Print();
   }
 
   Py_DECREF(arglist);

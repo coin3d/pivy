@@ -12,8 +12,9 @@ SoDraggerPythonCB(void * data, SoDragger * dragger)
   func = PyTuple_GetItem((PyObject *)data, 0);
   arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)data, 1), dragCB);
 
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) 
-	printf("SoDraggerPythonCB(void * data, SoDragger * dragger) failed!\n");
+  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
+    PyErr_Print();
+  }
   Py_DECREF(arglist);
   Py_XDECREF(result);
 
@@ -23,8 +24,8 @@ SoDraggerPythonCB(void * data, SoDragger * dragger)
 
 %typemap(in) PyObject *pyfunc %{
   if (!PyCallable_Check($input)) {
-	PyErr_SetString(PyExc_TypeError, "need a callable object!");
-	return NULL;
+    PyErr_SetString(PyExc_TypeError, "need a callable object!");
+    return NULL;
   }
   $1 = $input;
 %}
@@ -51,8 +52,8 @@ def getTransformFast(*args):
 %extend SoDragger {
   void addStartCallback(PyObject *pyfunc, PyObject *data = NULL) {
     if (data == NULL) {
-  	Py_INCREF(Py_None);
-  	data = Py_None;
+      Py_INCREF(Py_None);
+      data = Py_None;
     }
 
     PyObject *t = PyTuple_New(2);
@@ -66,8 +67,8 @@ def getTransformFast(*args):
 
   void removeStartCallback(PyObject *pyfunc, PyObject *data = NULL) {
     if (data == NULL) {
-  	Py_INCREF(Py_None);
-  	data = Py_None;
+      Py_INCREF(Py_None);
+      data = Py_None;
     }
 
     PyObject *t = PyTuple_New(2);
@@ -79,8 +80,8 @@ def getTransformFast(*args):
 
   void addMotionCallback(PyObject *pyfunc, PyObject *data = NULL) {
     if (data == NULL) {
-  	Py_INCREF(Py_None);
-  	data = Py_None;
+      Py_INCREF(Py_None);
+      data = Py_None;
     }
 
     PyObject *t = PyTuple_New(2);
@@ -94,8 +95,8 @@ def getTransformFast(*args):
 
   void removeMotionCallback(PyObject *pyfunc, PyObject *data = NULL) {
     if (data == NULL) {
-  	Py_INCREF(Py_None);
-  	data = Py_None;
+      Py_INCREF(Py_None);
+      data = Py_None;
     }
 
     PyObject *t = PyTuple_New(2);
@@ -107,8 +108,8 @@ def getTransformFast(*args):
 
   void addFinishCallback(PyObject *pyfunc, PyObject *data = NULL) {
     if (data == NULL) {
-  	Py_INCREF(Py_None);
-  	data = Py_None;
+      Py_INCREF(Py_None);
+      data = Py_None;
     }
 
     PyObject *t = PyTuple_New(2);
@@ -122,8 +123,8 @@ def getTransformFast(*args):
 
   void removeFinishCallback(PyObject *pyfunc, PyObject *data = NULL) {
     if (data == NULL) {
-  	Py_INCREF(Py_None);
-  	data = Py_None;
+      Py_INCREF(Py_None);
+      data = Py_None;
     }
 
     PyObject *t = PyTuple_New(2);
@@ -135,8 +136,8 @@ def getTransformFast(*args):
 
   void addValueChangedCallback(PyObject *pyfunc, PyObject *data = NULL) {
     if (data == NULL) {
-  	Py_INCREF(Py_None);
-  	data = Py_None;
+      Py_INCREF(Py_None);
+      data = Py_None;
     }
 
     PyObject *t = PyTuple_New(2);
@@ -150,8 +151,8 @@ def getTransformFast(*args):
 
   void removeValueChangedCallback(PyObject *pyfunc, PyObject *data = NULL) {
     if (data == NULL) {
-  	Py_INCREF(Py_None);
-  	data = Py_None;
+      Py_INCREF(Py_None);
+      data = Py_None;
     }
 
     PyObject *t = PyTuple_New(2);
@@ -163,8 +164,8 @@ def getTransformFast(*args):
 
   void addOtherEventCallback(PyObject *pyfunc, PyObject *data = NULL) {
     if (data == NULL) {
-  	Py_INCREF(Py_None);
-  	data = Py_None;
+      Py_INCREF(Py_None);
+      data = Py_None;
     }
 
     PyObject *t = PyTuple_New(2);
@@ -178,8 +179,8 @@ def getTransformFast(*args):
 
   void removeOtherEventCallback(PyObject *pyfunc, PyObject *data = NULL) {
     if (data == NULL) {
-  	Py_INCREF(Py_None);
-  	data = Py_None;
+      Py_INCREF(Py_None);
+      data = Py_None;
     }
 
     PyObject *t = PyTuple_New(2);

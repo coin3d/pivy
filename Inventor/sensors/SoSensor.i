@@ -13,7 +13,7 @@ SoSensorPythonCB(void * data, SoSensor * sensor)
   arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)data, 1), sensCB);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
-	printf("SoSensorPythonCB(void * data, SoSensor * sensor) failed!\n");
+    PyErr_Print();
   }
 
   Py_DECREF(arglist);
@@ -38,16 +38,16 @@ def __init__(self,*args):
 
 %typemap(in) SoSensorCB * func %{
   if (!PyCallable_Check($input)) {
-	PyErr_SetString(PyExc_TypeError, "need a callable object!");
-	return NULL;
+    PyErr_SetString(PyExc_TypeError, "need a callable object!");
+    return NULL;
   }
   $1 = SoSensorPythonCB;
 %}
 
 %typemap(in) void * data %{
   if (!PyTuple_Check($input)) {
-	PyErr_SetString(PyExc_TypeError, "tuple expected!");
-	return NULL;
+    PyErr_SetString(PyExc_TypeError, "tuple expected!");
+    return NULL;
   }
 
   Py_INCREF($input);

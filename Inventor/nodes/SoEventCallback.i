@@ -13,7 +13,7 @@ SoEventPythonCallBack(void * userdata, SoEventCallback * node)
   arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)userdata, 1), evCB);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
-	printf("SoEventPythonCallBack(void * userdata, SoEventCallback * node) failed!\n");
+    PyErr_Print();
   }
 
   Py_DECREF(arglist);
@@ -25,8 +25,8 @@ SoEventPythonCallBack(void * userdata, SoEventCallback * node)
 
 %typemap(in) PyObject *pyfunc %{
   if (!PyCallable_Check($input)) {
-	PyErr_SetString(PyExc_TypeError, "need a callable object!");
-	return NULL;
+    PyErr_SetString(PyExc_TypeError, "need a callable object!");
+    return NULL;
   }
   $1 = $input;
 %}

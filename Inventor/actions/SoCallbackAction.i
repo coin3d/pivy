@@ -16,10 +16,10 @@ SoCallbackActionPythonCB(void * userdata,
   arglist = Py_BuildValue("OOO", PyTuple_GetItem((PyObject *)userdata, 1), acCB, pynode);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
-	printf("SoCallbackActionPythonCB(void * userdata, SoCallbackAction * action, const SoNode * node) failed!\n");
+    PyErr_Print();
   }
   else {
-	iresult = PyInt_AsLong(result);
+    iresult = PyInt_AsLong(result);
   }
   
   Py_DECREF(arglist);
@@ -48,9 +48,9 @@ SoTrianglePythonCB(void * userdata, SoCallbackAction * action,
   func = PyTuple_GetItem((PyObject *)userdata, 0);
   arglist = Py_BuildValue("OOOOO", PyTuple_GetItem((PyObject *)userdata, 1), acCB, vertex1, vertex2, vertex3);
 
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) 
-	printf("SoTrianglePythonCB(void * userdata, SoCallbackAction * action, "
-		   "const SoPrimitiveVertex * v1, const SoPrimitiveVertex * v2, const SoPrimitiveVertex * v3)  failed!\n");
+  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
+    PyErr_Print();
+  }
   Py_DECREF(arglist);
   Py_XDECREF(result);
 
@@ -75,9 +75,9 @@ SoLineSegmentPythonCB(void * userdata, SoCallbackAction * action,
   func = PyTuple_GetItem((PyObject *)userdata, 0);
   arglist = Py_BuildValue("OOOO", PyTuple_GetItem((PyObject *)userdata, 1), acCB, vertex1, vertex2);
 
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) 
-	printf("SoLineSegmentPythonCB(void * userdata, SoCallbackAction * action, "
-		   "const SoPrimitiveVertex * v1, const SoPrimitiveVertex * v2) failed!\n");
+  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
+    PyErr_Print();
+  }
   Py_DECREF(arglist);
   Py_XDECREF(result);
 
@@ -99,8 +99,9 @@ SoPointPythonCB(void * userdata, SoCallbackAction * action, const SoPrimitiveVer
   func = PyTuple_GetItem((PyObject *)userdata, 0);
   arglist = Py_BuildValue("OOO", PyTuple_GetItem((PyObject *)userdata, 1), acCB, vertex);
 
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) 
-	printf("SoPointPythonCB(void * userdata, SoCallbackAction * action, const SoPrimitiveVertex * v) failed!\n");
+  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
+    PyErr_Print();
+  }
   Py_DECREF(arglist);
   Py_XDECREF(result);
 
@@ -110,8 +111,8 @@ SoPointPythonCB(void * userdata, SoCallbackAction * action, const SoPrimitiveVer
 
 %typemap(in) PyObject *pyfunc %{
   if (!PyCallable_Check($input)) {
-	PyErr_SetString(PyExc_TypeError, "need a callable object!");
-	return NULL;
+    PyErr_SetString(PyExc_TypeError, "need a callable object!");
+    return NULL;
   }
   $1 = $input;
 %}

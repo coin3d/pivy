@@ -13,7 +13,7 @@ SoSelectionPathPythonCB(void * data, SoPath * path)
   arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)data, 1), pathCB);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
-	printf("SoSelectionPathPythonCB(void * data, SoPath * path) failed!\n");
+    PyErr_Print();
   }
 
   Py_DECREF(arglist);
@@ -36,7 +36,7 @@ SoSelectionClassPythonCB(void * data, SoSelection * sel)
   arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)data, 1), selCB);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
-	printf("SoSelectionClassPythonCB(void * data, SoSelection * sel) failed!\n");
+    PyErr_Print();
   }
 
   Py_DECREF(arglist);
@@ -60,10 +60,10 @@ SoSelectionPickPythonCB(void * data, const SoPickedPoint * pick)
   arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)data, 1), pickCB);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
-	printf("SoSelectionPickPythonCB(void * data, const SoPickedPoint * pick) failed!\n");
+    PyErr_Print();
   }
   else {
-	SWIG_ConvertPtr(result, (void **) &resultobj, SWIGTYPE_p_SoPath, 1);
+    SWIG_ConvertPtr(result, (void **) &resultobj, SWIGTYPE_p_SoPath, 1);
   }
 
   Py_DECREF(arglist);
@@ -75,8 +75,8 @@ SoSelectionPickPythonCB(void * data, const SoPickedPoint * pick)
 
 %typemap(in) PyObject *pyfunc %{
   if (!PyCallable_Check($input)) {
-	PyErr_SetString(PyExc_TypeError, "need a callable object!");
-	return NULL;
+    PyErr_SetString(PyExc_TypeError, "need a callable object!");
+    return NULL;
   }
   $1 = $input;
 %}

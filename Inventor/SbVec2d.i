@@ -24,7 +24,7 @@ convert_SbVec2d_array(PyObject *input, double temp[2])
 
 %feature("shadow") SbVec2d::SbVec2d %{
 def __init__(self,*args):
-   newobj = Nonw
+   newobj = None
    if len(args) == 1:
       newobj = apply(_pivy.new_SbVec2d_vec,args)
    elif len(args) == 2:

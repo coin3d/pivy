@@ -48,7 +48,7 @@
 
 from pivy import *
 from qt import *
-import sys
+import sys, traceback
 
 # Timer sensor 
 # Rotate 90 degrees every second, update 30 times a second
@@ -71,9 +71,9 @@ def myProjectPoint(myRenderArea, mousex, mousey):
    
     # Project the mouse point to a line
     p0, p1 = myViewVolume.projectPointToLine(SbVec2f(x,y))
-   
+
     # Midpoint of the line intersects a plane thru the origin
-    intersection = (p0 + p1) / 2.0
+    intersection = SbVec3f_div(SbVec3f_add(p0, p1), 2.0)
 
     return intersection
 
@@ -97,16 +97,17 @@ def myClearPoints(myRenderArea):
 def tickerCallback(userData, sensor):
     myCamera = cast(userData, "SoCamera")
     mtx = SbMatrix()
-   
+
     # Adjust the position
     pos = myCamera.position.getValue()
     rot = SbRotation(SbVec3f(0,1,0), ROTATION_ANGLE)
     mtx.setRotate(rot)
-    mtx.multVecMatrix(pos, pos)
+    pos = mtx.multVecMatrix(pos)
     myCamera.position.setValue(pos)
-   
+
     # Adjust the orientation
-    myCamera.orientation.setValue(myCamera.orientation.getValue() * rot)
+    myCamera.orientation.setValue(SbRotation_mul(myCamera.orientation.getValue(), rot))
+    
 
 ###############################################################
 # CODE FOR The Inventor Mentor STARTS HERE  (part 1)
@@ -119,34 +120,24 @@ def myAppEventHandler(userData, anyevent):
     #  but it seems PyQt doesn't provide a way to cast a QEvent to a
     #  QMouseEvent. investigate or otherwise contribute or write your own
     #  cast function. 20030703 tamer.
-    print anyevent.type()
     if anyevent.type() == QEvent.MouseButtonPress:
-        myButtonEvent = QMouseEvent(anyevent)
-        print myButtonEvent
-        
-        if myButtonEvent.button() == QMouseEvent.LeftButton:
-            vec = myProjectPoint(myRenderArea, myButtonEvent.x, myButtonEvent.y)
+        if anyevent.button() == QMouseEvent.LeftButton:
+            vec = myProjectPoint(myRenderArea, anyevent.x(), anyevent.y())
             myAddPoint(myRenderArea, vec)
-        elif myButtonEvent.button() == QMouseEvent.MidButton:
+        elif anyevent.button() == QMouseEvent.MidButton:
             myTicker.schedule()  # start spinning the camera
-        elif myButtonEvent.button() == QMouseEvent.RightButton:
+        elif anyevent.button() == QMouseEvent.RightButton:
             myClearPoints(myRenderArea)  # clear the point set
-      
+
     elif anyevent.type() == QEvent.MouseButtonRelease:
-        myButtonEvent = QMouseEvent(anyevent)
-        print myButtonEvent
-        
-        if myButtonEvent.button() == QMouseEvent.MidButton:
+        if anyevent.button() == QMouseEvent.MidButton:
             myTicker.unschedule()  # stop spinning the camera
-      
+
     elif anyevent.type() == QEvent.MouseMove:
-        myMotionEvent = QMouseEvent(anyevent)
-        print myButtonEvent
-        
-        if myMotionEvent.state() == QMouseEvent.LeftButton:
-            vec = myProjectPoint(myRenderArea, myMotionEvent.x, myMotionEvent.y)
+        if anyevent.state() == QMouseEvent.LeftButton:
+            vec = myProjectPoint(myRenderArea, anyevent.x(), anyevent.y())
             myAddPoint(myRenderArea, vec)
-      
+
     else:
         handled = FALSE
    
@@ -156,14 +147,13 @@ def myAppEventHandler(userData, anyevent):
 ###############################################################
 
 def main():
-    print "\n- Warning: This example is currently not fully functional!"
-    print "- Still it shows how things could be achieved.\n"
+    global myTicker
+    
     # Print out usage instructions
     print "Mouse buttons:"
     print "\tLeft (with mouse motion): adds points"
     print "\tMiddle: rotates points about the Y axis"
     print "\tRight: deletes all the points"
-
 
     # Initialize Inventor and Qt
     appWindow = SoQt_init(sys.argv[0])
@@ -182,7 +172,7 @@ def main():
     # specify normals
     myLightModel = SoLightModel()
     myLightModel.model(SoLightModel.BASE_COLOR)
-    root.addChild(myLightModel)               # child 1
+    root.addChild(myLightModel)             # child 1
    
     # Set up the camera view volume
     myCamera.position.setValue(0, 0, 4)
@@ -193,8 +183,8 @@ def main():
     # Add a coordinate and point set
     myCoord = SoCoordinate3()
     myPointSet = SoPointSet()
-    root.addChild(myCoord)                    # child 2
-    root.addChild(myPointSet)                 # child 3
+    root.addChild(myCoord)                  # child 2
+    root.addChild(myPointSet)               # child 3
 
     # Timer sensor to tick off time while middle mouse is down
     myTicker = SoTimerSensor(tickerCallback, myCamera)

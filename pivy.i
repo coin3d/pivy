@@ -870,10 +870,22 @@ cast(PyObject *self, PyObject *args)
 
 %typemap(in) FILE * {
   if (PyFile_Check($input)) {
-	$1 = PyFile_AsFile($input);;
+	$1 = PyFile_AsFile($input);
   } else {
 	PyErr_SetString(PyExc_TypeError, "expected a file object.");
   }
+}
+
+%typemap(in) unsigned char * {
+  if (PyString_Check($input)) {
+	$1 = (unsigned char *)PyString_AsString($input);
+  } else {
+	PyErr_SetString(PyExc_TypeError, "expected a string object.");
+  }  
+}
+
+%typemap(out) unsigned char * {
+  $result = PyString_FromString((const char *)$1);
 }
 
 %include Inventor/C/base/hash.h

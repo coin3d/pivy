@@ -43,3 +43,19 @@ def setHSVValue(*args):
 %apply float *OUTPUT { float & h, float & s, float & v };
 
 %ignore SbColor::getHSVValue(float hsv[3]) const;
+
+%rename(SbColor_mul) operator *(const SbColor & v, const float d);
+%rename(SbColor_d_mul) operator *(const float d, const SbColor & v);
+%rename(SbColor_add) operator+(const SbColor & v1, const SbColor & v2);
+%rename(SbColor_sub) operator-(const SbColor & v1, const SbColor & v2);
+%rename(SbColor_div) operator /(const SbColor & v, const float d);
+%rename(SbColor_eq) operator ==(const SbColor & v1, const SbColor & v2);
+%rename(SbColor_neq) operator !=(const SbColor & v1, const SbColor & v2);
+
+COIN_DLL_API SbColor operator *(const SbColor & v, const float d);
+COIN_DLL_API SbColor operator *(const float d, const SbColor & v);
+COIN_DLL_API SbColor operator /(const SbColor & v, const float d);
+COIN_DLL_API SbColor operator +(const SbColor & v1, const SbColor & v2);
+COIN_DLL_API SbColor operator -(const SbColor & v1, const SbColor & v2);
+COIN_DLL_API int operator ==(const SbColor & v1, const SbColor & v2);
+COIN_DLL_API int operator !=(const SbColor & v1, const SbColor & v2);

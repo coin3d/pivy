@@ -73,7 +73,8 @@ typedef SoQtCursor::CustomCursor CustomCursor;
 /* FIXME: there is a major pitfall reg. this solution, namely
  * thread safety! reconsider! 20030626 tamer.
  */
-static void *Pivy_PythonInteractiveLoop(void *data) {
+static void *
+Pivy_PythonInteractiveLoop(void *data) {
   PyRun_InteractiveLoop(stdin, "<stdin>");
   return NULL;
 }
@@ -85,6 +86,7 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
 /* typemaps to bridge against PyQt */
 
 %typemap(out) QEvent * {
+  $result = NULL;
   {
     PyObject *sip, *qt;
 
@@ -125,13 +127,15 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
     }
 
     /* if no QEvent could be created through sip return a swig QEvent type */
-    if (!$result) {
-      $result = SWIG_NewPointerObj((void *)$1, SWIGTYPE_p_QEvent, 0);
+    if (PyErr_ExceptionMatches(PyExc_ImportError) || !$result) {
+      PyErr_Clear();
+      $result = SWIG_NewPointerObj((void *)($1), SWIGTYPE_p_QEvent, 0);
     }
   }
 }
 
 %typemap(out) QWidget * {
+  $result = NULL;
   {
     PyObject *sip, *qt;
 
@@ -172,8 +176,9 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
     }
 
     /* if no QWidget could be created through sip return a swig QWidget type */
-    if (!$result) {
-      $result = SWIG_NewPointerObj((void *)$1, SWIGTYPE_p_QWidget, 0);
+    if (PyErr_ExceptionMatches(PyExc_ImportError) || !$result) {
+      PyErr_Clear();
+      $result = SWIG_NewPointerObj((void *)($1), SWIGTYPE_p_QWidget, 0);
     }
   }
 }
@@ -200,7 +205,7 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
         if (!(address = PyEval_CallObject(sip_unwrapinst_func, arglist))) {
           PyErr_Print();
         } else if (PyNumber_Check(address)) {
-            $1 = (QEvent*)PyLong_AsLong(address);
+          $1 = (QEvent*)PyLong_AsLong(address);
         }
           
         Py_DECREF(arglist);
@@ -208,8 +213,9 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
     }
   }
 
-  if (!$1) {
-    if ((SWIG_ConvertPtr($input, (void **)&$1, SWIGTYPE_p_QEvent,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+  if (PyErr_ExceptionMatches(PyExc_ImportError) || !$1) {
+    PyErr_Clear();
+    if ((SWIG_ConvertPtr($input, (void **)(&$1), SWIGTYPE_p_QEvent,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
   }
 }
 
@@ -246,11 +252,11 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
       }
     }
   
-    if (!$1) {
-      if ((SWIG_ConvertPtr($input, (void **)&$1, SWIGTYPE_p_QWidget,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+    if (PyErr_ExceptionMatches(PyExc_ImportError) || !$1) {
+      PyErr_Clear();
+      if ((SWIG_ConvertPtr($input, (void **)(&$1), SWIGTYPE_p_QWidget,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
     }
-  }
-  
+  }  
 }
 
 %include Inventor/Qt/devices/SoQtDevice.h

@@ -49,6 +49,21 @@ BSD-style license.
 # Setup file for the Pivy distribution.
 #
 
+classifiers = """\
+Development Status :: 4 - Beta
+Intended Audience :: Developers
+License :: OSI Approved :: BSD License
+Programming Language :: Python
+Topic :: Software Development :: Libraries :: Python Modules
+Topic :: Multimedia :: Graphics
+Topic :: Multimedia :: Graphics :: 3D Modeling
+Topic :: Multimedia :: Graphics :: 3D Rendering
+Operating System :: Unix
+Operating System :: MacOS :: MacOS X
+Operating System :: Microsoft :: Windows
+"""
+
+
 from distutils.command.build import build
 from distutils.command.clean import clean
 from distutils.core import setup
@@ -348,16 +363,19 @@ class pivy_clean(clean):
 
 setup(name = "Pivy",
       version = VERSION,
-      description = "An Open Inventor Python binding",
+      description = "A Python binding for Coin/Open Inventor",
       long_description = __doc__,
       author = "Tamer Fahmy",
       author_email = "tamer@tammura.at",
-      maintainer = "Tamer Fahmy",
-      maintainer_email = "tamer@tammura.at",      
+      download_url="http://www.tammura.at/cvs.html",
       url = "http://pivy.tammura.at/",
       cmdclass = {'build' : pivy_build,
                   'clean' : pivy_clean},
       ext_modules = pivy_build.ext_modules,
-      py_modules  = ['sogui'] + pivy_build.py_modules)
+      py_modules  = ['sogui'] + pivy_build.py_modules,
+      classifiers = filter(None, classifiers.split("\n")),
+      license = "BSD License",
+      platforms = ['Any']
+      )
 
 

@@ -8,7 +8,10 @@ all: pivy
 ###
 # pivy
 #
-pivy: pivycmodule.so
+pivy: pivycmodule.so pivy.pyc
+
+pivy.pyc: pivy.py
+	python -c "import pivy"
 
 pivycmodule.so: pivy_wrap.cxx
 	g++ -shared $(OPTS) $(CXXFLAGS) `sogtk-config --cppflags --ldflags --libs` \

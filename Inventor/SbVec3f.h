@@ -60,7 +60,7 @@ def __init__(self,*args):
       self.thisown = 1
       return
    elif len(args) == 3:
-      if type(args[1]) == type(1.0):
+      if type(args[0]) == type(1.0):
          self.this = apply(pivyc.new_SbVec3f_fff,args)
          self.thisown = 1
          return
@@ -124,9 +124,7 @@ public:
 	  return (self->getValue())[i];
 	}
   }
-#endif
-
-#ifndef __PIVY__
+#else
   float & operator [](const int i);
   const float & operator [](const int i) const;
 #endif

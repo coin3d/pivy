@@ -66,6 +66,7 @@ class SbPList;
  */
 static void *Pivy_PythonInteractiveLoop(void *data) {
   PyRun_InteractiveLoop(stdin, "<stdin>");
+  return NULL;
 }
 %}
 #endif

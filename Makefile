@@ -17,7 +17,7 @@ pivycmodule.so: pivy_wrap.cxx
 wrap: pivy_wrap.cxx
 
 pivy_wrap.cxx: pivy.i
-	swig -v -python -shadow -c++ -includeall -D__PIVY__ -I. -I/usr/local/include \
+	swig -v -c++ -python -shadow -includeall -D__PIVY__ -I. -I/usr/local/include \
              -Ifake_headers -o pivy_wrap.cxx pivy.i
 
 cleanpivy:

@@ -58,78 +58,51 @@ convert_SbMat_array(PyObject *input, SbMat *temp)
 
 %typemap(out) SbMat & {
   int i,j;
-  $result = PyList_New(4);
+  $result = PyTuple_New(4);
   
   for (i=0; i<4; i++) {
-	PyObject *oi = PyList_New(4);
+	PyObject *oi = PyTuple_New(4);
 	for (j=0; j<4; j++) {
 	  PyObject *oj = PyFloat_FromDouble((double) (*$1)[i][j]);
-	  PyList_SetItem(oi, j, oj);
+	  PyTuple_SetItem(oi, j, oj);
 	}
-	PyList_SetItem($result, i, oi);	
+	PyTuple_SetItem($result, i, oi);	
   }
 }
+
+%rename(SbMatrix_f16) SbMatrix::SbMatrix(const float a11, const float a12, const float a13, const float a14,
+										 const float a21, const float a22, const float a23, const float a24,
+										 const float a31, const float a32, const float a33, const float a34,
+										 const float a41, const float a42, const float a43, const float a44);
+%rename(SbMatrix_SbMat) SbMatrix::SbMatrix(const SbMat & matrix);
+
+%feature("shadow") SbMatrix::SbMatrix %{
+def __init__(self,*args):
+   if len(args) == 1:
+      self.this = apply(pivyc.new_SbMatrix_SbMat,args)
+      self.thisown = 1
+      return
+   elif len(args) == 16:
+      self.this = apply(pivyc.new_SbMatrix_f16,args)
+      self.thisown = 1
+      return
+   self.this = apply(pivyc.new_SbMatrix,args)
+   self.thisown = 1
+%}
 #endif
 
 class COIN_DLL_API SbMatrix {
 public:
-
-#ifndef __PIVY__
   SbMatrix(void);
   SbMatrix(const float a11, const float a12, const float a13, const float a14,
            const float a21, const float a22, const float a23, const float a24,
            const float a31, const float a32, const float a33, const float a34,
            const float a41, const float a42, const float a43, const float a44);
   SbMatrix(const SbMat & matrix);
+
+#ifndef __PIVY__
   SbMatrix(const SbMat * matrix);
 #endif
-
-  %addmethods {
-	const SbMatrix *__init__(PyObject *args) {
-	  SbMat matrix;
-
-	  switch (PyObject_Length(args)) {
-	  case 0:
-		return new SbMatrix();
-		break;
-
-	  case 1:
-		if (PySequence_Check(args)) {
-		  if (!PyArg_ParseTuple(args, "(ffff)(ffff)(ffff)(ffff)",
-								&matrix[0][0], &matrix[0][1], &matrix[0][2], &matrix[0][3],
-								&matrix[1][0], &matrix[1][1], &matrix[1][2], &matrix[1][3],
-								&matrix[2][0], &matrix[2][1], &matrix[2][2], &matrix[2][3],
-								&matrix[3][0], &matrix[3][1], &matrix[3][2], &matrix[3][3])) {
-			PyErr_SetString(PyExc_TypeError, "sequence must contain 4 sequences where every sequence contains 4 float elements");
-			return NULL;
-		  }
-		  return new SbMatrix(&matrix);
-		} else {
-		  PyErr_SetString(PyExc_TypeError, "expected a sequence.");
-		  return NULL;
-		}  		
-		break;
-
-	  case 16:
-		if (!PyArg_ParseTuple(args, "ffffffffffffffff",
-							  &matrix[0][0], &matrix[0][1], &matrix[0][2], &matrix[0][3],
-							  &matrix[1][0], &matrix[1][1], &matrix[1][2], &matrix[1][3],
-							  &matrix[2][0], &matrix[2][1], &matrix[2][2], &matrix[2][3],
-							  &matrix[3][0], &matrix[3][1], &matrix[3][2], &matrix[3][3])) {
-		  PyErr_SetString(PyExc_TypeError, "arguments must contain 16 float elements");
-		  return NULL;
-		}
-		return new SbMatrix(matrix[0][0], matrix[0][1], matrix[0][2], matrix[0][3],
-							matrix[1][0], matrix[1][1], matrix[1][2], matrix[1][3],
-							matrix[2][0], matrix[2][1], matrix[2][2], matrix[2][3],
-							matrix[3][0], matrix[3][1], matrix[3][2], matrix[3][3]);		
-		break;
-	  default:
-		PyErr_SetString(PyExc_TypeError, "wrong number or types of arguments given");
-		break;
-	  }
-	}
-  }
 
   ~SbMatrix(void);
 

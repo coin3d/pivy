@@ -580,7 +580,8 @@
 
 %include "typemaps.i"
 
-%rename(output) print(FILE * fp);
+%rename(output) print(FILE * fp) const;
+%rename(output) print(FILE * const fp) const;
 %rename(output) print(FILE * const file = stdout);
 %rename(srcFrom) from;
 %rename(destTo) to;

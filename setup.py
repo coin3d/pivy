@@ -54,13 +54,13 @@ from distutils.command.build import build
 from distutils.command.clean import clean
 from distutils.core import setup
 from distutils.extension import Extension
-from distutils.sysconfig import get_python_inc
+from distutils.sysconfig import get_python_lib
 
-# if we are on a gentoo box salute the chap and output stuff in nice colors
+# if we are on a Gentoo box salute the chap and output stuff in nice colors
 # Gentoo is Python friendly, so be especially friendly to them! ;)
 try:
     from output import green, blue, turquoise, red, yellow
-    print red("Oooh, it's a Gentoo! Nice nice! tuhtah salutes you! :)\n")
+    print red("Oooh, it's a Gentoo! Nice nice! tuhtah salutes you! :)")
 except:
     def red(text): return text
     def green(text): return text
@@ -90,7 +90,7 @@ Operating System :: MacOS :: MacOS X
 Operating System :: Microsoft :: Windows
 """
 
-PIVY_VERSION = "0.1.1"
+PIVY_VERSION = "0.1.2"
 
 class pivy_build(build):
     PIVY_SNAKES = r"""
@@ -141,8 +141,8 @@ class pivy_build(build):
 
     SWIG = ((sys.platform == "win32" and "swig.exe") or "swig")
     SWIG_SUPPRESS_WARNINGS = "-w302,306,307,312,389,361,362,503,509,510"
-    SWIG_PARAMS = "-c -v -c++ -python -includeall " + \
-                  "-D__PIVY__ -I. -Ifake_headers -I%s %s -o %s_wrap.cxx %s.i"
+    SWIG_PARAMS = "-noruntime -v -c++ -python -includeall " + \
+                  "-D__PIVY__ -I. -Ifake_headers -I%s -I/usr/include %s -o %s_wrap.cxx %s.i"
 
     SOGUI = ['SoQt', 'SoXt', 'SoGtk', 'SoWin']
     MODULES = {'pivy'  : ('_pivy',  'coin-config'),
@@ -151,15 +151,13 @@ class pivy_build(build):
                'SoGtk' : ('_sogtk', 'sogtk-config'),
                'SoWin' : ('_sowin', 'sowin-config')}
 
-    SUPPORTED_SWIG_VERSIONS = ['1.3.19', '1.3.21']
+    SUPPORTED_SWIG_VERSIONS = ['1.3.21', '1.3.22']
     SWIG_VERSION = ""
     SWIG_COND_SYMBOLS = []
     CXX_INCS = ""
     CXX_LIBS = ""
     if sys.platform == "win32":
         CXX_INCS = "-DPIVY_WIN32 "
-    else:
-        CXX_LIBS = "-lswigpy" + " "
 
     ext_modules=[]
     py_modules=['sogui']
@@ -300,8 +298,11 @@ class pivy_build(build):
                     else:
                         print blue("[") + red("failed") + blue("]")
                     fd.close
-            # fixes for SWIG 1.3.21
-            elif SWIG_VERSION == '1.3.21' and file[-4:] == ".fix":
+            # fixes for SWIG 1.3.21 and upwards
+            # (mostly workarounding swig's preprocessor "function like macros"
+            # preprocessor bug when no parameters are provided which then results
+            # in no constructors being created in the wrapper)
+            elif file[-4:] == ".fix":
                 print red("Fixing ") + turquoise(os.path.join(dirname, file)),
                 print blue("to ") + turquoise(os.path.join(dirname, file)[:-4])
                 shutil.copyfile(os.path.join(dirname, file),
@@ -337,7 +338,26 @@ class pivy_build(build):
                      INCLUDE_DIR)
 
     def swig_generate(self):
-        "build all available modules"
+        "build all available modules and the runtime library"
+
+        if not os.path.isfile("pivy_runtime_wrap.cxx"):
+            print red("\n=== Generating pivy_runtime_wrap.cxx ===")
+            print blue(self.SWIG   + " -runtime -v -c++ -python -interface libpivy_runtime -o pivy_runtime_wrap.cxx pivy_runtime.i")
+            if os.system(self.SWIG + " -runtime -v -c++ -python -interface libpivy_runtime -o pivy_runtime_wrap.cxx pivy_runtime.i"):
+                print red("SWIG did not generate runtime wrapper successfully! ** Aborting **")
+                sys.exit(1)
+
+            extra_compile_args=None
+            if sys.platform == "win32":
+                extra_compile_args = ["/DSWIG_GLOBAL", "/MT"]
+            self.ext_modules.append(Extension("libpivy_runtime",
+                                              ["pivy_runtime_wrap.cxx"],
+                                              extra_compile_args=extra_compile_args))
+        else:
+            print red("=== pivy_runtime_wrap.cxx already exists! ===")
+
+        self.py_modules.append("pivy_runtime")
+        
         for module in self.MODULES.keys():
             module_name = self.MODULES[module][0]
             config_cmd = self.MODULES[module][1]
@@ -371,14 +391,16 @@ class pivy_build(build):
                 print red("=== %s_wrap.cxx for %s already exists! ===" % (module.lower(),
                                                                             module))
 
-            library_dirs = None
-            libraries = None
+            runtime_library_dirs = [get_python_lib()]
+            libraries = ['pivy_runtime']
             if sys.platform == "win32":
-                library_dirs=[self.build_temp + os.path.sep + (self.debug and 'Debug' or 'Release')]
-                libraries=['pivy_swigpy']
+                library_dirs = [self.build_temp + os.path.sep + (self.debug and 'Debug' or 'Release')]
+            else:
+                library_dirs = [os.getcwd() + os.path.sep + self.build_lib]
 
             self.ext_modules.append(Extension(module_name, [module.lower() + "_wrap.cxx"],
                                               library_dirs=library_dirs,
+                                              runtime_library_dirs=runtime_library_dirs,
                                               libraries=libraries,
                                               extra_compile_args=(self.CXX_INCS + CPP_FLAGS).split(),
                                               extra_link_args=(self.CXX_LIBS + LDFLAGS_LIBS).split()))
@@ -389,19 +411,17 @@ class pivy_build(build):
         if sys.platform == "win32" and not os.getenv("COIN3DDIR"):
             print "Please set the COIN3DDIR environment variable to your Coin root directory! ** Aborting **"
             sys.exit(1)
+        
         self.pivy_configure()
         self.swig_generate()
-
-        if sys.platform == "win32": 
-            self.ext_modules.insert(0, Extension("pivy_swigpy", ["pivy_swigpy.c"],
-                                                 extra_compile_args=["/DSWIG_GLOBAL", "/MT"]))
 
         for cmd_name in self.get_sub_commands():
             self.run_command(cmd_name)
 
 
 class pivy_clean(clean):
-    WRAPPER_FILES = ('pivy_wrap.cxx',
+    WRAPPER_FILES = ('pivy_runtime_wrap.cxx',
+                     'pivy_wrap.cxx',
                      'soqt_wrap.cxx',
                      'sogtk_wrap.cxx',
                      'soxt_wrap.cxx',

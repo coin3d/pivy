@@ -32,7 +32,7 @@ typedef float SbMat[4][4];
 
 #ifdef __PIVY__
 %{
-static SbMat *
+static void
 convert_SbMat_array(PyObject *input, SbMat *temp)
 {
   if (PySequence_Check(input)) {
@@ -42,18 +42,19 @@ convert_SbMat_array(PyObject *input, SbMat *temp)
 						  &(*temp)[2][0], &(*temp)[2][1], &(*temp)[2][2], &(*temp)[2][3],
 						  &(*temp)[3][0], &(*temp)[3][1], &(*temp)[3][2], &(*temp)[3][3])) {
 	  PyErr_SetString(PyExc_TypeError, "sequence must contain 4 sequences where every sequence contains 4 float elements");
-	  return NULL;
+	  return;
 	}
-	return temp;
+	return;
   } else {
 	PyErr_SetString(PyExc_TypeError, "expected a sequence.");
-    return NULL;
+    return;
   }  
 }
 %}
 
 %typemap(in) SbMat & (SbMat temp) {
-  $1 = convert_SbMat_array($input, &temp);
+  convert_SbMat_array($input, &temp);
+  $1 = &temp;
 }
 
 %typemap(out) SbMat & {
@@ -89,6 +90,69 @@ def __init__(self,*args):
    self.this = apply(pivyc.new_SbMatrix,args)
    self.thisown = 1
 %}
+
+%rename(det3_i6) SbMatrix::det3(int r1, int r2, int r3,
+								int c1, int c2, int c3) const;
+
+%feature("shadow") SbMatrix::setScale(const float s) %{
+def det3(*args):
+   if len(args) == 7:
+      return apply(pivyc.SbMatrix_det3_i6,args)
+   return apply(pivyc.SbMatrix_det3,args)
+%}
+
+%rename(setScale_vec3) SbMatrix::setScale(const SbVec3f & s);
+
+%feature("shadow") SbMatrix::setScale(const float s) %{
+def setScale(args):
+  if type(args[1]) == type(0.0):
+	return apply(pivyc.SbMatrix_setScale,args)
+  return apply(pivyc.SbMatrix_setScale_vec3,args)
+%}
+
+%rename(setTransform_vec3_rot_vec3_rot) SbMatrix::setTransform(const SbVec3f & t, const SbRotation & r, const SbVec3f & s,
+															   const SbRotation & so);
+%rename(setTransform_vec3_rot_vec3_rot_vec3) SbMatrix::setTransform(const SbVec3f & translation,
+																	const SbRotation & rotation, const SbVec3f & scaleFactor,
+																	const SbRotation & scaleOrientation, const SbVec3f & center);
+
+%feature("shadow") SbMatrix::setTransform(const SbVec3f & t, const SbRotation & r, const SbVec3f & s) %{
+def setTransform(*args):
+   if len(args) == 5:
+      return apply(pivyc.SbMatrix_setTransform_vec3_rot_vec3_rot,args)
+   elif len(args) == 6:
+      return apply(pivyc.SbMatrix_setTransform_vec3_rot_vec3_rot_vec3,args)
+   return apply(pivyc.SbMatrix_setTransform,args)
+%}
+
+%apply trsso *OUTPUT { SbVec3f & t, SbRotation & r, SbVec3f & s, SbRotation & so };
+%apply trsso *OUTPUT { SbVec3f & translation, SbRotation & rotation, SbVec3f & scaleFactor, SbRotation & scaleOrientation };
+
+%rename(getTransform_vec3) SbMatrix::getTransform(SbVec3f & translation, SbRotation & rotation,
+												  SbVec3f & scaleFactor, SbRotation & scaleOrientation,
+												  const SbVec3f & center) const;
+
+%feature("shadow") SbMatrix::getTransform(SbVec3f & t, SbRotation & r, SbVec3f & s, SbRotation & so) %{
+def getTransform(*args):
+   if len(args) == 2:
+      return apply(pivyc.SbMatrix_getTransform_vec3,args)
+   return apply(pivyc.SbMatrix_getTransform,args)
+%}
+
+%apply vec3 *OUTPUT { SbVec3f & dst };
+%apply vec4 *OUTPUT { SbVec4f & dst };
+
+%rename(multVecMatrix_vec4) SbMatrix::multVecMatrix(const SbVec4f & src, SbVec4f & dst) const;
+
+%feature("shadow") SbMatrix::multVecMatrix(const SbVec3f & src, SbVec3f & dst) %{
+def multVecMatrix(*args):
+   if isinstance(args[1], SbVec4f):
+      return apply(pivyc.SbMatrix_multVecMatrix_vec4,args)
+   return apply(pivyc.SbMatrix_multVecMatrix,args)
+%}
+
+%apply line *OUTPUT { SbLine & dst };
+
 #endif
 
 class COIN_DLL_API SbMatrix {
@@ -166,6 +230,7 @@ public:
   void getTransform(SbVec3f & translation, SbRotation & rotation,
                     SbVec3f & scaleFactor, SbRotation & scaleOrientation,
                     const SbVec3f & center) const;
+
   SbBool factor(SbMatrix & r, SbVec3f & s, SbMatrix & u, SbVec3f & t,
                 SbMatrix & proj);
   SbBool LUDecomposition(int index[4], float & d);
@@ -173,6 +238,7 @@ public:
   SbMatrix transpose(void) const;
   SbMatrix & multRight(const SbMatrix & m);
   SbMatrix & multLeft(const SbMatrix & m);
+
   void multMatrixVec(const SbVec3f & src, SbVec3f & dst) const;
   void multVecMatrix(const SbVec3f & src, SbVec3f & dst) const;
   void multDirMatrix(const SbVec3f & src, SbVec3f & dst) const;
@@ -188,7 +254,13 @@ private:
   void operator *=(const float v);
 };
 
-#ifndef __PIVY__
+#ifdef __PIVY__
+/* %typemap(in) SbMat & (SbMat temp); */
+%clear SbVec3f & translation, SbRotation & rotation, SbVec3f & scaleFactor, SbRotation & scaleOrientation;
+%clear SbVec3f & dst;
+%clear SbVec4f & dst;
+%clear SbLine & dst;
+#else
 COIN_DLL_API SbMatrix operator *(const SbMatrix & m1, const SbMatrix & m2);
 COIN_DLL_API int operator ==(const SbMatrix & m1, const SbMatrix & m2);
 COIN_DLL_API int operator !=(const SbMatrix & m1, const SbMatrix & m2);

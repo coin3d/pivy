@@ -25,16 +25,62 @@
 #include <Inventor/SbBasic.h>
 
 #ifdef __PIVY__
+%{
+static void
+convert_SbVec2f_array(PyObject *input, float temp[][2])
+{
+  if (PySequence_Check(input)) {
+	if (!PyArg_ParseTuple(input, "ff", &(*temp)[0], &(*temp)[1])) {
+	  PyErr_SetString(PyExc_TypeError, "sequence must contain 2 float elements");
+	  return;
+	}
+	return;
+  } else {
+	PyErr_SetString(PyExc_TypeError, "expected a sequence.");
+    return;
+  }  
+}
+%}
+
+%typemap(in) float v[2] (float temp[2]) {
+  convert_SbVec2f_array($input, &temp);
+  $1 = temp;
+}
+
+%rename(SbVec2f_vec) SbVec2f::SbVec2f(const float v[2]);
+%rename(SbVec2f_ff) SbVec2f::SbVec2f(const float x, const float y);
+
+%feature("shadow") SbVec2f::SbVec2f %{
+def __init__(self,*args):
+   if len(args) == 1:
+      self.this = apply(pivyc.new_SbVec2f_vec,args)
+      self.thisown = 1
+      return
+   elif len(args) == 2:
+      self.this = apply(pivyc.new_SbVec2f_ff,args)
+      self.thisown = 1
+      return
+   self.this = apply(pivyc.new_SbVec2f,args)
+   self.thisown = 1
+%}
+
+%rename(setValue_ff)  SbVec2f::setValue(const float x, const float y);
+
+%feature("shadow") SbVec2f::setValue(const float vec[2]) %{
+def setValue(*args):
+   if len(args) == 3:
+      return apply(pivyc.SbVec2f_setValue_ff,args)
+   return apply(pivyc.SbVec2f_setValue,args)
+%}
+
 %apply float *OUTPUT { float & x, float & y };
+
 #endif
 
 class COIN_DLL_API SbVec2f {
 public:
-#ifndef __PIVY__
   SbVec2f(void);
   SbVec2f(const float v[2]);
-#endif
-
   SbVec2f(const float x, const float y);
   float dot(const SbVec2f & v) const;
   SbBool equals(const SbVec2f & v, const float tolerance) const;
@@ -48,10 +94,7 @@ public:
   void negate(void);
   float normalize(void);
 
-#ifndef __PIVY__
   SbVec2f & setValue(const float v[2]);
-#endif
-
   SbVec2f & setValue(const float x, const float y);
 
 #ifdef __PIVY__
@@ -88,9 +131,7 @@ private:
 
 #ifdef __PIVY__
 %clear float & x, float & y;
-#endif
-
-#ifndef __PIVY__
+#else
 COIN_DLL_API SbVec2f operator * (const SbVec2f & v, const float d);
 COIN_DLL_API SbVec2f operator * (const float d, const SbVec2f & v);
 COIN_DLL_API SbVec2f operator / (const SbVec2f & v, const float d);

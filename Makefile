@@ -1,4 +1,4 @@
-CXXFLAGS+= -I/usr/local/include/python2.1
+CXXFLAGS+= -I/usr/include/python
 
 OPTS=-fPIC -O2
 

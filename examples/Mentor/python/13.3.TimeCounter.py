@@ -78,7 +78,7 @@ def main():
     myInput = SoInput()
     if not myInput.openFile("jumpyMan.iv"):
         sys.exit(1)
-    manObject = SoDB_readAll(myInput)
+    manObject = SoDB.readAll(myInput)
     if manObject == None:
         sys.exit(1)
     root.addChild(manObject)

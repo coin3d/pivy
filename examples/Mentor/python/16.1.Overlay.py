@@ -69,7 +69,7 @@ def main():
     # read the scene graph in
     input = SoInput()
     input.setBuffer(overlayScene)
-    scene = SoDB_readAll(input)
+    scene = SoDB.readAll(input)
     if scene == None:
         print "Couldn't read scene"
         sys.exit(1)

@@ -43,6 +43,7 @@
 
 from sogui import *
 from pivy import *
+from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLX import *
 import sys
@@ -50,9 +51,9 @@ import sys
 # window attribute list to create a color index visual.
 # This will create a double buffered color index window
 # with the maximum number of bits and a zbuffer.
-attribList = (GLX_DOUBLEBUFFER, 
-              GLX_BUFFER_SIZE, 1, 
-              GLX_DEPTH_SIZE, 1, 
+attribList = (GL_DOUBLEBUFFER, 
+              GL_BUFFER_SIZE, 1, 
+              GLUT_DEPTH_SIZE, 1, 
               None)
 
 # list of colors to load in the color map
@@ -77,7 +78,7 @@ def main():
     # read the scene graph in
     input = SoInput()
     input.setBuffer(sceneBuffer)
-    scene = SoDB_readAll(input) 
+    scene = SoDB.readAll(input) 
     if not scene:
         print "Couldn't read scene"
         sys.exit(1)

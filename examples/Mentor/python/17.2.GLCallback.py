@@ -115,7 +115,7 @@ def drawFloor():
 # Callback routine to render the floor using OpenGL
 def myCallbackRoutine(void, action):
     # only render the floor during GLRender actions:
-    if not action.isOfType(SoGLRenderAction_getClassTypeId()): return
+    if not action.isOfType(SoGLRenderAction.getClassTypeId()): return
    
     glPushMatrix()
     glTranslatef(0.0, -3.0, 0.0)
@@ -136,7 +136,7 @@ def myCallbackRoutine(void, action):
     # "Open Inventor 2.1 Porting and Performance Tips"
   
     # state = action.getState()
-    # lazyElt = cast(SoLazyElement_getInstance(state), "SoGLLazyElement")
+    # lazyElt = cast(SoLazyElement.getInstance(state), "SoGLLazyElement")
     # lazyElt.reset(state, (SoLazyElement.DIFFUSE_MASK)|(SoLazyElement.LIGHT_MODEL_MASK))
 
 def main():

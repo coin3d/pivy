@@ -61,7 +61,7 @@ def rootChangedCB(void, s):
         print " (no fields changed)"
 
 def main():
-    SoDB_init()
+    SoDB.init()
 
     root = SoSeparator()
     root.ref()

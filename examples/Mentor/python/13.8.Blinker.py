@@ -58,13 +58,13 @@ def main():
     myInput = SoInput()
     if not myInput.openFile("eatAtJosies.iv"):
         sys.exit(1)
-    fileContents = SoDB_readAll(myInput)
+    fileContents = SoDB.readAll(myInput)
     if fileContents == None:
         sys.exit(1)
 
-    eatAt = cast(SoNode_getByName("EatAt"), "SoSeparator")
-    josie = cast(SoNode_getByName("Josies"), "SoSeparator")
-    frame = cast(SoNode_getByName("Frame"), "SoSeparator")
+    eatAt = cast(SoNode.getByName("EatAt"), "SoSeparator")
+    josie = cast(SoNode.getByName("Josies"), "SoSeparator")
+    frame = cast(SoNode.getByName("Frame"), "SoSeparator")
 
 #############################################################
 # CODE FOR The Inventor Mentor STARTS HERE

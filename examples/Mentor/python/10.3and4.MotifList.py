@@ -233,13 +233,13 @@ def myScaleSelection(selection, sf):
             if xform != None: break
             n = cast(selectedPath.getNodeFromTail(j), "SoNode")
 
-            if n.isOfType(SoCube_getClassTypeId()):
+            if n.isOfType(SoCube.getClassTypeId()):
                 xform = cubeTransform
-            elif n.isOfType(SoCone_getClassTypeId()):
+            elif n.isOfType(SoCone.getClassTypeId()):
                 xform = coneTransform
-            elif n.isOfType(SoSphere_getClassTypeId()):
+            elif n.isOfType(SoSphere.getClassTypeId()):
                 xform = sphereTransform
-            elif n.isOfType(SoCylinder_getClassTypeId()):
+            elif n.isOfType(SoCylinder.getClassTypeId()):
                 xform = cylTransform
 
         # Apply the scale
@@ -255,10 +255,10 @@ def myKeyPressCB(userData, eventCB):
     event = eventCB.getEvent()
 
     # check for the Up and Down arrow keys being pressed
-    if SoKeyboardEvent_isKeyPressEvent(event, SoKeyboardEvent.UP_ARROW):
+    if SoKeyboardEvent.isKeyPressEvent(event, SoKeyboardEvent.UP_ARROW):
         myScaleSelection(selection, 1.1)
         eventCB.setHandled()
-    elif SoKeyboardEvent_isKeyPressEvent(event, SoKeyboardEvent.DOWN_ARROW):
+    elif SoKeyboardEvent.isKeyPressEvent(event, SoKeyboardEvent.DOWN_ARROW):
         myScaleSelection(selection, 1.0/1.1)
         eventCB.setHandled()
 
@@ -289,7 +289,7 @@ def main():
 
     # Add an event callback so we can receive key press events
     myEventCB = SoEventCallback()
-    myEventCB.addEventCallback(SoKeyboardEvent_getClassTypeId(), 
+    myEventCB.addEventCallback(SoKeyboardEvent.getClassTypeId(), 
                                myKeyPressCB, selectionRoot)
     selectionRoot.addChild(myEventCB)
 

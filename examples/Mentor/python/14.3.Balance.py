@@ -73,8 +73,8 @@ def tipTheBalance(userData, # The nodekit representing 'support', the
 
     # Which Key was pressed?
     # If Right or Left Arrow key, then continue...
-    if SoKeyboardEvent_isKeyPressEvent(ev, SoKeyboardEvent.RIGHT_ARROW) or \
-       SoKeyboardEvent_isKeyPressEvent(ev, SoKeyboardEvent.LEFT_ARROW):
+    if SoKeyboardEvent.isKeyPressEvent(ev, SoKeyboardEvent.RIGHT_ARROW) or \
+       SoKeyboardEvent.isKeyPressEvent(ev, SoKeyboardEvent.LEFT_ARROW):
         startRot, beamIncrement, stringIncrement = SbRotation(), SbRotation(), SbRotation()
         
         # Get the different nodekits from the userData.
@@ -89,7 +89,7 @@ def tipTheBalance(userData, # The nodekit representing 'support', the
         # Set angular increments to be .1 Radians about the Z-Axis
         # The strings rotate opposite the beam, and the two types
         # of key press produce opposite effects.
-        if SoKeyboardEvent_isKeyPressEvent(ev, SoKeyboardEvent.RIGHT_ARROW):
+        if SoKeyboardEvent.isKeyPressEvent(ev, SoKeyboardEvent.RIGHT_ARROW):
             beamIncrement.setValue(SbVec3f(0, 0, 1), -.1)
             stringIncrement.setValue(SbVec3f(0, 0, 1), .1)
         else:
@@ -182,7 +182,7 @@ def main():
 
     # Add EventCallback so Balance Responds to Events
     myCallbackNode = SoEventCallback()
-    myCallbackNode.addEventCallback(SoKeyboardEvent_getClassTypeId(),
+    myCallbackNode.addEventCallback(SoKeyboardEvent.getClassTypeId(),
                                     tipTheBalance, support)
     support.setPart("callbackList[0]", myCallbackNode)
 

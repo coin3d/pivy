@@ -74,7 +74,7 @@ def myProjectPoint(myRenderArea, mousex, mousey):
     p0, p1 = myViewVolume.projectPointToLine(SbVec2f(x,y))
 
     # Midpoint of the line intersects a plane thru the origin
-    intersection = SbVec3f_div(SbVec3f_add(p0, p1), 2.0)
+    intersection = SbVec3f.div(SbVec3f_add(p0, p1), 2.0)
 
     return intersection
 

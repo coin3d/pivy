@@ -197,7 +197,7 @@ def main():
     input = SoInput()
 
     input.setBuffer(floorData)
-    result = SoDB_readAll(input)
+    result = SoDB.readAll(input)
     xlate.translation.setValue(SbVec3f(-12.0, -5.0, -5.0))
     scale.scaleFactor.setValue(SbVec3f(2.0, 1.0, 2.0))
     floor.addChild(xlate)

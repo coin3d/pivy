@@ -67,13 +67,13 @@ def myScaleSelection(selection, sf):
             if xform != None: break
             n = cast(selectedPath.getNodeFromTail(j), "SoNode")
 
-            if n.isOfType(SoCube_getClassTypeId()):
+            if n.isOfType(SoCube.getClassTypeId()):
                 xform = cubeTransform
-            elif n.isOfType(SoCone_getClassTypeId()):
+            elif n.isOfType(SoCone.getClassTypeId()):
                 xform = coneTransform
-            elif n.isOfType(SoSphere_getClassTypeId()):
+            elif n.isOfType(SoSphere.getClassTypeId()):
                 xform = sphereTransform
-            elif n.isOfType(SoCylinder_getClassTypeId()):
+            elif n.isOfType(SoCylinder.getClassTypeId()):
                 xform = cylTransform
 
         # Apply the scale
@@ -129,7 +129,7 @@ def main():
 
     # An event callback node so we can receive key press events
     myEventCB = SoEventCallback()
-    myEventCB.addEventCallback(SoKeyboardEvent_getClassTypeId(), 
+    myEventCB.addEventCallback(SoKeyboardEvent.getClassTypeId(), 
                                myKeyPressCB, selectionRoot)
     selectionRoot.addChild(myEventCB)
 

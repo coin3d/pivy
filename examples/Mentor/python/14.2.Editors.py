@@ -73,7 +73,7 @@ def main():
     myInput = SoInput()
     if not myInput.openFile("desk.iv"):
         sys.exit(1)
-    fileContents = SoDB_readAll(myInput)
+    fileContents = SoDB.readAll(myInput)
     if fileContents == None: 
         sys.exit(1)
 

@@ -74,7 +74,7 @@ def main():
     myInput = SoInput()
     if not myInput.openFile("jumpyMan.iv"):
         sys.exit (1)
-    figureObject = SoDB_readAll(myInput)
+    figureObject = SoDB.readAll(myInput)
     if figureObject == None:
         sys.exit(1)
     root.addChild(figureObject)

@@ -75,7 +75,7 @@ def main():
     if not myInput.openFile("parkbench.iv"):
         sys.exit(1)
 
-    fileContents = SoDB_readAll(myInput)
+    fileContents = SoDB.readAll(myInput)
     if fileContents == None:
         sys.exit(1)
 

@@ -85,7 +85,7 @@ def main():
     myInput = SoInput()
     if not myInput.openFile("dogDish.iv"):
         sys.exit(1)
-    geomObject = SoDB_readAll(myInput)
+    geomObject = SoDB.readAll(myInput)
     if geomObject == None:
         sys.exit(1)
     root.addChild(geomObject)

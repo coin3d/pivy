@@ -157,7 +157,7 @@ def drawFloor():
 
 def main():
     # Initialize Inventor
-    SoDB_init()
+    SoDB.init()
 
     # Build a simple scene graph
     root = SoSeparator()

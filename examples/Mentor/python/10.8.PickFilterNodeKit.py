@@ -59,7 +59,7 @@ def pickFilterCB(void, pick):
 
     for i in range(p.getLength() - 1, -1, -1):
         n = p.getNode(i)
-        if n.isOfType(SoShapeKit_getClassTypeId()):
+        if n.isOfType(SoShapeKit.getClassTypeId()):
             break
 
     # Copy the path down to the nodekit
@@ -99,7 +99,7 @@ def selectCB(userData, path):
 def mtlChangeCB(userData, mtl):
     # Our material change callback is invoked when the
     # user changes the material, and when we change it
-    # through a call to SoGuiMaterialEditor_setMaterial.
+    # through a call to SoGuiMaterialEditor.setMaterial.
     # In this latter case, we ignore the callback invocation
     # ud = cast(userData, "UserData")
 

@@ -55,7 +55,7 @@ def readFile(filename):
         return None
 
     # Read the whole file into the database
-    myGraph = SoDB_readAll(mySceneInput)
+    myGraph = SoDB.readAll(mySceneInput)
     if myGraph == None:
         print >> sys.stderr, "Problem reading file"
         return None

@@ -49,7 +49,7 @@ def myMousePressCB(userData, eventCB):
     event = eventCB.getEvent()
 
     # Check for mouse button being pressed
-    if SoMouseButtonEvent_isButtonPressEvent(event, SoMouseButtonEvent.ANY):
+    if SoMouseButtonEvent.isButtonPressEvent(event, SoMouseButtonEvent.ANY):
 
         # Toggle the gate that controls the duck motion
         if gate.enable.getValue():
@@ -113,7 +113,7 @@ def main():
     myInput = SoInput()
     if not myInput.openFile("duck.iv"):
         sys.exit(1)
-    duckObject = SoDB_readAll(myInput)
+    duckObject = SoDB.readAll(myInput)
     if duckObject == None:
         sys.exit(1)
 
@@ -144,7 +144,7 @@ def main():
 
     # Use a gate engine to start/stop the rotation of 
     # the bigger duck.
-    bigDuckGate = SoGate(SoMFFloat_getClassTypeId())
+    bigDuckGate = SoGate(SoMFFloat.getClassTypeId())
     bigDuckTime = SoElapsedTime()
     bigDuckGate.input.connectFrom(bigDuckTime.timeOut) 
     bigDuckRotXYZ.axis(SoRotationXYZ.Y)  # Y axis
@@ -153,7 +153,7 @@ def main():
     # Each mouse button press will enable/disable the gate 
     # controlling the bigger duck.
     myEventCB = SoEventCallback()
-    myEventCB.addEventCallback(SoMouseButtonEvent_getClassTypeId(),
+    myEventCB.addEventCallback(SoMouseButtonEvent.getClassTypeId(),
                                myMousePressCB, bigDuckGate)
     root.addChild(myEventCB)
 
@@ -164,7 +164,7 @@ def main():
     myBoolean.a.connectFrom(bigDuckGate.enable)
     myBoolean.operation.setValue(SoBoolOperation.NOT_A)
 
-    smallDuckGate = SoGate(SoMFFloat_getClassTypeId())
+    smallDuckGate = SoGate(SoMFFloat.getClassTypeId())
     smallDuckTime = SoElapsedTime()
     smallDuckGate.input.connectFrom(smallDuckTime.timeOut) 
     smallDuckGate.enable.connectFrom(myBoolean.output) 

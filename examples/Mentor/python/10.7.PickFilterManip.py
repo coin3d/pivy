@@ -63,7 +63,7 @@ def findXform(p):
     # Check if there is already a transform node
     if tailNodeIndex > 0:
         n = g.getChild(tailNodeIndex - 1)
-        if n.isOfType(SoTransform_getClassTypeId()):
+        if n.isOfType(SoTransform.getClassTypeId()):
             # Append to returnPath and return it.
             returnPath.append(n)
             return returnPath
@@ -133,7 +133,7 @@ def pickFilterCB(void, pick):
     # is attached to.
     p = pick.getPath()
     n = p.getTail()
-    if n.isOfType(SoTransformManip_getClassTypeId()):
+    if n.isOfType(SoTransformManip.getClassTypeId()):
         # Manip picked! We know the manip is attached
         # to its next sibling. Set up and return that path.
         manipIndex = p.getIndex(p.getLength() - 1)

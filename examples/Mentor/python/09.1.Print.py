@@ -62,7 +62,7 @@ def printToPostScript(root, file, viewer, printerDPI):
     imagePixSize = vp.getViewportSizePixels()
     imageInches = SbVec2f()
 
-    pixPerInch = SoOffscreenRenderer_getScreenPixelsPerInch()
+    pixPerInch = SoOffscreenRenderer.getScreenPixelsPerInch()
     imageInches.setValue(imagePixSize[0] / pixPerInch,
                          imagePixSize[1] / pixPerInch)
 
@@ -135,7 +135,7 @@ def main():
     myInput = SoInput()
     if not myInput.openFile(sys.argv[1]):
         sys.exit(1)
-    geomObject = SoDB_readAll(myInput)
+    geomObject = SoDB.readAll(myInput)
     if geomObject == None:
         sys.exit(1)
     root.addChild(geomObject)
@@ -149,7 +149,7 @@ def main():
     data.vwr = viewer
     data.filename = sys.argv[2]
     data.scene = viewer.getSceneGraph()
-    eventCB.addEventCallback(SoKeyboardEvent_getClassTypeId(), processKeyEvents, data)
+    eventCB.addEventCallback(SoKeyboardEvent.getClassTypeId(), processKeyEvents, data)
     viewer.show()
 
     SoGui.show(appWindow)

@@ -70,10 +70,10 @@ transformBoxPath = None
 
 # Is this node of a type that is influenced by transforms?
 def isTransformable(myNode):
-    if myNode.isOfType(SoGroup_getClassTypeId()) or \
-       myNode.isOfType(SoShape_getClassTypeId()) or \
-       myNode.isOfType(SoCamera_getClassTypeId()) or \
-       myNode.isOfType(SoLight_getClassTypeId()):
+    if myNode.isOfType(SoGroup.getClassTypeId()) or \
+       myNode.isOfType(SoShape.getClassTypeId()) or \
+       myNode.isOfType(SoCamera.getClassTypeId()) or \
+       myNode.isOfType(SoLight.getClassTypeId()):
         return TRUE
     else: 
         return FALSE
@@ -105,7 +105,7 @@ def createTransformPath(inputPath):
     # The kit copies inputPath, then extends it past the 
     # kit all the way down to the transform. It creates the
     # transform if necessary.
-    if tail.isOfType(SoBaseKit_getClassTypeId()):
+    if tail.isOfType(SoBaseKit.getClassTypeId()):
         kit = cast(tail, "SoBaseKit")
         return kit.createPathToPart("transform",TRUE,inputPath)
 
@@ -114,7 +114,7 @@ def createTransformPath(inputPath):
     existedBefore = FALSE
 
     # CASE 2: The tail is not a group.
-    isTailGroup = tail.isOfType(SoGroup_getClassTypeId())
+    isTailGroup = tail.isOfType(SoGroup.getClassTypeId())
     if not isTailGroup:
         # 'parent' is node above tail. Search under parent right
         # to left for a transform. If we find a 'movable' node
@@ -126,7 +126,7 @@ def createTransformPath(inputPath):
             if editXf != None:
                 break
             myNode = parent.getChild(i)
-            if myNode.isOfType(SoTransform_getClassTypeId()):
+            if myNode.isOfType(SoTransform.getClassTypeId()):
                 editXf = cast(myNode, "SoTransform")
             elif i != tailIndx and isTransformable(myNode):
                 break
@@ -148,7 +148,7 @@ def createTransformPath(inputPath):
             if editXf != NULL:
                 break
             myNode = parent.getChild(i)
-            if myNode.isOfType(SoTransform_getClassTypeId()):
+            if myNode.isOfType(SoTransform.getClassTypeId()):
                 editXf = cast(myNode, "SoTransform")
             elif isTransformable(myNode):
                 break
@@ -194,13 +194,13 @@ def selectionCallback(void, # user data is not used
     # Attach the handle box to the sphere,
     # the trackball to the cube
     # or the transformBox to the wrapperKit
-    if selectionPath.getTail().isOfType(SoSphere_getClassTypeId()):
+    if selectionPath.getTail().isOfType(SoSphere.getClassTypeId()):
         handleBoxPath = xformPath
         myHandleBox.replaceNode(xformPath)
-    elif selectionPath.getTail().isOfType(SoCube_getClassTypeId()):
+    elif selectionPath.getTail().isOfType(SoCube.getClassTypeId()):
         trackballPath = xformPath
         myTrackball.replaceNode(xformPath)
-    elif selectionPath.getTail().isOfType(SoWrapperKit_getClassTypeId()):
+    elif selectionPath.getTail().isOfType(SoWrapperKit.getClassTypeId()):
         transformBoxPath = xformPath
         myTransformBox.replaceNode(xformPath)
 
@@ -213,13 +213,13 @@ def deselectionCallback(void, # user data is not used
     global myHandleBox, myTrackball, myTransformBox, handleBoxPath
     global trackballPath, transformBoxPath
     
-    if deselectionPath.getTail().isOfType(SoSphere_getClassTypeId()):
+    if deselectionPath.getTail().isOfType(SoSphere.getClassTypeId()):
         myHandleBox.replaceManip(handleBoxPath,None)
         handleBoxPath.unref()
-    elif deselectionPath.getTail().isOfType(SoCube_getClassTypeId()):
+    elif deselectionPath.getTail().isOfType(SoCube.getClassTypeId()):
         myTrackball.replaceManip(trackballPath,None)
         trackballPath.unref()
-    elif deselectionPath.getTail().isOfType(SoWrapperKit_getClassTypeId()):
+    elif deselectionPath.getTail().isOfType(SoWrapperKit.getClassTypeId()):
         myTransformBox.replaceManip(transformBoxPath,None)
         transformBoxPath.unref()
 
@@ -259,7 +259,7 @@ def main():
     myInput = SoInput()
     if not myInput.openFile("luxo.iv"):
         sys.exit(1)
-    objectFromFile = SoDB_readAll(myInput)
+    objectFromFile = SoDB.readAll(myInput)
     if objectFromFile == None:
         sys.exit(1)
     myWrapperKit.setPart("contents",objectFromFile)

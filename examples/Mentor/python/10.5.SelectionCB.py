@@ -53,18 +53,18 @@ white   = (0.8, 0.8, 0.8)  # Color when not selected
 # We determine which object was selected, and change 
 # that objects material color.
 def mySelectionCB(void, selectionPath):
-    if selectionPath.getTail().isOfType(SoText3_getClassTypeId()):
+    if selectionPath.getTail().isOfType(SoText3.getClassTypeId()):
         textMaterial.diffuseColor.setValue(reddish)
-    elif selectionPath.getTail().isOfType(SoSphere_getClassTypeId()):
+    elif selectionPath.getTail().isOfType(SoSphere.getClassTypeId()):
         sphereMaterial.diffuseColor.setValue(reddish)
 
 # This routine is called whenever an object gets deselected. 
 # We determine which object was deselected, and reset 
 # that objects material color.
 def myDeselectionCB(void, deselectionPath):
-    if deselectionPath.getTail().isOfType(SoText3_getClassTypeId()):
+    if deselectionPath.getTail().isOfType(SoText3.getClassTypeId()):
         textMaterial.diffuseColor.setValue(white)
-    elif deselectionPath.getTail().isOfType(SoSphere_getClassTypeId()):
+    elif deselectionPath.getTail().isOfType(SoSphere.getClassTypeId()):
         sphereMaterial.diffuseColor.setValue(white)
 
 def main():

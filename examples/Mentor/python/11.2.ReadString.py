@@ -105,7 +105,7 @@ def makeDodecahedron():
     input = SoInput()
     input.setBuffer(dodecahedron)
 
-    result = SoDB_readAll(input)
+    result = SoDB.readAll(input)
 
     return result
 

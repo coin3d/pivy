@@ -46,14 +46,14 @@ import sys
 
 def main():
     # Initialize Inventor
-    SoDB_init()
+    SoDB.init()
     
     # Open and read input scene graph
     sceneInput = SoInput()
     if not sceneInput.openFile("bird.iv"):
         return 1
 
-    root = SoDB_readAll(sceneInput)
+    root = SoDB.readAll(sceneInput)
     if root == None:
         return 1
     root.ref()

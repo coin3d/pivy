@@ -106,7 +106,7 @@ def main():
         print >> sys.stderr, "Could not open file %s" % (sys.argv[1])
         sys.exit(1)
         
-    root.addChild(SoDB_readAll(inputFile))
+    root.addChild(SoDB.readAll(inputFile))
 
     myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(root)

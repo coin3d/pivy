@@ -70,7 +70,7 @@ def main():
     myInput = SoInput()
     if not myInput.openFile("flowerPath.iv"):
         sys.exit(1)
-    flowerPath = SoDB_readAll(myInput)
+    flowerPath = SoDB.readAll(myInput)
     if flowerPath == None: sys.exit(1)
     root.addChild(flowerPath)
 
@@ -84,7 +84,7 @@ def main():
     # Read the flower object from a file and add to the group
     if not myInput.openFile("flower.iv"):
         sys.exit(1)
-    flower= SoDB_readAll(myInput)
+    flower= SoDB.readAll(myInput)
     if flower == None: sys.exit(1)
 
     # Set up the flower transformations

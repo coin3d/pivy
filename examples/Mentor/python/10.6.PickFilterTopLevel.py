@@ -52,7 +52,7 @@ def pickFilterCB(void, pick):
     
     for i in range(p.getLength() - 1):
         n = p.getNode(i)
-        if n.isOfType(SoSelection_getClassTypeId()):
+        if n.isOfType(SoSelection.getClassTypeId()):
             break
 
     # Copy 2 nodes from the path:
@@ -72,7 +72,7 @@ def main():
 
     # Read the input file
     sep = SoSeparator()
-    sep.addChild(SoDB_readAll(input))
+    sep.addChild(SoDB.readAll(input))
    
     # Create two selection roots - one will use the pick filter.
     topLevelSel = SoSelection()

@@ -53,7 +53,7 @@ def myMousePressCB(userData, eventCB):
     event = eventCB.getEvent()
 
     # Check for mouse button being pressed
-    if SoMouseButtonEvent_isButtonPressEvent(event, SoMouseButtonEvent.ANY):
+    if SoMouseButtonEvent.isButtonPressEvent(event, SoMouseButtonEvent.ANY):
 
         # Toggle the gate that controls the duck motion
         if gate.enable.getValue():
@@ -118,7 +118,7 @@ def main():
     myInput = SoInput()
     if not myInput.openFile("duck.iv"):
         sys.exit(1)
-    duckObject = SoDB_readAll(myInput)
+    duckObject = SoDB.readAll(myInput)
     if duckObject == None:
         sys.exit(1)
 
@@ -133,7 +133,7 @@ def main():
     duck.addChild(duckObject)
 
     # Update the rotation value if the gate is enabled.
-    myGate = SoGate(SoMFFloat_getClassTypeId())
+    myGate = SoGate(SoMFFloat.getClassTypeId())
     myCounter = SoElapsedTime()
     myGate.input.connectFrom(myCounter.timeOut) 
     duckRotXYZ.axis(SoRotationXYZ.Y)  # rotate about Y axis
@@ -142,7 +142,7 @@ def main():
     # Add an event callback to catch mouse button presses.
     # Each button press will enable or disable the duck motion.
     myEventCB = SoEventCallback()
-    myEventCB.addEventCallback(SoMouseButtonEvent_getClassTypeId(),
+    myEventCB.addEventCallback(SoMouseButtonEvent.getClassTypeId(),
                                myMousePressCB, myGate)
     root.addChild(myEventCB)
 

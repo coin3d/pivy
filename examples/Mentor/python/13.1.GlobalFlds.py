@@ -62,7 +62,7 @@ def main():
     # Create a Text3 object, and connect to the realTime field
     myText = SoText3()
     root.addChild(myText)
-    myText.string.connectFrom(SoDB_getGlobalField("realTime"))
+    myText.string.connectFrom(SoDB.getGlobalField("realTime"))
 
     myRenderArea = SoGuiRenderArea(myWindow)
     myCamera.viewAll(root, myRenderArea.getViewportRegion())

@@ -72,7 +72,7 @@ def main():
 
     texRoot.ref()
     input.openFile("jumpyMan.iv")
-    result = SoDB_readAll(input)
+    result = SoDB.readAll(input)
 
     myCamera = SoPerspectiveCamera()
     rot = SoRotationXYZ()

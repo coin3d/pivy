@@ -75,7 +75,7 @@ def myMousePressCB(userData, eventCB):
     event = eventCB.getEvent()
 
     # Check for mouse button being pressed  
-    if SoMouseButtonEvent_isButtonPressEvent(event, SoMouseButtonEvent.ANY):
+    if SoMouseButtonEvent.isButtonPressEvent(event, SoMouseButtonEvent.ANY):
         myRegion = eventCB.getAction().getViewportRegion()
         writePickedPath(root, myRegion, event.getPosition(myRegion))
         eventCB.setHandled()
@@ -100,7 +100,7 @@ def main():
     mySceneInput = SoInput()
     if not mySceneInput.openFile("star.iv"):
         sys.exit(1)
-    starObject = SoDB_readAll(mySceneInput)
+    starObject = SoDB.readAll(mySceneInput)
     if starObject == None: sys.exit(1)
     mySceneInput.closeFile()
 
@@ -134,7 +134,7 @@ def main():
     # entire scene graph (including the camera) as the userData,
     # so we get the scene manager's version of the scene graph
     # root.
-    myEventCB.addEventCallback(SoMouseButtonEvent_getClassTypeId(),
+    myEventCB.addEventCallback(SoMouseButtonEvent.getClassTypeId(),
                                myMousePressCB,
                                myViewer.getSceneManager().getSceneGraph())
 

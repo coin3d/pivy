@@ -47,14 +47,14 @@ def RemoveCube():
    # be used to make sure the nodes are of the correct type
    # before doing the cast.
 
-   myRoot = cast(SoNode_getByName("Root"), "SoSeparator")
+   myRoot = cast(SoNode.getByName("Root"), "SoSeparator")
 
-   myCube = cast(SoNode_getByName("MyCube"), "SoCube")
+   myCube = cast(SoNode.getByName("MyCube"), "SoCube")
    
    myRoot.removeChild(myCube)
 
 def main():
-   SoDB_init()
+   SoDB.init()
     
    # Create some objects and give them names:
    root = SoSeparator()

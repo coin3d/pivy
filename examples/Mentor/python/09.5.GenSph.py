@@ -72,9 +72,9 @@ def printTriangleCallback(void, callbackAction,
 def printSpheres(root):
     myAction = SoCallbackAction()
     
-    myAction.addPreCallback(SoSphere_getClassTypeId(),
+    myAction.addPreCallback(SoSphere.getClassTypeId(),
                             printHeaderCallback, None)
-    myAction.addTriangleCallback(SoSphere_getClassTypeId(), 
+    myAction.addTriangleCallback(SoSphere.getClassTypeId(), 
                                  printTriangleCallback, None)
 
     myAction.apply(root)
@@ -84,7 +84,7 @@ def printSpheres(root):
 
 def main():
     # Initialize Inventor
-    SoDB_init()
+    SoDB.init()
 
     # Make a scene containing a red sphere
     root = SoSeparator()

@@ -409,7 +409,7 @@ class pivy_clean(clean):
                     'soqt_wrap.cpp',  'soqt.py',  'soqt.pyc',
                     'sogtk_wrap.cpp', 'sogtk.py', 'sogtk.py',
                     'soxt_wrap.cpp',  'soxt.py',  'soxt.pyc',
-                    'sowin_wrap.cpp'  'sowin.py', 'sowin.pyc',
+                    'sowin_wrap.cpp', 'sowin.py', 'sowin.pyc',
                     'sogui.pyc')
 
     def remove_coin_headers(self, arg, dirname, files):

@@ -154,9 +154,14 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
    *
    * the approach i chose is to create a QEvent instance in Python from PyQt
    * (obviously to let this work the user had to import PyQt beforehand. he
-   * has to otherwise he has no reason to create this callback).
-   * this gives us a fully and properly instantiated structure as PyQt 
-   * expects it without digging into sip or depending on the sip library.
+   * has to anyways as otherwise there is no good reason to create this
+   * callback).
+   * this gives us a fully and properly instantiated structure, as PyQt 
+   * expects it, without digging into sip or depending on the sip library.
+   * We do this in the switch statement and figure out which type we deal with
+   * so that we can instantiate the correct type and cast the C++ object to
+   * the right class at the same time as there is no way to achieve this with
+   * PyQt from within Python.
    *
    * then i pass the instantiated structure over here and grab the sipThis
    * entry from the instance which holds a u.cppPtr which turns
@@ -164,14 +169,118 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
    *
    * now i delete the current pointer and let u.cppPtr point to our very own
    * QEvent Object. amazingly enough this really works...
+   *
+   *                                ~~~o~~~
+   *
+   * In case anybody wonders! yes, i know that one can achieve all of this
+   * in a very simple and elegant fashion by just using the sip library, 
+   * like e.g. adding the following instead of the structure declarations
+   * and our stunt:
+   * #define ANY_TEMP ANY
+   * #undef ANY
+   * #include <sip.h>
+   * #undef ANY
+   * #define ANY ANY_TEMP
+   *
+   *   extern PyObject *sipClass_QEvent;
+   *   qev = sipNewCppToSelfSubClass(event, sipClass_QEvent, SIP_SIMPLE | SIP_PY_OWNED);
+   *
+   * this works perfectly and is such a lovely solution that i really wanted
+   * to keep it. BUT libsip gets installed into the python site-packages
+   * directory and not only would we need to link against libsip but also
+   * against the libqtcmodule for the sipClass_Qevent object. this SUCKS,
+   * adds new library dependencies, which i simply don't want to cope with
+   * and makes the platform independent goal harder to achieve.
+   *
+   * so in the hack we trust!
    */
+  
+  /* type casting business */
+  switch (event->type()) {
+     case QEvent::Timer:
+        PyRun_SimpleString("qev = QTimerEvent(0)");
+        event = (QTimerEvent *)event;
+		break;
 
-  /* FIXME: is it necessary to pass the real event->type instead of
-   *   defaulting to QEvent.None? seems to work as is but if yes then
-   *   snprintf and some strlen/malloc/memset/free magic are your
-   *   friends. 20030703 tamer.
-   */
-  PyRun_SimpleString("qev = QEvent(QEvent.None)");
+     case QEvent::MouseButtonPress:
+     case QEvent::MouseButtonRelease:
+     case QEvent::MouseButtonDblClick:
+     case QEvent::MouseMove:
+        PyRun_SimpleString("qev = QMouseEvent(QEvent.MouseMove, QPoint(), QPoint(), Qt.NoButton, Qt.NoButton)");
+        event = (QMouseEvent *)event;
+		break;
+
+     case QEvent::KeyPress:
+     case QEvent::KeyRelease:
+        PyRun_SimpleString("qev = QKeyEvent(QEvent.KeyPress, 0, 0, 0)");
+        event = (QKeyEvent *)event;
+		break;
+
+     case QEvent::FocusIn:
+     case QEvent::FocusOut:
+        PyRun_SimpleString("qev = QFocusEvent(QEvent.FocusIn)");
+        event = (QFocusEvent *)event;
+		break;
+
+     case QEvent::Paint:
+        PyRun_SimpleString("qev = QPaintEvent(QRegion())");
+        event = (QPaintEvent *)event;
+		break;
+
+     case QEvent::Move:
+        PyRun_SimpleString("qev = QMoveEvent(QPoint(), QPoint())");
+        event = (QMoveEvent *)event;
+		break;
+
+     case QEvent::Resize:
+        PyRun_SimpleString("qev = QResizeEvent(QSize(), QSize())");
+        event = (QResizeEvent *)event;
+		break;
+
+     case QEvent::Close:
+        PyRun_SimpleString("qev = QCloseEvent()");
+        event = (QCloseEvent *)event;
+		break;
+
+     case QEvent::Show:
+        PyRun_SimpleString("qev = QShowEvent()");
+        event = (QShowEvent *)event;
+		break;
+
+     case QEvent::Hide:
+        PyRun_SimpleString("qev = QHideEvent()");
+        event = (QHideEvent *)event;
+		break;
+
+     case QEvent::DragMove:
+        PyRun_SimpleString("qev = QDragMoveEvent(QPoint())");
+        event = (QDragMoveEvent *)event;
+		break;
+
+     case QEvent::DragEnter:
+        PyRun_SimpleString("qev = QDragEnterEvent(QPoint())");
+        event = (QDragEnterEvent *)event;
+		break;
+
+     case QEvent::DragLeave:
+        PyRun_SimpleString("qev = QDragLeaveEvent()");
+        event = (QDragLeaveEvent *)event;
+		break;
+
+     case QEvent::Drop:
+        PyRun_SimpleString("qev = QDropEvent(QPoint())");
+        event = (QDropEvent *)event;
+		break;
+
+     case QEvent::ChildInserted:
+     case QEvent::ChildRemoved:
+        PyRun_SimpleString("qev = QChildEvent(QEvent.ChildInserted, QObject())");
+        event = (QChildEvent *)event;
+        break;
+
+     default:
+        PyRun_SimpleString("qev = QEvent(QEvent.None)");
+  }
 
   PyObject *d = PyModule_GetDict(PyImport_AddModule("__main__"));
   qev = PyRun_String("qev", Py_eval_input, d, d);

@@ -45,13 +45,43 @@ def setValue(*args):
    return apply(_pivy.SbVec2s_setValue,args)
 %}
 
-%rename(SbVec2s_mul) operator *(const SbVec2s &v, double d);
-%rename(SbVec2s_d_mul) operator *(double d, const SbVec2s &v);
-%rename(SbVec2s_add) operator +(const SbVec2s &v1, const SbVec2s &v2);
-%rename(SbVec2s_sub) operator -(const SbVec2s &v1, const SbVec2s &v2);
-%rename(SbVec2s_div) operator /(const SbVec2s &c, double d);
-%rename(SbVec2s_eq) operator ==(const SbVec2s &v1, const SbVec2s &v2);
-%rename(SbVec2s_neq) operator !=(const SbVec2s &v1, const SbVec2s &v2);
+/* GR: add operator overloading methods instead of the global functions */
+%extend SbVec2s {
+    SbVec2s __add__( const SbVec2s &u)
+    {
+        return *self + u;
+    };
+    
+    SbVec2s __sub__( const SbVec2s &u)    
+    {
+       return *self - u;
+    };
+    
+    SbVec2s __mul__( const double d)
+    {
+       return *self * d;
+    };
+    
+    SbVec2s __rmul__( const double d)
+    {
+           return *self * d;
+    };
+    
+    SbVec2s __div__( const double d)
+    {
+        return *self / d;
+    };
+    
+    int __eq__( const SbVec2s &u )
+    {
+        return *self == u;
+    };
+    
+    int __nq__( const SbVec2s &u )
+    {
+        return *self != u;
+    };
+}
 
 %apply short *OUTPUT { short &x, short &y };
 

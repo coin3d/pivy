@@ -128,6 +128,38 @@ def multVecMatrix(*args):
 %rename(SbMatrix_eq) operator ==(const SbMatrix & m1, const SbMatrix & m2);
 %rename(SbMatrix_neq) operator !=(const SbMatrix & m1, const SbMatrix & m2);
 
+/* GR: add operator overloading methods instead of the global functions */
+%extend SbMatrix {
+    SbMatrix __mul__( const SbMatrix & u)
+    {
+        return *self * u;
+    };
+
+    SbVec3f __mul__( const SbVec3f & u )
+    {
+        SbVec3f res;
+        self->multMatrixVec( u, res );
+        return res;
+    };
+    
+    SbVec3f __rmul__( const SbVec3f & u )
+    {
+        SbVec3f res;
+        self->multVecMatrix( u, res );
+        return res;
+    };
+    
+    int __eq__( const SbMatrix & u )
+    {
+        return *self == u;
+    };
+    
+    int __ne__( const SbMatrix & u )
+    {
+        return *self != u;
+    };       
+}
+
 %ignore SbMatrix::SbMatrix(const SbMat & matrix);
 %ignore SbMatrix::setValue(const SbMat & m);
 

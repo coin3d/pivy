@@ -12,6 +12,14 @@ DEF root Separator {
       brightness 0.5
       transparency 0.3
       script "
+# make the handler of the color field to call chicken_mcnuggets()
+# instead of the default set handle_color() function
+handler_registry['color'] = 'chicken_mcnuggets'
+
+def chicken_mcnuggets():
+  # print color.getValue().getValue()
+  pass
+
 # Initialize the color Packer (required of any property node that
 # uses an SoColorPacker to set diffuse color or transparency:
 colorPacker = SoColorPacker()
@@ -48,6 +56,8 @@ def callback(action):
 self.ref()
 wa = SoWriteAction()
 wa.apply(self)
+
+print handler_registry
 
 print '== Glow script loaded =='
 "

@@ -68,18 +68,23 @@ typedef struct swig_type_info {
 #define SWIG_TypeQuery SWIG_Python_TypeQuery
 
 extern "C" {
-PyObject * SWIG_Python_NewPointerObj(void *, swig_type_info *,int own);
+PyObject * SWIG_Python_NewPointerObj(void *, swig_type_info *, int own);
 swig_type_info * SWIG_TypeQuery(const char *);
 }
 
 class SoPyScriptP {
 public:
-  SoPyScriptP(SoPyScript * master) {
-    this->oneshotsensor = new SoOneShotSensor(SoPyScript::eval_cb, master);
-    this->isReading = FALSE;
-  }
+  SoPyScriptP(SoPyScript * master) :
+    isReading(FALSE),
+    oneshotSensor(new SoOneShotSensor(SoPyScript::eval_cb, master)),
+    thread_state(Py_NewInterpreter()),
+    global_module_dict(NULL),
+    handler_registry_dict(PyDict_New())
+  {}
+
   ~SoPyScriptP() {
-    delete this->oneshotsensor;
+    delete this->oneshotSensor;
+    Py_DECREF(handler_registry_dict);
   }
 
   PyObject *
@@ -100,9 +105,10 @@ public:
   }
 
   SbBool isReading;
-  SoOneShotSensor * oneshotsensor;
+  SoOneShotSensor * oneshotSensor;
   PyThreadState * thread_state;
-  PyObject * globalModuleDict;
+  PyObject * global_module_dict;
+  PyObject * handler_registry_dict;
 };
 
 #define PRIVATE(_this_) (_this_)->pimpl
@@ -138,11 +144,6 @@ SoPyScript::SoPyScript(void)
 
   this->initFieldData();
  
-  if (!(PRIVATE(this)->thread_state = Py_NewInterpreter())) {
-    SoDebugError::postWarning("SoPyScript::initClass",
-                              "Creation of new sub-interpreter failed!");
-  }
-
   if (PyRun_SimpleString("from pivy import *")) {
     SoDebugError::postWarning("SoPyScript::initClass",
                               "\n*Yuk!* The box containing a fierce looking python snake to drive\n"
@@ -154,7 +155,7 @@ SoPyScript::SoPyScript(void)
 
   PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
   Py_SetProgramName("SoPyScript");
-  PRIVATE(this)->globalModuleDict = PyModule_GetDict(PyImport_AddModule("__main__"));
+  PRIVATE(this)->global_module_dict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
   /* shovel the the node itself on to the Python interpreter as self instance */
   swig_type_info * swig_type = 0;
@@ -165,9 +166,14 @@ SoPyScript::SoPyScript(void)
   }
 
   /* add the field to the global dict */
-  PyDict_SetItemString(PRIVATE(this)->globalModuleDict, 
+  PyDict_SetItemString(PRIVATE(this)->global_module_dict, 
                        "self",
                        SWIG_NewPointerObj(this, swig_type, 0));
+
+  /* add the handler registry dict to the global dict */
+  PyDict_SetItemString(PRIVATE(this)->global_module_dict, 
+                       "handler_registry",
+                       PRIVATE(this)->handler_registry_dict);
 
   PyThreadState_Swap(tstate);
 }
@@ -224,7 +230,7 @@ SoPyScript::doAction(SoAction * action, const char * funcname)
       return;
     }
 
-    PyObject * func = PyDict_GetItemString(PRIVATE(this)->globalModuleDict, funcname);
+    PyObject * func = PyDict_GetItemString(PRIVATE(this)->global_module_dict, funcname);
 
     if (func) {
       if (!PyCallable_Check(func)) {
@@ -401,7 +407,7 @@ SoPyScript::notify(SoNotList * list)
     if (f == &this->mustEvaluate) {
       int pri = this->mustEvaluate.getValue() ? 0 : 
         SoDelayQueueSensor::getDefaultPriority();
-      PRIVATE(this)->oneshotsensor->setPriority(pri);
+      PRIVATE(this)->oneshotSensor->setPriority(pri);
     }
     else if (f == &this->script) {
       PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
@@ -423,7 +429,7 @@ SoPyScript::notify(SoNotList * list)
       PyThreadState_Swap(tstate);
     }
     else {
-      PRIVATE(this)->oneshotsensor->schedule();
+      PRIVATE(this)->oneshotSensor->schedule();
     }
   }
   inherited::notify(list);
@@ -484,9 +490,17 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
           }
 
           /* add the field to the global dict */
-          PyDict_SetItemString(PRIVATE(this)->globalModuleDict, 
+          PyDict_SetItemString(PRIVATE(this)->global_module_dict, 
                                fieldname.getString(),
                                pyField);
+
+          SbString funcname("handle_");
+          funcname += fieldname.getString();
+
+          /* add the field handler to the handler registry */
+          PyDict_SetItemString(PRIVATE(this)->handler_registry_dict, 
+                               fieldname.getString(),
+                               PyString_FromString(funcname.getString()));
 
           PyThreadState_Swap(tstate);
         }
@@ -499,7 +513,7 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
 
   if (!ok) {
     // evaluate script
-    PRIVATE(this)->oneshotsensor->schedule();
+    PRIVATE(this)->oneshotSensor->schedule();
   }
 
   PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
@@ -510,7 +524,7 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
   for (int i=0; i < src.getLength(); i++) {
     if (src[i] != '\r') { pyString += src[i]; }
   }
-  
+
   PyRun_SimpleString((char *)pyString.getString());
 
   if (coin_getenv("PIVY_DEBUG")) {
@@ -542,7 +556,7 @@ SoPyScript::getFieldData(void) const
   return this->fielddata;
 }
 
-// callback for oneshotsensor
+// callback for oneshotSensor
 void 
 SoPyScript::eval_cb(void * data, SoSensor *)
 {
@@ -560,21 +574,31 @@ SoPyScript::eval_cb(void * data, SoSensor *)
     if (f != &self->script || f != &self->mustEvaluate) {
  
       if (f->getDirty()) {
-        SbString funcname("handle_");
-        funcname += self->fielddata->getFieldName(i).getString();
-      
-        PyObject * func = PyDict_GetItemString(PRIVATE(self)->globalModuleDict, 
-                                               funcname.getString());
-      
-        if (coin_getenv("PIVY_DEBUG")) {
-          SoDebugError::postInfo("SoPyScript::eval_cb",
-                                 "funcname: %s, func: %p",
-                                 funcname.getString(), func);
-        }
-      
-        if (func) {
+        SbString fieldname(self->fielddata->getFieldName(i).getString());
+
+        /* look up the function name in the handler registry */
+        PyObject * funcname = PyDict_GetItemString(PRIVATE(self)->handler_registry_dict,
+                                                   fieldname.getString());
+        if (!funcname) { continue; }
+        
+        /* check if it is a string */
+        if (PyString_Check(funcname)) {
+          /* get the function handle in the global module dictionary if available */
+          PyObject * func = PyDict_GetItemString(PRIVATE(self)->global_module_dict,
+                                                 PyString_AsString(funcname));
+          
+          if (!func) { continue; }
+          
+          if (coin_getenv("PIVY_DEBUG")) {
+            SoDebugError::postInfo("SoPyScript::eval_cb",
+                                   "fieldname: %s, funcname: %s, func: %p",
+                                   fieldname.getString(),
+                                   PyString_AsString(funcname),
+                                   func);
+          }
+
           if (!PyCallable_Check(func)) {
-            SbString errMsg(funcname);
+            SbString errMsg(PyString_AsString(funcname));
             errMsg += " is not a callable object!";
             PyErr_SetString(PyExc_TypeError, errMsg.getString());
           } else {
@@ -584,7 +608,7 @@ SoPyScript::eval_cb(void * data, SoSensor *)
             }
             Py_XDECREF(result);
           }
-        }        
+        }
       }
     }
   }

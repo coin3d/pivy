@@ -409,7 +409,7 @@ SoPyScript::notify(SoNotList * list)
       /* strip out possible \r's that could come from win32 line endings */
       SbString src = script.getValue();
       SbString pyString;
-      for (int i=0; i < script.getValue().getLength(); i++) {
+      for (int i=0; i < src.getLength(); i++) {
         if (src[i] != '\r') { pyString += src[i]; }
       }
 
@@ -507,7 +507,7 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
   /* strip out possible \r's that could come from win32 line endings */
   SbString src = script.getValue();
   SbString pyString;
-  for (int i=0; i < script.getValue().getLength(); i++) {
+  for (int i=0; i < src.getLength(); i++) {
     if (src[i] != '\r') { pyString += src[i]; }
   }
   

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2002-2003, Tamer Fahmy <tamer@tammura.at>
+ * Copyright (C) 2002-2004, Tamer Fahmy <tamer@tammura.at>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  **/
-%module soxt.i
+%module soxt
 
 %{
 

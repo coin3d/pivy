@@ -43,11 +43,15 @@ convert_SbVec4d_array(PyObject *input, double temp[4])
 def __init__(self,*args):
    newobj = None
    if len(args) == 1:
-      newobj = apply(_pivy.new_SbVec4d_vec,args)
+      if isinstance(args[0], SbVec4d):
+         newobj = _pivy.new_SbVec4d()
+         newobj.setValue(args[0])
+      else:
+         newobj = apply(_pivy.new_SbVec4d_vec,args)
    elif len(args) == 4:
       newobj = apply(_pivy.new_SbVec4d_ffff,args)
    else:
-      newobj = apply(_pivy.new_SbVec3f,args)
+      newobj = apply(_pivy.new_SbVec4d,args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1
@@ -60,6 +64,9 @@ def __init__(self,*args):
 def setValue(*args):
    if len(args) == 5:
       return apply(_pivy.SbVec4d_setValue_ffff,args)
+   if len(args) == 2:
+      if isinstance(args[1], SbVec4d):
+         return _pivy.SbVec4d_setValue(args[0],args[1].getValue())      
    return apply(_pivy.SbVec4d_setValue,args)
 %}
 
@@ -109,5 +116,8 @@ def setValue(*args):
 %extend SbVec4d {
   double __getitem__(int i) {
     return (self->getValue())[i];
+  }
+  void  __setitem__(int i, double value) {
+    (*self)[i] = value;
   }
 }

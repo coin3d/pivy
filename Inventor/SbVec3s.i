@@ -28,7 +28,11 @@ convert_SbVec3s_array(PyObject *input, short temp[3])
 def __init__(self,*args):
    newobj = None
    if len(args) == 1:
-      newobj = apply(_pivy.new_SbVec3s_vec,args)
+      if isinstance(args[0], SbVec3s):
+         newobj = _pivy.new_SbVec3s()
+         newobj.setValue(args[0])
+      else:
+         newobj = apply(_pivy.new_SbVec3s_vec,args)
    elif len(args) == 3:
       newobj = apply(_pivy.new_SbVec3s_ss,args)
    else:
@@ -45,6 +49,9 @@ def __init__(self,*args):
 def setValue(*args):
    if len(args) == 4:
       return apply(_pivy.SbVec3s_setValue_ss,args)
+   if len(args) == 2:
+      if isinstance(args[1], SbVec3s):
+         return _pivy.SbVec3s_setValue(args[0], args[1].getValue())
    return apply(_pivy.SbVec3s_setValue,args)
 %}
 
@@ -95,5 +102,8 @@ def setValue(*args):
 %extend SbVec3s {
   short __getitem__(int i) {
     return (self->getValue())[i];
+  }
+  void  __setitem__(int i, short value) {
+    (*self)[i] = value;
   }
 }

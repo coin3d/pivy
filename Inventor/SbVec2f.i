@@ -26,11 +26,15 @@ convert_SbVec2f_array(PyObject *input, float temp[2])
 def __init__(self,*args):
    newobj = None
    if len(args) == 1:
-      newobj = apply(_pivy.new_SbVec2f_vec,args)
+      if isinstance(args[0], SbVec2f):
+         newobj = _pivy.new_SbVec2f()
+         newobj.setValue(args[0])
+      else:
+         newobj = apply(_pivy.new_SbVec2f_vec,args)
    elif len(args) == 2:
       newobj = apply(_pivy.new_SbVec2f_ff,args)
    else:
-      self.this = apply(_pivy.new_SbVec2f,args)
+      newobj = apply(_pivy.new_SbVec2f,args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1
@@ -41,7 +45,10 @@ def __init__(self,*args):
 
 %feature("shadow") SbVec2f::setValue(const float vec[2]) %{
 def setValue(*args):
-   if len(args) == 3:
+   if len(args) == 2:
+      if isinstance(args[1], SbVec2f):
+         return _pivy.SbVec2f_setValue(args[0], args[1].getValue())
+   elif len(args) == 3:
       return apply(_pivy.SbVec2f_setValue_ff,args)
    return apply(_pivy.SbVec2f_setValue,args)
 %}
@@ -86,11 +93,14 @@ def setValue(*args):
 
 %apply float *OUTPUT { float & x, float & y };
 
-%ignore SbVec2f::getValue(void) const;
+%ignore SbVec2f::getValue() const;
 
 // add a method for wrapping c++ operator[] access
 %extend SbVec2f {
   float __getitem__(int i) {
     return (self->getValue())[i];
+  }
+  void  __setitem__(int i, float value) {
+    (*self)[i] = value;
   }
 }

@@ -26,7 +26,11 @@ convert_SbVec2s_array(PyObject *input, short temp[2])
 def __init__(self,*args):
    newobj = None
    if len(args) == 1:
-      newobj = apply(_pivy.new_SbVec2s_vec,args)
+      if isinstance(args[0], SbVec2s):
+         newobj = _pivy.new_SbVec2s()
+         newobj.setValue(args[0])
+      else:
+         newobj = apply(_pivy.new_SbVec2s_vec,args)
    elif len(args) == 2:
       newobj = apply(_pivy.new_SbVec2s_ss,args)
    else:
@@ -41,7 +45,10 @@ def __init__(self,*args):
 
 %feature("shadow") SbVec2s::setValue(const short v[2]) %{
 def setValue(*args):
-   if len(args) == 3:
+   if len(args) == 2:
+      if isinstance(args[1], SbVec2s):
+         return _pivy.SbVec2s_setValue(args[0], args[1].getValue())
+   elif len(args) == 3:
       return apply(_pivy.SbVec2s_setValue_ss,args)
    return apply(_pivy.SbVec2s_setValue,args)
 %}
@@ -86,11 +93,14 @@ def setValue(*args):
 
 %apply short *OUTPUT { short &x, short &y };
 
-%ignore SbVec2s::getValue(void) const;
+%ignore SbVec2s::getValue() const;
 
 // add a method for wrapping c++ operator[] access
 %extend SbVec2s {
   short __getitem__(int i) {
     return (self->getValue())[i];
+  }
+  void  __setitem__(int i, short value) {
+    (*self)[i] = value;
   }
 }

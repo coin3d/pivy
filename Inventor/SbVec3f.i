@@ -42,7 +42,11 @@ convert_SbVec3f_array(PyObject *input, float temp[3])
 def __init__(self,*args):
    newobj = None
    if len(args) == 1:
-      newobj = apply(_pivy.new_SbVec3f_vec,args)
+      if isinstance(args[0], SbVec3f):
+         newobj = _pivy.new_SbVec3f()
+         newobj.setValue(args[0])
+      else:
+         newobj = apply(_pivy.new_SbVec3f_vec,args)
    elif len(args) == 3:
       if isinstance(args[0], SbPlane):
          newobj = apply(_pivy.new_SbVec3f_pl_pl_pl,args)
@@ -67,7 +71,10 @@ def setValue(*args):
    elif len(args) == 5:
       return apply(_pivy.SbVec3f_setValue_vec_vec_vec_vec,args)
    elif len(args) == 2:
-      return apply(_pivy.SbVec3f_setValue_vec,args)
+      if isinstance(args[1], SbVec3d):
+         return apply(_pivy.SbVec3f_setValue_vec,args)
+      elif isinstance(args[1], SbVec3f):
+         return _pivy.SbVec3f_setValue(args[0],args[1].getValue())
    return apply(_pivy.SbVec3f_setValue,args)
 %}
 

@@ -42,7 +42,11 @@ convert_SbVec3d_array(PyObject *input, double temp[3])
 def __init__(self,*args):
    newobj = None
    if len(args) == 1:
-      newobj = apply(_pivy.new_SbVec3d_vec,args)
+      if isinstance(args[0], SbVec3d):
+         newobj = _pivy.new_SbVec3d()
+         newobj.setValue(args[0])
+      else:
+         newobj = apply(_pivy.new_SbVec3d_vec,args)
    elif len(args) == 3:
       if isinstance(args[0], SbPlane):
          newobj = apply(_pivy.new_SbVec3d_pl_pl_pl,args)
@@ -58,7 +62,7 @@ def __init__(self,*args):
 
 %rename(setValue_fff) SbVec3d::setValue(const double x, const double y, const double z);
 %rename(setValue_vec_vec_vec_vec) SbVec3d::setValue(const SbVec3d & barycentric, const SbVec3d & v0, const SbVec3d & v1, const SbVec3d & v2);
-%rename(setValue_vec) SbVec3d::setValue(const SbVec3d & v);
+%rename(setValue_vec) SbVec3d::setValue(const SbVec3f & v);
 
 %feature("shadow") SbVec3d::setValue(const double vec[3]) %{
 def setValue(*args):
@@ -67,7 +71,10 @@ def setValue(*args):
    elif len(args) == 5:
       return apply(_pivy.SbVec3d_setValue_vec_vec_vec_vec,args)
    elif len(args) == 2:
-      return apply(_pivy.SbVec3d_setValue_vec,args)
+      if isinstance(args[1], SbVec3f):
+         return apply(_pivy.SbVec3d_setValue_vec,args)
+      elif isinstance(args[1], SbVec3d):
+         return _pivy.SbVec3d_setValue(args[0],args[1].getValue())
    return apply(_pivy.SbVec3d_setValue,args)
 %}
 
@@ -115,10 +122,10 @@ def setValue(*args):
 
 // add a method for wrapping c++ operator[] access
 %extend SbVec3d {
-  float __getitem__(int i) {
+  double __getitem__(int i) {
     return (self->getValue())[i];
   }
-  void  __setitem__(int i, float value) {
+  void  __setitem__(int i, double value) {
     (*self)[i] = value;
   }
 }

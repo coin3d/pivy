@@ -45,11 +45,11 @@ def __init__(self,*args):
 
 %feature("shadow") SbVec2d::setValue(const double vec[2]) %{
 def setValue(*args):
-   if len(args) == 3:
-      return apply(_pivy.SbVec2d_setValue_dd,args)
-   elif len(args) == 2:
+   if len(args) == 2:
       if isinstance(args[1], SbVec2d):
-         return _pivy.SbVec2d_setValue_dd(args[0], args[1][0], args[1][1])
+         return _pivy.SbVec2d_setValue(args[0], args[1].getValue())
+   elif len(args) == 3:
+      return apply(_pivy.SbVec2d_setValue_dd,args)   
    return apply(_pivy.SbVec2d_setValue,args)
 %}
 
@@ -93,11 +93,14 @@ def setValue(*args):
 
 %apply double *OUTPUT { double & x, double & y };
 
-%ignore SbVec2d::getValue(void) const;
+%ignore SbVec2d::getValue() const;
 
 // add a method for wrapping c++ operator[] access
 %extend SbVec2d {
   double __getitem__(int i) {
     return (self->getValue())[i];
+  }
+  void  __setitem__(int i, double value) {
+      (*self)[i] = value;
   }
 }

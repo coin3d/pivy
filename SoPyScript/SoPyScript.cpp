@@ -145,6 +145,7 @@ class SoPyScriptP {
     PyObject * handler_registry_dict;
     PyObject * local_module_dict;
     static PyObject * global_module_dict;
+    SoFieldList changedFields;
 };
 
 PyObject * SoPyScriptP::global_module_dict = NULL;
@@ -415,7 +416,11 @@ SoPyScript::notify(SoNotList * list)
       PRIVATE(this)->oneshotSensor->setPriority(pri);
     }
     else if (f == &this->script) { this->executePyScript(); }
-    else { PRIVATE(this)->oneshotSensor->schedule(); }
+    else { 
+      if (PRIVATE(this)->changedFields.find(f) == -1)
+        PRIVATE(this)->changedFields.append(f);
+      PRIVATE(this)->oneshotSensor->schedule();
+    }
   }
   inherited::notify(list);
 }
@@ -607,6 +612,8 @@ SoPyScript::executePyScript(void)
   if (result) { Py_DECREF(result); }
   else { PyErr_Print(); }
 
+  PRIVATE(this)->changedFields.truncate(0);
+
   if (coin_getenv("PIVY_DEBUG")) {
     SoDebugError::postInfo("SoPyScript::executePyScript",
                            "script executed at full length!");
@@ -624,50 +631,48 @@ SoPyScript::eval_cb(void * data, SoSensor *)
                            "eval_cb called!");
   }
 
-  for (int i = 0; i < self->fielddata->getNumFields(); i++) {
-    SoField * f = self->fielddata->getField(self, i);
-    if (f != &self->script || f != &self->mustEvaluate) {
- 
-      if (f->getDirty()) {
-        GlobalLock lock;
+  for (int i = 0; i < PRIVATE(self)->changedFields.getLength(); i++) {
+    SoField * f = PRIVATE(self)->changedFields[i];
+    SbName fieldname;
+    if (self->getFieldName(f, fieldname)) {
+      GlobalLock lock;
 
-        SbString fieldname(self->fielddata->getFieldName(i).getString());
+      /* look up the function name in the handler registry */
+      PyObject * funcname = PyDict_GetItemString(PRIVATE(self)->handler_registry_dict,
+                                                 fieldname.getString());
+      if (!funcname) { continue; }
 
-        /* look up the function name in the handler registry */
-        PyObject * funcname = PyDict_GetItemString(PRIVATE(self)->handler_registry_dict,
-                                                   fieldname.getString());
-        if (!funcname) { continue; }
-        
-        /* check if it is a string */
-        if (PyString_Check(funcname)) {
-          /* get the function handle in the global module dictionary if available */
-          PyObject * func = PyDict_GetItemString(PRIVATE(self)->local_module_dict,
-                                                 PyString_AsString(funcname));
-          if (!func) { continue; }
-          
-          if (coin_getenv("PIVY_DEBUG")) {
-            SoDebugError::postInfo("SoPyScript::eval_cb",
-                                   "fieldname: %s, funcname: %s, func: %p",
-                                   fieldname.getString(),
-                                   PyString_AsString(funcname),
-                                   func);
-          }
+      /* check if it is a string */
+      if (PyString_Check(funcname)) {
+        /* get the function handle in the global module dictionary if available */
+        PyObject * func = PyDict_GetItemString(PRIVATE(self)->local_module_dict,
+                                               PyString_AsString(funcname));
+        if (!func) { continue; }
 
-          if (!PyCallable_Check(func)) {
-            SbString errMsg(PyString_AsString(funcname));
-            errMsg += " is not a callable object!";
-            PyErr_SetString(PyExc_TypeError, errMsg.getString());
-          } else {
-            PyObject * result;
-            if (!(result = PyEval_CallObject(func, NULL))) {
-              PyErr_Print();
-            }
-            Py_XDECREF(result);
-          }
+        if (coin_getenv("PIVY_DEBUG")) {
+          SoDebugError::postInfo("SoPyScript::eval_cb",
+                                 "fieldname: %s, funcname: %s, func: %p",
+                                 fieldname.getString(),
+                                 PyString_AsString(funcname),
+                                 func);
         }
-      } // if (f->getDirty()) - lock released here
+
+        if (!PyCallable_Check(func)) {
+          SbString errMsg(PyString_AsString(funcname));
+          errMsg += " is not a callable object!";
+          PyErr_SetString(PyExc_TypeError, errMsg.getString());
+        } else {
+          PyObject * result;
+          if (!(result = PyEval_CallObject(func, NULL))) {
+            PyErr_Print();
+          }
+          Py_XDECREF(result);
+        }
+      } // if (self->getFieldName(...)) - lock released here
     }
   }
+
+  PRIVATE(self)->changedFields.truncate(0);
 }
 
 #undef PRIVATE

@@ -33,13 +33,13 @@
  * FIXME: this %typemap is relying on the fact that it really applies only
  *   for setValue(). we are lucky this time but it is certainly not clean
  *   and relies on the deep knowledge in how SWIG generates its code aka
- *   as cheating from my side. very very very breakable, but works... *sigh*
+ *   cheating from my side. very very very breakable, but works... *sigh*
  *   20030312 tamer.
  */
-%typemap(in) (const unsigned char * pixels) {
+%typemap(in) const unsigned char * pixels {
   int i;
 
-  short dim0=0; short dim1=0;
+  short dim0, dim1;
   arg2->getValue(dim0,dim1);
 
   /* check if the sequence really matches the expected length */
@@ -53,17 +53,56 @@
     PyObject *item = PySequence_GetItem(obj3,i);
     if (!PyInt_Check(item)) {
         free($1);
-        PyErr_SetString(PyExc_ValueError, "list items must be strings");
+        PyErr_SetString(PyExc_ValueError, "list items must be integers");
         return NULL;
     }
     $1[i] = (unsigned char)PyInt_AsLong(item);
   }
 }
 /*
- * FIXME: find a way to supply a sequence as a return value for getValue().
- *   problems: how would one calculate the dimensions out of nothing and how
- *   would one apply the %typemap only for this case? muh? 20030312 tamer.
+ * FIXME: the following %typemaps share the same problems like the one for
+ *   setValue() and they are ugly as hell! shame on me, but it works! *eg*
+ *   20030312 tamer.
  */
+%typemap(in) (SbVec2s & size_output, int & OUTPUT) {
+  int i = 0;
+  $1 = new SbVec2s();
+  $2 = &i;
+}
+%typemap(argout) SbVec2s & size_output {
+  PyObject *o, *o2, *o3;
+
+  o = SWIG_NewPointerObj((void *) $1, $1_descriptor, 1);
+
+  if ((!$result) || ($result == Py_None)) {
+        $result = o;
+  } 
+  else {
+        if (!PyTuple_Check($result)) {
+          PyObject *o2 = $result;
+          $result = PyTuple_New(1);
+          PyTuple_SetItem($result,0,o2);
+        }
+        o3 = PyTuple_New(1);
+        PyTuple_SetItem(o3,0,o);
+        o2 = $result;
+        $result = PySequence_Concat(o2,o3);
+        Py_DECREF(o2);
+        Py_DECREF(o3);
+  }
+}
+%typemap(out) const unsigned char * {
+  int i;
+
+  short dim0, dim1;
+  arg2->getValue(dim0,dim1);
+
+  $result = PyTuple_New(dim0 * dim1 * *arg3);
+  
+  for (i=0; i< dim0 * dim1 * *arg3; i++) {
+	PyList_SetItem($result, i, PyInt_FromLong((long)(*($1+i))));
+  }
+}
 #endif
 
 class COIN_DLL_API SoSFImage : public SoSField {
@@ -82,7 +121,11 @@ public:
 
   static void initClass(void);
 
+#ifdef __PIVY__
+  const unsigned char * getValue(SbVec2s & size_output, int & OUTPUT) const;
+#else
   const unsigned char * getValue(SbVec2s & size, int & nc) const;
+#endif
   void setValue(const SbVec2s & size, const int nc,
                 const unsigned char * pixels, CopyPolicy copypolicy = COPY);
 
@@ -108,5 +151,10 @@ private:
 
   class SoSFImageP * pimpl;
 };
+
+#ifdef __PIVY__
+%typemap(in) const unsigned char * pixels;
+%typemap(out) const unsigned char *;
+#endif
 
 #endif // !COIN_SOSFIMAGE_H

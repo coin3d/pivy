@@ -30,7 +30,6 @@
  **/
 
 #include <Python.h>
-#include "sopyscript_wrap.cxx"
 
 #include <Inventor/actions/SoAudioRenderAction.h>
 #include <Inventor/actions/SoCallbackAction.h>
@@ -49,27 +48,31 @@
 
 #include "SoPyScript.h"
 
-SoPyScript * SoPyScript::soPyScriptInstance = NULL;
+/* SWIG runtime definitions */
+typedef void *(*swig_converter_func)(void *);
+typedef struct swig_type_info *(*swig_dycast_func)(void **);
 
-static PyObject *
-pyscript_getFieldNames(PyObject * self, PyObject * args)
-{
-  PyObject * foo = PyString_FromString("pyscript_getFieldNames");
+typedef struct swig_type_info {
+  const char             *name;
+  swig_converter_func     converter;
+  const char             *str;
+  void                   *clientdata;
+  swig_dycast_func        dcast;
+  struct swig_type_info  *next;
+  struct swig_type_info  *prev;
+} swig_type_info;
 
-#if 0
-  for (int i=0, numFields = SoPyScript::soPyScriptInstance->getFieldData()->getNumFields(); i < numFields; i++) {
-    SoPyScript::soPyScriptInstance->getFieldData()->getField(SoPyScript::soPyScriptInstance, i);
-  }  
-#endif
+#define SWIG_ConvertPtr(obj, pp, type, flags) \
+  SWIG_Python_ConvertPtr(obj, pp, type, flags)
+#define SWIG_NewPointerObj(p, type, flags) \
+  SWIG_Python_NewPointerObj(p, type, flags)
+#define SWIG_TypeQuery SWIG_Python_TypeQuery
 
-  return foo;
+extern "C" {
+int SWIG_Python_ConvertPtr(PyObject *, void **, swig_type_info *, int);
+PyObject * SWIG_Python_NewPointerObj(void *, swig_type_info *,int own);
+swig_type_info * SWIG_TypeQuery(const char *);
 }
-
-static PyMethodDef PyScriptMethods[] = {
-  {"getFieldNames", pyscript_getFieldNames, METH_VARARGS,
-   "Return the field names defined in the SoPyScript node."},
-  {NULL, NULL, 0, NULL}
-};
 
 SoType SoPyScript::classTypeId;
 
@@ -85,7 +88,6 @@ SoPyScript::initClass(void)
                                 SoNode::COIN_2_0|SoNode::COIN_2_2|SoNode::COIN_2_3|SoNode::COIN_2_4);
 
   Py_Initialize();
-  SWIG_init();
 }
 
 SoPyScript::SoPyScript(void)
@@ -116,8 +118,6 @@ SoPyScript::SoPyScript(void)
   }
 
   PyThreadState * tstate = PyThreadState_Swap((PyThreadState*)thread_state);
-  soPyScriptInstance = this;
-  Py_InitModule("SoPyScript", PyScriptMethods);
   Py_SetProgramName("SoPyScript");
   this->globalModuleDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
@@ -125,7 +125,7 @@ SoPyScript::SoPyScript(void)
   /* shovel the the node itself on to the Python interpreter as self instance */
   swig_type_info * swig_type = 0;
 
-  if ((swig_type = SWIG_TypeQuery("SoPyScript *")) == 0) {
+  if ((swig_type = SWIG_TypeQuery("SoNode *")) == 0) {
     SoDebugError::post("SoPyScript::SoPyScript",
                        "No SoPyscript SWIG type found!");        
   }
@@ -232,7 +232,6 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
             delete soTypeVal;
           }
           PyThreadState * tstate = PyThreadState_Swap((PyThreadState*)thread_state);
-          soPyScriptInstance = this;
 
           /* add the field to the global dict */
           PyDict_SetItemString((PyObject*)this->globalModuleDict, 
@@ -248,7 +247,6 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
   SbBool ok = inherited::readInstance(in, flags);
 
   PyThreadState * tstate = PyThreadState_Swap((PyThreadState*)thread_state);
-  soPyScriptInstance = this;
   PyRun_SimpleString((char *)script.getValue().getString());
   if (coin_getenv("PIVY_DEBUG")) {
     SoDebugError::postInfo("SoPyScript::readInstance",
@@ -264,7 +262,6 @@ SoPyScript::doAction(SoAction * action, const char * funcname)
 {
   if (funcname && !script.isIgnored()) {
     PyThreadState * tstate = PyThreadState_Swap((PyThreadState*)thread_state);
-    soPyScriptInstance = this;
 
     if (coin_getenv("PIVY_DEBUG")) {
       SoDebugError::postInfo("SoPyScript::doAction",

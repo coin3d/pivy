@@ -8,12 +8,8 @@ all: examin
 examin: SoPyScript.o examin.cpp
 	$(CXX) $(CXXFLAGS) $(COIN_CXXFLAGS) $(PYTHON_FLAGS) $(PIVY_RUNTIME) -lpython2.3 -o examin SoPyScript.o examin.cpp
 
-SoPyScript.o: SoPyScript.h SoPyScript.cpp sopyscript_wrap.cxx
+SoPyScript.o: SoPyScript.h SoPyScript.cpp
 	$(CXX) $(CXXFLAGS) $(COIN_CXXFLAGS) $(PYTHON_FLAGS) -c SoPyScript.cpp
 
-sopyscript_wrap.cxx: SoPyScript.i
-	swig -w302,306,307,312,389,361,362,503,509,510 -noruntime -v -c++ -python -includeall -D__PIVY__ -I.. -I../fake_headers -I/usr/local/include -I/usr/include -interface _sopyscript -o sopyscript_wrap.cxx SoPyScript.i
-	$(CXX) $(CXXFLAGS) $(COIN_CXXFLAGS) $(PYTHON_FLAGS) $(PIVY_RUNTIME) -shared sopyscript_wrap.cxx -o _sopyscript.so
-
 clean:
-	rm -f *~ *.o sopyscript_wrap.cxx
+	rm -f *~ *.o

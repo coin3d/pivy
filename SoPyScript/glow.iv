@@ -7,11 +7,8 @@ DEF root Separator {
       color 0 0 1
       script "
 print '== Script1 =='
-import SoPyScript
-print SoPyScript.getFieldNames()
-#print color.getValue().getValue()
-#print foo.getValue().getString()
-# print globals()
+print color.getValue().getValue()
+print foo.getValue().getString()
 "
    }
    Material { diffuseColor = USE Script1.color }

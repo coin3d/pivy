@@ -48,8 +48,6 @@ public:
 
   SoSFString script; // holds the Python script
 
-  static SoPyScript * soPyScriptInstance;
-
 protected:
   virtual ~SoPyScript();
 

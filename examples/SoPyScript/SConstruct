@@ -52,11 +52,7 @@ if str(Platform()) != "win32" and env['warnings']:
     env.Append(CCFLAGS = '-Wall')
 
 env.Repository('../../SoPyScript')
-sopyscript_env = env.Copy(CPPPATH='.')
-sopyscript = sopyscript_env.Object(Split('SoPyScript.cpp'),
-                                   CPPPATH=[distutils.sysconfig.get_python_inc()])
-
-examin_env = sopyscript_env.Copy()
+examin_env = env.Copy(CPPPATH=['.', distutils.sysconfig.get_python_inc()])
 examin_env.ParseConfig('soqt-config --cppflags --libs --ldflags')
 
 examin_env.Append(LIBPATH = distutils.sysconfig.get_python_lib())
@@ -65,4 +61,4 @@ examin_env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars()['BLDLIBRARY'
 if str(Platform()) == 'posix':
     examin_env.Append(LINKFLAGS = '-Wl,-R' + distutils.sysconfig.get_python_lib())
 
-examin_env.Program('examin', Split('examin.cpp') + sopyscript)
+examin_env.Program('examin', Split('examin.cpp SoPyScript.cpp'))

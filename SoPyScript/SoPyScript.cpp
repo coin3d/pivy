@@ -396,37 +396,10 @@ SoPyScript::copyContents(const SoFieldContainer * from,
       SbString fieldname = src->getFieldName(i).getString();
       
       field->setContainer(this);
-      this->fielddata->addField(this, fieldname.getString(), field);
-      
-      GlobalLock lock;
-      
-      /* shovel the field instance on to the Python interpreter */
-      SbString typeVal = field->getTypeId().getName().getString();
-      PyObject * pyField;
-      if (!(pyField = PRIVATE(this)->createPySwigType(typeVal, field))) {
-        SoDebugError::post("SoPyScript::copyContents",
-                           "field type %s could not be created!",
-                           typeVal.getString());
-        continue;
-      }
-
-      /* add the field to the global dict */
-      PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
-                           fieldname.getString(),
-                           pyField);
-
-      SbString funcname("handle_");
-      funcname += fieldname.getString();
-
-      /* add the field handler to the handler registry */
-      PyDict_SetItemString(PRIVATE(this)->handler_registry_dict,
-                           fieldname.getString(),
-                           PyString_FromString(funcname.getString()));
+      this->fielddata->addField(this, fieldname.getString(), field);      
     }
   }
   inherited::copyContents(from, copyConn);
-  
-  GlobalLock lock;  
 }
 
 // Doc in parent
@@ -488,31 +461,6 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
           SoField * field = (SoField *)type.createInstance();
           field->setContainer(this);
           this->fielddata->addField(this, fieldname.getString(), field);
-
-          GlobalLock lock;
-
-          /* shovel the field instance on to the Python interpreter */
-          PyObject * pyField;
-          if (!(pyField = PRIVATE(this)->createPySwigType(typeVal, field))) {
-            SoDebugError::post("SoPyScript::readInstance",
-                               "field type %s could not be created!",
-                               typeVal.getString());
-            
-            return FALSE;
-          }
-
-          /* add the field to the global dict */
-          PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
-                               fieldname.getString(),
-                               pyField);
-
-          SbString funcname("handle_");
-          funcname += fieldname.getString();
-
-          /* add the field handler to the handler registry */
-          PyDict_SetItemString(PRIVATE(this)->handler_registry_dict, 
-                               fieldname.getString(),
-                               PyString_FromString(funcname.getString()));
         }
       }
     }
@@ -541,31 +489,6 @@ SoPyScript::initFieldData(void)
   this->fielddata = new SoFieldData;
   this->fielddata->addField(this, "script", &this->script);
   this->fielddata->addField(this, "mustEvaluate", &this->mustEvaluate);
-  
-  GlobalLock lock;
-
-  /* create a local copy of the global dictionary to use for executing the script */
-  PyDict_Clear(PRIVATE(this)->local_module_dict);
-  PyDict_Update(PRIVATE(this)->local_module_dict,PRIVATE(this)->global_module_dict);
-  PyDict_Clear(PRIVATE(this)->handler_registry_dict);
-    
-  /* shovel the the node itself on to the Python interpreter as self instance */
-  swig_type_info * swig_type = 0;
-
-  if ((swig_type = SWIG_TypeQuery("SoNode *")) == 0) {
-    SoDebugError::post("SoPyScript::SoPyScript",
-                       "SoNode type could not be found!");
-  }
-
-  /* add the field to the global dict */
-  PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
-                       "self",
-                       SWIG_NewPointerObj(this, swig_type, 0));
-
-  /* add the handler registry dict to the global dict */
-  PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
-                       "handler_registry",
-                       PRIVATE(this)->handler_registry_dict);
 }
 
 // Doc in parent
@@ -587,6 +510,60 @@ SoPyScript::executePyScript(void)
   }
 
   GlobalLock lock;
+
+  /* setup the local dictionary */
+  /* create a local copy of the global dictionary to use for executing the script */
+  PyDict_Clear(PRIVATE(this)->local_module_dict);
+  PyDict_Update(PRIVATE(this)->local_module_dict,PRIVATE(this)->global_module_dict);
+  PyDict_Clear(PRIVATE(this)->handler_registry_dict);
+      
+  /* shovel the the node itself on to the Python interpreter as self instance */
+  swig_type_info * swig_type = 0;
+
+  if ((swig_type = SWIG_TypeQuery("SoNode *")) == 0) {
+    SoDebugError::post("SoPyScript::executePyScript",
+                       "SoNode type could not be found!");
+  }
+  
+  /* add the field to the global dict */
+  PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
+                       "self",
+                       SWIG_NewPointerObj(this, swig_type, 0));
+  
+  /* add the handler registry dict to the global dict */
+  PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
+                       "handler_registry",
+                       PRIVATE(this)->handler_registry_dict);
+
+  const SoFieldData * fields = this->getFieldData();
+  const int n = fields->getNumFields();
+  for (int i = 0; i < n; i++) {
+    SoField * f = fields->getField(this, i);
+    SbString typeName(f->getTypeId().getName());
+    SbString fieldName(fields->getFieldName(i));
+    
+    /* shovel the field instance on to the Python interpreter */
+    PyObject * pyField = NULL;
+    if ((pyField = PRIVATE(this)->createPySwigType(typeName, f)) == NULL) {
+      SoDebugError::post("SoPyScript::readInstance",
+                         "field type %s could not be created!",
+                          typeName.getString());            
+      continue;
+    }
+
+    /* add the field to the global dict */
+    PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
+                         fieldName.getString(),
+                         pyField);
+
+    SbString funcname("handle_");
+    funcname += fieldName;
+
+    /* add the field handler to the handler registry */
+    PyDict_SetItemString(PRIVATE(this)->handler_registry_dict, 
+                         fieldName.getString(),
+                         PyString_FromString(funcname.getString()));
+  }
 
   /* check if the script denotes an URL or path */
   /* FIXME: maybe, just maybe, we could do a little better error

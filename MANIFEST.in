@@ -1,0 +1,6 @@
+include AUTHORS ChangeLog LICENSE THANKS
+include pivy.i
+recursive-include Inventor *.h
+graft docs
+graft examples
+recursive-include fake_headers *.h

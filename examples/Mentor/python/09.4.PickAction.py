@@ -1,175 +1,154 @@
-/*
- *
- *  Copyright (C) 2000 Silicon Graphics, Inc.  All Rights Reserved. 
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  Further, this software is distributed without any warranty that it is
- *  free of the rightful claim of any third person regarding infringement
- *  or the like.  Any license provided herein, whether implied or
- *  otherwise, applies only to this software file.  Patent licenses, if
- *  any, provided herein do not apply to combinations of this program with
- *  other software, or any other product whatsoever.
- * 
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *  Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
- *  Mountain View, CA  94043, or:
- * 
- *  http://www.sgi.com 
- * 
- *  For further information regarding this notice, see: 
- * 
- *  http://oss.sgi.com/projects/GenInfo/NoticeExplan/
- *
- */
+#!/usr/bin/env python
 
-/*------------------------------------------------------------
- *  This is an example from The Inventor Mentor,
- *  chapter 9, example 4.
- *
- *  Example of setting up pick actions and using the pick path.
- *  A couple of objects are displayed.  The program catches 
- *  mouse button events and determines the mouse position. 
- *  A pick action is applied and if an object is picked the
- *  pick path is printed to stdout.
- *-----------------------------------------------------------*/
+###
+# Copyright (c) 2002, Tamer Fahmy <tamer@tammura.at>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#   * Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#   * Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived
+#     from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 
-#include <Inventor/SbViewportRegion.h>
-#include <Inventor/SoDB.h>
-#include <Inventor/SoInput.h>
-#include <Inventor/SoPickedPoint.h>
-#include <Inventor/Xt/SoXt.h>
-#include <Inventor/Xt/viewers/SoXtExaminerViewer.h>
-#include <Inventor/actions/SoRayPickAction.h>
-#include <Inventor/actions/SoWriteAction.h>
-#include <Inventor/events/SoMouseButtonEvent.h>
-#include <Inventor/nodes/SoEventCallback.h>
-#include <Inventor/nodes/SoMaterial.h>
-#include <Inventor/nodes/SoRotationXYZ.h>
-#include <Inventor/nodes/SoSeparator.h>
-#include <Inventor/nodes/SoTranslation.h>
+###
+# This is an example from The Inventor Mentor,
+# chapter 9, example 4.
+#
+# Example of setting up pick actions and using the pick path.
+# A couple of objects are displayed.  The program catches 
+# mouse button events and determines the mouse position. 
+# A pick action is applied and if an object is picked the
+# pick path is printed to stdout.
+#
 
-#include <stdlib.h>
+from pivy import *
+import sys
 
-///////////////////////////////////////////////////////////////
-// CODE FOR The Inventor Mentor STARTS HERE
+###############################################################
+# CODE FOR The Inventor Mentor STARTS HERE
 
-SbBool
-writePickedPath (SoNode *root, 
-   const SbViewportRegion &viewport, 
-   const SbVec2s &cursorPosition)
-{
-   SoRayPickAction myPickAction(viewport);
+def writePickedPath(root, viewport, cursorPosition):
+	myPickAction = SoRayPickAction(viewport)
 
-   // Set an 8-pixel wide region around the pixel
-   myPickAction.setPoint(cursorPosition);
-   myPickAction.setRadius(8.0);
+	# Set an 8-pixel wide region around the pixel
+	myPickAction.setPoint(cursorPosition)
+	myPickAction.setRadius(8.0)
 
-   // Start a pick traversal
-   myPickAction.apply(root);
-   const SoPickedPoint *myPickedPoint = 
-            myPickAction.getPickedPoint();
-   if (myPickedPoint == NULL) return FALSE;
+	# Start a pick traversal
+	myPickAction.apply(root)
+	myPickedPoint = myPickAction.getPickedPoint()
+	if myPickedPoint == None: return 0
 
-   // Write out the path to the picked object
-   SoWriteAction myWriteAction;
-   myWriteAction.apply(myPickedPoint->getPath());
+	# Write out the path to the picked object
+	myWriteAction = SoWriteAction()
+	myWriteAction.apply(myPickedPoint.getPath())
 
-   return TRUE;
-}
+	return 1
 
-// CODE FOR The Inventor Mentor ENDS HERE
-///////////////////////////////////////////////////////////////
+# CODE FOR The Inventor Mentor ENDS HERE
+###############################################################
 
-// This routine is called for every mouse button event.
-void
-myMousePressCB(void *userData, SoEventCallback *eventCB)
-{
-   SoSeparator *root = (SoSeparator *) userData;
-   const SoEvent *event = eventCB->getEvent();
+# This routine is called for every mouse button event.
+def myMousePressCB(userData, eventCB):
+	root = userData # (SoSeparator *) userData
+	event = eventCB.getEvent()
 
-   // Check for mouse button being pressed
-   if (SO_MOUSE_PRESS_EVENT(event, ANY)) {
-      const SbViewportRegion &myRegion = 
-         eventCB->getAction()->getViewportRegion();
-      writePickedPath(root, myRegion,
-                      event->getPosition(myRegion));
-      eventCB->setHandled();
-   } 
-}
+	myRegion = eventCB.getAction().getViewportRegion()	
+	print event.getNormalizedPosition(myRegion).getValue()
+	print event.getPosition().getValue()
+	print event.getPosition(myRegion).getValue()
+	print "muh"
+	print eventCB.thisown
+	writePickedPath(root, myRegion, event.getNormalizedPosition(myRegion))
+	eventCB.setHandled()
 
-void
-main(int, char **argv)
-{
-   SoMouseButtonEvent  myMouseEvent;
+	# Check for mouse button being pressed
+	if SO_MOUSE_PRESS_EVENT(event, ANY):
+		myRegion = eventCB.getAction().getViewportRegion()
+		writePickedPath(root, myRegion, event.getPosition(myRegion))
+		eventCB.setHandled()
+	print "muh"
 
-   // Initialize Inventor and Xt
-   Widget myWindow = SoXt::init(argv[0]); 
-   if (myWindow == NULL) exit(1);
+def main():
+	myMouseEvent = SoMouseButtonEvent()
 
-   SoSeparator *root = new SoSeparator;
-   root->ref();
+	# Initialize Inventor and Gtk
+	myWindow = SoGtk_init(sys.argv[0])
+	if myWindow == None:
+		sys.exit(1)
+	
+	root = SoSeparator()
+	root.ref()
 
-   // Add an event callback to catch mouse button presses.
-   // The callback is set up later on.
-   SoEventCallback *myEventCB = new SoEventCallback;
-   root->addChild(myEventCB);
+	# Add an event callback to catch mouse button presses.
+	# The callback is set up later on.
+	myEventCB = SoEventCallback()
+	root.addChild(myEventCB)
 
-   // Read object data from a file
-   SoInput mySceneInput;
-   if (!mySceneInput.openFile("/usr/share/src/Inventor/examples/data/star.iv")) 
-      exit (1);
-   SoSeparator *starObject = SoDB::readAll(&mySceneInput);
-   if (starObject == NULL) exit (1);
-   mySceneInput.closeFile();
+	# Read object data from a file
+	mySceneInput = SoInput()
+	if not mySceneInput.openFile("star.iv"):
+		sys.exit(1)
+	starObject = SoDB_readAll(mySceneInput)
+	if starObject == None: sys.exit(1)
+	mySceneInput.closeFile()
 
-   // Add two copies of the star object, one white and one red
-   SoRotationXYZ *myRotation = new SoRotationXYZ;
-   myRotation->axis.setValue(SoRotationXYZ::X);
-   myRotation->angle.setValue(M_PI/2.2);  // almost 90 degrees
-   root->addChild(myRotation);
+	# Add two copies of the star object, one white and one red
+	myRotation = SoRotationXYZ()
+	myRotation.axis.setValue(SoRotationXYZ.X)
+	myRotation.angle.setValue(M_PI/2.2)  # almost 90 degrees
+	root.addChild(myRotation)
 
-   root->addChild(starObject);  // first star object
+	root.addChild(starObject)  # first star object
 
-   SoMaterial *myMaterial = new SoMaterial;
-   myMaterial->diffuseColor.setValue(1.0, 0.0, 0.0);   // red
-   root->addChild(myMaterial);
-   SoTranslation *myTranslation = new SoTranslation;
-   myTranslation->translation.setValue(1., 0., 1.);
-   root->addChild(myTranslation);
-   root->addChild(starObject);  // second star object
+	myMaterial = SoMaterial()
+	myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)   # red
+	root.addChild(myMaterial)
+	myTranslation = SoTranslation()
+	myTranslation.translation.setValue(1., 0., 1.)
+	root.addChild(myTranslation)
+	root.addChild(starObject)  # second star object
 
-   // Create a render area in which to see our scene graph.
-   SoXtExaminerViewer *myViewer = new SoXtExaminerViewer(myWindow);
+	# Create a render area in which to see our scene graph.
+	myViewer = SoGtkExaminerViewer(myWindow)
 
-   // Turn off viewing to allow picking
-   myViewer->setViewing(FALSE);
+	# Turn off viewing to allow picking
+	myViewer.setViewing(0)
 
-   myViewer->setSceneGraph(root);
-   myViewer->setTitle("Pick Actions & Paths");
-   myViewer->show();
+	myViewer.setSceneGraph(root)
+	myViewer.setTitle("Pick Actions & Paths")
+	myViewer.show()
 
-   // Set up the event callback. We want to pass the root of the
-   // entire scene graph (including the camera) as the userData,
-   // so we get the scene manager's version of the scene graph
-   // root.
-   myEventCB->addEventCallback(
-      SoMouseButtonEvent::getClassTypeId(),
-      myMousePressCB,
-      myViewer->getSceneManager()->getSceneGraph());
+	# Set up the event callback. We want to pass the root of the
+	# entire scene graph (including the camera) as the userData,
+	# so we get the scene manager's version of the scene graph
+	# root.
+	myEventCB.addPythonEventCallback(SoMouseButtonEvent_getClassTypeId(),
+									 myMousePressCB,
+									 myViewer.getSceneManager().getSceneGraph())
 
-   SoXt::show(myWindow);  
-   SoXt::mainLoop();      
-}
+	SoGtk_show(myWindow)
+	SoGtk_mainLoop()
 
+if __name__ == "__main__":
+	main()

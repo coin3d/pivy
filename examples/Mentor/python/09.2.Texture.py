@@ -1,141 +1,117 @@
-/*
- *
- *  Copyright (C) 2000 Silicon Graphics, Inc.  All Rights Reserved. 
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  Further, this software is distributed without any warranty that it is
- *  free of the rightful claim of any third person regarding infringement
- *  or the like.  Any license provided herein, whether implied or
- *  otherwise, applies only to this software file.  Patent licenses, if
- *  any, provided herein do not apply to combinations of this program with
- *  other software, or any other product whatsoever.
- * 
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *  Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
- *  Mountain View, CA  94043, or:
- * 
- *  http://www.sgi.com 
- * 
- *  For further information regarding this notice, see: 
- * 
- *  http://oss.sgi.com/projects/GenInfo/NoticeExplan/
- *
- */
+#!/usr/bin/env python
 
-/*-----------------------------------------------------------
- *  This is an example from the Inventor Mentor,
- *  chapter 9, example 2.
- *
- *  Using the offscreen renderer to generate a texture map.
- *  Generate simple scene and grab the image to use as
- *  a texture map.
- *----------------------------------------------------------*/
+###
+# Copyright (c) 2002, Tamer Fahmy <tamer@tammura.at>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#   * Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#   * Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived
+#     from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 
-#include <stdlib.h>
-#include <Inventor/SoDB.h>
-#include <Inventor/SoInput.h>
-#include <Inventor/SoOffscreenRenderer.h>
-#include <Inventor/SbViewportRegion.h>
-#include <Inventor/nodes/SoCube.h>
-#include <Inventor/nodes/SoDirectionalLight.h>
-#include <Inventor/nodes/SoPerspectiveCamera.h>
-#include <Inventor/nodes/SoRotationXYZ.h>
-#include <Inventor/nodes/SoSeparator.h>
-#include <Inventor/nodes/SoTexture2.h>
-#include <Inventor/Xt/SoXt.h>
-#include <Inventor/Xt/viewers/SoXtExaminerViewer.h>
+###
+# This is an example from the Inventor Mentor,
+# chapter 9, example 2.
+#
+# Using the offscreen renderer to generate a texture map.
+# Generate simple scene and grab the image to use as
+# a texture map.
+#
 
+from pivy import *
+import sys
 
-SbBool 
-generateTextureMap (SoNode *root, SoTexture2 *texture, 
-   short textureWidth, short textureHeight)
-{
-   SbViewportRegion myViewport(textureWidth, textureHeight);
+def generateTextureMap(root, texture, textureWidth, textureHeight):
+	myViewport = SbViewportRegion(textureWidth, textureHeight)
 
-   // Render the scene
-   SoOffscreenRenderer *myRenderer = 
-            new SoOffscreenRenderer(myViewport);
-   myRenderer->setBackgroundColor(SbColor(0.3, 0.3, 0.3));
-   if (!myRenderer->render(root)) {
-      delete myRenderer;
-      return FALSE;
-   }
+	# Render the scene
+	myRenderer = SoOffscreenRenderer(myViewport)
+	myRenderer.setBackgroundColor(SbColor(0.3, 0.3, 0.3))
+	if not myRenderer.render(root):
+		del myRenderer
+		return 0
 
-   // Generate the texture
-   texture->image.setValue(SbVec2s(textureWidth, textureHeight),
-            SoOffscreenRenderer::RGB, myRenderer->getBuffer());
+	# Generate the texture
+	texture.image.setValue(SbVec2s(textureWidth, textureHeight),
+						   SoOffscreenRenderer.RGB, myRenderer.getBuffer())
 
-   delete myRenderer;
-   return TRUE; 
-}
+	del myRenderer
+	return 1 
 
-void
-main(int, char **argv)
-{
-   // Initialize Inventor and Xt
-   Widget appWindow = SoXt::init(argv[0]);
-   if (appWindow == NULL)
-      exit(1);
+def main():
+	# Initialize Inventor and Gtk
+	appWindow = SoGtk_init(sys.argv[0])
+	if appWindow == None:
+		sys.exit(1)
 
-   // Make a scene from reading in a file
-   SoSeparator *texRoot = new SoSeparator;
-   SoInput in;
-   SoNode *result;
+	# Make a scene from reading in a file
+	texRoot = SoSeparator()
+	input = SoInput()
 
-   texRoot->ref();
-   in.openFile("/usr/share/src/Inventor/examples/data/jumpyMan.iv");
-   SoDB::read(&in, result);
+	texRoot.ref()
+	input.openFile("jumpyMan.iv")
+	result = SoDB_readAll(input)
 
-   SoPerspectiveCamera *myCamera = new SoPerspectiveCamera;
-   SoRotationXYZ *rot = new SoRotationXYZ;
-   rot->axis  = SoRotationXYZ::X;
-   rot->angle = M_PI_2;
-   myCamera->position.setValue(SbVec3f(-0.2, -0.2, 2.0));
-   myCamera->scaleHeight(0.4); 
-   texRoot->addChild(myCamera);
-   texRoot->addChild(new SoDirectionalLight);
-   texRoot->addChild(rot);
-   texRoot->addChild(result);
+	myCamera = SoPerspectiveCamera()
+	rot = SoRotationXYZ()
+	rot.axis(SoRotationXYZ.X)
+	rot.angle(M_PI_2)
+	myCamera.position.setValue(SbVec3f(-0.2, -0.2, 2.0))
+	myCamera.scaleHeight(0.4) 
+	texRoot.addChild(myCamera)
+	texRoot.addChild(SoDirectionalLight())
+	texRoot.addChild(rot)
+	texRoot.addChild(result)
 
-   // Generate the texture map
-   SoTexture2 *texture = new SoTexture2;
-   texture->ref();
-   if (generateTextureMap(texRoot, texture, 64, 64))
-      printf ("Successfully generated texture map\n");
-   else
-      printf ("Could not generate texture map\n");
-   texRoot->unref();
+	# Generate the texture map
+	texture = SoTexture2()
+	texture.ref()
+	if generateTextureMap(texRoot, texture, 64, 64):
+		print "Successfully generated texture map"
+	else:
+		print "Could not generate texture map"
+	texRoot.unref()
 
-   // Make a scene with a cube and apply the texture to it
-   SoSeparator *root = new SoSeparator;
-   root->ref();
-   root->addChild(texture);
-   root->addChild(new SoCube);
+	# Make a scene with a cube and apply the texture to it
+	root = SoSeparator()
+	root.ref()
+	root.addChild(texture)
+	root.addChild(SoCube())
 
-   // Initialize an Examiner Viewer
-   SoXtExaminerViewer *viewer =
-            new SoXtExaminerViewer(appWindow);
-   viewer->setSceneGraph(root);
-   viewer->setTitle("Offscreen Rendered Texture");
+	# Initialize an Examiner Viewer
+	viewer = SoGtkExaminerViewer(appWindow)
+	viewer.setSceneGraph(root)
+	viewer.setTitle("Offscreen Rendered Texture")
 
-   // In Inventor 2.1, if the machine does not have hardware texture
-   // mapping, we must override the default drawStyle to display textures.
-   viewer->setDrawStyle(SoXtViewer::STILL, SoXtViewer::VIEW_AS_IS);
+	# In Inventor 2.1, if the machine does not have hardware texture
+	# mapping, we must override the default drawStyle to display textures.
+	viewer.setDrawStyle(SoGtkViewer.STILL, SoGtkViewer.VIEW_AS_IS)
 
-   viewer->show();
+	viewer.show()
 
-   SoXt::show(appWindow);
-   SoXt::mainLoop();
-}
+	SoGtk_show(appWindow)
+	SoGtk_mainLoop()
+
+if __name__ == "__main__":
+	main()

@@ -1,95 +1,86 @@
-/*
- *
- *  Copyright (C) 2000 Silicon Graphics, Inc.  All Rights Reserved. 
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  Further, this software is distributed without any warranty that it is
- *  free of the rightful claim of any third person regarding infringement
- *  or the like.  Any license provided herein, whether implied or
- *  otherwise, applies only to this software file.  Patent licenses, if
- *  any, provided herein do not apply to combinations of this program with
- *  other software, or any other product whatsoever.
- * 
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *  Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
- *  Mountain View, CA  94043, or:
- * 
- *  http://www.sgi.com 
- * 
- *  For further information regarding this notice, see: 
- * 
- *  http://oss.sgi.com/projects/GenInfo/NoticeExplan/
- *
- */
+#!/usr/bin/env python
 
-/*------------------------------------------------------------
- *  This is an example from the Inventor Mentor,
- *  chapter 9, example 3.
- *
- *  Search Action example.
- *  Read in a scene from a file.
- *  Search through the scene looking for a light.
- *  If none exists, add a directional light to the scene
- *  and print out the modified scene.
- *-----------------------------------------------------------*/
+###
+# Copyright (c) 2002, Tamer Fahmy <tamer@tammura.at>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#   * Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#   * Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived
+#     from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 
-#include <Inventor/SoDB.h>
-#include <Inventor/actions/SoSearchAction.h>
-#include <Inventor/actions/SoWriteAction.h>
-#include <Inventor/nodes/SoDirectionalLight.h>
-#include <Inventor/nodes/SoSeparator.h>
+###
+# This is an example from the Inventor Mentor,
+# chapter 9, example 3.
+#
+# Search Action example.
+# Read in a scene from a file.
+# Search through the scene looking for a light.
+# If none exists, add a directional light to the scene
+# and print out the modified scene.
+#
 
-main(int argc, char **argv)
-{
-   // Initialize Inventor
-   SoDB::init();
+from pivy import *
+import sys
 
-   // Open and read input scene graph
-   SoInput sceneInput;
-   if (! sceneInput.openFile("/usr/share/src/Inventor/examples/data/bird.iv"))
-      return (1);
+def main():
+	# Initialize Inventor
+	SoDB_init()
+	
+	# Open and read input scene graph
+	sceneInput = SoInput()
+	if not sceneInput.openFile("bird.iv"):
+		return 1
 
-   SoSeparator *root = SoDB::readAll(&sceneInput);
-   if (root == NULL) 
-      return (1);
-   root->ref();
+	root = SoDB_readAll(sceneInput)
+	if root == None:
+		return 1
+	root.ref()
 
-//////////////////////////////////////////////////////////////
-// CODE FOR The Inventor Mentor STARTS HERE
+##############################################################
+# CODE FOR The Inventor Mentor STARTS HERE
 
-   SoSearchAction mySearchAction;
+	mySearchAction = SoSearchAction()
 
-   // Look for first existing light derived from class SoLight
-   mySearchAction.setType(SoLight::getClassTypeId());
-   mySearchAction.setInterest(SoSearchAction::FIRST);
+	# Look for first existing light derived from class SoLight
+	mySearchAction.setType(SoLight_getClassTypeId())
+	mySearchAction.setInterest(SoSearchAction.FIRST)
     
-   mySearchAction.apply(root);
-   if (mySearchAction.getPath() == NULL) { // No lights found
+	mySearchAction.apply(root)
+	if mySearchAction.getPath() == None: # No lights found
+		# Add a default directional light to the scene
+		myLight = SoDirectionalLight()
+		root.insertChild(myLight, 0)
 
-      // Add a default directional light to the scene
-      SoDirectionalLight *myLight = new SoDirectionalLight;
-      root->insertChild(myLight, 0);
-   }
+# CODE FOR The Inventor Mentor ENDS HERE
+##############################################################
 
-// CODE FOR The Inventor Mentor ENDS HERE
-//////////////////////////////////////////////////////////////
+	myWriteAction = SoWriteAction()
+	myWriteAction.apply(root)
 
-   SoWriteAction myWriteAction;
-   myWriteAction.apply(root);
+	root.unref()
+	return 0
 
-   root->unref();
-   return 0;
-}
-
+if __name__ == "__main__":
+	sys.exit(main())

@@ -39,44 +39,31 @@ typedef void SoEventCallbackCB(void * userdata, SoEventCallback * node);
 
 #ifdef __PIVY__
 %{
-static PyObject *pyfunc_callback = NULL;
-
 static void
-PythonCallBack(void)
+SoEventPythonCallBack(void * userdata, SoEventCallback * node)
 {
   PyObject *func, *arglist;
-  PyObject *result;
+  PyObject *result, *evCB;
 
-  func = pyfunc_callback;	 /* This is the function .... */
-  arglist = Py_BuildValue("()");  /* No arguments needed */
-  result =  PyEval_CallObject(func, arglist);
+  evCB = SWIG_NewPointerObj((void *) node, SWIGTYPE_p_SoEventCallback, 1);
+  /* the first item in the userdata sequence is the python callback
+   * function; the second is the supplied userdata python object */
+  func = PySequence_GetItem((PyObject *)userdata, 0);
+  arglist = Py_BuildValue("(OO)", PySequence_GetItem((PyObject *)userdata, 1), evCB);
+  result = PyEval_CallObject(func, arglist);
   Py_DECREF(arglist);
   Py_XDECREF(result);
   return /*void*/;
 }
-
-void
-set_callback(PyObject *PyFunc)
-{
-  Py_XDECREF(pyfunc_callback);   /* dispose of previous callback */
-  Py_XINCREF(PyFunc);	       /* add a reference to new callback */
-  pyfunc_callback = PyFunc;      /* remember new callback */
-  EventCB_set_callback(PythonCallBack);
-}
-
 %}
 
-%typemap(in) PyObject *PyFunc {
-  if (!PyCallable_Check($source)) {
-    PyErr_SetString(PyExc_TypeError, "need a callable object!");
-    return NULL;
+%typemap(in) PyObject *pyfunc %{
+  if (!PyCallable_Check($input)) {
+	PyErr_SetString(PyExc_TypeError, "need a callable object!");
+	return NULL;
   }
-  $target = $source;
-}
-
-void
-set_callback(PyObject *PyFunc);
-
+  $1 = $input;
+%}
 #endif
 
 class COIN_DLL_API SoEventCallback : public SoNode {
@@ -90,6 +77,38 @@ public:
 
   void setPath(SoPath * path);
   const SoPath * getPath(void);
+
+#ifdef __PIVY__
+  /* add python specific callback functions */
+  %addmethods {
+	void addPythonEventCallback(SoType eventtype, 
+								PyObject *pyfunc, 
+								PyObject *userdata = NULL) {
+
+	  userdata = userdata != NULL ? userdata : Py_None;
+	  PyObject *t = PyTuple_New(2);
+	  PyTuple_SetItem(t, 0, pyfunc);
+	  PyTuple_SetItem(t, 1, userdata);
+	
+	  self->addEventCallback(eventtype, SoEventPythonCallBack, (void *) t);
+	  Py_INCREF(pyfunc);
+	  Py_INCREF(userdata);
+	}
+
+	void removePythonEventCallback(SoType eventtype, 
+								   PyObject *pyfunc, 
+								   PyObject *userdata = NULL) {
+	  userdata = userdata != NULL ? userdata : Py_None;
+	  PyObject *t = PyTuple_New(2);
+	  PyTuple_SetItem(t, 0, pyfunc);
+	  PyTuple_SetItem(t, 1, userdata);
+	
+	  self->removeEventCallback(eventtype, SoEventPythonCallBack, (void *) t);
+	  Py_INCREF(pyfunc);
+	  Py_INCREF(userdata);
+	}
+  }
+#endif
 
   void addEventCallback(SoType eventtype, SoEventCallbackCB * f,
                         void * userdata = NULL);

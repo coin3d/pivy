@@ -1,0 +1,83 @@
+/**************************************************************************\
+ *
+ *  This file is part of the Coin 3D visualization library.
+ *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public License
+ *  version 2.1 as published by the Free Software Foundation. See the
+ *  file LICENSE.LGPL at the root directory of the distribution for
+ *  more details.
+ *
+ *  If you want to use Coin for applications not compatible with the
+ *  LGPL, please contact SIM to acquire a Professional Edition license.
+ *
+ *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
+ *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *
+\**************************************************************************/
+
+#ifndef COIN_SOEVENT_H
+#define COIN_SOEVENT_H
+
+#include <Inventor/SoType.h>
+#include <Inventor/SbVec2s.h>
+#include <Inventor/SbTime.h>
+
+class SbViewportRegion;
+class SbVec2f;
+
+#ifdef __PIVY__
+%rename(getPosition_vpr) SoEvent::getPosition(const SbViewportRegion & vpRgn) const;
+
+%feature("shadow") SoEvent::getPosition(void) %{
+def getPositon(*args):
+   if len(args) == 2:
+      return apply(pivyc.SoEvent_getPosition_vpr,args)
+   return apply(pivyc.SoEvent_getPosition,args)
+%}
+#endif
+
+class COIN_DLL_API SoEvent {
+
+public:
+  SoEvent(void);
+  virtual ~SoEvent();
+
+  SbBool isOfType(SoType type) const;
+  static SoType getClassTypeId(void);
+  virtual SoType getTypeId(void) const;
+
+  void setTime(const SbTime t);
+  SbTime getTime(void) const;
+
+  void setPosition(const SbVec2s & p);
+  const SbVec2s & getPosition(void) const;
+  const SbVec2s getPosition(const SbViewportRegion & vpRgn) const;
+  const SbVec2f getNormalizedPosition(const SbViewportRegion & vpRgn) const;
+
+  void setShiftDown(SbBool isDown);
+  SbBool wasShiftDown(void) const;
+  void setCtrlDown(SbBool isDown);
+  SbBool wasCtrlDown(void) const;
+  void setAltDown(SbBool isDown);
+  SbBool wasAltDown(void) const;
+
+  static void initClass(void);
+
+private:
+  static SoType classTypeId;
+
+  SbTime timeofevent;
+  SbVec2s positionofevent;
+
+  static void initEvents(void);
+
+  struct {
+    unsigned int shiftdown : 1;
+    unsigned int ctrldown  : 1;
+    unsigned int altdown   : 1;
+  } modifiers;
+};
+
+#endif // !COIN_SOEVENT_H

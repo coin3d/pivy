@@ -1,144 +1,109 @@
-/*
- *
- *  Copyright (C) 2000 Silicon Graphics, Inc.  All Rights Reserved. 
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  Further, this software is distributed without any warranty that it is
- *  free of the rightful claim of any third person regarding infringement
- *  or the like.  Any license provided herein, whether implied or
- *  otherwise, applies only to this software file.  Patent licenses, if
- *  any, provided herein do not apply to combinations of this program with
- *  other software, or any other product whatsoever.
- * 
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *  Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
- *  Mountain View, CA  94043, or:
- * 
- *  http://www.sgi.com 
- * 
- *  For further information regarding this notice, see: 
- * 
- *  http://oss.sgi.com/projects/GenInfo/NoticeExplan/
- *
- */
+#!/usr/bin/env python
 
-/*-----------------------------------------------------------
- *  This is an example from The Inventor Mentor,
- *  chapter 9, example 5.
- *
- *  Using a callback for generated primitives.
- *  A simple scene with a sphere is created.
- *  A callback is used to write out the triangles that
- *  form the sphere in the scene.
- *----------------------------------------------------------*/
+###
+# Copyright (c) 2002, Tamer Fahmy <tamer@tammura.at>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#   * Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#   * Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived
+#     from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 
-#include <Inventor/SoDB.h>
-#include <Inventor/SoPrimitiveVertex.h>
-#include <Inventor/actions/SoCallbackAction.h>
-#include <Inventor/actions/SoWriteAction.h>
-#include <Inventor/nodes/SoDirectionalLight.h>
-#include <Inventor/nodes/SoMaterial.h>
-#include <Inventor/nodes/SoPerspectiveCamera.h>
-#include <Inventor/nodes/SoSeparator.h>
-#include <Inventor/nodes/SoSphere.h>
+###
+# This is an example from The Inventor Mentor,
+# chapter 9, example 5.
+#
+# Using a callback for generated primitives.
+# A simple scene with a sphere is created.
+# A callback is used to write out the triangles that
+# form the sphere in the scene.
+#
 
-// Function prototypes
-void printSpheres(SoNode *);
-SoCallbackAction::Response printHeaderCallback(void *, 
-   SoCallbackAction *, const SoNode *);
-void printTriangleCallback(void *, SoCallbackAction *,
-   const SoPrimitiveVertex *, const SoPrimitiveVertex *,
-   const SoPrimitiveVertex *);
-void printVertex(const SoPrimitiveVertex *);
+from pivy import *
+import sys
 
-//////////////////////////////////////////////////////////////
-// CODE FOR The Inventor Mentor STARTS HERE
+##############################################################
+# CODE FOR The Inventor Mentor STARTS HERE
 
-void
-printSpheres(SoNode *root)
-{
-   SoCallbackAction myAction;
+def printVertex(vertex):
+	point = vertex.getPoint()
+	print "\tCoords     = (%g, %g, %g)" % point[0], point[1], point[2]
 
-   myAction.addPreCallback(SoSphere::getClassTypeId(), 
-            printHeaderCallback, NULL);
-   myAction.addTriangleCallback(SoSphere::getClassTypeId(), 
-            printTriangleCallback, NULL);
+	normal = vertex.getNormal()
+	print "\tNormal     = (%g, %g, %g)" % normal[0], normal[1], normal[2]
 
-   myAction.apply(root);
-}
+def printHeaderCallback(void, callbackAction, node):
+	print "\n Sphere ",
+	# Print the node name (if it exists) and address
+	if not not node.getName():
+		print "named \"%s\" " % node.getName().getString(),
+	print "at address %#x\n" % node
 
-SoCallbackAction::Response
-printHeaderCallback(void *, SoCallbackAction *, 
-      const SoNode *node)
-{
-   printf("\n Sphere ");
-   // Print the node name (if it exists) and address
-   if (! !node->getName())
-      printf("named \"%s\" ", node->getName().getString());
-   printf("at address %#x\n", node);
+	return SoCallbackAction.CONTINUE
 
-   return SoCallbackAction::CONTINUE;
-}
+def printTriangleCallback(void, callbackAction,
+						  vertex1, vertex2, vertex3):
+	print "Triangle:"
+	printVertex(vertex1)
+	printVertex(vertex2)
+	printVertex(vertex3)
 
-void
-printTriangleCallback(void *, SoCallbackAction *,
-   const SoPrimitiveVertex *vertex1,
-   const SoPrimitiveVertex *vertex2,
-   const SoPrimitiveVertex *vertex3)
-{
-   printf("Triangle:\n");
-   printVertex(vertex1);
-   printVertex(vertex2);
-   printVertex(vertex3);
-}
+def printSpheres(root):
+	myAction = SoCallbackAction()
+	
+	myAction.addPreCallback(SoSphere_getClassTypeId(),
+							printHeaderCallback, None)
+	myAction.addTriangleCallback(SoSphere_getClassTypeId(), 
+								 printTriangleCallback, None)
 
-void
-printVertex(const SoPrimitiveVertex *vertex)
-{
-   const SbVec3f &point = vertex->getPoint();
-   printf("\tCoords     = (%g, %g, %g)\n", 
-               point[0], point[1], point[2]);
+	myAction.apply(root)
+	
+# CODE FOR The Inventor Mentor ENDS HERE
+##############################################################
 
-   const SbVec3f &normal = vertex->getNormal();
-   printf("\tNormal     = (%g, %g, %g)\n", 
-               normal[0], normal[1], normal[2]);
-}
+def main():
+	# Initialize Inventor
+	SoDB_init()
 
-// CODE FOR The Inventor Mentor ENDS HERE
-///////////////////////////////////////////////////////////////
+	# Make a scene containing a red sphere
+	root = SoSeparator()
+	myCamera = SoPerspectiveCamera()
+	myMaterial = SoMaterial()
+	root.ref()
+	root.addChild(myCamera)
+	root.addChild(SoDirectionalLight())
+	myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)   # Red
+	root.addChild(myMaterial)
+	root.addChild(SoSphere())
+	root.ref()
 
-main(int, char **)
-{
-   // Initialize Inventor
-   SoDB::init();
+	# Write out the triangles that form the sphere in the scene
+	printSpheres(root)
 
-   // Make a scene containing a red sphere
-   SoSeparator *root = new SoSeparator;
-   SoPerspectiveCamera *myCamera = new SoPerspectiveCamera;
-   SoMaterial *myMaterial = new SoMaterial;
-   root->ref();
-   root->addChild(myCamera);
-   root->addChild(new SoDirectionalLight);
-   myMaterial->diffuseColor.setValue(1.0, 0.0, 0.0);   // Red
-   root->addChild(myMaterial);
-   root->addChild(new SoSphere);
-   root->ref();
+	root.unref()
+	return 0
 
-   // Write out the triangles that form the sphere in the scene
-   printSpheres(root);
+if __name__ == "__main__":
+	sys.exit(main())
 
-   root->unref();
-   return 0;
-}

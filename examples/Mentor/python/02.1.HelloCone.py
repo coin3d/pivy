@@ -63,7 +63,7 @@ def main():
 	myRenderArea = SoGtkRenderArea(myWindow)
 
 	# Make myCamera see everything.
-	myCamera.viewAll(root, myRenderArea.getViewportRegion());
+	myCamera.viewAll(root, myRenderArea.getViewportRegion())
 
 	# Put our scene in myRenderArea, change the title
 	myRenderArea.setSceneGraph(root)

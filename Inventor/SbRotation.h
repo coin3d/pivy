@@ -98,6 +98,10 @@ def setValue(*args):
          return apply(_pivy.SbRotation_setValue_vec_f,args)
    return apply(_pivy.SbRotation_setValue,args)
 %}
+
+%rename(SbRotation_eq) operator ==(const SbRotation & q1, const SbRotation & q2);
+%rename(SbRotation_neq) operator !=(const SbRotation & q1, const SbRotation & q2);
+%rename(SbRotation_mul) operator *(const SbRotation & q1, const SbRotation & q2);
 #endif
 
 class COIN_DLL_API SbRotation {

@@ -118,6 +118,13 @@ autocast(SoNode * node)
 
 %include "typemaps.i"
 
+%include "cpointer.i"
+%pointer_class(char, charp);
+%pointer_class(int, intp);
+%pointer_class(long, longp);
+%pointer_class(float, floatp);
+%pointer_class(double, doublep);
+
 /* if SWIG determines the class abstract it doesn't generate
  *  constructors of any kind. the following %feature
  * declarations take care about this for the classes we still

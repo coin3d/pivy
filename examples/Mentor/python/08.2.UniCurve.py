@@ -41,6 +41,7 @@
 # 4 to illustrate the curve passing through the endpoints.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -168,7 +169,7 @@ def makeCurve():
 
 def main():
     # Initialize Inventor and Qt
-    appWindow = SoQt_init(sys.argv[0])
+    appWindow = SoGui.init(sys.argv[0])
     if appWindow == None:
         sys.exit(1)
 
@@ -228,7 +229,7 @@ def main():
     root.addChild(shadow)
 
     # Initialize an Examiner Viewer
-    viewer = SoQtExaminerViewer(appWindow)
+    viewer = SoGuiExaminerViewer(appWindow)
     viewer.setSceneGraph(root)
     viewer.setTitle("B-Spline Curve")
     cam = viewer.getCamera()
@@ -236,8 +237,8 @@ def main():
     cam.pointAt(SbVec3f(0.0, -2.0, -4.0))
     viewer.show()
 
-    SoQt_show(appWindow)
-    SoQt_mainLoop()
+    SoGui.show(appWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

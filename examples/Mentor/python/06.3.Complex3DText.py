@@ -38,12 +38,13 @@
 # SoXTExaminerViewer.  It is a little fancier than 6.2.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])
+    myWindow = SoGui.init(sys.argv[0])
     if myWindow == None: sys.exit(1)
 
     root = SoGroup()
@@ -111,14 +112,14 @@ def main():
    
     root.addChild(myText3)
 
-    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(root)
     myViewer.setTitle("Complex 3D Text")
     myViewer.show()
     myViewer.viewAll()
 
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

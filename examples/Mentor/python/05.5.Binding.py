@@ -42,6 +42,7 @@
 # dodecahedron from an earlier example in this chapter.  
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -163,7 +164,7 @@ def main():
         sys.exit(1)
 
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])
+    myWindow = SoGui.init(sys.argv[0])
     if myWindow == None: sys.exit(1)
 
     root = makeStellatedDodecahedron()
@@ -233,14 +234,14 @@ def main():
 ## CODE FOR The Inventor Mentor ENDS HERE
 ##############################################################
 
-    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(root)
     myViewer.setTitle("Material Bindings")
     myViewer.show()
     myViewer.viewAll()
 
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

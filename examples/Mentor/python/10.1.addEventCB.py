@@ -44,6 +44,7 @@
 # the size of each selected object.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -109,7 +110,7 @@ def main():
     print "Up and Down arrows       - scale selected objects"
 
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])
+    myWindow = SoGui.init(sys.argv[0])
     if myWindow == None:
         sys.exit(1)
 
@@ -182,7 +183,7 @@ def main():
     selectionRoot.addChild(cylRoot)
 
     # Create a render area for viewing the scene
-    myRenderArea = SoQtRenderArea(myWindow)
+    myRenderArea = SoGuiRenderArea(myWindow)
     myRenderArea.setSceneGraph(selectionRoot)
     
     # need to make a reference like this otherwise SoBoxHighlightRenderAction() gets
@@ -206,8 +207,8 @@ def main():
 
     # Show our application window, and loop forever...
     myRenderArea.show()
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

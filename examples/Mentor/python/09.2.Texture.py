@@ -39,6 +39,7 @@
 # a texture map.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -61,7 +62,7 @@ def generateTextureMap(root, texture, textureWidth, textureHeight):
 
 def main():
     # Initialize Inventor and Qt
-    appWindow = SoQt_init(sys.argv[0])
+    appWindow = SoGui.init(sys.argv[0])
     if appWindow == None:
         sys.exit(1)
 
@@ -100,18 +101,18 @@ def main():
     root.addChild(SoCube())
 
     # Initialize an Examiner Viewer
-    viewer = SoQtExaminerViewer(appWindow)
+    viewer = SoGuiExaminerViewer(appWindow)
     viewer.setSceneGraph(root)
     viewer.setTitle("Offscreen Rendered Texture")
 
     # In Inventor 2.1, if the machine does not have hardware texture
     # mapping, we must override the default drawStyle to display textures.
-    viewer.setDrawStyle(SoQtViewer.STILL, SoQtViewer.VIEW_AS_IS)
+    viewer.setDrawStyle(SoGuiViewer.STILL, SoGuiViewer.VIEW_AS_IS)
 
     viewer.show()
 
-    SoQt_show(appWindow)
-    SoQt_mainLoop()
+    SoGui.show(appWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

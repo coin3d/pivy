@@ -40,6 +40,7 @@
 # an error reading the file.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -67,13 +68,13 @@ def readFile(filename):
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])
+    myWindow = SoGui.init(sys.argv[0])
 
     # Read the file
     scene = readFile("bookshelf.iv")
 
     # Create a viewer
-    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoGuiExaminerViewer(myWindow)
 
     # attach and show viewer
     myViewer.setSceneGraph(scene)
@@ -81,8 +82,8 @@ def main():
     myViewer.show()
     
     # Loop forever
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

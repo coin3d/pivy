@@ -48,6 +48,7 @@
 #     of the scene.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -117,7 +118,7 @@ def tipTheBalance(userData, # The nodekit representing 'support', the
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])  
+    myWindow = SoGui.init(sys.argv[0])  
     if myWindow == None: sys.exit(1)     
 
     myScene = SoSceneKit()
@@ -195,7 +196,7 @@ def main():
     myText.set("transform { translation 0 -2 0 }")
     myScene.setPart("childList[1]", myText)
 
-    myRenderArea = SoQtRenderArea(myWindow)
+    myRenderArea = SoGuiRenderArea(myWindow)
 
     # Get camera from scene and tell it to viewAll...
     myCamera = cast(myScene.getPart("cameraList[0].camera", TRUE), "SoPerspectiveCamera")
@@ -205,8 +206,8 @@ def main():
     myRenderArea.setTitle("Balance Scale Made of Nodekits")
     myRenderArea.show()
 
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

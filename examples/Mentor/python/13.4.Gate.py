@@ -40,6 +40,7 @@
 # controls the motion of the duck.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -71,7 +72,7 @@ def main():
     print "Click the left mouse button to enable/disable the duck motion"
 
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])  
+    myWindow = SoGui.init(sys.argv[0])  
     if myWindow == None: sys.exit(1)     
 
     root = SoSeparator()
@@ -148,13 +149,13 @@ def main():
 # CODE FOR The Inventor Mentor ENDS HERE
 #############################################################
 
-    myRenderArea = SoQtRenderArea(myWindow)
+    myRenderArea = SoGuiRenderArea(myWindow)
     myRenderArea.setSceneGraph(root)
     myRenderArea.setTitle("Duck Pond")
     myRenderArea.show()
 
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -40,6 +40,7 @@
 # file for printing.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -113,7 +114,7 @@ def processKeyEvents(data, cb):
 
 def main():
     # Initialize Inventor and Qt
-    appWindow = SoQt_init(sys.argv[0])
+    appWindow = SoGui.init(sys.argv[0])
     if appWindow == None:
         sys.exit(1)
         
@@ -139,7 +140,7 @@ def main():
         sys.exit(1)
     root.addChild(geomObject)
 
-    viewer = SoQtExaminerViewer(appWindow, "None", TRUE, SoQtExaminerViewer.BUILD_ALL, SoQtExaminerViewer.EDITOR)
+    viewer = SoGuiExaminerViewer(appWindow, "None", TRUE, SoGuiExaminerViewer.BUILD_ALL, SoGuiExaminerViewer.EDITOR)
     viewer.setSceneGraph(root)
     viewer.setTitle("Print to PostScript")
     
@@ -151,8 +152,8 @@ def main():
     eventCB.addEventCallback(SoKeyboardEvent_getClassTypeId(), processKeyEvents, data)
     viewer.show()
 
-    SoQt_show(appWindow)
-    SoQt_mainLoop()
+    SoGui.show(appWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

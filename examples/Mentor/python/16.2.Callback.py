@@ -39,6 +39,7 @@
 # It uses callbacks for the component to report new values.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -51,15 +52,15 @@ def myMaterialEditorCB(userData, newMtl):
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])  
+    myWindow = SoGui.init(sys.argv[0])  
     if myWindow == None: sys.exit(1)     
 
     # Build the render area in the applications main window
-    myRenderArea = SoQtRenderArea(myWindow)
+    myRenderArea = SoGuiRenderArea(myWindow)
     myRenderArea.setSize(SbVec2s(200, 200))
    
     # Build the Material Editor in its own window
-    myEditor = SoQtMaterialEditor()
+    myEditor = SoGuiMaterialEditor()
    
     # Create a scene graph
     root = SoSeparator()
@@ -91,11 +92,11 @@ def main():
     # Show the main window and the Material Editor
     myRenderArea.setTitle("Editor Callback")
     myRenderArea.show()
-    SoQt_show(myWindow)
+    SoGui.show(myWindow)
     myEditor.show()
 
     # Loop forever
-    SoQt_mainLoop()
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -56,6 +56,7 @@
 # transform node that affects the picked object.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -238,7 +239,7 @@ def main():
     global myHandleBox, myTrackball, myTransformBox
     
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])  
+    myWindow = SoGui.init(sys.argv[0])  
     if myWindow == None: sys.exit(1)     
 
     # create and set up the selection node
@@ -310,14 +311,14 @@ def main():
     myDragger.addStartCallback(dragStartCallback,wrapperMat)
     myDragger.addFinishCallback(dragFinishCallback,wrapperMat)
 
-    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(selectionRoot)
     myViewer.setTitle("Attaching Manipulators")
     myViewer.show()
     myViewer.viewAll()
     
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -41,12 +41,13 @@
 # the words change color and fly about the screen.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])  
+    myWindow = SoGui.init(sys.argv[0])  
     if myWindow == None: sys.exit(1)     
 
     root = SoSeparator()
@@ -102,14 +103,14 @@ def main():
     niceMtl = cast(niceKit.getPart("material",TRUE), "SoMaterial")
     niceMtl.diffuseColor.connectFrom(niceCalc.oC)
 
-    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(root)
     myViewer.setTitle("Frolicking Words")
     myViewer.viewAll()
     myViewer.show()
 
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

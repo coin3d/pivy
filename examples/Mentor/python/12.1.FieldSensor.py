@@ -37,6 +37,7 @@
 # Sense changes to a viewer's camera's position.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -54,7 +55,7 @@ def main():
         print >> sys.stderr, "Usage: %s filename.iv" % (sys.argv[0])
         sys.exit(1)
 
-    myWindow = SoQt_init(sys.argv[0])
+    myWindow = SoGui.init(sys.argv[0])
     if myWindow == None: sys.exit(1)
 
     inputFile = SoInput()
@@ -65,7 +66,7 @@ def main():
     root = SoDB_readAll(inputFile)
     root.ref()
 
-    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(root)
     myViewer.setTitle("Camera Sensor")
     myViewer.show()
@@ -76,8 +77,8 @@ def main():
     mySensor = SoFieldSensor(cameraChangedCB, camera)
     mySensor.attach(camera.position)
     
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

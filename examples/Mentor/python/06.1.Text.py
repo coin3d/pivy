@@ -38,12 +38,13 @@
 # continents Africa and Asia.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])
+    myWindow = SoGui.init(sys.argv[0])
     if myWindow == None: sys.exit(1)
 
     root = SoGroup()
@@ -87,19 +88,19 @@ def main():
     asiaSep.addChild(asiaTranslate)
     asiaSep.addChild(asiaText)
 
-    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(root)
     myViewer.setTitle("2D Text")
 
     # In Inventor 2.1, if the machine does not have hardware texture
     # mapping, we must override the default drawStyle to display textures.
-    myViewer.setDrawStyle(SoQtViewer.STILL, SoQtViewer.VIEW_AS_IS)
+    myViewer.setDrawStyle(SoGuiViewer.STILL, SoGuiViewer.VIEW_AS_IS)
 
     myViewer.show()
     myViewer.viewAll()
 
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

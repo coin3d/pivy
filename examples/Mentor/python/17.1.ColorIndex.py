@@ -41,6 +41,7 @@
 # colors.
 #
 
+from sogui import *
 from pivy import *
 from OpenGL.GL import *
 from OpenGL.GLX import *
@@ -71,7 +72,7 @@ Separator {
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])
+    myWindow = SoGui.init(sys.argv[0])
    
     # read the scene graph in
     input = SoInput()
@@ -95,7 +96,7 @@ def main():
     # Color 0 will be used for the background (default) while
     # color 1 and 2 are used by the objects.
     #
-    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setNormalVisual(vis)
     myViewer.setColorMap(0, 3, cast(colors, "SbColor"))
     myViewer.setSceneGraph(scene)
@@ -104,7 +105,7 @@ def main():
     # Show the viewer and loop forever...
     myViewer.show()
     QtRealizeWidget(myWindow)
-    SoQt_mainLoop()
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

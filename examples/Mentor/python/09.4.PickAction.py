@@ -41,6 +41,7 @@
 # pick path is printed to stdout.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -83,7 +84,7 @@ def main():
     myMouseEvent = SoMouseButtonEvent()
 
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])
+    myWindow = SoGui.init(sys.argv[0])
     if myWindow == None:
         sys.exit(1)
     
@@ -120,7 +121,7 @@ def main():
     root.addChild(starObject)  # second star object
 
     # Create a render area in which to see our scene graph.
-    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoGuiExaminerViewer(myWindow)
 
     # Turn off viewing to allow picking
     myViewer.setViewing(0)
@@ -137,8 +138,8 @@ def main():
                                myMousePressCB,
                                myViewer.getSceneManager().getSceneGraph())
 
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -47,12 +47,13 @@
 # is attached to the light's 'directionalLight' part.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])  
+    myWindow = SoGui.init(sys.argv[0])  
     if myWindow == None: sys.exit(1)     
 
     # SCENE!
@@ -87,7 +88,7 @@ def main():
 
     # MATERIAL EDITOR!!  Attach it to myDesk's material node.
     # Use the SO_GET_PART macro to get this part from myDesk.
-    mtlEditor = SoQtMaterialEditor()
+    mtlEditor = SoGuiMaterialEditor()
     mtl = SO_GET_PART(myDesk,"material",SoMaterial())
     mtlEditor.attach(mtl)
     mtlEditor.setTitle("Material of Desk")
@@ -95,13 +96,13 @@ def main():
 
     # DIRECTIONAL LIGHT EDITOR!! Attach it to the 
     # SoDirectionalLight node within the SoLightKit we made.
-    ltEditor = SoQtDirectionalLightEditor()
+    ltEditor = SoGuiDirectionalLightEditor()
     ltPath = myScene.createPathToPart("lightList[0].light", TRUE)
     ltEditor.attach(ltPath)
     ltEditor.setTitle("Lighting of Desk")
     ltEditor.show()
    
-    myRenderArea = SoQtRenderArea(myWindow)
+    myRenderArea = SoGuiRenderArea(myWindow)
 
     # Set up Camera with ViewAll...
     # -- use the SO_GET_PART macro to get the camera node.
@@ -119,8 +120,8 @@ def main():
     myRenderArea.setTitle("Main Window: Desk In A Scene Kit")
     myRenderArea.show()
 
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

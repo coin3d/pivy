@@ -40,20 +40,21 @@
 # It attaches the editor to the material of an object.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])
+    myWindow = SoGui.init(sys.argv[0])
    
     # Build the form to hold both components
     myForm = QtCreateWidget("Form", xmFormWidgetClass, myWindow, None, 0)
    
     # Build the render area and Material Editor
-    myRenderArea = SoQtRenderArea(myForm)
+    myRenderArea = SoGuiRenderArea(myForm)
     myRenderArea.setSize(SbVec2s(200, 200))
-    myEditor = SoQtMaterialEditor(myForm)
+    myEditor = SoGuiMaterialEditor(myForm)
    
     # Layout the components within the form
     args = []
@@ -98,11 +99,11 @@ def main():
     # Show the main window
     myRenderArea.show()
     myEditor.show()
-    SoQt_show(myForm)    # this calls QtManageChild
-    SoQt_show(myWindow)  # this calls QtRealizeWidget
+    SoGui.show(myForm)    # this calls QtManageChild
+    SoGui.show(myWindow)  # this calls QtRealizeWidget
    
     # Loop forever
-    SoQt_mainLoop()
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

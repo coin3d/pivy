@@ -38,12 +38,13 @@
 # Use a blinker node to flash a neon ad sign on and off
 #
 
+from sogui import *
 from pivy import *
 import sys
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])  
+    myWindow = SoGui.init(sys.argv[0])  
     if myWindow == None: sys.exit(1)     
 
     # Set up camera and light
@@ -87,15 +88,15 @@ def main():
 #############################################################
 
     # Set up and display render area 
-    myRenderArea = SoQtRenderArea(myWindow)
+    myRenderArea = SoGuiRenderArea(myWindow)
     myRegion = SbViewportRegion(myRenderArea.getSize()) 
     myCamera.viewAll(root, myRegion)
 
     myRenderArea.setSceneGraph(root)
     myRenderArea.setTitle("Neon")
     myRenderArea.show()
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -41,6 +41,7 @@
 # load the overlay color map with the wanted color.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -62,7 +63,7 @@ Separator {
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])  
+    myWindow = SoGui.init(sys.argv[0])  
     if myWindow == None: sys.exit(1)     
 
     # read the scene graph in
@@ -76,7 +77,7 @@ def main():
     # Allocate the viewer, set the overlay scene and
     # load the overlay color map with the wanted color.
     color = SbColor(.5, 1, .5)
-    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(SoCone())
     myViewer.setOverlaySceneGraph(scene)
     myViewer.setOverlayColorMap(1, 1, color)
@@ -85,7 +86,7 @@ def main():
     # Show the viewer and loop forever
     myViewer.show()
     # QtRealizeWidget(myWindow)
-    SoQt_mainLoop()
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

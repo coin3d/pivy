@@ -41,12 +41,13 @@
 # translated to the right.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])
+    myWindow = SoGui.init(sys.argv[0])
     if myWindow == None: sys.exit(1)
 
     root = SoSeparator()
@@ -94,14 +95,14 @@ def main():
     rightSep.addChild(fileContents)
 
     # Construct a renderArea and display the scene.
-    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(root)
     myViewer.setTitle("Transform Ordering")
     myViewer.show()
     myViewer.viewAll()
 
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -37,11 +37,12 @@
 # Use the Examiner Viewer to look at a red cone
 #
 
+from sogui import *
 from pivy import *
 import sys
 
 def main():
-    myWindow = SoQt_init(sys.argv[0])
+    myWindow = SoGui.init(sys.argv[0])
     if myWindow == None: sys.exit(1)
 
     root = SoSeparator()
@@ -52,13 +53,13 @@ def main():
     root.addChild(SoCone())
 
     # Set up viewer:
-    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(root)
     myViewer.setTitle("Examiner Viewer")
     myViewer.show()
 
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

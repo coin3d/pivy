@@ -38,6 +38,7 @@
 # a pennant-shaped flag.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -146,20 +147,20 @@ def makePennant():
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])
+    myWindow = SoGui.init(sys.argv[0])
     if myWindow == None: sys.exit(1)
 
     root = makePennant()
     root.ref()
 
-    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(root)
     myViewer.setTitle("Triangle Strip Set: Pennant")
     myViewer.show()
     myViewer.viewAll()
 
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

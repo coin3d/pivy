@@ -44,6 +44,7 @@
 # object rather than select the manipulator.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -188,7 +189,7 @@ def buildScene():
 
 def main():
     # Initialization
-    mainWindow = SoQt_init(sys.argv[0])
+    mainWindow = SoGui.init(sys.argv[0])
     
     # Create a scene graph. Use the toggle selection policy.
     sel = SoSelection()
@@ -197,7 +198,7 @@ def main():
     sel.addChild(buildScene())
 
     # Create a viewer
-    viewer = SoQtExaminerViewer(mainWindow)
+    viewer = SoGuiExaminerViewer(mainWindow)
     viewer.setSceneGraph(sel)
     viewer.setTitle("Select Through Manips")
     viewer.show()
@@ -207,8 +208,8 @@ def main():
     sel.addDeselectionCallback(deselCB)
     sel.setPickFilterCallback(pickFilterCB)
     
-    SoQt_show(mainWindow)
-    SoQt_mainLoop()
+    SoGui.show(mainWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

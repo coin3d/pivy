@@ -39,15 +39,16 @@
 # light in the scene are automatically created by the viewer.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])
+    myWindow = SoGui.init(sys.argv[0])
    
     # Build the viewer in the applications main window
-    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoGuiExaminerViewer(myWindow)
    
     # Read the geometry from a file and add to the scene
     myInput = SoInput()
@@ -62,10 +63,10 @@ def main():
    
     # Show the main window
     myViewer.show()
-    SoQt_show(myWindow)
+    SoGui.show(myWindow)
 
     # Loop forever
-    SoQt_mainLoop()
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

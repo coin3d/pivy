@@ -41,6 +41,7 @@
 # shape that was picked.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -60,7 +61,7 @@ def pickFilterCB(void, pick):
 
 def main():
     # Initialization
-    mainWindow = SoQt_init(sys.argv[0])
+    mainWindow = SoGui.init(sys.argv[0])
     
     # Open the data file
     input = SoInput()
@@ -83,14 +84,14 @@ def main():
 
     # Create two viewers, one to show the pick filter for top level
     # selection, the other to show default selection.
-    viewer1 = SoQtExaminerViewer(mainWindow)
+    viewer1 = SoGuiExaminerViewer(mainWindow)
     viewer1.setSceneGraph(topLevelSel)
     boxhra1 = SoBoxHighlightRenderAction()
     viewer1.setGLRenderAction(boxhra1)
     viewer1.redrawOnSelectionChange(topLevelSel)
     viewer1.setTitle("Top Level Selection")
 
-    viewer2 = SoQtExaminerViewer()
+    viewer2 = SoGuiExaminerViewer()
     viewer2.setSceneGraph(defaultSel)
     boxhra2 = SoBoxHighlightRenderAction()
     viewer2.setGLRenderAction(boxhra2)
@@ -100,8 +101,8 @@ def main():
     viewer1.show()
     viewer2.show()
    
-    SoQt_show(mainWindow)
-    SoQt_mainLoop()
+    SoGui.show(mainWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -34,7 +34,7 @@
 #  This is an example from The Inventor Mentor
 #  chapter 10, example 2.
 #
-#  This demonstrates using SoQtRenderArea::setEventCallback().
+#  This demonstrates using SoGuiRenderArea::setEventCallback().
 #  which causes events to be sent directly to the application
 #  without being sent into the scene graph.
 #  
@@ -46,6 +46,7 @@
 #       of the point set.
 #
 
+from sogui import *
 from pivy import *
 from qt import *
 import sys
@@ -153,7 +154,7 @@ def main():
     print "\tRight: deletes all the points"
 
     # Initialize Inventor and Qt
-    appWindow = SoQt_init(sys.argv[0])
+    appWindow = SoGui.init(sys.argv[0])
     if appWindow == None:
         sys.exit(1)
 
@@ -188,7 +189,7 @@ def main():
     myTicker.setInterval(UPDATE_RATE)
 
     # Create a render area for viewing the scene
-    myRenderArea = SoQtRenderArea(appWindow)
+    myRenderArea = SoGuiRenderArea(appWindow)
     myRenderArea.setSceneGraph(root)
     myRenderArea.setTitle("My Event Handler")
 
@@ -204,8 +205,8 @@ def main():
 
     # Show our application window, and loop forever...
     myRenderArea.show()
-    SoQt_show(appWindow)
-    SoQt_mainLoop()
+    SoGui.show(appWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

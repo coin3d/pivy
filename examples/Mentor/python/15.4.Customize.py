@@ -43,12 +43,13 @@
 # nodekits, so it's easy to change the parts).
 #
 
+from sogui import *
 from pivy import *
 import sys
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])  
+    myWindow = SoGui.init(sys.argv[0])  
     if myWindow == None: sys.exit(1)     
 
     root = SoSeparator()
@@ -152,14 +153,14 @@ def main():
     textXf = cast(textKit.getPart("transform",TRUE), "SoTransform")
     textXf.translation.connectFrom(myCalc.oA)
 
-    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(root)
     myViewer.setTitle("Customized Sliders")
     myViewer.viewAll()
     myViewer.show()
 
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -39,12 +39,13 @@
 # global field to a Text3 string.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])  
+    myWindow = SoGui.init(sys.argv[0])  
     if myWindow == None: sys.exit(1)     
 
     root = SoSeparator()
@@ -63,14 +64,14 @@ def main():
     root.addChild(myText)
     myText.string.connectFrom(SoDB_getGlobalField("realTime"))
 
-    myRenderArea = SoQtRenderArea(myWindow)
+    myRenderArea = SoGuiRenderArea(myWindow)
     myCamera.viewAll(root, myRenderArea.getViewportRegion())
     myRenderArea.setSceneGraph(root)
     myRenderArea.setTitle("Date & Time")
     myRenderArea.show()
 
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

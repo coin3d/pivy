@@ -38,6 +38,7 @@
 # Create a dodecahedron, made of an IndexedFaceSet.  
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -113,19 +114,19 @@ def makeDodecahedron():
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])
+    myWindow = SoGui.init(sys.argv[0])
     if myWindow == None: sys.exit(1)
 
     root = makeDodecahedron()
     root.ref()
 
-    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(root)
     myViewer.setTitle("String Reader")
     myViewer.show()
 
-    SoQt_show(myWindow)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

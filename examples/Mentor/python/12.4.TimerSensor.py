@@ -44,6 +44,7 @@
 # This example could also be done using engines.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -77,7 +78,7 @@ def main():
         print >> sys.stderr, "Usage: %s filename.iv" % (sys.argv[0])
         sys.exit(1)
 
-    myWindow = SoQt_init(sys.argv[0])
+    myWindow = SoGui.init(sys.argv[0])
     if myWindow == None: sys.exit(1)
 
     root = SoSeparator()
@@ -107,13 +108,13 @@ def main():
         
     root.addChild(SoDB_readAll(inputFile))
 
-    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(root)
     myViewer.setTitle("Two Timers")
     myViewer.show()
 
-    SoQt_show(myWindow)  # Display main window
-    SoQt_mainLoop()        # Main Inventor event loop
+    SoGui.show(myWindow)  # Display main window
+    SoGui.mainLoop()        # Main Inventor event loop
 
 if __name__ == "__main__":
     main()

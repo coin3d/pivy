@@ -50,6 +50,7 @@
 # item in the motif list.)
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -271,7 +272,7 @@ def main():
     print "Up and Down arrows       - scale selected objects"
     
     # Initialize Inventor and Qt
-    myWindow = SoQt_init(sys.argv[0])
+    myWindow = SoGui.init(sys.argv[0])
     if myWindow == None: sys.exit(1)
 
     # Create and set up the selection node
@@ -353,7 +354,7 @@ def main():
 ###############################################################
 
     # Create a render area for viewing the scene
-    myRenderArea = SoQtRenderArea(myWindow)
+    myRenderArea = SoGuiRenderArea(myWindow)
     boxhra = SoBoxHighlightRenderAction()
     myRenderArea.setGLRenderAction(boxhra)
     myRenderArea.redrawOnSelectionChange(selectionRoot)
@@ -369,9 +370,9 @@ def main():
 
     # Show our application window, and loop forever...
     myRenderArea.show()
-    SoQt_show(myWindow)
-    SoQt_show(objectList)
-    SoQt_mainLoop()
+    SoGui.show(myWindow)
+    SoGui.show(objectList)
+    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

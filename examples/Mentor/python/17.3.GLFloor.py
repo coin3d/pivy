@@ -38,6 +38,7 @@
 # but using a GLX window.
 #
 
+from sogui import *
 from pivy import *
 from OpenGL.GL import *
 import sys, time

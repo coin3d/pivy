@@ -37,6 +37,7 @@
 # Hello Cone example program; draws a red cone in a window.
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -44,7 +45,7 @@ def main():
     # Initialize Inventor. This returns a main window to use.
     # If unsuccessful, exit.
 
-    myWindow = SoQt_init(sys.argv[0])
+    myWindow = SoGui.init(sys.argv[0])
     if myWindow == None: sys.exit(1)
 
     # Make a scene containing a red cone
@@ -60,7 +61,7 @@ def main():
 
     # Create a renderArea in which to see our scene graph.
     # The render area will appear within the main window.
-    myRenderArea = SoQtRenderArea(myWindow)
+    myRenderArea = SoGuiRenderArea(myWindow)
 
     # Make myCamera see everything.
     myCamera.viewAll(root, myRenderArea.getViewportRegion())
@@ -70,8 +71,8 @@ def main():
     myRenderArea.setTitle("Hello Cone")
     myRenderArea.show()
 
-    SoQt_show(myWindow)  # Display main window
-    SoQt_mainLoop()    # Main Inventor event loop
+    SoGui.show(myWindow)  # Display main window
+    SoGui.mainLoop()    # Main Inventor event loop
 
 if __name__ == "__main__":
     main()

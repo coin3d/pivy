@@ -37,6 +37,7 @@
 # Alarm sensor that raises a flag after 10 minutes
 #
 
+from sogui import *
 from pivy import *
 import sys
 
@@ -55,7 +56,7 @@ def raiseFlagCallback(data, sensor):
 
 
 def main():
-    myWindow = SoQt_init(sys.argv[0]) # pass the app name
+    myWindow = SoGui.init(sys.argv[0]) # pass the app name
     if myWindow == None: sys.exit(1)
 
 ###########################################################
@@ -78,15 +79,15 @@ def main():
     myCone.bottomRadius(0.1)
     root.addChild(myCone)
 
-    myViewer = SoQtExaminerViewer(myWindow)
+    myViewer = SoGuiExaminerViewer(myWindow)
 
     # Put our scene in myViewer, change the title
     myViewer.setSceneGraph(root)
     myViewer.setTitle("Raise The Cone")
     myViewer.show()
 
-    SoQt_show(myWindow)  # Display main window
-    SoQt_mainLoop()      # Main Inventor event loop
+    SoGui.show(myWindow)  # Display main window
+    SoGui.mainLoop()      # Main Inventor event loop
 
 if __name__ == "__main__":
     main()

@@ -70,8 +70,8 @@ def printToPostScript(root, file, viewer, printerDPI):
     # is equal to the size of the image in inches times
     # the printer DPI
     postScriptRes = SbVec2s()
-    postScriptRes.setValue(imageInches[0]*printerDPI,
-                           imageInches[1]*printerDPI)
+    postScriptRes.setValue(int(imageInches[0]*printerDPI),
+                           int(imageInches[1]*printerDPI))
 
     # Create a viewport to render the scene into.
     myViewport = SbViewportRegion()

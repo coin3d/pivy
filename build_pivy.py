@@ -228,9 +228,9 @@ def build():
                          "have patience with them! |\n")
         sys.stdout.write("  +" + "-"*61 + "+\n\n");        
         write_log(" ".join((CXX, OPTS, CXX_INCS, CXX_LIBS, SOGUI_DEF,
-                            "-o%s pivy_wrap.cxx" % MODULE_NAME)) + "\n")
+                            "-o %s pivy_wrap.cxx" % MODULE_NAME)) + "\n")
         if not os.system(" ".join((CXX, OPTS, CXX_INCS, CXX_LIBS, SOGUI_DEF,
-                                   "-o%s pivy_wrap.cxx" % MODULE_NAME))):
+                                   "-o %s pivy_wrap.cxx" % MODULE_NAME))):
             write_log("Importing pivy.py..." + "\n")
             import pivy
 

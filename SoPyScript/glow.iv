@@ -84,15 +84,14 @@ def changeStringSensorCallback(data, sensor):
   idx %= text_length
   idx += 1
 
-
 timersensor = SoTimerSensor(changeStringSensorCallback, None)
 timersensor.setInterval(interval)
 timersensor.schedule()
 
-string.setValue(text[:idx])
-
 wa = SoWriteAction()
 wa.apply(self)
+
+string.setValue(text[:idx])
 
 print '== TextScroller script loaded =='
 "

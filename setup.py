@@ -354,7 +354,7 @@ class pivy_build(build):
                 CPP_FLAGS = "-I" + INCLUDE_DIR +  " " + \
                             "-I" + os.getenv("COIN3DDIR") + "\\include\\Inventor\\annex" + \
                             " /DSOWIN_DLL /DCOIN_DLL /wd4244 /wd4049"
-                LDFLAGS_LIBS = os.getenv("COIN3DDIR") + "\\lib\\coin2.lib" + " " + \
+                LDFLAGS_LIBS = os.getenv("COIN3DDIR") + "\\lib\\coin2.lib " + \
                                os.getenv("COIN3DDIR") + "\\lib\\sowin1.lib"
             else:
                 INCLUDE_DIR = self.do_os_popen("coin-config --includedir")
@@ -380,11 +380,9 @@ class pivy_build(build):
 
             runtime_library_dirs = []
             library_dirs = [os.getcwd(), get_python_lib()]
-            if sys.platform == "win32":
-                libraries = ['libpivy_runtime']
-            else:
+            libraries = ['pivy_runtime']
+	    if sys.platform != 'win32':
                 runtime_library_dirs = [get_python_lib()]
-                libraries = ['pivy_runtime']
 
             self.ext_modules.append(Extension(module_name, [module.lower() + "_wrap.cpp"],
                                               library_dirs=library_dirs,
@@ -450,7 +448,7 @@ setup(name = "Pivy",
       long_description = __doc__,
       author = "Tamer Fahmy",
       author_email = "tamer@tammura.at",
-      download_url="http://www.tammura.at/cvs.html",
+      download_url="http://www.tammura.at/subversion",
       url = "http://pivy.tammura.at/",
       cmdclass = {'build'   : pivy_build,
                   'clean'   : pivy_clean,

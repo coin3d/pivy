@@ -28,7 +28,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-import os
+import os, sys
 import distutils.sysconfig
 
 SetOption('implicit_cache', 1)
@@ -51,9 +51,12 @@ else:
 if str(Platform()) != 'win32' and env['warnings']:
     env.Append(CCFLAGS = '-Wall')
 
-env.Append(CPPPATH = [distutils.sysconfig.get_python_inc()])
+env.Append(CPPPATH = distutils.sysconfig.get_python_inc())
 env.Append(SWIGFLAGS = '-runtime -python -noproxy')
-env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars()['LINKFORSHARED'])
+env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars().get('LINKFORSHARED', ''))
+
+if str(Platform()) == 'win32':
+    env.Append(LIBPATH = sys.exec_prefix + os.sep + 'libs')
 
 if str(Platform()) == 'darwin':
     env.Append(LINKFLAGS = '-install_name ' + distutils.sysconfig.get_python_lib() + '/libpivy_runtime.dylib')

@@ -28,7 +28,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-import os
+import os, sys
 import distutils.sysconfig
 
 SetOption('implicit_cache', 1)
@@ -51,19 +51,29 @@ else:
 if str(Platform()) != 'win32' and env['warnings']:
     env.Append(CCFLAGS = '-Wall')
 
-env.ParseConfig('coin-config --cppflags --libs --ldflags')
+
+if str(Platform()) == 'win32':
+    env.Append(CPPPATH = os.getenv("COIN3DDIR") + os.sep + 'include')
+    env.Append(CPPDEFINES = 'COIN_DLL')
+    env.Append(CPPFLAGS = Split('/wd4244 /wd4049'))
+    env.Append(LIBPATH = (sys.exec_prefix + os.sep + 'libs').split())
+    env.Append(LINKFLAGS = os.getenv('COIN3DDIR') + '\\lib\\coin2.lib')
+    INCLUDE_DIR = os.getenv("COIN3DDIR") + os.sep + 'include'
+else:
+    env.ParseConfig('coin-config --cppflags --libs --ldflags')
+    INCLUDE_DIR = os.popen('coin-config --includedir')
 
 env.Append(CPPPATH = ['.', distutils.sysconfig.get_python_inc()])
 env.Append(LIBPATH = distutils.sysconfig.get_python_lib())
 env.Append(RPATH = distutils.sysconfig.get_python_lib())
 env.Append(LIBS = 'pivy_runtime')
-env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars()['LINKFORSHARED'])
+env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars().get('LINKFORSHARED', '').split())
 
 PIVY_ROOT = '../..'
 SWIG_SUPPRESS_WARNINGS = '-w302,306,307,312,389,361,362,503,509,510'
 env.Append(SWIGFLAGS = '-noruntime -c++ -python -includeall -D__PIVY__ ' +
-           '-I. -I%s -I%s/fake_headers -I/usr/local/include %s' %
-           (PIVY_ROOT, PIVY_ROOT, SWIG_SUPPRESS_WARNINGS))
+           '-I. -I%s -I%s/fake_headers -I/usr/local/include -I%s %s' %
+           (PIVY_ROOT, PIVY_ROOT, INCLUDE_DIR, SWIG_SUPPRESS_WARNINGS))
 
 lib = env.SharedLibrary('_shapescale', Split('shapescale.i ShapeScale.cpp'),
                         SHLIBPREFIX = '',

@@ -225,35 +225,31 @@ SoPyScript::doAction(SoAction * action, const char * funcname)
     }
 
     PyObject * func = PyDict_GetItemString(PRIVATE(this)->globalModuleDict, funcname);
-    PyObject * argtuple = NULL;
 
-    if (pyAction) {
-      argtuple = Py_BuildValue("(O)", pyAction);
-    }
-
-    if (coin_getenv("PIVY_DEBUG")) {
-      SoDebugError::postInfo("SoPyScript::doAction",
-                             "funcname: %s, func: %p, argtuple: %p",
-                             funcname, func, argtuple);
-    }
-
-    if (func && argtuple) {
+    if (func) {
       if (!PyCallable_Check(func)) {
         SbString errMsg(funcname);
         errMsg += " is not a callable object!";
         PyErr_SetString(PyExc_TypeError, errMsg.getString());
       } else {
         PyObject * result;
+        PyObject * argtuple = Py_BuildValue("(O)", pyAction);
+
         if ((result = PyEval_CallObject(func, argtuple)) == NULL) {
           PyErr_Print();
         }
         Py_XDECREF(result);
+        Py_DECREF(argtuple);
       }
-
-      Py_DECREF(argtuple);
-      Py_DECREF(pyAction);
     }
 
+    if (coin_getenv("PIVY_DEBUG")) {
+      SoDebugError::postInfo("SoPyScript::doAction",
+                             "funcname: %s, func: %p",
+                             funcname, func);
+    }
+
+    Py_DECREF(pyAction);
     PyThreadState_Swap(tstate);
   }
   inherited::doAction(action);

@@ -20,27 +20,50 @@ def __init__(self,*args):
       del newobj.thisown
 %}
 
-%rename(setValue_d) SbTime::setValue(const double sec);
 %rename(setValue_i_l) SbTime::setValue(const int32_t sec, const long usec);
 %rename(setValue_tv) SbTime::setValue(const struct timeval * const tv);
 
-%feature("shadow") SbTime::setValue(const float vec[2]) %{
+%feature("shadow") SbTime::setValue(const double sec) %{
 def setValue(*args):
    if len(args) == 2:
-      if type(args[0]) == type(1.0):
-         return apply(_pivy.SbTime_setValue_d,args)
+      if type(args[1]) == type(1.0):
+         return apply(_pivy.SbTime_setValue,args)
+      elif type(args[1]) == SbTime:
+         return _pivy.SbTime_setValue(args[0],args[1].getValue())
       else:
          return apply(_pivy.SbTime_setValue_tv,args)
-   elif len(args) == 2:
+   elif len(args) == 3:
       return apply(_pivy.SbTime_setValue_i_l,args)   
    return apply(_pivy.SbTime_setValue,args)
 %}
 
-%rename(SbTime_add) operator+(const SbTime & t0, const SbTime & t1);
-%rename(SbTime_sub) operator-(const SbTime & t0, const SbTime & t1);
-%rename(SbTime_d_mul) operator *(const double s, const SbTime & tm);
-%rename(SbTime_mul) operator *(const SbTime & tm, const double s);
-%rename(SbTime_div) operator /(const SbTime & tm, const double s);
+/* add operator overloading methods instead of the global functions */
+%extend SbTime {
+    SbTime __add__(const SbTime &u)
+    {
+        return *self + u;
+    };
+    
+    SbTime __sub__(const SbTime &u)    
+    {
+       return *self - u;
+    };
+    
+    SbTime __mul__(const double d)
+    {
+       return *self * d;
+    };
+    
+    SbTime __rmul__(const double d)
+    {
+           return *self * d;
+    };
+    
+    SbTime __div__(const double d)
+    {
+        return *self / d;
+    };
+}
 
 %ignore SbTime::getValue(time_t & sec, long & usec) const;
 %ignore SbTime::getValue(struct timeval * tv) const;

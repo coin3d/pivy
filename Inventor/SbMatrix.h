@@ -165,6 +165,14 @@ def multVecMatrix(*args):
       return apply(_pivy.SbMatrix_multVecMatrix_vec4,args)
    return apply(_pivy.SbMatrix_multVecMatrix,args)
 %}
+
+/* the next 2 typemaps handle the return value for e.g. multMatrixVec() */
+%typemap(argout) SbVec3f & dst, SbVec4f & dst {
+  $result = SWIG_NewPointerObj((void *) $1, $1_descriptor, 1);
+}
+%typemap(in,numinputs=0) SbVec3f & dst, SbVec4f & dst {
+    $1 = new $1_basetype();
+}
 #endif
 
 class COIN_DLL_API SbMatrix {
@@ -255,4 +263,8 @@ COIN_DLL_API SbMatrix operator *(const SbMatrix & m1, const SbMatrix & m2);
 COIN_DLL_API int operator ==(const SbMatrix & m1, const SbMatrix & m2);
 COIN_DLL_API int operator !=(const SbMatrix & m1, const SbMatrix & m2);
 
+#ifdef __PIVY__
+%typemap(argout) SbVec3f & dst, SbVec4f & dst;
+%typemap(in,numinputs=0) SbVec3f & dst, SbVec4f & dst;
+#endif
 #endif // !COIN_SBMATRIX_H

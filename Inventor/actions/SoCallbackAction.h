@@ -232,7 +232,7 @@ public:
 #ifdef __PIVY__
   /* add python specific callback functions */
   %extend {
-	void addPythonPreCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {
+	void addPreCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {
 	  PyObject *t = PyTuple_New(2);
 	  PyTuple_SetItem(t, 0, pyfunc);
 	  PyTuple_SetItem(t, 1, userdata);
@@ -242,7 +242,7 @@ public:
 	  self->addPreCallback(type, SoCallbackActionPythonCB, (void *) t);
 	}
 
-	void addPythonPostCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {
+	void addPostCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {
 	  PyObject *t = PyTuple_New(2);
 	  PyTuple_SetItem(t, 0, pyfunc);
 	  PyTuple_SetItem(t, 1, userdata);
@@ -252,7 +252,7 @@ public:
 	  self->addPostCallback(type, SoCallbackActionPythonCB, (void *) t);
 	}
 
-	void addPythonPreTailCallback(PyObject *pyfunc, PyObject *userdata) {
+	void addPreTailCallback(PyObject *pyfunc, PyObject *userdata) {
 	  PyObject *t = PyTuple_New(2);
 	  PyTuple_SetItem(t, 0, pyfunc);
 	  PyTuple_SetItem(t, 1, userdata);
@@ -262,7 +262,7 @@ public:
 	  self->addPreTailCallback(SoCallbackActionPythonCB, (void *) t);
 	}
 
-	void addPythonPostTailCallback(PyObject *pyfunc, PyObject *userdata) {
+	void addPostTailCallback(PyObject *pyfunc, PyObject *userdata) {
 	  PyObject *t = PyTuple_New(2);
 	  PyTuple_SetItem(t, 0, pyfunc);
 	  PyTuple_SetItem(t, 1, userdata);
@@ -272,7 +272,7 @@ public:
 	  self->addPostTailCallback(SoCallbackActionPythonCB, (void *) t);
 	}
 
-	void addPythonTriangleCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {
+	void addTriangleCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {
 	  PyObject *t = PyTuple_New(2);
 	  PyTuple_SetItem(t, 0, pyfunc);
 	  PyTuple_SetItem(t, 1, userdata);
@@ -282,7 +282,7 @@ public:
 	  self->addTriangleCallback(type, SoTrianglePythonCB, (void *) t);
 	}
 
-	void addPythonLineSegmentCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {
+	void addLineSegmentCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {
 	  PyObject *t = PyTuple_New(2);
 	  PyTuple_SetItem(t, 0, pyfunc);
 	  PyTuple_SetItem(t, 1, userdata);
@@ -292,7 +292,7 @@ public:
 	  self->addLineSegmentCallback(type, SoLineSegmentPythonCB, (void *) t);
 	}
 
-	void addPythonPointCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {
+	void addPointCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {
 	  PyObject *t = PyTuple_New(2);
 	  PyTuple_SetItem(t, 0, pyfunc);
 	  PyTuple_SetItem(t, 1, userdata);

@@ -148,7 +148,7 @@ def main():
     data.vwr = viewer
     data.filename = sys.argv[2]
     data.scene = viewer.getSceneGraph()
-    eventCB.addPythonEventCallback(SoKeyboardEvent_getClassTypeId(), processKeyEvents, data)
+    eventCB.addEventCallback(SoKeyboardEvent_getClassTypeId(), processKeyEvents, data)
     viewer.show()
 
     SoQt_show(appWindow)

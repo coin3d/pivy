@@ -244,8 +244,8 @@ def main():
     # create and set up the selection node
     selectionRoot = SoSelection()
     selectionRoot.ref()
-    selectionRoot.addPythonSelectionCallback(selectionCallback, None)
-    selectionRoot.addPythonDeselectionCallback(deselectionCallback, None)
+    selectionRoot.addSelectionCallback(selectionCallback, None)
+    selectionRoot.addDeselectionCallback(deselectionCallback, None)
 
     # create the scene graph
     root = SoSeparator()
@@ -299,16 +299,16 @@ def main():
     # that you don't put callbacks on manipulators. You put
     # them on the draggers which handle events for them. 
     myDragger = myTrackball.getDragger()
-    myDragger.addPythonStartCallback(dragStartCallback,cubeMat)
-    myDragger.addPythonFinishCallback(dragFinishCallback,cubeMat)
+    myDragger.addStartCallback(dragStartCallback,cubeMat)
+    myDragger.addFinishCallback(dragFinishCallback,cubeMat)
 
     myDragger = myHandleBox.getDragger()
-    myDragger.addPythonStartCallback(dragStartCallback,sphereMat)
-    myDragger.addPythonFinishCallback(dragFinishCallback,sphereMat)
+    myDragger.addStartCallback(dragStartCallback,sphereMat)
+    myDragger.addFinishCallback(dragFinishCallback,sphereMat)
 
     myDragger = myTransformBox.getDragger()
-    myDragger.addPythonStartCallback(dragStartCallback,wrapperMat)
-    myDragger.addPythonFinishCallback(dragFinishCallback,wrapperMat)
+    myDragger.addStartCallback(dragStartCallback,wrapperMat)
+    myDragger.addFinishCallback(dragFinishCallback,wrapperMat)
 
     myViewer = SoQtExaminerViewer(myWindow)
     myViewer.setSceneGraph(selectionRoot)

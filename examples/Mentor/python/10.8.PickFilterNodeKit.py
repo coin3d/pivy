@@ -144,9 +144,9 @@ def main():
     userData.ignore = FALSE
    
     # Selection and material change callbacks
-    ed.addPythonMaterialChangedCallback(mtlChangeCB, userData)
-    sel.setPythonPickFilterCallback(pickFilterCB)
-    sel.addPythonSelectionCallback(selectCB, userData)
+    ed.addMaterialChangedCallback(mtlChangeCB, userData)
+    sel.setPickFilterCallback(pickFilterCB)
+    sel.addSelectionCallback(selectCB, userData)
    
     SoQt_show(mainWindow)
     SoQt_mainLoop()

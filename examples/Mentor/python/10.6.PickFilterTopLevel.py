@@ -76,7 +76,7 @@ def main():
     # Create two selection roots - one will use the pick filter.
     topLevelSel = SoSelection()
     topLevelSel.addChild(sep)
-    topLevelSel.setPythonPickFilterCallback(pickFilterCB)
+    topLevelSel.setPickFilterCallback(pickFilterCB)
 
     defaultSel = SoSelection()
     defaultSel.addChild(sep)

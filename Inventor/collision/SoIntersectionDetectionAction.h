@@ -198,7 +198,7 @@ public:
 #ifdef __PIVY__
   /* add python specific callback functions */
   %extend {
-    void addPythonVisitationCallback(SoType type, PyObject * pyfunc, PyObject * closure) {
+    void addVisitationCallback(SoType type, PyObject * pyfunc, PyObject * closure) {
 	  PyObject *t = PyTuple_New(2);
 	  PyTuple_SetItem(t, 0, pyfunc);
 	  PyTuple_SetItem(t, 1, closure);
@@ -208,7 +208,7 @@ public:
 	  self->addVisitationCallback(type, SoIntersectionVisitationPythonCB, (void *) t);       
     }
 
-    void removePythonVisitationCallback(SoType type, PyObject * pyfunc, PyObject * closure) {
+    void removeVisitationCallback(SoType type, PyObject * pyfunc, PyObject * closure) {
 	  PyObject *t = PyTuple_New(2);
 	  PyTuple_SetItem(t, 0, pyfunc);
 	  PyTuple_SetItem(t, 1, closure);
@@ -218,7 +218,7 @@ public:
 	  self->removeVisitationCallback(type, SoIntersectionVisitationPythonCB, (void *) t);
     }
 
-    void setPythonFilterCallback(PyObject * pyfunc, PyObject * closure = NULL) {
+    void setFilterCallback(PyObject * pyfunc, PyObject * closure = NULL) {
 	  PyObject *t = PyTuple_New(2);
 	  PyTuple_SetItem(t, 0, pyfunc);
 	  PyTuple_SetItem(t, 1, closure);

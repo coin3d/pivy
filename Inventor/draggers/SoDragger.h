@@ -140,7 +140,7 @@ public:
 #ifdef __PIVY__
   /* add python specific callback functions */
   %extend {
-	void addPythonStartCallback(PyObject *pyfunc, PyObject *data = NULL) {
+	void addStartCallback(PyObject *pyfunc, PyObject *data = NULL) {
 	  if (data == NULL) {
 		Py_INCREF(Py_None);
 		data = Py_None;
@@ -155,7 +155,7 @@ public:
 	  self->addStartCallback(SoDraggerPythonCB, (void *) t);
 	}
 
-	void removePythonStartCallback(PyObject *pyfunc, PyObject *data = NULL) {
+	void removeStartCallback(PyObject *pyfunc, PyObject *data = NULL) {
 	  if (data == NULL) {
 		Py_INCREF(Py_None);
 		data = Py_None;
@@ -168,7 +168,7 @@ public:
 	  self->removeStartCallback(SoDraggerPythonCB, (void *) t);
 	}
 
-	void addPythonMotionCallback(PyObject *pyfunc, PyObject *data = NULL) {
+	void addMotionCallback(PyObject *pyfunc, PyObject *data = NULL) {
 	  if (data == NULL) {
 		Py_INCREF(Py_None);
 		data = Py_None;
@@ -183,7 +183,7 @@ public:
 	  self->addMotionCallback(SoDraggerPythonCB, (void *) t);
 	}
 
-	void removePythonMotionCallback(PyObject *pyfunc, PyObject *data = NULL) {
+	void removeMotionCallback(PyObject *pyfunc, PyObject *data = NULL) {
 	  if (data == NULL) {
 		Py_INCREF(Py_None);
 		data = Py_None;
@@ -196,7 +196,7 @@ public:
 	  self->removeMotionCallback(SoDraggerPythonCB, (void *) t);
 	}
 
-	void addPythonFinishCallback(PyObject *pyfunc, PyObject *data = NULL) {
+	void addFinishCallback(PyObject *pyfunc, PyObject *data = NULL) {
 	  if (data == NULL) {
 		Py_INCREF(Py_None);
 		data = Py_None;
@@ -211,7 +211,7 @@ public:
 	  self->addFinishCallback(SoDraggerPythonCB, (void *) t);
 	}
 
-	void removePythonFinishCallback(PyObject *pyfunc, PyObject *data = NULL) {
+	void removeFinishCallback(PyObject *pyfunc, PyObject *data = NULL) {
 	  if (data == NULL) {
 		Py_INCREF(Py_None);
 		data = Py_None;
@@ -224,7 +224,7 @@ public:
 	  self->removeFinishCallback(SoDraggerPythonCB, (void *) t);
 	}
 
-	void addPythonValueChangedCallback(PyObject *pyfunc, PyObject *data = NULL) {
+	void addValueChangedCallback(PyObject *pyfunc, PyObject *data = NULL) {
 	  if (data == NULL) {
 		Py_INCREF(Py_None);
 		data = Py_None;
@@ -239,7 +239,7 @@ public:
 	  self->addValueChangedCallback(SoDraggerPythonCB, (void *) t);
 	}
 
-	void removePythonValueChangedCallback(PyObject *pyfunc, PyObject *data = NULL) {
+	void removeValueChangedCallback(PyObject *pyfunc, PyObject *data = NULL) {
 	  if (data == NULL) {
 		Py_INCREF(Py_None);
 		data = Py_None;
@@ -252,7 +252,7 @@ public:
 	  self->removeValueChangedCallback(SoDraggerPythonCB, (void *) t);
 	}
 
-	void addPythonOtherEventCallback(PyObject *pyfunc, PyObject *data = NULL) {
+	void addOtherEventCallback(PyObject *pyfunc, PyObject *data = NULL) {
 	  if (data == NULL) {
 		Py_INCREF(Py_None);
 		data = Py_None;
@@ -267,7 +267,7 @@ public:
 	  self->addOtherEventCallback(SoDraggerPythonCB, (void *) t);
 	}
 
-	void removePythonOtherEventCallback(PyObject *pyfunc, PyObject *data = NULL) {
+	void removeOtherEventCallback(PyObject *pyfunc, PyObject *data = NULL) {
 	  if (data == NULL) {
 		Py_INCREF(Py_None);
 		data = Py_None;

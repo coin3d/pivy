@@ -137,7 +137,7 @@ public:
 #ifdef __PIVY__
   /* add python specific callback functions */
   %extend {
-	void setPythonEventCallback(PyObject *pyfunc, PyObject *user = NULL) {
+	void setEventCallback(PyObject *pyfunc, PyObject *user = NULL) {
 	  if (user == NULL) {
 		Py_INCREF(Py_None);
 		user = Py_None;

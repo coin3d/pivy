@@ -197,7 +197,7 @@ def main():
 
         # Have render area send events to us instead of the scene 
     # graph.  We pass the render area as user data.
-    myRenderArea.setPythonEventCallback(myAppEventHandler, myRenderArea)
+    myRenderArea.setEventCallback(myAppEventHandler, myRenderArea)
 
 # CODE FOR The Inventor Mentor ENDS HERE
 ###############################################################

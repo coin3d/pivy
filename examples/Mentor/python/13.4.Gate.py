@@ -141,8 +141,8 @@ def main():
     # Add an event callback to catch mouse button presses.
     # Each button press will enable or disable the duck motion.
     myEventCB = SoEventCallback()
-    myEventCB.addPythonEventCallback(SoMouseButtonEvent_getClassTypeId(),
-                                     myMousePressCB, myGate)
+    myEventCB.addEventCallback(SoMouseButtonEvent_getClassTypeId(),
+                               myMousePressCB, myGate)
     root.addChild(myEventCB)
 
 # CODE FOR The Inventor Mentor ENDS HERE

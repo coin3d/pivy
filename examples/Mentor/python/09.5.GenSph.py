@@ -72,10 +72,10 @@ def printTriangleCallback(void, callbackAction,
 def printSpheres(root):
     myAction = SoCallbackAction()
     
-    myAction.addPythonPreCallback(SoSphere_getClassTypeId(),
-                                  printHeaderCallback, None)
-    myAction.addPythonTriangleCallback(SoSphere_getClassTypeId(), 
-                                       printTriangleCallback, None)
+    myAction.addPreCallback(SoSphere_getClassTypeId(),
+                            printHeaderCallback, None)
+    myAction.addTriangleCallback(SoSphere_getClassTypeId(), 
+                                 printTriangleCallback, None)
 
     myAction.apply(root)
     

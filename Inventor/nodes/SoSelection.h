@@ -225,7 +225,7 @@ public:
 #ifdef __PIVY__
   /* add python specific callback functions */
   %extend {
-	void addPythonSelectionCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
+	void addSelectionCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
 	  if (userdata == NULL) {
 		Py_INCREF(Py_None);
 		userdata = Py_None;
@@ -240,7 +240,7 @@ public:
 	  self->addSelectionCallback(SoSelectionPathPythonCB, (void *) t);
 	}
 
-	void removePythonSelectionCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
+	void removeSelectionCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
 	  if (userdata == NULL) {
 		Py_INCREF(Py_None);
 		userdata = Py_None;
@@ -253,7 +253,7 @@ public:
 	  self->removeSelectionCallback(SoSelectionPathPythonCB, (void *) t);
 	}
 
-	void addPythonDeselectionCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
+	void addDeselectionCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
 	  if (userdata == NULL) {
 		Py_INCREF(Py_None);
 		userdata = Py_None;
@@ -268,7 +268,7 @@ public:
 	  self->addDeselectionCallback(SoSelectionPathPythonCB, (void *) t);
 	}
 
-	void removePythonDeselectionCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
+	void removeDeselectionCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
 	  if (userdata == NULL) {
 		Py_INCREF(Py_None);
 		userdata = Py_None;
@@ -281,7 +281,7 @@ public:
 	  self->removeDeselectionCallback(SoSelectionPathPythonCB, (void *) t);
 	}
 
-	void addPythonStartCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
+	void addStartCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
 	  if (userdata == NULL) {
 		Py_INCREF(Py_None);
 		userdata = Py_None;
@@ -296,7 +296,7 @@ public:
 	  self->addStartCallback(SoSelectionClassPythonCB, (void *) t);
 	}
 
-	void removePythonStartCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
+	void removeStartCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
 	  if (userdata == NULL) {
 		Py_INCREF(Py_None);
 		userdata = Py_None;
@@ -309,7 +309,7 @@ public:
 	  self->removeStartCallback(SoSelectionClassPythonCB, (void *) t);
 	}
 
-	void addPythonFinishCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
+	void addFinishCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
 	  if (userdata == NULL) {
 		Py_INCREF(Py_None);
 		userdata = Py_None;
@@ -324,7 +324,7 @@ public:
 	  self->addFinishCallback(SoSelectionClassPythonCB, (void *) t);
 	}
 
-	void removePythonFinishCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
+	void removeFinishCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
 	  if (userdata == NULL) {
 		Py_INCREF(Py_None);
 		userdata = Py_None;
@@ -337,7 +337,7 @@ public:
 	  self->removeFinishCallback(SoSelectionClassPythonCB, (void *) t);
 	}
 
-	void setPythonPickFilterCallback(PyObject *pyfunc, PyObject *userdata = NULL, int callOnlyIfSelectable = 1) {
+	void setPickFilterCallback(PyObject *pyfunc, PyObject *userdata = NULL, int callOnlyIfSelectable = 1) {
 	  if (userdata == NULL) {
 		Py_INCREF(Py_None);
 		userdata = Py_None;
@@ -352,7 +352,7 @@ public:
 	  self->setPickFilterCallback(SoSelectionPickPythonCB, (void *) t, callOnlyIfSelectable);
 	}
 
-	void addPythonChangeCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
+	void addChangeCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
 	  if (userdata == NULL) {
 		Py_INCREF(Py_None);
 		userdata = Py_None;
@@ -367,7 +367,7 @@ public:
 	  self->addChangeCallback(SoSelectionClassPythonCB, (void *) t);
 	}
 
-	void removePythonChangeCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
+	void removeChangeCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
 	  if (userdata == NULL) {
 		Py_INCREF(Py_None);
 		userdata = Py_None;

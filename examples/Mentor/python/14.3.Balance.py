@@ -181,8 +181,8 @@ def main():
 
     # Add EventCallback so Balance Responds to Events
     myCallbackNode = SoEventCallback()
-    myCallbackNode.addPythonEventCallback(SoKeyboardEvent_getClassTypeId(),
-                                          tipTheBalance, support)
+    myCallbackNode.addEventCallback(SoKeyboardEvent_getClassTypeId(),
+                                    tipTheBalance, support)
     support.setPart("callbackList[0]", myCallbackNode)
 
     # Add Instructions as Text in the Scene...

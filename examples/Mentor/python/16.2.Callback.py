@@ -83,7 +83,7 @@ def main():
     root.addChild(geomObject)
 
     # Add a callback for when the material changes
-    myEditor.addPythonMaterialChangedCallback(myMaterialEditorCB, myMaterial) 
+    myEditor.addMaterialChangedCallback(myMaterialEditorCB, myMaterial) 
 
     # Set the scene graph
     myRenderArea.setSceneGraph(root)

@@ -203,9 +203,9 @@ def main():
     viewer.show()
 
     # Selection callbacks
-    sel.addPythonSelectionCallback(selCB)
-    sel.addPythonDeselectionCallback(deselCB)
-    sel.setPythonPickFilterCallback(pickFilterCB)
+    sel.addSelectionCallback(selCB)
+    sel.addDeselectionCallback(deselCB)
+    sel.setPickFilterCallback(pickFilterCB)
     
     SoQt_show(mainWindow)
     SoQt_mainLoop()

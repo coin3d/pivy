@@ -152,8 +152,8 @@ def main():
     # Each mouse button press will enable/disable the gate 
     # controlling the bigger duck.
     myEventCB = SoEventCallback()
-    myEventCB.addPythonEventCallback(SoMouseButtonEvent_getClassTypeId(),
-                                     myMousePressCB, bigDuckGate)
+    myEventCB.addEventCallback(SoMouseButtonEvent_getClassTypeId(),
+                               myMousePressCB, bigDuckGate)
     root.addChild(myEventCB)
 
     # Use a Boolean engine to make the rotation of the smaller

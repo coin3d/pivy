@@ -77,7 +77,7 @@ public:
 #ifdef __PIVY__
   /* add python specific callback functions */
   %extend {
-	void setPythonCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
+	void setCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
 	  if (userdata == NULL) {
 		Py_INCREF(Py_None);
 		userdata = Py_None;

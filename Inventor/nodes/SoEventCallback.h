@@ -90,7 +90,7 @@ public:
 #ifdef __PIVY__
   /* add python specific callback functions */
   %extend {
-	void addPythonEventCallback(SoType eventtype, 
+	void addEventCallback(SoType eventtype, 
 								PyObject *pyfunc, 
 								PyObject *userdata = NULL) {
 	  if (userdata == NULL) {
@@ -107,7 +107,7 @@ public:
 	  self->addEventCallback(eventtype, SoEventPythonCallBack, (void *) t);
 	}
 
-	void removePythonEventCallback(SoType eventtype, 
+	void removeEventCallback(SoType eventtype, 
 								   PyObject *pyfunc, 
 								   PyObject *userdata = NULL) {
 	  if (userdata == NULL) {

@@ -157,7 +157,7 @@ def main():
     root.addChild(myCamera)
 
     myCallback = SoCallback()
-    myCallback.setPythonCallback(myCallbackRoutine)
+    myCallback.setCallback(myCallbackRoutine)
     root.addChild(myCallback)
 
     buildScene(root)

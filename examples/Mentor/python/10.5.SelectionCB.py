@@ -77,8 +77,8 @@ def main():
     selectionRoot = SoSelection()
     selectionRoot.ref()
     selectionRoot.policy(SoSelection.SINGLE)
-    selectionRoot.addPythonSelectionCallback(mySelectionCB)
-    selectionRoot.addPythonDeselectionCallback(myDeselectionCB)
+    selectionRoot.addSelectionCallback(mySelectionCB)
+    selectionRoot.addDeselectionCallback(myDeselectionCB)
 
     # Create the scene graph
     root = SoSeparator()

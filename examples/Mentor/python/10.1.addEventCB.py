@@ -128,8 +128,8 @@ def main():
 
     # An event callback node so we can receive key press events
     myEventCB = SoEventCallback()
-    myEventCB.addPythonEventCallback(SoKeyboardEvent_getClassTypeId(), 
-                                     myKeyPressCB, selectionRoot)
+    myEventCB.addEventCallback(SoKeyboardEvent_getClassTypeId(), 
+                               myKeyPressCB, selectionRoot)
     selectionRoot.addChild(myEventCB)
 
 # CODE FOR The Inventor Mentor ENDS HERE

@@ -133,9 +133,9 @@ def main():
     # entire scene graph (including the camera) as the userData,
     # so we get the scene manager's version of the scene graph
     # root.
-    myEventCB.addPythonEventCallback(SoMouseButtonEvent_getClassTypeId(),
-                                     myMousePressCB,
-                                     myViewer.getSceneManager().getSceneGraph())
+    myEventCB.addEventCallback(SoMouseButtonEvent_getClassTypeId(),
+                               myMousePressCB,
+                               myViewer.getSceneManager().getSceneGraph())
 
     SoQt_show(myWindow)
     SoQt_mainLoop()

@@ -52,7 +52,7 @@ if str(Platform()) != "win32" and env['warnings']:
     env.Append(CCFLAGS = '-Wall')
 
 env.Repository('../../SoPyScript')
-examin_env = env.Copy(CPPPATH=['.', distutils.sysconfig.get_python_inc()])
+examin_env = env.Copy(CPPPATH = ['.', distutils.sysconfig.get_python_inc()])
 examin_env.ParseConfig('soqt-config --cppflags --libs --ldflags')
 
 examin_env.Append(LIBPATH = distutils.sysconfig.get_python_lib())

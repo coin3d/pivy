@@ -53,7 +53,7 @@ if str(Platform()) != "win32" and env['warnings']:
 
 env.ParseConfig('coin-config --cppflags --libs --ldflags')
 
-env.Append(CPPPATH=['.', distutils.sysconfig.get_python_inc()])
+env.Append(CPPPATH = ['.', distutils.sysconfig.get_python_inc()])
 env.Append(LIBPATH = distutils.sysconfig.get_python_lib())
 env.Append(LIBS = 'pivy_runtime')
 if str(Platform()) == 'posix':
@@ -66,8 +66,8 @@ env.Append(SWIGFLAGS = "-v -noruntime -c++ -python -includeall -D__PIVY__ " +
            (PIVY_ROOT, PIVY_ROOT, SWIG_SUPPRESS_WARNINGS))
 
 lib = env.SharedLibrary('_shapescale', Split('shapescale.i ShapeScale.cpp'),
-                        SHLIBPREFIX='',
-                        SHLIBSUFFIX=distutils.sysconfig.get_config_vars()['SO'],
-                        SWIGCXXFILESUFFIX="_wrap.cpp")
+                        SHLIBPREFIX = '',
+                        SHLIBSUFFIX = distutils.sysconfig.get_config_vars()['SO'],
+                        SWIGCXXFILESUFFIX = "_wrap.cpp")
 
 env.Clean(lib, Split('shapescale.py shapescale.pyc'))

@@ -39,14 +39,36 @@ class SbVec2f;
 class SbVec3f;
 
 #ifdef __PIVY__
-%rename(projectPointToLine_vec_vec_vec) SbViewVolume::projectPointToLine(const SbVec2f& pt, SbVec3f& line0, SbVec3f& line1) const;
+%typemap(in) (const SbVec2f& pt, SbVec3f& line0, SbVec3f& line1) {
+  if ((SWIG_ConvertPtr(obj1,(void **) &arg2, SWIGTYPE_p_SbVec2f,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+  if (arg2 == NULL) {
+    PyErr_SetString(PyExc_TypeError,"null reference"); SWIG_fail; 
+  }
+  $2 = new SbVec3f();
+  $3 = new SbVec3f();
+}
 
-%feature("shadow") SbViewVolume::projectPointToLine(const SbVec2f& pt, SbLine& line) const %{
-def projectPointToLine(*args):
-   if len(args) == 4:
-      return apply(_pivy.SbViewVolume_projectPointToLine_vec_vec_vec,args)
-   return apply(_pivy.SbViewVolume_projectPointToLine,args)
-%}
+%typemap(argout) (SbVec3f& line0, SbVec3f& line1) {
+  PyObject *o1, *o2;
+  o1 = SWIG_NewPointerObj((void *) $1, $1_descriptor, 1);
+  o2 = SWIG_NewPointerObj((void *) $2, $2_descriptor, 1);
+
+  $result = PyTuple_New(2);
+  PyTuple_SetItem($result, 0, o1);
+  PyTuple_SetItem($result, 1, o2);
+}
+
+%typemap(in) (const SbVec3f& src, SbVec3f& dst) {
+  if ((SWIG_ConvertPtr(obj1,(void **) &arg2, SWIGTYPE_p_SbVec3f,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+  if (arg2 == NULL) {
+    PyErr_SetString(PyExc_TypeError,"null reference"); SWIG_fail; 
+  }
+  $2 = new SbVec3f();
+}
+
+%typemap(argout) (const SbVec3f& src, SbVec3f& dst) {
+  $result = SWIG_NewPointerObj((void *) $1, $1_descriptor, 1);
+}
 #endif
 
 class COIN_DLL_API SbViewVolume {
@@ -59,7 +81,9 @@ public:
   void getMatrices(SbMatrix& affine, SbMatrix& proj) const;
   SbMatrix getMatrix(void) const;
   SbMatrix getCameraSpaceMatrix(void) const;
+#ifndef __PIVY__
   void projectPointToLine(const SbVec2f& pt, SbLine& line) const;
+#endif
   void projectPointToLine(const SbVec2f& pt,
                           SbVec3f& line0, SbVec3f& line1) const;
   void projectToScreen(const SbVec3f& src, SbVec3f& dst) const;

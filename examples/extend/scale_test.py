@@ -43,13 +43,11 @@ def construct_new_marker(v):
     return markerroot
 
 
-def event_cb(ud, n):
+def event_cb(viewer, n):
     mbe = cast(n.getEvent(), "SoMouseButtonEvent")
 
     if mbe.getButton() == SoMouseButtonEvent.BUTTON1 and \
            mbe.getState() == SoButtonEvent.DOWN:
-
-        viewer = cast(ud, "SoQtExaminerViewer")
 
         rp = SoRayPickAction(viewer.getViewportRegion())
         rp.setPoint(mbe.getPosition())

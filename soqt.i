@@ -215,37 +215,42 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
 
 %typemap(in) QWidget * {
   {
-    PyObject *sip;
+    if ($input == Py_None) {
+      $1 = NULL;
+    } else {
+      PyObject *sip;
     
-    /* check if the sip module is available and import it */
-    if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")),
-                                     "sip"))) {
-      sip = PyImport_ImportModule("sip");
-    }
-    
-    if (sip && PyModule_Check(sip)) {
-      /* grab the unwrapinstance(obj) function */
-      PyObject *sip_unwrapinst_func;
-      sip_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip),
-                                                 "unwrapinstance");
-      
-      if (PyCallable_Check(sip_unwrapinst_func)) {
-        PyObject *arglist, *address;
-        arglist = Py_BuildValue("(O)", $input);
-        if (!(address = PyEval_CallObject(sip_unwrapinst_func, arglist))) {
-          PyErr_Print();
-        } else if (PyNumber_Check(address)) {
-            $1 = (QWidget*)PyLong_AsLong(address);
-        }
-        
-        Py_DECREF(arglist);
+      /* check if the sip module is available and import it */
+      if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")),
+                                       "sip"))) {
+        sip = PyImport_ImportModule("sip");
       }
+    
+      if (sip && PyModule_Check(sip)) {
+        /* grab the unwrapinstance(obj) function */
+        PyObject *sip_unwrapinst_func;
+        sip_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip),
+                                                   "unwrapinstance");
+      
+        if (PyCallable_Check(sip_unwrapinst_func)) {
+          PyObject *arglist, *address;
+          arglist = Py_BuildValue("(O)", $input);
+          if (!(address = PyEval_CallObject(sip_unwrapinst_func, arglist))) {
+            PyErr_Print();
+          } else if (PyNumber_Check(address)) {
+            $1 = (QWidget*)PyLong_AsLong(address);
+          }
+        
+          Py_DECREF(arglist);
+        }
+      }
+    }
+  
+    if (!$1) {
+      if ((SWIG_ConvertPtr($input, (void **)&$1, SWIGTYPE_p_QWidget,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
     }
   }
   
-  if (!$1) {
-    if ((SWIG_ConvertPtr($input, (void **)&$1, SWIGTYPE_p_QWidget,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
-  }
 }
 
 %include Inventor/Qt/devices/SoQtDevice.h

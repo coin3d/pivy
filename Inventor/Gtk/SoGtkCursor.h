@@ -24,22 +24,40 @@
 #include <Inventor/SbLinear.h>
 #include <Inventor/Gtk/SoGtkBasic.h>
 
+#ifdef __PIVY__
+%rename(SoGtkCursor_sha) SoGtkCursor::SoGtkCursor(const Shape shape);
+%rename(SoGtkCursor_cc) SoGtkCursor::SoGtkCursor(const CustomCursor * cc);
+
+%feature("shadow") SoGtkCursor::SoGtkCursor %{
+def __init__(self,*args):
+   if len(args) == 1:
+      if isinstance(args[0], CustomCursor):
+         self.this = apply(pivyc.new_SoGtkCursor_cc,args)
+         self.thisown = 1
+         return
+      else:
+         self.this = apply(pivyc.new_SoGtkCursor_sha,args)
+         self.thisown = 1
+         return
+   self.this = apply(pivyc.new_SoGtkCursor,args)
+   self.thisown = 1
+%}
+#endif
+
 class SOGTK_DLL_API SoGtkCursor {
 public:
-  // swig
-  typedef struct {
+
+#ifdef __PIVY__
+  typedef struct CustomCursor CustomCursor;
+#endif
+
+  struct CustomCursor {
     SbVec2s dim;
     SbVec2s hotspot;
     unsigned char * bitmap;
     unsigned char * mask;
-  } CustomCursor;
+  };
 
-/*   struct CustomCursor { */
-/*     SbVec2s dim; */
-/*     SbVec2s hotspot; */
-/*     unsigned char * bitmap; */
-/*     unsigned char * mask; */
-/*   }; */
 
   // FIXME: add more default shapes. 20011119 pederb.
   enum Shape {
@@ -52,17 +70,13 @@ public:
   
   SoGtkCursor(void);
   SoGtkCursor(const Shape shape);
-  // swig
-  SoGtkCursor(const SoGtkCursor::CustomCursor * cc);
-/*   SoGtkCursor(const CustomCursor * cc); */
+  SoGtkCursor(const CustomCursor * cc);
   ~SoGtkCursor();
 
   Shape getShape(void) const;
   void setShape(const Shape shape);
 
-  // swig
-  const SoGtkCursor::CustomCursor & getCustomCursor(void) const;
-/*   const CustomCursor & getCustomCursor(void) const; */
+  const CustomCursor & getCustomCursor(void) const;
 
   static const SoGtkCursor & getZoomCursor(void);
   static const SoGtkCursor & getPanCursor(void);
@@ -70,14 +84,10 @@ public:
   static const SoGtkCursor & getBlankCursor(void);
   
 private:
-  // swig
-  void commonConstructor(const Shape shape, const SoGtkCursor::CustomCursor * cc);
-/*   void commonConstructor(const Shape shape, const CustomCursor * cc); */
+  void commonConstructor(const Shape shape, const CustomCursor * cc);
 
   Shape shape;
-  // swig
-  SoGtkCursor::CustomCursor * cc;
-/*   CustomCursor * cc; */
+  CustomCursor * cc;
 };
 
 #endif // ! SOGTK_CURSOR_H

@@ -1,103 +1,89 @@
-/*
- *
- *  Copyright (C) 2000 Silicon Graphics, Inc.  All Rights Reserved. 
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  Further, this software is distributed without any warranty that it is
- *  free of the rightful claim of any third person regarding infringement
- *  or the like.  Any license provided herein, whether implied or
- *  otherwise, applies only to this software file.  Patent licenses, if
- *  any, provided herein do not apply to combinations of this program with
- *  other software, or any other product whatsoever.
- * 
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *  Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
- *  Mountain View, CA  94043, or:
- * 
- *  http://www.sgi.com 
- * 
- *  For further information regarding this notice, see: 
- * 
- *  http://oss.sgi.com/projects/GenInfo/NoticeExplan/
- *
- */
+#!/usr/bin/env python
 
-/*--------------------------------------------------------------
- *  This is an example from the Inventor Mentor,
- *  chapter 12, example 2.
- *
- *  Using getTriggerNode/getTriggerField methods of the data
- *  sensor.
- *------------------------------------------------------------*/
+###
+# Copyright (c) 2002, Tamer Fahmy <tamer@tammura.at>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#   * Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#   * Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived
+#     from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 
-#include <Inventor/SoDB.h>
-#include <Inventor/nodes/SoCube.h>
-#include <Inventor/nodes/SoSeparator.h>
-#include <Inventor/nodes/SoSphere.h>
-#include <Inventor/sensors/SoNodeSensor.h>
+###
+# This is an example from the Inventor Mentor,
+# chapter 12, example 2.
+#
+# Using getTriggerNode/getTriggerField methods of the data
+# sensor.
+#
 
-// Sensor callback function:
-static void
-rootChangedCB(void *, SoSensor *s)
-{
-   // We know the sensor is really a data sensor:
-   SoDataSensor *mySensor = (SoDataSensor *)s;
-    
-   SoNode *changedNode = mySensor->getTriggerNode();
-   SoField *changedField = mySensor->getTriggerField();
-    
-   printf("The node named '%s' changed\n",
-            changedNode->getName().getString());
+from pivy import *
+import sys
 
-   if (changedField != NULL) {
-      SbName fieldName;
-      changedNode->getFieldName(changedField, fieldName);
-      printf(" (field %s)\n", fieldName.getString());
-   } else {
-      printf(" (no fields changed)\n");
-   }
-}
+# Sensor callback function:
+def rootChangedCB(void, s):
+	# We know the sensor is really a data sensor:
+	mySensor = cast(s, "SoDataSensor")
 
-void
-main(int , char **)
-{
-   SoDB::init();
+	changedNode = mySensor.getTriggerNode()
+	changedField = mySensor.getTriggerField()
 
-   SoSeparator *root = new SoSeparator;
-   root->ref();
-   root->setName("Root");
+	print "The node named '%s' changed" % (changedNode.getName().getString())
 
-   SoCube *myCube = new SoCube;
-   root->addChild(myCube);
-   myCube->setName("MyCube");
+	if changedField != None:
+		fieldName = changedNode.getFieldName(changedField)
+		print " (field %s)" % (fieldName.getString())
+	else:
+		print " (no fields changed)"
 
-   SoSphere *mySphere = new SoSphere;
-   root->addChild(mySphere);
-   mySphere->setName("MySphere");
+def main():
+	SoDB_init()
 
-   SoNodeSensor *mySensor = new SoNodeSensor;
+	root = SoSeparator()
+	root.ref()
+	root.setName("Root")
 
-   mySensor->setPriority(0);
-   mySensor->setFunction(rootChangedCB);
-   mySensor->attach(root);
+	myCube = SoCube()
+	root.addChild(myCube)
+	myCube.setName("MyCube")
 
-   // Now, make a few changes to the scene graph; the sensor's
-   // callback function will be called immediately after each
-   // change.
-   myCube->width = 1.0;
-   myCube->height = 2.0;
-   mySphere->radius = 3.0;
-   root->removeChild(mySphere);
-}
+	mySphere = SoSphere()
+	root.addChild(mySphere)
+	mySphere.setName("MySphere")
+
+	mySensor = SoNodeSensor(rootChangedCB, None)
+	mySensor.setPriority(0)
+	# mySensor.setFunction(rootChangedCB)
+	mySensor.attach(root)
+
+	# Now, make a few changes to the scene graph the sensor's
+	# callback function will be called immediately after each
+	# change.
+	myCube.width(1.0)
+	myCube.height(2.0)
+	mySphere.radius(3.0)
+	root.removeChild(mySphere)
+
+if __name__ == "__main__":
+    main()

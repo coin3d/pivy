@@ -1,213 +1,185 @@
-/*
- *
- *  Copyright (C) 2000 Silicon Graphics, Inc.  All Rights Reserved. 
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  Further, this software is distributed without any warranty that it is
- *  free of the rightful claim of any third person regarding infringement
- *  or the like.  Any license provided herein, whether implied or
- *  otherwise, applies only to this software file.  Patent licenses, if
- *  any, provided herein do not apply to combinations of this program with
- *  other software, or any other product whatsoever.
- * 
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *  Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
- *  Mountain View, CA  94043, or:
- * 
- *  http://www.sgi.com 
- * 
- *  For further information regarding this notice, see: 
- * 
- *  http://oss.sgi.com/projects/GenInfo/NoticeExplan/
- *
- */
+#!/usr/bin/env python
 
-/*--------------------------------------------------------------
- *  This is an example from the Inventor Mentor
- *  chapter 13, example 6.
- *
- *  Boolean engine.  Derived from example 13.5.
- *  The smaller duck stays still while the bigger duck moves,
- *  and starts moving as soon as the bigger duck stops.
- *------------------------------------------------------------*/
+###
+# Copyright (c) 2002, Tamer Fahmy <tamer@tammura.at>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#   * Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#   * Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived
+#     from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 
-#include <stdlib.h>
-#include <Inventor/SoDB.h>
-#include <Inventor/Xt/SoXt.h>
-#include <Inventor/Xt/SoXtRenderArea.h>
-#include <Inventor/engines/SoBoolOperation.h>
-#include <Inventor/engines/SoCompose.h>
-#include <Inventor/engines/SoElapsedTime.h>
-#include <Inventor/engines/SoGate.h>
-#include <Inventor/events/SoMouseButtonEvent.h>
-#include <Inventor/nodes/SoCylinder.h>
-#include <Inventor/nodes/SoDirectionalLight.h>
-#include <Inventor/nodes/SoEventCallback.h>
-#include <Inventor/nodes/SoMaterial.h>
-#include <Inventor/nodes/SoPerspectiveCamera.h>
-#include <Inventor/nodes/SoRotationXYZ.h>
-#include <Inventor/nodes/SoSeparator.h>
-#include <Inventor/nodes/SoSphere.h>
-#include <Inventor/nodes/SoTransform.h>
-#include <Inventor/nodes/SoTranslation.h>
+###
+# This is an example from the Inventor Mentor
+# chapter 13, example 6.
+#
+# Boolean engine.  Derived from example 13.5.
+# The smaller duck stays still while the bigger duck moves,
+# and starts moving as soon as the bigger duck stops.
+#
 
-void myMousePressCB(void *, SoEventCallback *);
+from pivy import *
+import sys
 
-void
-main(int , char **argv)
-{
-   // Print out usage message
-   printf("Only one duck can move at a time.\n");
-   printf("Click the left mouse button to toggle between the two ducks.\n");
+# This routine is called for every mouse button event.
+def myMousePressCB(userData, eventCB):
+	gate = cast(userData, "SoGate")
+	event = eventCB.getEvent()
 
-   // Initialize Inventor and Xt
-   Widget myWindow = SoXt::init(argv[0]);  
-   if (myWindow == NULL) exit(1);     
+	# Check for mouse button being pressed
+	if SoMouseButtonEvent_isButtonPressEvent(event, SoMouseButtonEvent.ANY):
 
-   SoSeparator *root = new SoSeparator;
-   root->ref();
+		# Toggle the gate that controls the duck motion
+		if gate.enable.getValue():
+			gate.enable.setValue(FALSE)
+		else:
+			gate.enable.setValue(TRUE)
 
-   // Add a camera and light
-   SoPerspectiveCamera *myCamera = new SoPerspectiveCamera;
-   myCamera->position.setValue(0., -4., 8.0);
-   myCamera->heightAngle = M_PI/2.5; 
-   myCamera->nearDistance = 1.0;
-   myCamera->farDistance = 15.0;
-   root->addChild(myCamera);
-   root->addChild(new SoDirectionalLight);
+		eventCB.setHandled()
 
-   // Rotate scene slightly to get better view
-   SoRotationXYZ *globalRotXYZ = new SoRotationXYZ;
-   globalRotXYZ->axis = SoRotationXYZ::X;
-   globalRotXYZ->angle = M_PI/9;
-   root->addChild(globalRotXYZ);
 
-   // Pond group
-   SoSeparator *pond = new SoSeparator; 
-   root->addChild(pond);
-   SoTranslation *pondTranslation = new SoTranslation;
-   pondTranslation->translation.setValue(0., -6.725, 0.);
-   pond->addChild(pondTranslation);
-   // water
-   SoMaterial *waterMaterial = new SoMaterial;
-   waterMaterial->diffuseColor.setValue(0., 0.3, 0.8);
-   pond->addChild(waterMaterial);
-   SoCylinder *waterCylinder = new SoCylinder;
-   waterCylinder->radius.setValue(4.0);
-   waterCylinder->height.setValue(0.5);
-   pond->addChild(waterCylinder);
-   // rock
-   SoMaterial *rockMaterial = new SoMaterial;
-   rockMaterial->diffuseColor.setValue(0.8, 0.23, 0.03);
-   pond->addChild(rockMaterial);
-   SoSphere *rockSphere = new SoSphere;
-   rockSphere->radius.setValue(0.9);
-   pond->addChild(rockSphere);
+def main():
+	# Print out usage message
+	print "Only one duck can move at a time."
+	print "Click the left mouse button to toggle between the two ducks."
 
-   // Read the duck object from a file and add to the group
-   SoInput myInput;
-   if (!myInput.openFile("/usr/share/src/Inventor/examples/data/duck.iv")) 
-      exit (1);
-   SoSeparator *duckObject = SoDB::readAll(&myInput);
-   if (duckObject == NULL) 
-      exit (1);
+	# Initialize Inventor and Gtk
+	myWindow = SoGtk_init(sys.argv[0])  
+	if myWindow == None: sys.exit(1)     
 
-/////////////////////////////////////////////////////////////
-// CODE FOR The Inventor Mentor STARTS HERE  
+	root = SoSeparator()
+	root.ref()
 
-   // Bigger duck group
-   SoSeparator *bigDuck = new SoSeparator;
-   root->addChild(bigDuck);
-   SoRotationXYZ *bigDuckRotXYZ = new SoRotationXYZ;
-   bigDuck->addChild(bigDuckRotXYZ);
-   SoTransform *bigInitialTransform = new SoTransform;
-   bigInitialTransform->translation.setValue(0., 0., 3.5);
-   bigInitialTransform->scaleFactor.setValue(6., 6., 6.);
-   bigDuck->addChild(bigInitialTransform);
-   bigDuck->addChild(duckObject);
+	# Add a camera and light
+	myCamera = SoPerspectiveCamera()
+	myCamera.position.setValue(0., -4., 8.0)
+	myCamera.heightAngle(M_PI/2.5)
+	myCamera.nearDistance(1.0)
+	myCamera.farDistance(15.0)
+	root.addChild(myCamera)
+	root.addChild(SoDirectionalLight())
 
-   // Smaller duck group
-   SoSeparator *smallDuck = new SoSeparator;
-   root->addChild(smallDuck);
-   SoRotationXYZ *smallDuckRotXYZ = new SoRotationXYZ;
-   smallDuck->addChild(smallDuckRotXYZ);
-   SoTransform *smallInitialTransform = new SoTransform;
-   smallInitialTransform->translation.setValue(0., -2.24, 1.5);
-   smallInitialTransform->scaleFactor.setValue(4., 4., 4.);
-   smallDuck->addChild(smallInitialTransform);
-   smallDuck->addChild(duckObject);
+	# Rotate scene slightly to get better view
+	globalRotXYZ = SoRotationXYZ()
+	globalRotXYZ.axis(SoRotationXYZ.X)
+	globalRotXYZ.angle(M_PI/9)
+	root.addChild(globalRotXYZ)
 
-   // Use a gate engine to start/stop the rotation of 
-   // the bigger duck.
-   SoGate *bigDuckGate = new SoGate(SoMFFloat::getClassTypeId());
-   SoElapsedTime *bigDuckTime = new SoElapsedTime;
-   bigDuckGate->input->connectFrom(&bigDuckTime->timeOut); 
-   bigDuckRotXYZ->axis = SoRotationXYZ::Y;  // Y axis
-   bigDuckRotXYZ->angle.connectFrom(bigDuckGate->output);
+	# Pond group
+	pond = SoSeparator()
+	root.addChild(pond)
+	pondTranslation = SoTranslation()
+	pondTranslation.translation.setValue(0., -6.725, 0.)
+	pond.addChild(pondTranslation)
+	# water
+	waterMaterial = SoMaterial()
+	waterMaterial.diffuseColor.setValue(0., 0.3, 0.8)
+	pond.addChild(waterMaterial)
+	waterCylinder = SoCylinder()
+	waterCylinder.radius.setValue(4.0)
+	waterCylinder.height.setValue(0.5)
+	pond.addChild(waterCylinder)
+	# rock
+	rockMaterial = SoMaterial()
+	rockMaterial.diffuseColor.setValue(0.8, 0.23, 0.03)
+	pond.addChild(rockMaterial)
+	rockSphere = SoSphere()
+	rockSphere.radius.setValue(0.9)
+	pond.addChild(rockSphere)
 
-   // Each mouse button press will enable/disable the gate 
-   // controlling the bigger duck.
-   SoEventCallback *myEventCB = new SoEventCallback;
-   myEventCB->addEventCallback(
-            SoMouseButtonEvent::getClassTypeId(),
-            myMousePressCB, bigDuckGate);
-   root->addChild(myEventCB);
+	# Read the duck object from a file and add to the group
+	myInput = SoInput()
+	if not myInput.openFile("duck.iv"):
+		sys.exit(1)
+	duckObject = SoDB_readAll(myInput)
+	if duckObject == None:
+		sys.exit(1)
 
-   // Use a Boolean engine to make the rotation of the smaller
-   // duck depend on the bigger duck.  The smaller duck moves
-   // only when the bigger duck is still.
-   SoBoolOperation *myBoolean = new SoBoolOperation;
-   myBoolean->a.connectFrom(&bigDuckGate->enable);
-   myBoolean->operation = SoBoolOperation::NOT_A;
+#############################################################
+# CODE FOR The Inventor Mentor STARTS HERE  
 
-   SoGate *smallDuckGate = new SoGate(SoMFFloat::getClassTypeId());
-   SoElapsedTime *smallDuckTime = new SoElapsedTime;
-   smallDuckGate->input->connectFrom(&smallDuckTime->timeOut); 
-   smallDuckGate->enable.connectFrom(&myBoolean->output); 
-   smallDuckRotXYZ->axis = SoRotationXYZ::Y;  // Y axis
-   smallDuckRotXYZ->angle.connectFrom(smallDuckGate->output);
+	# Bigger duck group
+	bigDuck = SoSeparator()
+	root.addChild(bigDuck)
+	bigDuckRotXYZ = SoRotationXYZ()
+	bigDuck.addChild(bigDuckRotXYZ)
+	bigInitialTransform = SoTransform()
+	bigInitialTransform.translation.setValue(0., 0., 3.5)
+	bigInitialTransform.scaleFactor.setValue(6., 6., 6.)
+	bigDuck.addChild(bigInitialTransform)
+	bigDuck.addChild(duckObject)
 
-// CODE FOR The Inventor Mentor ENDS HERE
-/////////////////////////////////////////////////////////////
+	# Smaller duck group
+	smallDuck = SoSeparator()
+	root.addChild(smallDuck)
+	smallDuckRotXYZ = SoRotationXYZ()
+	smallDuck.addChild(smallDuckRotXYZ)
+	smallInitialTransform = SoTransform()
+	smallInitialTransform.translation.setValue(0., -2.24, 1.5)
+	smallInitialTransform.scaleFactor.setValue(4., 4., 4.)
+	smallDuck.addChild(smallInitialTransform)
+	smallDuck.addChild(duckObject)
 
-   SoXtRenderArea *myRenderArea = new SoXtRenderArea(myWindow);
-   myRenderArea->setSceneGraph(root);
-   myRenderArea->setTitle("Duck and Duckling");
-   myRenderArea->show();
+	# Use a gate engine to start/stop the rotation of 
+	# the bigger duck.
+	bigDuckGate = SoGate(SoMFFloat_getClassTypeId())
+	bigDuckTime = SoElapsedTime()
+	bigDuckGate.input.connectFrom(bigDuckTime.timeOut) 
+	bigDuckRotXYZ.axis(SoRotationXYZ.Y)  # Y axis
+	bigDuckRotXYZ.angle.connectFrom(bigDuckGate.output)
 
-   SoXt::show(myWindow);
-   SoXt::mainLoop();
-}
+	# Each mouse button press will enable/disable the gate 
+	# controlling the bigger duck.
+	myEventCB = SoEventCallback()
+	myEventCB.addPythonEventCallback(SoMouseButtonEvent_getClassTypeId(),
+									 myMousePressCB, bigDuckGate)
+	root.addChild(myEventCB)
 
-// This routine is called for every mouse button event.
-void
-myMousePressCB(void *userData, SoEventCallback *eventCB)
-{
-   SoGate *gate = (SoGate *) userData;
-   const SoEvent *event = eventCB->getEvent();
+	# Use a Boolean engine to make the rotation of the smaller
+	# duck depend on the bigger duck.  The smaller duck moves
+	# only when the bigger duck is still.
+	myBoolean = SoBoolOperation()
+	myBoolean.a.connectFrom(bigDuckGate.enable)
+	myBoolean.operation.setValue(SoBoolOperation.NOT_A)
 
-   // Check for mouse button being pressed
-   if (SO_MOUSE_PRESS_EVENT(event, ANY)) {
+	smallDuckGate = SoGate(SoMFFloat_getClassTypeId())
+	smallDuckTime = SoElapsedTime()
+	smallDuckGate.input.connectFrom(smallDuckTime.timeOut) 
+	smallDuckGate.enable.connectFrom(myBoolean.output) 
+	smallDuckRotXYZ.axis(SoRotationXYZ.Y)  # Y axis
+	smallDuckRotXYZ.angle.connectFrom(smallDuckGate.output)
 
-      // Toggle the gate that controls the duck motion
-      if (gate->enable.getValue()) 
-         gate->enable.setValue(FALSE);
-      else 
-         gate->enable.setValue(TRUE);
+# CODE FOR The Inventor Mentor ENDS HERE
+#############################################################
 
-      eventCB->setHandled();
-   } 
-}
+	myRenderArea = SoGtkRenderArea(myWindow)
+	myRenderArea.setSceneGraph(root)
+	myRenderArea.setTitle("Duck and Duckling")
+	myRenderArea.show()
 
+	SoGtk_show(myWindow)
+	SoGtk_mainLoop()
+
+if __name__ == "__main__":
+    main()

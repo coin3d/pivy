@@ -640,6 +640,11 @@ cast(PyObject *self, PyObject *args)
 }
 %}
 
+
+/**
+ * SWIG - interface includes and general typemap definitions starts here
+ **/
+
 %include "typemaps.i"
 
 %native(cast) PyObject *cast(PyObject *self, PyObject *args);
@@ -650,7 +655,7 @@ cast(PyObject *self, PyObject *args)
 %rename(srcFrom) from;
 %rename(destTo) to;
 
-/* generic typemaps to allow using a string instead of an instance
+/* generic typemaps to allow using python types instead of instances
  * within the python interpreter
  */
 %typemap(in) SbName & {
@@ -666,6 +671,22 @@ cast(PyObject *self, PyObject *args)
     $1 = new SbString(PyString_AsString($input));
   } else {
     SWIG_ConvertPtr($input,(void **) &$1, SWIGTYPE_p_SbString, 1);
+  }
+}
+
+%typemap(in) SbTime & {
+  if (PyFloat_Check($input)) {
+    $1 = new SbTime(PyFloat_AsDouble($input));
+  } else {
+    SWIG_ConvertPtr($input,(void **) &$1, SWIGTYPE_p_SbTime, 1);
+  }
+}
+
+%typemap(in) FILE * {
+  if (PyFile_Check($input)) {
+	$1 = PyFile_AsFile($input);;
+  } else {
+	PyErr_SetString(PyExc_TypeError, "expected a file object.");
   }
 }
 

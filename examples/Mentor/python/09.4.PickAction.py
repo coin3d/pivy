@@ -57,13 +57,13 @@ def writePickedPath(root, viewport, cursorPosition):
 	# Start a pick traversal
 	myPickAction.apply(root)
 	myPickedPoint = myPickAction.getPickedPoint()
-	if myPickedPoint == None: return 0
+	if myPickedPoint == None: return FALSE
 
 	# Write out the path to the picked object
 	myWriteAction = SoWriteAction()
 	myWriteAction.apply(myPickedPoint.getPath())
 
-	return 1
+	return TRUE
 
 # CODE FOR The Inventor Mentor ENDS HERE
 ###############################################################

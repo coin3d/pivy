@@ -1,147 +1,130 @@
-/*
- *
- *  Copyright (C) 2000 Silicon Graphics, Inc.  All Rights Reserved. 
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  Further, this software is distributed without any warranty that it is
- *  free of the rightful claim of any third person regarding infringement
- *  or the like.  Any license provided herein, whether implied or
- *  otherwise, applies only to this software file.  Patent licenses, if
- *  any, provided herein do not apply to combinations of this program with
- *  other software, or any other product whatsoever.
- * 
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *  Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
- *  Mountain View, CA  94043, or:
- * 
- *  http://www.sgi.com 
- * 
- *  For further information regarding this notice, see: 
- * 
- *  http://oss.sgi.com/projects/GenInfo/NoticeExplan/
- *
- */
+#!/usr/bin/env python
 
-/*--------------------------------------------------------------
- *  This is an example from the Inventor Mentor
- *  chapter 13, example 7.
- *
- *  A calculator engine computes a closed, planar curve.
- *  The output from the engine is connected to the translation
- *  applied to a flower object, which consequently moves
- *  along the path of the curve.
- *------------------------------------------------------------*/
+###
+# Copyright (c) 2002, Tamer Fahmy <tamer@tammura.at>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#   * Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#   * Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived
+#     from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 
-#include <stdlib.h>
-#include <Inventor/SoDB.h>
-#include <Inventor/Xt/SoXt.h>
-#include <Inventor/Xt/SoXtRenderArea.h>
-#include <Inventor/engines/SoCalculator.h>
-#include <Inventor/engines/SoElapsedTime.h>
-#include <Inventor/engines/SoTimeCounter.h>
-#include <Inventor/nodes/SoDirectionalLight.h>
-#include <Inventor/nodes/SoMaterial.h>
-#include <Inventor/nodes/SoPerspectiveCamera.h>
-#include <Inventor/nodes/SoRotationXYZ.h>
-#include <Inventor/nodes/SoSeparator.h>
-#include <Inventor/nodes/SoTransform.h>
-#include <Inventor/nodes/SoTranslation.h>
+###
+# This is an example from the Inventor Mentor
+# chapter 13, example 7.
+#
+# A calculator engine computes a closed, planar curve.
+# The output from the engine is connected to the translation
+# applied to a flower object, which consequently moves
+# along the path of the curve.
+#
 
-void
-main(int , char **argv)
-{
-   // Initialize Inventor and Xt
-   Widget myWindow = SoXt::init(argv[0]);  
-   if (myWindow == NULL) exit(1);     
+from pivy import *
+import sys
 
-   SoSeparator *root = new SoSeparator;
-   root->ref();
+def main():
+	# Initialize Inventor and Gtk
+	myWindow = SoGtk_init(sys.argv[0])  
+	if myWindow == None: sys.exit(1)     
 
-   // Add a camera and light
-   SoPerspectiveCamera *myCamera = new SoPerspectiveCamera;
-   myCamera->position.setValue(-0.5, -3.0, 19.0);
-   myCamera->nearDistance = 10.0;
-   myCamera->farDistance = 26.0;
-   root->addChild(myCamera);
-   root->addChild(new SoDirectionalLight);
+	root = SoSeparator()
+	root.ref()
 
-   // Rotate scene slightly to get better view
-   SoRotationXYZ *globalRotXYZ = new SoRotationXYZ;
-   globalRotXYZ->axis = SoRotationXYZ::X;
-   globalRotXYZ->angle = M_PI/7;
-   root->addChild(globalRotXYZ);
+	# Add a camera and light
+	myCamera = SoPerspectiveCamera()
+	myCamera.position.setValue(-0.5, -3.0, 19.0)
+	myCamera.nearDistance(10.0)
+	myCamera.farDistance(26.0)
+	root.addChild(myCamera)
+	root.addChild(SoDirectionalLight())
 
-   // Read the background path from a file and add to the group
-   SoInput myInput;
-   if (!myInput.openFile("/usr/share/src/Inventor/examples/data/flowerPath.iv")) 
-      exit (1);
-   SoSeparator *flowerPath = SoDB::readAll(&myInput);
-   if (flowerPath == NULL) exit (1);
-   root->addChild(flowerPath);
+	# Rotate scene slightly to get better view
+	globalRotXYZ = SoRotationXYZ()
+	globalRotXYZ.axis(SoRotationXYZ.X)
+	globalRotXYZ.angle(M_PI/7)
+	root.addChild(globalRotXYZ)
 
-/////////////////////////////////////////////////////////////
-// CODE FOR The Inventor Mentor STARTS HERE  
+	# Read the background path from a file and add to the group
+	myInput = SoInput()
+	if not myInput.openFile("flowerPath.iv"):
+		sys.exit(1)
+	flowerPath = SoDB_readAll(myInput)
+	if flowerPath == None: sys.exit(1)
+	root.addChild(flowerPath)
 
-   // Flower group
-   SoSeparator *flowerGroup = new SoSeparator;
-   root->addChild(flowerGroup);
+#############################################################
+# CODE FOR The Inventor Mentor STARTS HERE  
 
-   // Read the flower object from a file and add to the group
-   if (!myInput.openFile("/usr/share/src/Inventor/examples/data/flower.iv")) 
-      exit (1);
-   SoSeparator *flower= SoDB::readAll(&myInput);
-   if (flower == NULL) exit (1);
+	# Flower group
+	flowerGroup = SoSeparator()
+	root.addChild(flowerGroup)
 
-   // Set up the flower transformations
-   SoTranslation *danceTranslation = new SoTranslation;
-   SoTransform *initialTransform = new SoTransform;
-   flowerGroup->addChild(danceTranslation);
-   initialTransform->scaleFactor.setValue(10., 10., 10.);
-   initialTransform->translation.setValue(0., 0., 5.);
-   flowerGroup->addChild(initialTransform);
-   flowerGroup->addChild(flower);
+	# Read the flower object from a file and add to the group
+	if not myInput.openFile("flower.iv"):
+		sys.exit(1)
+	flower= SoDB_readAll(myInput)
+	if flower == None: sys.exit(1)
 
-   // Set up an engine to calculate the motion path:
-   // r = 5*cos(5*theta); x = r*cos(theta); z = r*sin(theta)
-   // Theta is incremented using a time counter engine,
-   // and converted to radians using an expression in
-   // the calculator engine.
-   SoCalculator *calcXZ = new SoCalculator; 
-   SoTimeCounter *thetaCounter = new SoTimeCounter;
+	# Set up the flower transformations
+	danceTranslation = SoTranslation()
+	initialTransform = SoTransform()
+	flowerGroup.addChild(danceTranslation)
+	initialTransform.scaleFactor.setValue(10., 10., 10.)
+	initialTransform.translation.setValue(0., 0., 5.)
+	flowerGroup.addChild(initialTransform)
+	flowerGroup.addChild(flower)
 
-   thetaCounter->max = 360;
-   thetaCounter->step = 4;
-   thetaCounter->frequency = 0.075;
+	# Set up an engine to calculate the motion path:
+	# r = 5*cos(5*theta) x = r*cos(theta) z = r*sin(theta)
+	# Theta is incremented using a time counter engine,
+	# and converted to radians using an expression in
+	# the calculator engine.
+	calcXZ = SoCalculator()
+	thetaCounter = SoTimeCounter()
 
-   calcXZ->a.connectFrom(&thetaCounter->output);    
-   calcXZ->expression.set1Value(0, "ta=a*M_PI/180"); // theta
-   calcXZ->expression.set1Value(1, "tb=5*cos(5*ta)"); // r
-   calcXZ->expression.set1Value(2, "td=tb*cos(ta)"); // x 
-   calcXZ->expression.set1Value(3, "te=tb*sin(ta)"); // z 
-   calcXZ->expression.set1Value(4, "oA=vec3f(td,0,te)"); 
-   danceTranslation->translation.connectFrom(&calcXZ->oA);
+	thetaCounter.max(360)
+	thetaCounter.step(4)
+	thetaCounter.frequency(0.075)
 
-// CODE FOR The Inventor Mentor ENDS HERE
-/////////////////////////////////////////////////////////////
+	calcXZ.a.connectFrom(thetaCounter.output)    
+	calcXZ.expression.set1Value(0, "ta=a*M_PI/180") # theta
+	calcXZ.expression.set1Value(1, "tb=5*cos(5*ta)") # r
+	calcXZ.expression.set1Value(2, "td=tb*cos(ta)") # x 
+	calcXZ.expression.set1Value(3, "te=tb*sin(ta)") # z 
+	calcXZ.expression.set1Value(4, "oA=vec3f(td,0,te)") 
+	danceTranslation.translation.connectFrom(calcXZ.oA)
 
-   SoXtRenderArea *myRenderArea = new SoXtRenderArea(myWindow);
-   myRenderArea->setSceneGraph(root);
-   myRenderArea->setTitle("Flower Dance");
-   myRenderArea->show();
+# CODE FOR The Inventor Mentor ENDS HERE
+#############################################################
 
-   SoXt::show(myWindow);
-   SoXt::mainLoop();
-}
+	myRenderArea = SoGtkRenderArea(myWindow)
+	myRenderArea.setSceneGraph(root)
+	myRenderArea.setTitle("Flower Dance")
+	myRenderArea.show()
 
+	SoGtk_show(myWindow)
+	SoGtk_mainLoop()
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,221 @@
+/**************************************************************************\
+ *
+ *  This file is part of the Coin 3D visualization library.
+ *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public License
+ *  version 2.1 as published by the Free Software Foundation. See the
+ *  file LICENSE.LGPL at the root directory of the distribution for
+ *  more details.
+ *
+ *  If you want to use Coin for applications not compatible with the
+ *  LGPL, please contact SIM to acquire a Professional Edition license.
+ *
+ *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
+ *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *
+\**************************************************************************/
+
+#ifndef COIN_SOFIELD_H
+#define COIN_SOFIELD_H
+
+#include <Inventor/SoType.h>
+#include <Inventor/misc/SoNotification.h>
+
+class SbString;
+class SoEngineOutput;
+class SoFieldContainer;
+class SoFieldConverter;
+class SoFieldList;
+class SoInput;
+class SoOutput;
+class SoVRMLInterpOutput;
+
+#ifdef __PIVY__
+%rename(appendConnection_fie) SoField::appendConnection(SoField *master, SbBool notnotify=FALSE);
+%rename(appendConnection_vrm) SoField::appendConnection(SoVRMLInterpOutput *master, SbBool notnotify=FALSE);
+
+%feature("shadow") SoField::appendConnection(SoEngineOutput *master, SbBool notnotify=FALSE) %{
+def appendConnection(*args):
+   if isinstance(args[1], SoField):
+      return apply(pivyc.SoField_appendConnection_fie,args)
+   elif isinstance(args[1], SoVRMLInterpOutput):
+      return apply(pivyc.SoField_appendConnection_vrm,args)
+   return apply(pivyc.SoField_appendConnection,args)
+%}
+
+%rename(connectFrom_fie) SoField::connectFrom(SoField *master, SbBool notnotify=FALSE, SbBool append=FALSE);
+%rename(connectFrom_vrm) SoField::connectFrom(SoVRMLInterpOutput *master, SbBool notnotify=FALSE, SbBool append=FALSE);
+
+%feature("shadow") SoField::connectFrom(SoEngineOutput *master, SbBool notnotify=FALSE, SbBool append=FALSE) %{
+def connectFrom(*args):
+   if isinstance(args[1], SoField):
+      return apply(pivyc.SoField_connectFrom_fie,args)
+   elif isinstance(args[1], SoVRMLInterpOutput):
+      return apply(pivyc.SoField_connectFrom_vrm,args)
+   return apply(pivyc.SoField_connectFrom,args)
+%}
+
+
+%rename(disconnect_eng) SoField::disconnect(SoEngineOutput *engineoutput);
+%rename(disconnect_fie) SoField::disconnect(SoField *field);
+%rename(disconnect_vrm) SoField::disconnect(SoVRMLInterpOutput *interpoutput);
+
+%feature("shadow") SoField::disconnect(void) %{
+def disconnect(*args):
+   if isinstance(args[1], SoEngineOutput):
+      return apply(pivyc.SoField_disconnect_fie,args)
+   elif isinstance(args[1], SoField):
+      return apply(pivyc.SoField_disconnect_fie,args)
+   elif isinstance(args[1], SoVRMLInterpOutput):
+      return apply(pivyc.SoField_disconnect_vrm,args)
+   return apply(pivyc.SoField_disconnect,args)
+%}
+#endif
+
+class COIN_DLL_API SoField {
+
+public:
+  virtual ~SoField();
+
+  static void initClass(void);
+  static void initClasses(void);
+
+  void setIgnored(SbBool ignore);
+  SbBool isIgnored(void) const;
+
+  void setDefault(SbBool def);
+  SbBool isDefault(void) const;
+
+  virtual SoType getTypeId(void) const = 0;
+
+  static SoType getClassTypeId(void);
+  SbBool isOfType(const SoType type) const;
+
+  void enableConnection(SbBool flag);
+  SbBool isConnectionEnabled(void) const;
+
+  // Field<-Engine connection stuff.
+  SbBool connectFrom(SoEngineOutput * master,
+                     SbBool notnotify = FALSE, SbBool append = FALSE);
+  SbBool appendConnection(SoEngineOutput * master, SbBool notnotify = FALSE);
+  void disconnect(SoEngineOutput * engineoutput);
+  SbBool isConnectedFromEngine(void) const;
+  SbBool getConnectedEngine(SoEngineOutput *& master) const;
+
+  // Field<->Field connection stuff.
+  SbBool connectFrom(SoField * master,
+                     SbBool notnotify = FALSE, SbBool append = FALSE);
+  SbBool appendConnection(SoField * master, SbBool notnotify = FALSE);
+  void disconnect(SoField * field);
+  SbBool isConnectedFromField(void) const;
+  SbBool getConnectedField(SoField *& master) const;
+  int getNumConnections(void) const;
+  int getForwardConnections(SoFieldList & slavelist) const;
+  int getConnections(SoFieldList & masterlist) const;
+
+  // Field<-Interpolator connection stuff.
+  SbBool connectFrom(SoVRMLInterpOutput * master,
+                     SbBool notnotify = FALSE, SbBool append = FALSE);
+  SbBool appendConnection(SoVRMLInterpOutput * master,
+                          SbBool notnotify = FALSE);
+  void disconnect(SoVRMLInterpOutput * interpoutput);
+  SbBool isConnectedFromVRMLInterp(void) const;
+  SbBool getConnectedVRMLInterp(SoVRMLInterpOutput *& master) const;
+
+  void disconnect(void);
+  SbBool isConnected(void) const;
+
+  void setContainer(SoFieldContainer * cont);
+  SoFieldContainer * getContainer(void) const;
+
+  SbBool set(const char * valuestring);
+  void get(SbString & valuestring);
+
+  SbBool shouldWrite(void) const;
+
+  virtual void touch(void);
+  virtual void startNotify(void);
+  virtual void notify(SoNotList * nlist);
+  SbBool enableNotify(SbBool on);
+  SbBool isNotifyEnabled(void) const;
+
+  void addAuditor(void * f, SoNotRec::Type type);
+  void removeAuditor(void * f, SoNotRec::Type type);
+
+  int operator ==(const SoField & f) const;
+  int operator !=(const SoField & f) const;
+
+  virtual void connectionStatusChanged(int numconnections);
+  SbBool isReadOnly(void) const;
+  virtual SbBool isSame(const SoField & f) const = 0;
+  virtual void copyFrom(const SoField & f) = 0;
+
+  virtual void fixCopy(SbBool copyconnections);
+  virtual SbBool referencesCopy(void) const;
+  void copyConnection(const SoField * fromfield);
+
+  virtual SbBool read(SoInput * in, const SbName & name);
+  virtual void write(SoOutput * out, const SbName & name) const;
+
+  virtual void countWriteRefs(SoOutput * out) const;
+
+  void evaluate(void) const;
+
+  void setFieldType(int type);
+  int getFieldType(void) const;
+
+  SbBool getDirty(void) const;
+  void setDirty(SbBool dirty);
+
+protected:
+  SoField(void);
+
+  void valueChanged(SbBool resetdefault = TRUE);
+  virtual void evaluateConnection(void) const;
+  virtual SbBool readValue(SoInput * in) = 0;
+  virtual void writeValue(SoOutput * out) const = 0;
+  virtual SbBool readConnection(SoInput * in);
+  virtual void writeConnection(SoOutput * out) const;
+
+  SbBool isDestructing(void) const;
+
+private:
+  void extendStorageIfNecessary(void);
+  SoFieldConverter * createConverter(SoType from) const;
+  SoFieldContainer * resolveWriteConnection(SbName & mastername) const;
+
+  void notifyAuditors(SoNotList * l);
+
+  static SoType classTypeId;
+
+  // These are bit flags.
+  enum FileFormatFlags {
+    IGNORED = 0x01,
+    CONNECTED = 0x02,
+    DEFAULT = 0x04,
+    ALLFILEFLAGS = IGNORED|CONNECTED|DEFAULT
+  };
+
+  SbBool changeStatusBits(const unsigned int bits, const SbBool onoff);
+  void clearStatusBits(const unsigned int bits);
+  void setStatusBits(const unsigned int bits);
+  SbBool getStatus(const unsigned int bits) const;
+  unsigned int statusbits;
+  union {
+    SoFieldContainer * container;
+    class SoConnectStorage * storage;
+  };
+
+  SbBool hasExtendedStorage(void) const;
+};
+
+
+#ifndef COIN_INTERNAL
+// Added to be Inventor compliant.
+#include <Inventor/fields/SoSField.h>
+#include <Inventor/fields/SoMField.h>
+#endif // !COIN_INTERNAL
+
+#endif // !COIN_SOFIELD_H

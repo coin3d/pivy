@@ -52,8 +52,10 @@ SoEventPythonCallBack(void * userdata, SoEventCallback * node)
   func = PyTuple_GetItem((PyObject *)userdata, 0);
   arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)userdata, 1), evCB);
 
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) 
+  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
 	printf("SoEventPythonCallBack(void * userdata, SoEventCallback * node) failed!\n");
+  }
+
   Py_DECREF(arglist);
   Py_XDECREF(result);
 

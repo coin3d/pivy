@@ -1,260 +1,219 @@
-/*
- *
- *  Copyright (C) 2000 Silicon Graphics, Inc.  All Rights Reserved. 
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  Further, this software is distributed without any warranty that it is
- *  free of the rightful claim of any third person regarding infringement
- *  or the like.  Any license provided herein, whether implied or
- *  otherwise, applies only to this software file.  Patent licenses, if
- *  any, provided herein do not apply to combinations of this program with
- *  other software, or any other product whatsoever.
- * 
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *  Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
- *  Mountain View, CA  94043, or:
- * 
- *  http://www.sgi.com 
- * 
- *  For further information regarding this notice, see: 
- * 
- *  http://oss.sgi.com/projects/GenInfo/NoticeExplan/
- *
- */
+#!/usr/bin/env python
 
-/*-------------------------------------------------------------
- *  This is an example from The Inventor Mentor
- *  chapter 10, example 2.
- *
- *  This demonstrates using SoXtRenderArea::setEventCallback().
- *  which causes events to be sent directly to the application
- *  without being sent into the scene graph.
- *  
- * Clicking the left mouse button and dragging will draw 
- *       points in the xy plane beneath the mouse cursor.
- * Clicking middle mouse and holding causes the point set 
- *       to rotate about the Y axis. 
- * Clicking right mouse clears all points drawn so far out 
- *       of the point set.
- *-----------------------------------------------------------*/
+###
+# Copyright (c) 2002, Tamer Fahmy <tamer@tammura.at>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#   * Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#   * Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived
+#     from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 
-#include <stdlib.h>
-#include <X11/Intrinsic.h>
+###
+#  This is an example from The Inventor Mentor
+#  chapter 10, example 2.
+#
+#  This demonstrates using SoXtRenderArea::setEventCallback().
+#  which causes events to be sent directly to the application
+#  without being sent into the scene graph.
+#  
+# Clicking the left mouse button and dragging will draw 
+#       points in the xy plane beneath the mouse cursor.
+# Clicking middle mouse and holding causes the point set 
+#       to rotate about the Y axis. 
+# Clicking right mouse clears all points drawn so far out 
+#       of the point set.
+#
 
-#include <Inventor/Sb.h>
-#include <Inventor/Xt/SoXtRenderArea.h>
-#include <Inventor/Xt/SoXt.h>
-#include <Inventor/nodes/SoCamera.h>
-#include <Inventor/nodes/SoCoordinate3.h>
-#include <Inventor/nodes/SoGroup.h>
-#include <Inventor/nodes/SoLightModel.h>
-#include <Inventor/nodes/SoPerspectiveCamera.h>
-#include <Inventor/nodes/SoPointSet.h> 
-#include <Inventor/nodes/SoSeparator.h>
-#include <Inventor/sensors/SoTimerSensor.h>
+# FIXME: think of a way to interface pivy to pygtk and pygnome to make
+#        the lowlevel GDK events useful and working. maybe think of a
+#        better solution to make it independent of the used toolkit!
 
-// Timer sensor 
-// Rotate 90 degrees every second, update 30 times a second
-SoTimerSensor *myTicker;
-#define UPDATE_RATE 1.0/30.0
-#define ROTATION_ANGLE M_PI/60.0
+from pivy import *
+from GDK import *
+import sys
 
-void
-myProjectPoint(SoXtRenderArea *myRenderArea, 
-   int mousex, int mousey, SbVec3f &intersection)
-{
-   // Take the x,y position of mouse, and normalize to [0,1].
-   // X windows have 0,0 at the upper left,
-   // Inventor expects 0,0 to be the lower left.
-   SbVec2s size = myRenderArea->getSize();
-   float x = float(mousex) / size[0];
-   float y = float(size[1] - mousey) / size[1];
+# Timer sensor 
+# Rotate 90 degrees every second, update 30 times a second
+myTicker = None
+UPDATE_RATE    = 1.0/30.0
+ROTATION_ANGLE = M_PI/60.0
+
+def myProjectPoint(myRenderArea, mousex, mousey):
+	# Take the x,y position of mouse, and normalize to [0,1].
+	# X windows have 0,0 at the upper left,
+	# Inventor expects 0,0 to be the lower left.
+	size = myRenderArea.getSize()
+	x = float(mousex) / size[0]
+	y = float(size[1] - mousey) / size[1]
    
-   // Get the camera and view volume
-   SoGroup *root = (SoGroup *) myRenderArea->getSceneGraph();
-   SoCamera *myCamera = (SoCamera *) root->getChild(0);
-   SbViewVolume myViewVolume;
-   myViewVolume = myCamera->getViewVolume();
+	# Get the camera and view volume
+	root = cast(myRenderArea.getSceneGraph(), "SoGroup")
+	myCamera = cast(root.getChild(0), "SoCamera")
+	myViewVolume = myCamera.getViewVolume()
    
-   // Project the mouse point to a line
-   SbVec3f p0, p1;
-   myViewVolume.projectPointToLine(SbVec2f(x,y), p0, p1);
+	# Project the mouse point to a line
+	p0, p1 = myViewVolume.projectPointToLine(SbVec2f(x,y))
    
-   // Midpoint of the line intersects a plane thru the origin
-   intersection = (p0 + p1) / 2.0;
-}
+	# Midpoint of the line intersects a plane thru the origin
+	intersection = (p0 + p1) / 2.0
 
-void
-myAddPoint(SoXtRenderArea *myRenderArea, const SbVec3f point)
-{
-   SoGroup *root = (SoGroup *) myRenderArea->getSceneGraph();
-   SoCoordinate3 *coord = (SoCoordinate3 *) root->getChild(2);
-   SoPointSet *myPointSet = (SoPointSet *) root->getChild(3);
-   
-   coord->point.set1Value(coord->point.getNum(), point);
-   myPointSet->numPoints.setValue(coord->point.getNum());
-}
+	return intersection
 
-void
-myClearPoints(SoXtRenderArea *myRenderArea)
-{
-   SoGroup *root = (SoGroup *) myRenderArea->getSceneGraph();
-   SoCoordinate3 *coord = (SoCoordinate3 *) root->getChild(2);
-   SoPointSet *myPointSet = (SoPointSet *) root->getChild(3);
+def myAddPoint(myRenderArea, point):
+	root = cast(myRenderArea.getSceneGraph(), "SoGroup")
+	coord = cast(root.getChild(2), "SoCoordinate3")
+	myPointSet = cast(root.getChild(3), "SoPointSet")
    
-   // Delete all values starting from 0
-   coord->point.deleteValues(0); 
-   myPointSet->numPoints.setValue(0);
-}
+	coord.point.set1Value(coord.point.getNum(), point)
+	myPointSet.numPoints.setValue(coord.point.getNum())
 
-void
-tickerCallback(void *userData, SoSensor *)
-{
-   SoCamera *myCamera = (SoCamera *) userData;
-   SbRotation rot;
-   SbMatrix mtx;
-   SbVec3f pos;
+def myClearPoints(myRenderArea):
+	root = cast(myRenderArea.getSceneGraph(), "SoGroup")
+	coord = cast(root.getChild(2), "SoCoordinate3")
+	myPointSet = cast(root.getChild(3), "SoPointSet")
    
-   // Adjust the position
-   pos = myCamera->position.getValue();
-   rot = SbRotation(SbVec3f(0,1,0), ROTATION_ANGLE);
-   mtx.setRotate(rot);
-   mtx.multVecMatrix(pos, pos);
-   myCamera->position.setValue(pos);
+	# Delete all values starting from 0
+	coord.point.deleteValues(0) 
+	myPointSet.numPoints.setValue(0)
+
+def tickerCallback(userData, sensor):
+	myCamera = cast(userData, "SoCamera")
+	mtx = SbMatrix()
    
-   // Adjust the orientation
-   myCamera->orientation.setValue(
-            myCamera->orientation.getValue() * rot);
-}
-
-///////////////////////////////////////////////////////////////
-// CODE FOR The Inventor Mentor STARTS HERE  (part 1)
-
-SbBool
-myAppEventHandler(void *userData, XAnyEvent *anyevent)
-{
-   SoXtRenderArea *myRenderArea = (SoXtRenderArea *) userData;
-   XButtonEvent *myButtonEvent;
-   XMotionEvent *myMotionEvent;
-   SbVec3f vec;
-   SbBool handled = TRUE;
-
-   switch (anyevent->type) {
+	# Adjust the position
+	pos = myCamera.position.getValue()
+	rot = SbRotation(SbVec3f(0,1,0), ROTATION_ANGLE)
+	mtx.setRotate(rot)
+	mtx.multVecMatrix(pos, pos)
+	myCamera.position.setValue(pos)
    
-   case ButtonPress:
-      myButtonEvent = (XButtonEvent *) anyevent;
-      if (myButtonEvent->button == Button1) {
-         myProjectPoint(myRenderArea, 
-                  myButtonEvent->x, myButtonEvent->y, vec);
-         myAddPoint(myRenderArea, vec);
-      } else if (myButtonEvent->button == Button2) {
-         myTicker->schedule();  // start spinning the camera
-      } else if (myButtonEvent->button == Button3) {
-         myClearPoints(myRenderArea);  // clear the point set
-      }
-      break;
+	# Adjust the orientation
+	myCamera.orientation.setValue(myCamera.orientation.getValue() * rot)
+
+###############################################################
+# CODE FOR The Inventor Mentor STARTS HERE  (part 1)
+
+def myAppEventHandler(userData, anyevent):
+	myRenderArea = cast(userData, "SoGtkRenderArea")
+	handled = TRUE
+
+	print anyevent
+	if anyevent.type == GDK.BUTTON_PRESS:
+		myButtonEvent = anyevent # cast(anyevent, "XButtonEvent")
+		
+		if myButtonEvent.button == GDK.LEFTBUTTON:
+			vec = myProjectPoint(myRenderArea, myButtonEvent.x, myButtonEvent.y)
+			myAddPoint(myRenderArea, vec)
+		elif myButtonEvent.button == GDK.MIDDLEBUTTON:
+			myTicker.schedule()  # start spinning the camera
+		elif myButtonEvent.button == GDK.RIGHTBUTTON:
+			myClearPoints(myRenderArea)  # clear the point set
       
-   case ButtonRelease:
-      myButtonEvent = (XButtonEvent *) anyevent;
-      if (myButtonEvent->button == Button2) {
-         myTicker->unschedule();  // stop spinning the camera
-      }
-      break;
+	elif anyevent.type == GDK.BUTTON_RELEASE:
+		myButtonEvent = anyevent # cast(anyevent, "XButtonEvent")
+		
+		if myButtonEvent.button == GDK.MIDDLEBUTTON:
+			myTicker.unschedule()  # stop spinning the camera
       
-   case MotionNotify:
-      myMotionEvent = (XMotionEvent *) anyevent;
-      if (myMotionEvent->state & Button1Mask) {  
-         myProjectPoint(myRenderArea, 
-                  myMotionEvent->x, myMotionEvent->y, vec);
-         myAddPoint(myRenderArea, vec);
-      }
-      break;
+	elif anyevent.type == GDK.MOTION_NOTIFY:
+		myMotionEvent = anyevent # cast(anyevent, "XMotionEvent")
+		
+		if myMotionEvent.state & GDK.BUTTON1_MASK:
+			vec = myProjectPoint(myRenderArea, myMotionEvent.x, myMotionEvent.y)
+			myAddPoint(myRenderArea, vec)
       
-   default:
-      handled = FALSE;
-      break;
-   }
+	else:
+		handled = FALSE
    
-   return handled;
-}
+	return handled
 
-// CODE FOR The Inventor Mentor ENDS HERE
-////////////////////////////////////////////////////////////
+# CODE FOR The Inventor Mentor ENDS HERE
+###############################################################
 
-void
-main(int argc, char **argv)
-{
-   // Print out usage instructions
-   printf("Mouse buttons:\n");
-   printf("\tLeft (with mouse motion): adds points\n");
-   printf("\tMiddle: rotates points about the Y axis\n");
-   printf("\tRight: deletes all the points\n");
+def main():
+	# Print out usage instructions
+	print "Mouse buttons:"
+	print "\tLeft (with mouse motion): adds points"
+	print "\tMiddle: rotates points about the Y axis"
+	print "\tRight: deletes all the points"
 
-   // Initialize Inventor and Xt
-   Widget appWindow = SoXt::init(argv[0]);
-   if (appWindow == NULL) exit(1);
 
-   // Create and set up the root node
-   SoSeparator *root = new SoSeparator;
-   root->ref();
+	# Initialize Inventor and Gtk
+	appWindow = SoGtk_init(sys.argv[0])
+	if appWindow == None:
+		sys.exit(1)
 
-   // Add a camera
-   SoPerspectiveCamera *myCamera = new SoPerspectiveCamera;
-   root->addChild(myCamera);                 // child 0
+	# Create and set up the root node
+	root = SoSeparator()
+	root.ref()
+
+	# Add a camera
+	myCamera = SoPerspectiveCamera()
+	root.addChild(myCamera)                 # child 0
    
-   // Use the base color light model so we don't need to 
-   // specify normals
-   SoLightModel *myLightModel = new SoLightModel;
-   myLightModel->model = SoLightModel::BASE_COLOR;
-   root->addChild(myLightModel);               // child 1
+	# Use the base color light model so we don't need to 
+	# specify normals
+	myLightModel = SoLightModel()
+	myLightModel.model(SoLightModel.BASE_COLOR)
+	root.addChild(myLightModel)               # child 1
    
-   // Set up the camera view volume
-   myCamera->position.setValue(0, 0, 4);
-   myCamera->nearDistance.setValue(1.0);
-   myCamera->farDistance.setValue(7.0);
-   myCamera->heightAngle.setValue(M_PI/3.0);   
+	# Set up the camera view volume
+	myCamera.position.setValue(0, 0, 4)
+	myCamera.nearDistance.setValue(1.0)
+	myCamera.farDistance.setValue(7.0)
+	myCamera.heightAngle.setValue(M_PI/3.0)   
    
-   // Add a coordinate and point set
-   SoCoordinate3 *myCoord = new SoCoordinate3;
-   SoPointSet *myPointSet = new SoPointSet;
-   root->addChild(myCoord);                    // child 2
-   root->addChild(myPointSet);                 // child 3
+	# Add a coordinate and point set
+	myCoord = SoCoordinate3()
+	myPointSet = SoPointSet()
+	root.addChild(myCoord)                    # child 2
+	root.addChild(myPointSet)                 # child 3
 
-   // Timer sensor to tick off time while middle mouse is down
-   myTicker = new SoTimerSensor(tickerCallback, myCamera);
-   myTicker->setInterval(UPDATE_RATE);
+	# Timer sensor to tick off time while middle mouse is down
+	myTicker = SoTimerSensor(tickerCallback, myCamera)
+	myTicker.setInterval(UPDATE_RATE)
 
-   // Create a render area for viewing the scene
-   SoXtRenderArea *myRenderArea = new SoXtRenderArea(appWindow);
-   myRenderArea->setSceneGraph(root);
-   myRenderArea->setTitle("My Event Handler");
+	# Create a render area for viewing the scene
+	myRenderArea = SoGtkRenderArea(appWindow)
+	myRenderArea.setSceneGraph(root)
+	myRenderArea.setTitle("My Event Handler")
 
-//////////////////////////////////////////////////////////////
-// CODE FOR The Inventor Mentor STARTS HERE  (part 2)
+###############################################################
+# CODE FOR The Inventor Mentor STARTS HERE  (part 2)
 
-   // Have render area send events to us instead of the scene 
-   // graph.  We pass the render area as user data.
-   myRenderArea->setEventCallback(
-               myAppEventHandler, myRenderArea);
+    # Have render area send events to us instead of the scene 
+	# graph.  We pass the render area as user data.
+	myRenderArea.setPythonEventCallback(myAppEventHandler, myRenderArea)
 
-// CODE FOR The Inventor Mentor ENDS HERE
-//////////////////////////////////////////////////////////////
+# CODE FOR The Inventor Mentor ENDS HERE
+###############################################################
 
-   // Show our application window, and loop forever...
-   myRenderArea->show();
-   SoXt::show(appWindow);
-   SoXt::mainLoop();
-}
+	# Show our application window, and loop forever...
+	myRenderArea.show()
+	SoGtk_show(appWindow)
+	SoGtk_mainLoop()
 
+if __name__ == "__main__":
+    main()

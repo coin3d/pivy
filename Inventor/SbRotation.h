@@ -27,7 +27,7 @@ class SbMatrix;
 class SbVec3f;
 
 #ifdef __PIVY__
-%typemap(in) float q[3] (float temp[4]) {
+%typemap(in) float q[4] (float temp[4]) {
   convert_SbVec4f_array($input, temp);
   $1 = temp;
 }

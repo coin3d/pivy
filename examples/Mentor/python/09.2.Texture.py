@@ -50,14 +50,14 @@ def generateTextureMap(root, texture, textureWidth, textureHeight):
 	myRenderer.setBackgroundColor(SbColor(0.3, 0.3, 0.3))
 	if not myRenderer.render(root):
 		del myRenderer
-		return 0
+		return FALSE
 
 	# Generate the texture
 	texture.image.setValue(SbVec2s(textureWidth, textureHeight),
 						   SoOffscreenRenderer.RGB, myRenderer.getBuffer())
 
 	del myRenderer
-	return 1 
+	return TRUE
 
 def main():
 	# Initialize Inventor and Gtk

@@ -1,96 +1,84 @@
-/*
- *
- *  Copyright (C) 2000 Silicon Graphics, Inc.  All Rights Reserved. 
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  Further, this software is distributed without any warranty that it is
- *  free of the rightful claim of any third person regarding infringement
- *  or the like.  Any license provided herein, whether implied or
- *  otherwise, applies only to this software file.  Patent licenses, if
- *  any, provided herein do not apply to combinations of this program with
- *  other software, or any other product whatsoever.
- * 
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *  Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
- *  Mountain View, CA  94043, or:
- * 
- *  http://www.sgi.com 
- * 
- *  For further information regarding this notice, see: 
- * 
- *  http://oss.sgi.com/projects/GenInfo/NoticeExplan/
- *
- */
+#!/usr/bin/env python
 
-/*----------------------------------------------------------------
- *  This is an example from the Inventor Mentor.
- *  chapter 15, example 1.
- *
- *  Uses an SoTranslate1Dragger to control the bottomRadius field 
- *  of an SoCone.  The 'translation' field of the dragger is the 
- *  input to an SoDecomposeVec3f engine. The engine extracts the
- *  x component from the translation. This extracted value is
- *  connected to the bottomRadius field of the cone.
- *----------------------------------------------------------------*/
+###
+# Copyright (c) 2002, Tamer Fahmy <tamer@tammura.at>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#   * Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#   * Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived
+#     from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 
-#include <stdlib.h>
-#include <Inventor/engines/SoCompose.h>
-#include <Inventor/nodes/SoCone.h>
-#include <Inventor/nodes/SoSeparator.h>
-#include <Inventor/nodes/SoTransform.h>
+###
+# This is an example from the Inventor Mentor.
+# chapter 15, example 1.
+#
+# Uses an SoTranslate1Dragger to control the bottomRadius field 
+# of an SoCone.  The 'translation' field of the dragger is the 
+# input to an SoDecomposeVec3f engine. The engine extracts the
+# x component from the translation. This extracted value is
+# connected to the bottomRadius field of the cone.
+#
 
-#include <Inventor/Xt/SoXt.h>
-#include <Inventor/Xt/viewers/SoXtExaminerViewer.h>
+from pivy import *
+import sys
 
-#include <Inventor/draggers/SoTranslate1Dragger.h>
+def main():
+	# Initialize Inventor and Gtk
+	myWindow = SoGtk_init(sys.argv[0])  
+	if myWindow == None: sys.exit(1)     
 
-void
-main(int , char **argv)
-{
-   Widget myWindow = SoXt::init(argv[0]);
-   if (myWindow == NULL) exit(1);
+	root = SoSeparator()
+	root.ref()
 
-   SoSeparator *root = new SoSeparator;
-   root->ref();
+	# Create myDragger with an initial translation of (1,0,0)
+	myDragger = SoTranslate1Dragger()
+	root.addChild(myDragger)
+	myDragger.translation.setValue(1,0,0)
 
-   // Create myDragger with an initial translation of (1,0,0)
-   SoTranslate1Dragger *myDragger = new SoTranslate1Dragger;
-   root->addChild(myDragger);
-   myDragger->translation.setValue(1,0,0);
+	# Place an SoCone above myDragger
+	myTransform = SoTransform()
+	myCone = SoCone()
+	root.addChild(myTransform)
+	root.addChild(myCone)
+	myTransform.translation.setValue(0,3,0)
 
-   // Place an SoCone above myDragger
-   SoTransform *myTransform = new SoTransform;
-   SoCone      *myCone = new SoCone;
-   root->addChild(myTransform);
-   root->addChild(myCone);
-   myTransform->translation.setValue(0,3,0);
+	# SoDecomposeVec3f engine extracts myDragger's x-component
+	# The result is connected to myCone's bottomRadius.
+	myEngine = SoDecomposeVec3f()
+	myEngine.vector.connectFrom(myDragger.translation)
+	myCone.bottomRadius.connectFrom(myEngine.x)
 
-   // SoDecomposeVec3f engine extracts myDragger's x-component
-   // The result is connected to myCone's bottomRadius.
-   SoDecomposeVec3f *myEngine = new SoDecomposeVec3f;
-   myEngine->vector.connectFrom(&myDragger->translation);
-   myCone->bottomRadius.connectFrom(&myEngine->x);
+	# Display them in a viewer
+	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer.setSceneGraph(root)
+	myViewer.setTitle("Dragger Edits Cone Radius")
+	myViewer.viewAll()
+	myViewer.show()
 
-   // Display them in a viewer
-   SoXtExaminerViewer *myViewer 
-      = new SoXtExaminerViewer(myWindow);
-   myViewer->setSceneGraph(root);
-   myViewer->setTitle("Dragger Edits Cone Radius");
-   myViewer->viewAll();
-   myViewer->show();
+	SoGtk_show(myWindow)
+	SoGtk_mainLoop()
 
-   SoXt::show(myWindow);
-   SoXt::mainLoop();
-}
+if __name__ == "__main__":
+    main()

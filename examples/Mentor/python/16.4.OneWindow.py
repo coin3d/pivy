@@ -1,122 +1,108 @@
-/*
- *
- *  Copyright (C) 2000 Silicon Graphics, Inc.  All Rights Reserved. 
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  Further, this software is distributed without any warranty that it is
- *  free of the rightful claim of any third person regarding infringement
- *  or the like.  Any license provided herein, whether implied or
- *  otherwise, applies only to this software file.  Patent licenses, if
- *  any, provided herein do not apply to combinations of this program with
- *  other software, or any other product whatsoever.
- * 
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *  Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
- *  Mountain View, CA  94043, or:
- * 
- *  http://www.sgi.com 
- * 
- *  For further information regarding this notice, see: 
- * 
- *  http://oss.sgi.com/projects/GenInfo/NoticeExplan/
- *
- */
+#!/usr/bin/env python
 
-/*-------------------------------------------------------------
- *  This is an example from the Inventor Mentor,
- *  chapter 16, example 4.
- *
- *  This example builds a render area and Material Editor within 
- *  a window supplied by the application. It uses a Motif form 
- *  widget to lay both components inside the same window.  
- *  It attaches the editor to the material of an object.
- *-----------------------------------------------------------*/
+###
+# Copyright (c) 2002, Tamer Fahmy <tamer@tammura.at>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#   * Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#   * Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived
+#     from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 
-#include <stdlib.h>
-#include <Xm/Form.h>
-#include <Inventor/SoDB.h>          
-#include <Inventor/Xt/SoXt.h>          
-#include <Inventor/Xt/SoXtMaterialEditor.h>
-#include <Inventor/Xt/SoXtRenderArea.h>  
-#include <Inventor/nodes/SoDirectionalLight.h>
-#include <Inventor/nodes/SoMaterial.h>
-#include <Inventor/nodes/SoPerspectiveCamera.h>
-#include <Inventor/nodes/SoSeparator.h> 
+###
+# This is an example from the Inventor Mentor,
+# chapter 16, example 4.
+#
+# This example builds a render area and Material Editor within 
+# a window supplied by the application. It uses a Motif form 
+# widget to lay both components inside the same window.  
+# It attaches the editor to the material of an object.
+#
 
-void
-main(int , char **argv)
-{
-   // Initialize Inventor and Xt
-   Widget myWindow = SoXt::init(argv[0]);
-   
-   // Build the form to hold both components
-   Widget myForm = XtCreateWidget("Form", 
-            xmFormWidgetClass, myWindow, NULL, 0);
-   
-   // Build the render area and Material Editor
-   SoXtRenderArea *myRenderArea = new SoXtRenderArea(myForm);
-   myRenderArea->setSize(SbVec2s(200, 200));
-   SoXtMaterialEditor *myEditor = 
-            new SoXtMaterialEditor(myForm);
-   
-   // Layout the components within the form
-   Arg  args[8];
-   XtSetArg(args[0], XmNtopAttachment,    XmATTACH_FORM);
-   XtSetArg(args[1], XmNbottomAttachment, XmATTACH_FORM);
-   XtSetArg(args[2], XmNleftAttachment,   XmATTACH_FORM); 
-   XtSetArg(args[3], XmNrightAttachment,  XmATTACH_POSITION);
-   XtSetArg(args[4], XmNrightPosition,    40);
-   XtSetValues(myRenderArea->getWidget(), args, 5);
-   XtSetArg(args[2], XmNrightAttachment,  XmATTACH_FORM); 
-   XtSetArg(args[3], XmNleftAttachment,   XmATTACH_POSITION);
-   XtSetArg(args[4], XmNleftPosition,     41); 
-   XtSetValues(myEditor->getWidget(), args, 5);
-   
-   // Create a scene graph
-   SoSeparator *root = new SoSeparator;
-   SoPerspectiveCamera *myCamera = new SoPerspectiveCamera;
-   SoMaterial *myMaterial = new SoMaterial;
-   
-   root->ref();
-   myCamera->position.setValue(0.212482, -0.881014, 2.5);
-   myCamera->heightAngle = M_PI/4;
-   root->addChild(myCamera);
-   root->addChild(new SoDirectionalLight);
-   root->addChild(myMaterial);
+from pivy import *
+import sys
 
-   // Read the geometry from a file and add to the scene
-   SoInput myInput;
-   if (!myInput.openFile("/usr/share/src/Inventor/examples/data/dogDish.iv"))
-      exit (1);
-   SoSeparator *geomObject = SoDB::readAll(&myInput);
-   if (geomObject == NULL)
-      exit (1);
-   root->addChild(geomObject);
+def main():
+	# Initialize Inventor and Gtk
+	myWindow = SoGtk_init(sys.argv[0])
    
-   // Make the scene graph visible
-   myRenderArea->setSceneGraph(root);
+	# Build the form to hold both components
+	myForm = GtkCreateWidget("Form", xmFormWidgetClass, myWindow, None, 0)
    
-   // Attach the material editor to the material in the scene
-   myEditor->attach(myMaterial);
+	# Build the render area and Material Editor
+	myRenderArea = SoGtkRenderArea(myForm)
+	myRenderArea.setSize(SbVec2s(200, 200))
+	myEditor = SoGtkMaterialEditor(myForm)
    
-   // Show the main window
-   myRenderArea->show();
-   myEditor->show();
-   SoXt::show(myForm);    // this calls XtManageChild
-   SoXt::show(myWindow);  // this calls XtRealizeWidget
+	# Layout the components within the form
+	args = []
+	GtkSetArg(args[0], XmNtopAttachment,    XmATTACH_FORM)
+	GtkSetArg(args[1], XmNbottomAttachment, XmATTACH_FORM)
+	GtkSetArg(args[2], XmNleftAttachment,   XmATTACH_FORM) 
+	GtkSetArg(args[3], XmNrightAttachment,  XmATTACH_POSITION)
+	GtkSetArg(args[4], XmNrightPosition,    40)
+	GtkSetValues(myRenderArea.getWidget(), args, 5)
+	GtkSetArg(args[2], XmNrightAttachment,  XmATTACH_FORM) 
+	GtkSetArg(args[3], XmNleftAttachment,   XmATTACH_POSITION)
+	GtkSetArg(args[4], XmNleftPosition,     41) 
+	GtkSetValues(myEditor.getWidget(), args, 5)
+	
+	# Create a scene graph
+	root = SoSeparator()
+	myCamera = SoPerspectiveCamera()
+	myMaterial = SoMaterial()
    
-   // Loop forever
-   SoXt::mainLoop();
-}
+	root.ref()
+	myCamera.position.setValue(0.212482, -0.881014, 2.5)
+	myCamera.heightAngle(M_PI/4)
+	root.addChild(myCamera)
+	root.addChild(SoDirectionalLight())
+	root.addChild(myMaterial)
+
+	# Read the geometry from a file and add to the scene
+	myInput = SoInput()
+	if not myInput.openFile("dogDish.iv"):
+		sys.exit(1)
+	geomObject = SoDB_readAll(myInput)
+	if geomObject == None:
+		sys.exit(1)
+	root.addChild(geomObject)
+   
+	# Make the scene graph visible
+	myRenderArea.setSceneGraph(root)
+   
+	# Attach the material editor to the material in the scene
+	myEditor.attach(myMaterial)
+   
+	# Show the main window
+	myRenderArea.show()
+	myEditor.show()
+	SoGtk_show(myForm)    # this calls GtkManageChild
+	SoGtk_show(myWindow)  # this calls GtkRealizeWidget
+   
+	# Loop forever
+	SoGtk_mainLoop()
+
+if __name__ == "__main__":
+    main()

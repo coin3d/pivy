@@ -1,100 +1,91 @@
-/*
- *
- *  Copyright (C) 2000 Silicon Graphics, Inc.  All Rights Reserved. 
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  Further, this software is distributed without any warranty that it is
- *  free of the rightful claim of any third person regarding infringement
- *  or the like.  Any license provided herein, whether implied or
- *  otherwise, applies only to this software file.  Patent licenses, if
- *  any, provided herein do not apply to combinations of this program with
- *  other software, or any other product whatsoever.
- * 
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *  Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
- *  Mountain View, CA  94043, or:
- * 
- *  http://www.sgi.com 
- * 
- *  For further information regarding this notice, see: 
- * 
- *  http://oss.sgi.com/projects/GenInfo/NoticeExplan/
- *
- */
+#!/usr/bin/env python
 
-/*------------------------------------------------------------
- *  This is an example from the Inventor Mentor,
- *  chapter 16, example 1.
- * 
- *  This example shows how to use the overlay planes with the
- *  viewer components. By default color 0 is used for the
- *  overlay planes background color (clear color), so we use
- *  color 1 for the object. This example also shows how to
- *  load the overlay color map with the wanted color.
- *----------------------------------------------------------*/
+###
+# Copyright (c) 2002, Tamer Fahmy <tamer@tammura.at>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#   * Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#   * Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived
+#     from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 
-#include <stdlib.h>
-#include <Inventor/SoDB.h>
-#include <Inventor/SoInput.h>
-#include <Inventor/nodes/SoNode.h>
-#include <Inventor/nodes/SoCone.h>
-#include <Inventor/Xt/SoXt.h>
-#include <Inventor/Xt/viewers/SoXtExaminerViewer.h>
+###
+# This is an example from the Inventor Mentor,
+# chapter 16, example 1.
+#
+# This example shows how to use the overlay planes with the
+# viewer components. By default color 0 is used for the
+# overlay planes background color (clear color), so we use
+# color 1 for the object. This example also shows how to
+# load the overlay color map with the wanted color.
+#
 
-static char *overlayScene = "\
-#Inventor V2.0 ascii\n\
-\
-Separator { \
-   OrthographicCamera { \
-      position 0 0 5 \
-      nearDistance 1.0 \
-      farDistance 10.0 \
-      height 10 \
-   } \
-   LightModel { model BASE_COLOR } \
-   ColorIndex { index 1 } \
-   Coordinate3 { point [ -1 -1 0, -1 1 0, 1 1 0, 1 -1 0] } \
-   FaceSet {} \
-} ";
+from pivy import *
+import sys
 
-void
-main(int , char **argv)
-{
-   // Initialize Inventor and Xt
-   Widget myWindow = SoXt::init(argv[0]);
+overlayScene = """
+#Inventor V2.0 ascii
 
-   // read the scene graph in
-   SoInput in;
-   SoNode *scene;
-   in.setBuffer((void *)overlayScene, (size_t) strlen(overlayScene));
-   if (! SoDB::read(&in, scene) || scene == NULL) {
-      printf("Couldn't read scene\n");
-      exit(1);
+Separator {
+   OrthographicCamera {
+      position 0 0 5
+      nearDistance 1.0
+      farDistance 10.0
+      height 1
    }
+   LightModel { model BASE_COLOR }
+   ColorIndex { index 1 }
+   Coordinate3 { point [ -1 -1 0, -1 1 0, 1 1 0, 1 -1 0] }
+   FaceSet {}
+}"""
 
-   // Allocate the viewer, set the overlay scene and
-   // load the overlay color map with the wanted color.
-   SbColor color(.5, 1, .5);
-   SoXtExaminerViewer *myViewer = new SoXtExaminerViewer(myWindow);
-   myViewer->setSceneGraph(new SoCone);
-   myViewer->setOverlaySceneGraph(scene);
-   myViewer->setOverlayColorMap(1, 1, &color);
-   myViewer->setTitle("Overlay Plane");
+def main():
+	# Initialize Inventor and Gtk
+	myWindow = SoGtk_init(sys.argv[0])  
+	if myWindow == None: sys.exit(1)     
+
+	# read the scene graph in
+	input = SoInput()
+	input.setBuffer(overlayScene)
+	scene = SoDB_readAll(input)
+	if scene == None:
+		print "Couldn't read scene"
+		sys.exit(1)
+
+	# Allocate the viewer, set the overlay scene and
+	# load the overlay color map with the wanted color.
+	color = SbColor(.5, 1, .5)
+	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer.setSceneGraph(SoCone())
+	myViewer.setOverlaySceneGraph(scene)
+	myViewer.setOverlayColorMap(1, 1, color)
+	myViewer.setTitle("Overlay Plane")
    
-   // Show the viewer and loop forever
-   myViewer->show();
-   XtRealizeWidget(myWindow);
-   SoXt::mainLoop();
-}
+	# Show the viewer and loop forever
+	myViewer.show()
+	# GtkRealizeWidget(myWindow)
+	SoGtk_mainLoop()
+
+if __name__ == "__main__":
+    main()

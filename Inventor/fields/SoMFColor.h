@@ -59,11 +59,12 @@ def setValue(*args):
    if len(args) == 2:
       if isinstance(args[1], SbVec3f):
          return apply(pivyc.SoMFColor_setValue_vec,args)
-      else:
+      elif isinstance(args[1], SbColor):
          return apply(pivyc.SoMFColor_setValue_col,args)
+      else:
+         return apply(pivyc.SoMFColor_setValue,args)
    elif len(args) == 4:
       return apply(pivyc.SoMFColor_setValue_fff,args)
-   return apply(pivyc.SoMFColor_setValue,args)
 %}
 
 %rename(set1Value_i_col) SoMFColor::set1Value(int const ,SbColor const &);
@@ -75,11 +76,12 @@ def set1Value(*args):
    if len(args) == 3:
       if isinstance(args[2], SbVec3f):
          return apply(pivyc.SoMFColor_set1Value_i_vec,args)
-      else:
+      elif isinstance(args[2], SbColor):
          return apply(pivyc.SoMFColor_set1Value_i_col,args)
+      else:
+         return apply(pivyc.SoMFColor_set1Value,args)
    elif len(args) == 5:
       return apply(pivyc.SoMFColor_set1Value_i_fff,args)
-   return apply(pivyc.SoMFColor_set1Value,args)
 %}
 
 %rename(setHSVValue_fff) SoMFColor::setHSVValue(const float h, const float s, const float v);
@@ -108,7 +110,6 @@ def setValues(*args):
       return apply(pivyc.SoMFColor_setValues_i_i_col,args)
    return apply(pivyc.SoMFColor_setValues,args)
 %}
-
 #endif
 
 

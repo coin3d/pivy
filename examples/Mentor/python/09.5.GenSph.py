@@ -48,17 +48,17 @@ import sys
 
 def printVertex(vertex):
 	point = vertex.getPoint()
-	print "\tCoords     = (%g, %g, %g)" % point[0], point[1], point[2]
+	print "\tCoords     = (%g, %g, %g)" % (point[0], point[1], point[2])
 
 	normal = vertex.getNormal()
-	print "\tNormal     = (%g, %g, %g)" % normal[0], normal[1], normal[2]
+	print "\tNormal     = (%g, %g, %g)" % (normal[0], normal[1], normal[2])
 
 def printHeaderCallback(void, callbackAction, node):
 	print "\n Sphere ",
 	# Print the node name (if it exists) and address
 	if not not node.getName():
-		print "named \"%s\" " % node.getName().getString(),
-	print "at address %#x\n" % node
+		print 'named "%s" ' % node.getName().getString(),
+	print "at address %r\n" % node.this
 
 	return SoCallbackAction.CONTINUE
 
@@ -72,10 +72,10 @@ def printTriangleCallback(void, callbackAction,
 def printSpheres(root):
 	myAction = SoCallbackAction()
 	
-	myAction.addPreCallback(SoSphere_getClassTypeId(),
-							printHeaderCallback, None)
-	myAction.addTriangleCallback(SoSphere_getClassTypeId(), 
-								 printTriangleCallback, None)
+	myAction.addPythonPreCallback(SoSphere_getClassTypeId(),
+								  printHeaderCallback, None)
+	myAction.addPythonTriangleCallback(SoSphere_getClassTypeId(), 
+									   printTriangleCallback, None)
 
 	myAction.apply(root)
 	

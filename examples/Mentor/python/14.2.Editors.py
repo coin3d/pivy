@@ -1,146 +1,126 @@
-/*
- *
- *  Copyright (C) 2000 Silicon Graphics, Inc.  All Rights Reserved. 
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  Further, this software is distributed without any warranty that it is
- *  free of the rightful claim of any third person regarding infringement
- *  or the like.  Any license provided herein, whether implied or
- *  otherwise, applies only to this software file.  Patent licenses, if
- *  any, provided herein do not apply to combinations of this program with
- *  other software, or any other product whatsoever.
- * 
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *  Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
- *  Mountain View, CA  94043, or:
- * 
- *  http://www.sgi.com 
- * 
- *  For further information regarding this notice, see: 
- * 
- *  http://oss.sgi.com/projects/GenInfo/NoticeExplan/
- *
- */
+#!/usr/bin/env python
 
-/*----------------------------------------------------------------
- *  This is an example from the Inventor Mentor
- *  chapter 14, example 2.
- *
- *  Use nodekits to create a scene with a desk into an 
- *  SoWrapperKit.  Then, add a material editor for the desk and 
- *  a light editor on the light.
- *  
- *  The scene is organized using an SoSceneKit, which contains
- *  lists for grouping lights (lightList), cameras (cameraList), 
- *  and objects (childList) in a scene.
- *  
- *  Once the scene is created, a material editor is attached to 
- *  the wrapperKit's 'material' part, and a directional light editor
- *  is attached to the light's 'directionalLight' part.
- *----------------------------------------------------------------*/
+###
+# Copyright (c) 2002, Tamer Fahmy <tamer@tammura.at>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#   * Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#   * Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived
+#     from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 
-#include <stdlib.h>
-#include <Inventor/SoDB.h>
-#include <Inventor/SoInput.h>
-#include <Inventor/Xt/SoXt.h>
-#include <Inventor/Xt/SoXtDirectionalLightEditor.h>
-#include <Inventor/Xt/SoXtMaterialEditor.h>
-#include <Inventor/Xt/SoXtRenderArea.h>
-#include <Inventor/nodekits/SoCameraKit.h>
-#include <Inventor/nodekits/SoLightKit.h>
-#include <Inventor/nodekits/SoSceneKit.h>
-#include <Inventor/nodekits/SoWrapperKit.h>
-#include <Inventor/nodes/SoMaterial.h>
-#include <Inventor/nodes/SoPerspectiveCamera.h>
-#include <Inventor/nodes/SoSeparator.h>
+###
+# This is an example from the Inventor Mentor
+# chapter 14, example 2.
+#
+# Use nodekits to create a scene with a desk into an 
+# SoWrapperKit.  Then, add a material editor for the desk and 
+# a light editor on the light.
+# 
+# The scene is organized using an SoSceneKit, which contains
+# lists for grouping lights (lightList), cameras (cameraList), 
+# and objects (childList) in a scene.
+# 
+# Once the scene is created, a material editor is attached to 
+# the wrapperKit's 'material' part, and a directional light editor
+# is attached to the light's 'directionalLight' part.
+#
 
-void
-main(int , char **argv)
-{
-   // Initialize Inventor and Xt
-   Widget myWindow = SoXt::init(argv[0]);
-   if (myWindow == NULL) exit(1);
+from pivy import *
+import sys
 
-   // SCENE!
-   SoSceneKit *myScene = new SoSceneKit;
-   myScene->ref();
+def main():
+	# Initialize Inventor and Gtk
+	myWindow = SoGtk_init(sys.argv[0])  
+	if myWindow == None: sys.exit(1)     
 
-   // LIGHTS! Add an SoLightKit to the "lightList." The 
-   // SoLightKit creates an SoDirectionalLight by default.
-   myScene->setPart("lightList[0]", new SoLightKit);
+	# SCENE!
+	myScene = SoSceneKit()
+	myScene.ref()
 
-   // CAMERA!! Add an SoCameraKit to the "cameraList." The 
-   // SoCameraKit creates an SoPerspectiveCamera by default.
-   myScene->setPart("cameraList[0]", new SoCameraKit);
-   myScene->setCameraNumber(0);
+	# LIGHTS! Add an SoLightKit to the "lightList." The 
+	# SoLightKit creates an SoDirectionalLight by default.
+	myScene.setPart("lightList[0]", SoLightKit())
 
-   // Read an object from file. 
-   SoInput myInput;
-   if (!myInput.openFile("/usr/share/src/Inventor/examples/data/desk.iv")) 
-      exit (1);
-   SoSeparator *fileContents = SoDB::readAll(&myInput);
-   if (fileContents == NULL) 
-      exit (1);
+	# CAMERA!! Add an SoCameraKit to the "cameraList." The 
+	# SoCameraKit creates an SoPerspectiveCamera by default.
+	myScene.setPart("cameraList[0]", SoCameraKit())
+	myScene.setCameraNumber(0)
 
-   // OBJECT!! Create an SoWrapperKit and set its contents to
-   // be what you read from file.
-   SoWrapperKit *myDesk = new SoWrapperKit();
-   myDesk->setPart("contents", fileContents);
-   myScene->setPart("childList[0]", myDesk);
+	# Read an object from file. 
+	myInput = SoInput()
+	if not myInput.openFile("desk.iv"):
+		sys.exit(1)
+	fileContents = SoDB_readAll(myInput)
+	if fileContents == None: 
+		sys.exit(1)
 
-   // Give the desk a good starting color
-   myDesk->set("material { diffuseColor .8 .3 .1 }");
+	# OBJECT!! Create an SoWrapperKit and set its contents to
+	# be what you read from file.
+	myDesk =SoWrapperKit()
+	myDesk.setPart("contents", fileContents)
+	myScene.setPart("childList[0]", myDesk)
 
-   // MATERIAL EDITOR!!  Attach it to myDesk's material node.
-   // Use the SO_GET_PART macro to get this part from myDesk.
-   SoXtMaterialEditor *mtlEditor = new SoXtMaterialEditor();
-   SoMaterial *mtl = SO_GET_PART(myDesk,"material",SoMaterial);
-   mtlEditor->attach(mtl);
-   mtlEditor->setTitle("Material of Desk");
-   mtlEditor->show();
+	# Give the desk a good starting color
+	myDesk.set("material { diffuseColor .8 .3 .1 }")
 
-   // DIRECTIONAL LIGHT EDITOR!! Attach it to the 
-   // SoDirectionalLight node within the SoLightKit we made.
-   SoXtDirectionalLightEditor *ltEditor = 
-                 new SoXtDirectionalLightEditor();
-   SoPath *ltPath = myScene->createPathToPart(
-      "lightList[0].light", TRUE);
-   ltEditor->attach(ltPath);
-   ltEditor->setTitle("Lighting of Desk");
-   ltEditor->show();
+	# MATERIAL EDITOR!!  Attach it to myDesk's material node.
+	# Use the SO_GET_PART macro to get this part from myDesk.
+	mtlEditor = SoGtkMaterialEditor()
+	mtl = SO_GET_PART(myDesk,"material",SoMaterial())
+	mtlEditor.attach(mtl)
+	mtlEditor.setTitle("Material of Desk")
+	mtlEditor.show()
 
-   SoXtRenderArea *myRenderArea = new SoXtRenderArea(myWindow);
+	# DIRECTIONAL LIGHT EDITOR!! Attach it to the 
+	# SoDirectionalLight node within the SoLightKit we made.
+	ltEditor = SoGtkDirectionalLightEditor()
+	ltPath = myScene.createPathToPart("lightList[0].light", TRUE)
+	ltEditor.attach(ltPath)
+	ltEditor.setTitle("Lighting of Desk")
+	ltEditor.show()
+   
+	myRenderArea = SoGtkRenderArea(myWindow)
 
-   // Set up Camera with ViewAll...
-   // -- use the SO_GET_PART macro to get the camera node.
-   // -- viewall is a method on the 'camera' part of 
-   //    the cameraKit, not on the cameraKit itself.  So the part
-   //    we ask for is not 'cameraList[0]' (which is of type 
-   //    SoPerspectiveCameraKit), but 
-   //    'cameraList[0].camera' (which is of type 
-   //    SoPerspectiveCamera).
-   SoPerspectiveCamera *myCamera = SO_GET_PART(myScene,
-      "cameraList[0].camera", SoPerspectiveCamera);
-   SbViewportRegion myRegion(myRenderArea->getSize());
-   myCamera->viewAll(myScene, myRegion);
+	# Set up Camera with ViewAll...
+	# -- use the SO_GET_PART macro to get the camera node.
+	# -- viewall is a method on the 'camera' part of 
+	#    the cameraKit, not on the cameraKit itself.  So the part
+	#    we ask for is not 'cameraList[0]' (which is of type 
+	#    SoPerspectiveCameraKit), but 
+	#    'cameraList[0].camera' (which is of type 
+	#    SoPerspectiveCamera).
+	myCamera = SO_GET_PART(myScene, "cameraList[0].camera", SoPerspectiveCamera())
+	myRegion = SbViewportRegion(myRenderArea.getSize())
+	myCamera.viewAll(myScene, myRegion)
 
-   myRenderArea->setSceneGraph(myScene);
-   myRenderArea->setTitle("Main Window: Desk In A Scene Kit");
-   myRenderArea->show();
+	myRenderArea.setSceneGraph(myScene)
+	myRenderArea.setTitle("Main Window: Desk In A Scene Kit")
+	myRenderArea.show()
 
-   SoXt::show(myWindow);
-   SoXt::mainLoop();
-}
+	SoGtk_show(myWindow)
+	SoGtk_mainLoop()
 
+if __name__ == "__main__":
+    main()

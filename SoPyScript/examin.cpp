@@ -1,6 +1,7 @@
+#include <Inventor/SoInput.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoTransform.h>
-#include <Inventor/SoInput.h>
+
 #include <Inventor/Qt/SoQt.h>
 #include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
 
@@ -15,27 +16,24 @@ main(int argc, char *argv[])
   }
 
   // initialize Inventor and Qt
-  QWidget * w = SoQt::init(argv[0]);
+  QWidget * window = SoQt::init(argv[0]);
 
   SoPyScript::initClass();
 
   SoInput * input = new SoInput();
   input->openFile(argv[1]);
 
-  SoSeparator *root = new SoSeparator;
+  SoSeparator * root = new SoSeparator;
   root->ref();
 
-  SoSeparator *vol = new SoSeparator;
-
-  root->addChild(vol);
   root->addChild(SoDB::readAll(input));
   
   // initialize an Examiner Viewer
-  SoQtExaminerViewer *myviewer = new SoQtExaminerViewer(w);
-  myviewer->setSceneGraph(root);
-  myviewer->show();
+  SoQtExaminerViewer * examinerViewer = new SoQtExaminerViewer(window);
+  examinerViewer->setSceneGraph(root);
+  examinerViewer->show();
 
-  SoQt::show(w);
+  SoQt::show(window);
   SoQt::mainLoop();
 
   return 0;

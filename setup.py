@@ -151,7 +151,7 @@ class pivy_build(build):
     CXX_LIBS = "-lswigpy" + " "
 
     ext_modules=[]
-    py_modules=[]
+    py_modules=['sogui']
 
     def do_os_popen(self, cmd):
         "returns the output of a command in a single line."
@@ -372,7 +372,7 @@ setup(name = "Pivy",
       cmdclass = {'build' : pivy_build,
                   'clean' : pivy_clean},
       ext_modules = pivy_build.ext_modules,
-      py_modules  = ['sogui'] + pivy_build.py_modules,
+      py_modules  = pivy_build.py_modules,
       classifiers = filter(None, classifiers.split("\n")),
       license = "BSD License",
       platforms = ['Any']

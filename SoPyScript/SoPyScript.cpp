@@ -68,7 +68,7 @@ typedef struct swig_type_info {
 #define SWIG_TypeQuery SWIG_Python_TypeQuery
 
 extern "C" {
-PyObject * SWIG_Python_NewPointerObj(void *, swig_type_info *, int own);
+PyObject * SWIG_NewPointerObj(void *, swig_type_info *, int own);
 swig_type_info * SWIG_TypeQuery(const char *);
 }
 

@@ -56,8 +56,9 @@ sopyscript_env.ParseConfig("coin-config --cppflags --libs --ldflags")
 sopyscript_env.Append(CPPPATH = ['.', distutils.sysconfig.get_python_inc()])
 sopyscript_env.Append(LIBPATH = distutils.sysconfig.get_python_lib())
 sopyscript_env.Append(LIBS = 'pivy_runtime')
-sopyscript_env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars()['BLDLIBRARY'].split())
-if str(Platform()) != 'win32':
+sopyscript_env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars()['LINKFORSHARED'].split() +
+                                   distutils.sysconfig.get_config_vars()['BLDLIBRARY'].split())
+if str(Platform()) == 'posix':
     sopyscript_env.Append(LINKFLAGS = '-Wl,-R' + distutils.sysconfig.get_python_lib())
 
 sopyscript_env.SharedLibrary('SoPyScript', 'SoPyScript.cpp')

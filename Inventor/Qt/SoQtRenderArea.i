@@ -6,7 +6,7 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
   PyObject *result, *sip, *qt, *qev = NULL;
   int ret = 0;
 
-  /* try to create a PyQt instance over sip */
+  /* try to create a QEvent PyQt instance over sip */
 
   /* check if the sip module is available and import it */
   if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")),
@@ -44,7 +44,7 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
 
   /* if no QEvent could be created through sip return a swig QEvent type */
   if (!qev) {
-    qev = SWIG_NewPointerObj((void *)event, SWIGTYPE_p_QEvent, 0);
+    qev = SWIG_NewPointerObj((void *)event, SWIGTYPE_p_QEvent, 1);
   }
 
   /* the first item in the closure sequence is the python callback

@@ -28,16 +28,14 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-import os, sys
+import os
 import distutils.sysconfig
 
 SetOption('implicit_cache', 1)
 
 opts = Options('custom.py')
 opts.AddOptions(BoolOption('warnings', 'compilation with -Wall', 1),
-                EnumOption('debug', 'debug output and symbols', 'no',
-                           allowed_values=('yes', 'no', 'full'),
-                           map={}, ignorecase=0))
+                BoolOption('debug', 'debug output and symbols', 0))
 
 env = Environment(ENV = os.environ,
                   options = opts,
@@ -45,31 +43,21 @@ env = Environment(ENV = os.environ,
 
 Help(opts.GenerateHelpText(env))
 
-if env['debug'] in ('yes', 'full'):
-    if sys.platform == "win32":
-        env.Append(CCFLAGS = ['/Zi'])
-    else:
-        env.Append(CCFLAGS = ['-g'])
+if env['debug']:
+    env.Append(CCFLAGS = (str(Platform()) == "win32") and ['/Zi'] or ['-g'])
 else:
-    if sys.platform == "win32":
-        env.Append(CCFLAGS = '/O2')
-    else:
-        env.Append(CCFLAGS = '-O2')
+    env.Append(CCFLAGS = (str(Platform()) == "win32") and ['/O2'] or ['-O2'])
 
-if not sys.platform == "win32" and  env['warnings']:
+if str(Platform()) != "win32" and env['warnings']:
     env.Append(CCFLAGS = '-Wall')
 
-sopyscript_env = env.Copy(CPPPATH=".")
-sopyscript = sopyscript_env.Object(Split('SoPyScript.cpp'),
-                                   CPPPATH=['.', distutils.sysconfig.get_python_inc()])
+sopyscript_env = env.Copy()
+sopyscript_env.ParseConfig("coin-config --cppflags --libs --ldflags")
+sopyscript_env.Append(CPPPATH=['.', distutils.sysconfig.get_python_inc()])
+sopyscript_env.Append(LIBPATH = distutils.sysconfig.get_python_lib())
+sopyscript_env.Append(LIBS = 'pivy_runtime')
+sopyscript_env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars()['BLDLIBRARY'].split())
+if str(Platform()) != 'win32':
+    sopyscript_env.Append(LINKFLAGS = '-Wl,-R' + distutils.sysconfig.get_python_lib())
 
-examin_env = sopyscript_env.Copy()
-examin_env.ParseConfig("soqt-config --cppflags --libs --ldflags")
-
-examin_env.Append(LIBPATH = distutils.sysconfig.get_python_lib())
-examin_env.Append(LIBS = 'pivy_runtime')
-examin_env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars()['BLDLIBRARY'].split())
-if sys.platform != 'win32':
-    examin_env.Append(LINKFLAGS = '-Wl,-R' + distutils.sysconfig.get_python_lib())
-
-examin_env.Program('examin', Split('examin.cpp') + sopyscript)
+sopyscript_env.SharedLibrary('SoPyScript', 'SoPyScript.cpp')

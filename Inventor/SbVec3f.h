@@ -73,12 +73,12 @@ def __init__(self,*args):
       self.thisown = 1
       return
    elif len(args) == 3:
-      if type(args[0]) == type(1.0):
-         self.this = apply(pivyc.new_SbVec3f_fff,args)
+      if isinstance(args[0], SbPlane):
+         self.this = apply(pivyc.new_SbVec3f_pl_pl_pl,args)
          self.thisown = 1
          return
       else:
-         self.this = apply(pivyc.new_SbVec3f_pl_pl_pl,args)
+         self.this = apply(pivyc.new_SbVec3f_fff,args)
          self.thisown = 1
          return
    self.this = apply(pivyc.new_SbVec3f,args)

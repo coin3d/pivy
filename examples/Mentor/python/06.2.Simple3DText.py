@@ -51,7 +51,7 @@ def main():
 
 	# Choose a font
 	myFont = SoFont()
-	myFont.name.setValue(SbName("Times-Roman"))
+	myFont.name("Times-Roman")
 	myFont.size.setValue(.2)
 	root.addChild(myFont)
 

@@ -17,66 +17,34 @@
  *
 \**************************************************************************/
 
-#ifndef COIN_SOMFFLOAT_H
-#define COIN_SOMFFLOAT_H
+#ifndef COIN_SOMFSTRING_H
+#define COIN_SOMFSTRING_H
 
 #include <Inventor/fields/SoMField.h>
 #include <Inventor/fields/SoSubField.h>
+#include <Inventor/SbString.h>
 
-#ifdef __PIVY__
-%{
-static void
-convert_SoMFFloat_array(PyObject *input, int len, float *temp)
-{
-  int i;
 
-  for (i=0; i<len; i++) {
-	PyObject *oi = PySequence_GetItem(input,i);
-	if (PyNumber_Check(oi)) {
-	  temp[i] = (float) PyFloat_AsDouble(oi);
-	} else {
-	  PyErr_SetString(PyExc_ValueError,"Sequence elements must be floats");
-	  free(temp);       
-	  return;
-	}
-  }
-  return;
-}
-%}
-
-%typemap(in) float * (float *temp) {
-  int len;
-
-  if (PySequence_Check($input)) {
-	len = PySequence_Length($input);
-	temp = (float *) malloc(len*sizeof(float));
-	convert_SoMFFloat_array($input, len, temp);
-  
-	$1 = temp;
-  } else {
-	PyErr_SetString(PyExc_TypeError, "expected a sequence.");
-  }
-}
-#endif
-
-class COIN_DLL_API SoMFFloat : public SoMField {
+class COIN_DLL_API SoMFString : public SoMField {
   typedef SoMField inherited;
 
-  SO_MFIELD_HEADER(SoMFFloat, float, float);
+  SO_MFIELD_HEADER(SoMFString, SbString, const SbString &);
 
 public:
   static void initClass(void);
 
 #ifdef __PIVY__
   %addmethods {
-	void __call__(float i) {
-	  self->setValue(i);
+	void __call__(char * str) {
+	  self->setValue(str);
 	}
   }
 #endif
 
-private:
-  virtual int getNumValuesPerLine(void) const;
+  void setValues(const int start, const int num, const char * strings[]);
+  void setValue(const char * string);
+  void deleteText(const int fromline, const int fromchar,
+                  const int toline, const int tochar);
 };
 
-#endif // !COIN_SOMFFLOAT_H
+#endif // !COIN_SOMFSTRING_H

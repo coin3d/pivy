@@ -11,10 +11,10 @@ nodekit.  The first line tells swig about the module name; in our case:
 then add a %{...%} section where you include all headers of your NodeKits
 that you want to provide in your module. They are needed for compilation.
 
-afterwards follows a standard boilerplate template for different default
-typemaps from pivy.i. Later i will probably provide a script or a file that
-you simply can include and contains all these. For this to work you will
-have to include the SbTime header in the above %{...%} section.
+Now include the 'pivy_common_typemaps.i' interface file that contain
+typemaps that are needed and common for all pivy modules.
+
+%include pivy_common_typemaps.i
 
 Finally add all the headers (of your Nodekits) that swig should actually
 parse, hence the "%include ShapeScale.h" directive at the end.

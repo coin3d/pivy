@@ -58,7 +58,7 @@ convert_SoMFVec3f_array(PyObject *input, int len, float temp[][3])
 %typemap(in) float xyz[][3] (float (*temp)[3]) {
   int len = PySequence_Length($input);
 
-  temp = (float []*) malloc(len*3*sizeof(float));
+  temp = (float (*)[3]) malloc(len*3*sizeof(float));
   convert_SoMFVec3f_array($input, len, temp);
   $1 = temp;
 }

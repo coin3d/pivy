@@ -25,18 +25,64 @@
 #include <Inventor/SbBasic.h>
 
 #ifdef __PIVY__
+%{
+static void
+convert_SbVec4f_array(PyObject *input, float temp[4])
+{
+  if (PySequence_Check(input)) {
+	if (!PyArg_ParseTuple(input, "fff", temp+0, temp+1, temp+2, temp+3)) {
+	  PyErr_SetString(PyExc_TypeError, "sequence must contain 4 float elements");
+	  return;
+	}
+	return;
+  } else {
+	PyErr_SetString(PyExc_TypeError, "expected a sequence.");
+    return;
+  }  
+}
+%}
+
+%typemap(in) float v[4] (float temp[4]) {
+  convert_SbVec4f_array($input, temp);
+  $1 = temp;
+}
+
+%rename(SbVec4f_vec) SbVec4f::SbVec4f(const float v[4]);
+%rename(SbVec4f_ffff) SbVec4f::SbVec4f(const float x, const float y, const float z, const float w);
+
+%feature("shadow") SbVec4f::SbVec4f %{
+def __init__(self,*args):
+   if len(args) == 1:
+      self.this = apply(pivyc.new_SbVec4f_vec,args)
+      self.thisown = 1
+      return
+   elif len(args) == 4:
+      self.this = apply(pivyc.new_SbVec4f_ffff,args)
+      self.thisown = 1
+      return
+   self.this = apply(pivyc.new_SbVec3f,args)
+   self.thisown = 1
+%}
+
+%rename(setValue_ffff) SbVec4f::setValue(const float x, const float y, const float z, const float w);
+
+%feature("shadow") SbVec4f::setValue(const float vec[4]) %{
+def setValue(*args):
+   if len(args) == 5:
+      return apply(pivyc.SbVec4f_setValue_ffff,args)
+   return apply(pivyc.SbVec4f_setValue,args)
+%}
+
 %apply float *OUTPUT { float& x, float& y, float& z, float& w };
+
 #endif
 
 class SbVec3f;
 
 class COIN_DLL_API SbVec4f {
 public:
-#ifndef __PIVY__
   SbVec4f(void);
   SbVec4f(const float v[4]);
-#endif
-
   SbVec4f(const float x, const float y, const float z, const float w);
   float dot(const SbVec4f& v) const;
   SbBool equals(const SbVec4f& v, const float tolerance) const;
@@ -51,10 +97,7 @@ public:
   void negate(void);
   float normalize(void);
 
-#ifndef __PIVY__
   SbVec4f& setValue(const float v[4]);
-#endif
-
   SbVec4f& setValue(const float x, const float y, const float z,
                     const float w);
 
@@ -65,9 +108,7 @@ public:
 	  return (self->getValue())[i];
 	}
   }
-#endif
-
-#ifndef __PIVY__
+#else
   float& operator [](const int i);
   const float& operator [](const int i) const;
 #endif

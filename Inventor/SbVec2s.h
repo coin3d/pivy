@@ -25,16 +25,61 @@
 #include <Inventor/system/inttypes.h>
 
 #ifdef __PIVY__
+%{
+static void
+convert_SbVec2s_array(PyObject *input, short temp[2])
+{
+  if (PySequence_Check(input)) {
+	if (!PyArg_ParseTuple(input, "hh", temp+0, temp+1)) {
+	  PyErr_SetString(PyExc_TypeError, "sequence must contain 2 short int elements");
+	  return;
+	}
+	return;
+  } else {
+	PyErr_SetString(PyExc_TypeError, "expected a sequence.");
+    return;
+  }  
+}
+%}
+
+%typemap(in) short v[2] (short temp[2]) {
+  convert_SbVec2s_array($input, temp);
+  $1 = temp;
+}
+
+%rename(SbVec2s_vec) SbVec2s::SbVec2s(const short v[2]);
+%rename(SbVec2s_ss) SbVec2s::SbVec2s(const short x, const short y);
+
+%feature("shadow") SbVec2s::SbVec2s %{
+def __init__(self,*args):
+   if len(args) == 1:
+      self.this = apply(pivyc.new_SbVec2s_vec,args)
+      self.thisown = 1
+      return
+   elif len(args) == 2:
+      self.this = apply(pivyc.new_SbVec2s_ss,args)
+      self.thisown = 1
+      return
+   self.this = apply(pivyc.new_SbVec2s,args)
+   self.thisown = 1
+%}
+
+%rename(setValue_ss) SbVec2s::setValue(short x, short y);
+
+%feature("shadow") SbVec2s::setValue(const short v[2]) %{
+def setValue(*args):
+   if len(args) == 3:
+      return apply(pivyc.SbVec2s_setValue_ss,args)
+   return apply(pivyc.SbVec2s_setValue,args)
+%}
+
 %apply short *OUTPUT { short &x, short &y };
 #endif
 
 class COIN_DLL_API SbVec2s {
 public:
-#ifndef __PIVY__
   SbVec2s(void);
   SbVec2s(const short v[2]);
-#endif
-
   SbVec2s(const short x, const short y);
   int32_t dot(const SbVec2s& v) const;
 
@@ -45,10 +90,7 @@ public:
   void getValue(short& x, short& y) const;
   void negate(void);
 
-#ifndef __PIVY__
   SbVec2s& setValue(const short v[2]);
-#endif
-
   SbVec2s& setValue(short x, short y);
 
 #ifdef __PIVY__
@@ -58,21 +100,16 @@ public:
 	  return (self->getValue())[i];
 	}
   }
-#endif
-
-#ifndef __PIVY__
+#else
   short& operator [](const int i);
   const short& operator [](const int i) const;
-#endif
 
   SbVec2s& operator *=(int d);
-#ifndef __PIVY__
-  SbVec2s& operator *=(double d);
-#endif
   SbVec2s& operator /=(int d);
-#ifndef __PIVY__
-  SbVec2s& operator /=(double d);
 #endif
+
+  SbVec2s& operator *=(double d);
+  SbVec2s& operator /=(double d);
   SbVec2s& operator +=(const SbVec2s& u);
   SbVec2s& operator -=(const SbVec2s& u);
   SbVec2s operator -(void) const;

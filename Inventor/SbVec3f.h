@@ -27,22 +27,74 @@
 class SbPlane;
 
 #ifdef __PIVY__
+%{
+static void
+convert_SbVec3f_array(PyObject *input, float temp[3])
+{
+  if (PySequence_Check(input)) {
+	if (!PyArg_ParseTuple(input, "fff", temp+0, temp+1, temp+2)) {
+	  PyErr_SetString(PyExc_TypeError, "sequence must contain 3 float elements");
+	  return;
+	}
+	return;
+  } else {
+	PyErr_SetString(PyExc_TypeError, "expected a sequence.");
+    return;
+  }  
+}
+%}
+
+%typemap(in) float v[3] (float temp[3]) {
+  convert_SbVec3f_array($input, temp);
+  $1 = temp;
+}
+
+%rename(SbVec3f_vec) SbVec3f::SbVec3f(const float v[3]);
+%rename(SbVec3f_fff) SbVec3f::SbVec3f(const float x, const float y, const float z);
+%rename(SbVec3f_pl_pl_pl) SbVec3f::SbVec3f(const SbPlane & p0, const SbPlane & p1, const SbPlane & p2);
+
+%feature("shadow") SbVec3f::SbVec3f %{
+def __init__(self,*args):
+   if len(args) == 1:
+      self.this = apply(pivyc.new_SbVec3f_vec,args)
+      self.thisown = 1
+      return
+   elif len(args) == 3:
+      if type(args[1]) == type(1.0):
+         self.this = apply(pivyc.new_SbVec3f_fff,args)
+         self.thisown = 1
+         return
+      else:
+         self.this = apply(pivyc.new_SbVec3f_pl_pl_pl,args)
+         self.thisown = 1
+         return
+   self.this = apply(pivyc.new_SbVec3f,args)
+   self.thisown = 1
+%}
+
+%rename(setValue_fff) SbVec3f::setValue(const float x, const float y, const float z);
+%rename(setValue_vec_vec_vec_vec) SbVec3f::setValue(const SbVec3f & barycentric, const SbVec3f & v0, const SbVec3f & v1, const SbVec3f & v2);
+
+%feature("shadow") SbVec3f::setValue(const float vec[3]) %{
+def setValue(*args):
+   if len(args) == 4:
+      return apply(pivyc.SbVec3f_setValue_fff,args)
+   elif len(args) == 5:
+      return apply(pivyc.SbVec3f_setValue_vec_vec_vec_vec,args)
+   return apply(pivyc.SbVec3f_setValue,args)
+%}
+
 %apply float *OUTPUT { float & x, float & y, float & z };
 #endif
 
 class COIN_DLL_API SbVec3f {
 public:
-#ifndef __PIVY__
   SbVec3f(void);
   SbVec3f(const float v[3]);
-#endif
-
   SbVec3f(const float x, const float y, const float z);
-
-#ifndef __PIVY__
   SbVec3f(const SbPlane & p0, const SbPlane & p1, const SbPlane & p2);
+
   SbVec3f cross(const SbVec3f & v) const;
-#endif
 
   float dot(const SbVec3f & v) const;
   SbBool equals(const SbVec3f & v, const float tolerance) const;
@@ -58,18 +110,12 @@ public:
   void negate(void);
   float normalize(void);
 
-#ifndef __PIVY__
   SbVec3f & setValue(const float v[3]);
-#endif
-
   SbVec3f & setValue(const float x, const float y, const float z);
-
-#ifndef __PIVY__
   SbVec3f & setValue(const SbVec3f & barycentric,
                      const SbVec3f & v0,
                      const SbVec3f & v1,
                      const SbVec3f & v2);
-#endif
 
 #ifdef __PIVY__
   // add a method for wrapping c++ operator[] access

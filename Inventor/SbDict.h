@@ -26,6 +26,34 @@
 class SbPList;
 class SbDictEntry;
 
+#ifdef __PIVY__
+
+%rename(SbDict_dict) SbDict::SbDict(const SbDict & from);
+
+%feature("shadow") SbDict::SbDict %{
+def __init__(self,*args):
+   if type(args[0]) == type(1):
+      self.this = apply(pivyc.new_SbDict,args)
+      self.thisown = 1
+      return
+   self.this = apply(pivyc.new_SbDict_dict,args)
+   self.thisown = 1
+%}
+
+%rename(applyToAll_func_void) SbDict::applyToAll(void (* rtn)(unsigned long key, void * value, void * data),
+												 void * data) const;
+
+%feature("shadow") SbDict::applyToAll(void (* rtn)(unsigned long key, void * value)) %{
+def __init__(*args):
+   if len(args) == 3:
+      self.this = apply(pivyc.SbDict_applyToAll_func_void,args)
+      self.thisown = 1
+      return
+   self.this = apply(pivyc.SbDict_applyToAll,args)
+   self.thisown = 1
+%}
+
+#endif
 
 class COIN_DLL_API SbDict {
 public:
@@ -33,7 +61,9 @@ public:
   SbDict(const SbDict & from);
   ~SbDict();
 
+#ifndef __PIVY__
   SbDict & operator=(const SbDict & from);
+#endif
 
   void applyToAll(void (* rtn)(unsigned long key, void * value)) const;
   void applyToAll(void (* rtn)(unsigned long key, void * value, void * data),

@@ -64,7 +64,7 @@ def __init__(self,*args):
    self.thisown = 1
 %}
 
-%rename(setValue_ff)  SbVec2f::setValue(const float x, const float y);
+%rename(setValue_ff) SbVec2f::setValue(const float x, const float y);
 
 %feature("shadow") SbVec2f::setValue(const float vec[2]) %{
 def setValue(*args):

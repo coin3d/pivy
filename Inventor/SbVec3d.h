@@ -103,6 +103,14 @@ def setValue(*args):
    return apply(_pivy.SbVec3d_setValue,args)
 %}
 
+%rename(SbVec3d_mult) operator *(const SbVec3d & v, const float d);
+%rename(SbVec3d_d_mult) operator *(const float d, const SbVec3d & v);
+%rename(SbVec3d_add) operator+(const SbVec3d & v1, const SbVec3d & v2);
+%rename(SbVec3d_sub) operator-(const SbVec3d & v1, const SbVec3d & v2);
+%rename(SbVec3d_div) operator /(const SbVec3d & v, const float d);
+%rename(SbVec3d_eq) operator ==(const SbVec3d & v1, const SbVec3d & v2);
+%rename(SbVec3d_neq) operator !=(const SbVec3d & v1, const SbVec3d & v2);
+
 %apply double *OUTPUT { double & x, double & y, double & z };
 #endif
 

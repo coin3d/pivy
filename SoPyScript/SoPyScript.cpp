@@ -32,6 +32,7 @@
 #include <Python.h>
 #include <assert.h>
 
+#include <Inventor/SoInput.h>
 #include <Inventor/C/tidbits.h>
 #include <Inventor/actions/SoAudioRenderAction.h>
 #include <Inventor/actions/SoCallbackAction.h>
@@ -46,6 +47,7 @@
 #include <Inventor/actions/SoWriteAction.h>
 #include <Inventor/errors/SoDebugError.h>
 #include <Inventor/errors/SoReadError.h>
+#include <Inventor/lists/SbStringList.h>
 #include <Inventor/sensors/SoOneShotSensor.h>
 
 #include "SoPyScript.h"
@@ -571,6 +573,12 @@ SoPyScript::executePyScript(void)
      pathetic!  reconsider the whole approach as it smells like a
      lousy hack! 20041021 tamer. */
   if (src.getLength()) {
+    /* try to find a file relative to the current input directory stack */
+    SbStringList subdirs;
+    SbString fullName = SoInput::searchForFile(pyString, SoInput::getDirectories(), subdirs);
+    if(fullName != "")
+      pyString = fullName;
+    
     PyObject * url = PyString_FromString(pyString.getString());
 
     /* add the url to the global dict */

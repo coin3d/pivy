@@ -47,6 +47,19 @@ convert_SbVec4f_array(PyObject *input, float temp[4])
   $1 = temp;
 }
 
+/* for some strange reason the %apply directive below doesn't work 
+ * for this class on getValue(f,f,f,f)...
+ * created this typemap for getValue(void) instead as a workaround.
+ */
+%typemap(out) float * {
+  int i;
+  $result = PyTuple_New(4);
+  
+  for (i=0; i<4; i++) {
+	PyTuple_SetItem($result, i, PyFloat_FromDouble((double)(*($1+i))));
+  }
+}
+
 %rename(SbVec4f_vec) SbVec4f::SbVec4f(const float v[4]);
 %rename(SbVec4f_ffff) SbVec4f::SbVec4f(const float x, const float y, const float z, const float w);
 
@@ -74,7 +87,6 @@ def setValue(*args):
 %}
 
 %apply float *OUTPUT { float& x, float& y, float& z, float& w };
-
 #endif
 
 class SbVec3f;
@@ -88,11 +100,12 @@ public:
   SbBool equals(const SbVec4f& v, const float tolerance) const;
   void getReal(SbVec3f& v) const;
 
-#ifndef __PIVY__
   const float* getValue(void) const;
+
+#ifndef __PIVY__
+  void getValue(float& x, float& y, float& z, float& w) const;
 #endif
 
-  void getValue(float& x, float& y, float& z, float& w) const;
   float length(void) const;
   void negate(void);
   float normalize(void);

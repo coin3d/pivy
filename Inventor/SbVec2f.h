@@ -74,7 +74,6 @@ def setValue(*args):
 %}
 
 %apply float *OUTPUT { float & x, float & y };
-
 #endif
 
 class COIN_DLL_API SbVec2f {

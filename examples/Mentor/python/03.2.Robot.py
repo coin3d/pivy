@@ -146,7 +146,7 @@ def makeRobot():
 
 
 def main():
-	# Initialize Inventor and Xt
+	# Initialize Inventor and Gtk
 	myWindow = SoGtk_init(sys.argv[0])
 	if myWindow == None: sys.exit(1)
 

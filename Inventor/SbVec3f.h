@@ -49,6 +49,19 @@ convert_SbVec3f_array(PyObject *input, float temp[3])
   $1 = temp;
 }
 
+/* for some strange reason the %apply directive below doesn't work 
+ * for this class on getValue(f,f,f)...
+ * created this typemap for getValue(void) instead as a workaround.
+ */
+%typemap(out) float * {
+  int i;
+  $result = PyTuple_New(3);
+  
+  for (i=0; i<3; i++) {
+	PyTuple_SetItem($result, i, PyFloat_FromDouble((double)(*($1+i))));
+  }
+}
+
 %rename(SbVec3f_vec) SbVec3f::SbVec3f(const float v[3]);
 %rename(SbVec3f_fff) SbVec3f::SbVec3f(const float x, const float y, const float z);
 %rename(SbVec3f_pl_pl_pl) SbVec3f::SbVec3f(const SbPlane & p0, const SbPlane & p1, const SbPlane & p2);
@@ -100,11 +113,12 @@ public:
   SbBool equals(const SbVec3f & v, const float tolerance) const;
   SbVec3f getClosestAxis(void) const;
 
-#ifndef __PIVY__
   const float * getValue(void) const;
+
+#ifndef __PIVY__
+  void getValue(float & x, float & y, float & z) const;
 #endif
 
-  void getValue(float & x, float & y, float & z) const;
   float length(void) const;
   float sqrLength() const;
   void negate(void);

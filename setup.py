@@ -304,6 +304,11 @@ class pivy_build(build):
                 print blue("to ") + turquoise(os.path.join(dirname, file)[:-4])
                 shutil.copyfile(os.path.join(dirname, file),
                                 os.path.join(dirname, file)[:-4])
+        
+        if sys.platform == "win32":
+            # copy coin2.dll and sowin1.dll to pivy directory
+            shutil.copy(os.getenv("COIN3DDIR") + "\\bin\coin2.dll", ".")
+            shutil.copy(os.getenv("COIN3DDIR") + "\\bin\sowin1.dll", ".")
 
     def pivy_configure(self):
         "configures Pivy"
@@ -333,7 +338,7 @@ class pivy_build(build):
                 INCLUDE_DIR = os.getenv("COIN3DDIR") + "\\include"
                 CPP_FLAGS = "-I" + INCLUDE_DIR +  " " + \
                             "-I" + os.getenv("COIN3DDIR") + "\\include\\Inventor\\annex" + \
-                            " /DSOWIN_DLL /DCOIN_DLL /wd4244 /wd4049"
+                            " /DSOWIN_DLL /DCOIN_DLL /wd4244 /wd4049 /MT"
                 LDFLAGS_LIBS = os.getenv("COIN3DDIR") + "\\lib\\coin2.lib" + " " + \
                                os.getenv("COIN3DDIR") + "\\lib\\sowin1.lib"
             else:
@@ -381,7 +386,7 @@ class pivy_build(build):
 
         if sys.platform == "win32": 
             self.ext_modules.insert(0, Extension("pivy_swigpy", ["pivy_swigpy.c"],
-                                                 extra_compile_args=["/DSWIG_GLOBAL"]))
+                                                 extra_compile_args=["/DSWIG_GLOBAL", "/MT"]))
 
         for cmd_name in self.get_sub_commands():
             self.run_command(cmd_name)
@@ -413,6 +418,10 @@ class pivy_clean(clean):
                 os.remove(wrapper_file)
         clean.run(self)
 
+data_files = None
+if sys.platform == "win32":
+    data_files = [('.', ['coin2.dll', 'sowin1.dll'])]
+
 setup(name = "Pivy",
       version = PIVY_VERSION,
       description = "A Python binding for Coin/Open Inventor",
@@ -427,4 +436,6 @@ setup(name = "Pivy",
       py_modules  = pivy_build.py_modules,
       classifiers = filter(None, PIVY_CLASSIFIERS.split("\n")),
       license = "BSD License",
-      platforms = ['Any'])
+      platforms = ['Any'],
+      data_files = data_files
+      )

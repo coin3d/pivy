@@ -79,78 +79,72 @@ typedef struct swig_type_info {
 #define SWIG_TypeQuery SWIG_Python_TypeQuery
 
 extern "C" {
-PyObject * SWIG_NewPointerObj(void *, swig_type_info *, int own);
-swig_type_info * SWIG_TypeQuery(const char *);
+  PyObject * SWIG_NewPointerObj(void *, swig_type_info *, int own);
+  swig_type_info * SWIG_TypeQuery(const char *);
 }
 
 class GlobalLock {
-public:
-  GlobalLock(void)
-  {
-    state = PyGILState_Ensure();
-  }
-  ~GlobalLock()
-  {
-    PyGILState_Release(state);	
-  }
-protected:
-  PyGILState_STATE state;
+  public:
+    GlobalLock(void) { state = PyGILState_Ensure(); }
+    ~GlobalLock() { PyGILState_Release(state); }
+  private:
+    PyGILState_STATE state;
 };
 
 class SoPyScriptP {
-public:
-  SoPyScriptP(SoPyScript * master) :
-    isReading(FALSE),
-    oneshotSensor(new SoOneShotSensor(SoPyScript::eval_cb, master)),
-    handler_registry_dict(PyDict_New()),
-    local_module_dict(PyDict_New())
-  {
-    if(!global_module_dict)
+  public:
+    SoPyScriptP(SoPyScript * master) :
+      isReading(FALSE),
+      oneshotSensor(new SoOneShotSensor(SoPyScript::eval_cb, master)),
+      handler_registry_dict(PyDict_New()),
+      local_module_dict(PyDict_New())
     {
-      Py_SetProgramName("SoPyScript");
-      Py_Initialize();
-      global_module_dict = PyModule_GetDict(PyImport_AddModule("__main__"));
+      if(!global_module_dict)
+      {
+        Py_SetProgramName("SoPyScript");
+        Py_Initialize();
+        global_module_dict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
-      if (PyRun_SimpleString("from pivy import *")) {
-         SoDebugError::postWarning("SoPyScript::initClass",
-                                   "\n*Yuk!* The box containing a fierce looking python snake to drive\n"
-                                   "this node has arrived but was found to be empty! The Pivy module\n"
-                                   "required for the Python Scripting Node could not be successfully\n"
-                                   "imported! Check your setup and fix it so that the python snake can\n"
-                                   "happily wiggle and byte you in the ass...");
-      }
-    }    
-  }
-
-  ~SoPyScriptP() {
-    GlobalLock lock;
-    delete this->oneshotSensor;
-    Py_DECREF(handler_registry_dict);
-    Py_DECREF(local_module_dict);
-  }
-
-  PyObject *
-  createPySwigType(SbString typeVal, void * obj) {
-    swig_type_info * swig_type = NULL;
-    
-    typeVal += " *";
-    if ((swig_type = SWIG_TypeQuery(typeVal.getString())) == NULL) {
-      /* try again by prefixing the typename with So */
-      SbString soTypeVal("So");
-      soTypeVal += typeVal;
-      if ((swig_type = SWIG_TypeQuery(soTypeVal.getString())) == NULL) {
-        return NULL;
-      }
+        if (PyRun_SimpleString("from pivy import *")) {
+          SoDebugError::postWarning("SoPyScript::initClass",
+                                    "\n*Yuk!* The box containing a fierce looking python snake to drive\n"
+                                    "this node has arrived but was found to be empty! The Pivy module\n"
+                                    "required for the Python Scripting Node could not be successfully\n"
+                                    "imported! Check your setup and fix it so that the python snake can\n"
+                                    "happily wiggle and byte you in the ass...");
+        }
+      }    
     }
 
-    return SWIG_NewPointerObj(obj, swig_type, 0);
-  }
+    ~SoPyScriptP() {
+      GlobalLock lock;
+      delete this->oneshotSensor;
+      Py_DECREF(handler_registry_dict);
+      Py_DECREF(local_module_dict);
+    }
 
-  SbBool isReading;
-  SoOneShotSensor * oneshotSensor;
-  static PyObject * global_module_dict;
-  PyObject * local_module_dict;
-  PyObject * handler_registry_dict;
+    PyObject *
+    createPySwigType(SbString typeVal, void * obj) {
+      swig_type_info * swig_type = NULL;
+    
+      typeVal += " *";
+      if ((swig_type = SWIG_TypeQuery(typeVal.getString())) == NULL) {
+        /* try again by prefixing the typename with So */
+        SbString soTypeVal("So");
+        soTypeVal += typeVal;
+        if ((swig_type = SWIG_TypeQuery(soTypeVal.getString())) == NULL) {
+          return NULL;
+        }
+      }
+
+      return SWIG_NewPointerObj(obj, swig_type, 0);
+    }
+
+    SbBool isReading;
+    SoOneShotSensor * oneshotSensor;
+    PyObject * handler_registry_dict;
+    PyObject * local_module_dict;
+    static PyObject * global_module_dict;
 };
 
 PyObject * SoPyScriptP::global_module_dict = NULL;
@@ -168,9 +162,11 @@ SoPyScript::initClass(void)
                          SbName("SoPyScript"),
                          SoPyScript::createInstance,
                          SoNode::nextActionMethodIndex++);
- 
-    //SoNode::setCompatibilityTypes(SoPyScript::getClassTypeId(),
-    //                              SoNode::COIN_2_0|SoNode::COIN_2_2|SoNode::COIN_2_3);
+
+#if 0 // FIXME: needed or unneeded?
+    SoNode::setCompatibilityTypes(SoPyScript::getClassTypeId(),
+                                  SoNode::COIN_2_0|SoNode::COIN_2_2|SoNode::COIN_2_3);
+#endif
 
     SoAudioRenderAction::addMethod(SoPyScript::getClassTypeId(), SoNode::audioRenderS);
   }
@@ -655,11 +651,9 @@ SoPyScript::eval_cb(void * data, SoSensor *)
 
         SbString fieldname(self->fielddata->getFieldName(i).getString());
 
-		printf("fieldname %s\n", fieldname.getString());
         /* look up the function name in the handler registry */
         PyObject * funcname = PyDict_GetItemString(PRIVATE(self)->handler_registry_dict,
                                                    fieldname.getString());
-		printf("funcname %x\n", funcname);
         if (!funcname) { continue; }
         
         /* check if it is a string */
@@ -667,7 +661,6 @@ SoPyScript::eval_cb(void * data, SoSensor *)
           /* get the function handle in the global module dictionary if available */
           PyObject * func = PyDict_GetItemString(PRIVATE(self)->local_module_dict,
                                                  PyString_AsString(funcname));
-          printf("func %x\n", func);
           if (!func) { continue; }
           
           if (coin_getenv("PIVY_DEBUG")) {

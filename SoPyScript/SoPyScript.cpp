@@ -218,26 +218,25 @@ SoPyScript::doAction(SoAction * action, const char * funcname)
   if (funcname && !script.isIgnored()) {
     GlobalLock lock;
 
-    if (coin_getenv("PIVY_DEBUG")) {
-      SoDebugError::postInfo("SoPyScript::doAction",
-                             "%s called!", action->getTypeId().getName().getString());
-    }
-
-    /* convert the action instance to a Python object */
-    SbString typeVal(action->getTypeId().getName().getString());
-
-    PyObject * pyAction;
-    if (!(pyAction = PRIVATE(this)->createPySwigType(typeVal, action))) {
-      SoDebugError::post("SoPyScript::doAction",
-                         "%s could not be created!",
-                         typeVal.getString());
-      inherited::doAction(action);
-      return;
-    }
-
     PyObject * func = PyDict_GetItemString(PRIVATE(this)->local_module_dict, funcname);
 
     if (func) {
+      if (coin_getenv("PIVY_DEBUG")) {
+        SoDebugError::postInfo("SoPyScript::doAction",
+                               "%s called!", action->getTypeId().getName().getString());
+      }
+      
+      /* convert the action instance to a Python object */
+      SbString typeVal(action->getTypeId().getName().getString());
+      
+      PyObject * pyAction;
+      if (!(pyAction = PRIVATE(this)->createPySwigType(typeVal, action))) {
+        SoDebugError::post("SoPyScript::doAction",
+                           "%s could not be created!",
+                           typeVal.getString());
+        inherited::doAction(action);
+        return;
+      }
       if (!PyCallable_Check(func)) {
         SbString errMsg(funcname);
         errMsg += " is not a callable object!";
@@ -250,6 +249,7 @@ SoPyScript::doAction(SoAction * action, const char * funcname)
         }
         Py_XDECREF(result);
         Py_DECREF(argtuple);
+        Py_DECREF(pyAction);
       }
     }
 
@@ -258,8 +258,6 @@ SoPyScript::doAction(SoAction * action, const char * funcname)
                              "funcname: %s, func: %p",
                              funcname, func);
     }
-
-    Py_DECREF(pyAction);
   }
   inherited::doAction(action);
 }

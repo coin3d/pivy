@@ -99,12 +99,11 @@ class SoPyScriptP {
       handler_registry_dict(PyDict_New()),
       local_module_dict(PyDict_New())
     {
-      if(!global_module_dict)
-      {
+      if (!global_module_dict) {
         Py_SetProgramName("SoPyScript");
         Py_Initialize();
         global_module_dict = PyModule_GetDict(PyImport_AddModule("__main__"));
-
+        
         if (PyRun_SimpleString("from pivy import *")) {
           SoDebugError::postWarning("SoPyScript::initClass",
                                     "\n*Yuk!* The box containing a fierce looking python snake to drive\n"
@@ -115,7 +114,7 @@ class SoPyScriptP {
         }
       }    
     }
-
+    
     ~SoPyScriptP() {
       GlobalLock lock;
       delete this->oneshotSensor;
@@ -124,15 +123,14 @@ class SoPyScriptP {
     }
 
     PyObject *
-    createPySwigType(SbString typeVal, void * obj) {
-      swig_type_info * swig_type = NULL;
-    
+    createPySwigType(SbString typeVal, void * obj) {    
       typeVal += " *";
-      if ((swig_type = SWIG_TypeQuery(typeVal.getString())) == NULL) {
+      swig_type_info * swig_type;
+      if (!(swig_type = SWIG_TypeQuery(typeVal.getString()))) {
         /* try again by prefixing the typename with So */
         SbString soTypeVal("So");
         soTypeVal += typeVal;
-        if ((swig_type = SWIG_TypeQuery(soTypeVal.getString())) == NULL) {
+        if (!(swig_type = SWIG_TypeQuery(soTypeVal.getString()))) {
           return NULL;
         }
       }
@@ -177,6 +175,7 @@ SoPyScript::SoPyScript(void)
 {
   PRIVATE(this) = new SoPyScriptP(this);
   this->isBuiltIn = FALSE;
+
   assert(SoPyScript::classTypeId != SoType::badType());
 
   this->script.setValue(NULL);
@@ -205,9 +204,7 @@ SoPyScript::getTypeId(void) const
 SoPyScript::~SoPyScript()
 {
   delete PRIVATE(this);
-
-  const int n = this->fielddata->getNumFields();
-  for (int i = 0; i < n; i++) {
+  for (int i = 0; i < this->fielddata->getNumFields(); i++) {
     SoField * f = this->fielddata->getField(this, i);
     if (f != &this->script || f != &this->mustEvaluate) { delete f; }
   }
@@ -229,8 +226,8 @@ SoPyScript::doAction(SoAction * action, const char * funcname)
     /* convert the action instance to a Python object */
     SbString typeVal(action->getTypeId().getName().getString());
 
-    PyObject * pyAction = NULL;
-    if ((pyAction = PRIVATE(this)->createPySwigType(typeVal, action)) == NULL) {
+    PyObject * pyAction;
+    if (!(pyAction = PRIVATE(this)->createPySwigType(typeVal, action))) {
       SoDebugError::post("SoPyScript::doAction",
                          "%s could not be created!",
                          typeVal.getString());
@@ -246,10 +243,9 @@ SoPyScript::doAction(SoAction * action, const char * funcname)
         errMsg += " is not a callable object!";
         PyErr_SetString(PyExc_TypeError, errMsg.getString());
       } else {
-        PyObject * result;
         PyObject * argtuple = Py_BuildValue("(O)", pyAction);
-
-        if ((result = PyEval_CallObject(func, argtuple)) == NULL) {
+        PyObject * result;
+        if (!(result = PyEval_CallObject(func, argtuple))) {
           PyErr_Print();
         }
         Py_XDECREF(result);
@@ -386,28 +382,28 @@ SoPyScript::copyContents(const SoFieldContainer * from,
                          SbBool copyConn)
 {
   assert(from->isOfType(SoPyScript::getClassTypeId()));
+
   this->initFieldData();
 
-  const SoPyScript * fromnode = (SoPyScript*) from;
-
+  const SoPyScript * fromnode = (SoPyScript*)from;
   const SoFieldData * src = from->getFieldData();
-  const int n = src->getNumFields();
-  for (int i = 0; i < n; i++) {
+
+  for (int i = 0; i < src->getNumFields(); i++) {
     const SoField * f = src->getField(from, i);
     if (f != &fromnode->script &&
         f != &fromnode->mustEvaluate) {
-      SoField * cp = (SoField*) f->getTypeId().createInstance();
+      SoField * field = (SoField*)f->getTypeId().createInstance();
       SbString fieldname = src->getFieldName(i).getString();
       
-      cp->setContainer(this);
-      this->fielddata->addField(this, fieldname.getString(), cp);
+      field->setContainer(this);
+      this->fielddata->addField(this, fieldname.getString(), field);
       
       GlobalLock lock;
       
       /* shovel the field instance on to the Python interpreter */
-      SbString typeVal = cp->getTypeId().getName().getString();
-	  PyObject * pyField = NULL;
-	  if ((pyField = PRIVATE(this)->createPySwigType(typeVal, cp)) == NULL) {
+      SbString typeVal = field->getTypeId().getName().getString();
+	  PyObject * pyField;
+	  if (!(pyField = PRIVATE(this)->createPySwigType(typeVal, field))) {
 	  	SoDebugError::post("SoPyScript::copyContents",
 	                       "field type %s could not be created!",
 	                       typeVal.getString());
@@ -441,16 +437,12 @@ SoPyScript::notify(SoNotList * list)
     SoField * f = list->getLastField();
 
     if (f == &this->mustEvaluate) {
-      int pri = this->mustEvaluate.getValue() ? 0 : 
-        SoDelayQueueSensor::getDefaultPriority();
+      int pri = this->mustEvaluate.getValue() ? 
+        0 : SoDelayQueueSensor::getDefaultPriority();
       PRIVATE(this)->oneshotSensor->setPriority(pri);
     }
-    else if (f == &this->script) {
-      this->executePyScript();
-    }
-    else {
-      PRIVATE(this)->oneshotSensor->schedule();
-    }
+    else if (f == &this->script) { this->executePyScript(); }
+    else { PRIVATE(this)->oneshotSensor->schedule(); }
   }
   inherited::notify(list);
 }
@@ -500,8 +492,8 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
           GlobalLock lock;
 
           /* shovel the field instance on to the Python interpreter */
-          PyObject * pyField = NULL;
-          if ((pyField = PRIVATE(this)->createPySwigType(typeVal, field)) == NULL) {
+          PyObject * pyField;
+          if (!(pyField = PRIVATE(this)->createPySwigType(typeVal, field))) {
             SoDebugError::post("SoPyScript::readInstance",
                                "field type %s could not be created!",
                                typeVal.getString());
@@ -605,13 +597,17 @@ SoPyScript::executePyScript(void)
      lousy hack! 20041021 tamer. */
   if (src.getLength()) {
     PyObject * url = PyString_FromString(pyString.getString());
+
     /* add the url to the global dict */
     PyDict_SetItemString(PRIVATE(this)->local_module_dict, "url", url);
-    PyObject * res = PyRun_String(PYTHON_URLLIB_URLOPEN, Py_file_input, PRIVATE(this)->local_module_dict, PRIVATE(this)->local_module_dict);
-    if(!res)
-      PyErr_Print();
-    else
-      Py_DECREF(res);
+
+    PyObject * result = PyRun_String(PYTHON_URLLIB_URLOPEN,
+                                     Py_file_input, 
+                                     PRIVATE(this)->local_module_dict,
+                                     PRIVATE(this)->local_module_dict);
+    if (result) { Py_DECREF(result); }
+    else { PyErr_Print(); }
+
     PyObject * script_new = PyDict_GetItemString(PRIVATE(this)->local_module_dict, "script");
     if (script_new != Py_None) {
       pyString.makeEmpty();
@@ -620,11 +616,13 @@ SoPyScript::executePyScript(void)
     Py_DECREF(url);
   }
 
-  PyObject * res = PyRun_String((char *)pyString.getString(),Py_file_input, PRIVATE(this)->local_module_dict, PRIVATE(this)->local_module_dict);
-  if(!res)
-    PyErr_Print();
-  else
-    Py_DECREF(res);
+  PyObject * result = PyRun_String((char *)pyString.getString(),
+                                   Py_file_input,
+                                   PRIVATE(this)->local_module_dict,
+                                   PRIVATE(this)->local_module_dict);
+  if (result) { Py_DECREF(result); }
+  else { PyErr_Print(); }
+
   if (coin_getenv("PIVY_DEBUG")) {
     SoDebugError::postInfo("SoPyScript::executePyScript",
                            "script executed at full length!");
@@ -677,13 +675,13 @@ SoPyScript::eval_cb(void * data, SoSensor *)
             PyErr_SetString(PyExc_TypeError, errMsg.getString());
           } else {
             PyObject * result;
-            if ((result = PyEval_CallObject(func, NULL)) == NULL) {
+            if (!(result = PyEval_CallObject(func, NULL))) {
               PyErr_Print();
             }
             Py_XDECREF(result);
           }
         }
-      } // if(f->getDirty()) - lock released here
+      } // if (f->getDirty()) - lock released here
     }
   }
 }

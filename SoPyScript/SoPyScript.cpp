@@ -402,26 +402,26 @@ SoPyScript::copyContents(const SoFieldContainer * from,
       
       /* shovel the field instance on to the Python interpreter */
       SbString typeVal = field->getTypeId().getName().getString();
-	  PyObject * pyField;
-	  if (!(pyField = PRIVATE(this)->createPySwigType(typeVal, field))) {
-	  	SoDebugError::post("SoPyScript::copyContents",
-	                       "field type %s could not be created!",
-	                       typeVal.getString());
-	    continue;
-	  }
+      PyObject * pyField;
+      if (!(pyField = PRIVATE(this)->createPySwigType(typeVal, field))) {
+        SoDebugError::post("SoPyScript::copyContents",
+                           "field type %s could not be created!",
+                           typeVal.getString());
+        continue;
+      }
 
-	  /* add the field to the global dict */
-	  PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
-						   fieldname.getString(),
-						   pyField);
+      /* add the field to the global dict */
+      PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
+                           fieldname.getString(),
+                           pyField);
 
-	  SbString funcname("handle_");
-	  funcname += fieldname.getString();
+      SbString funcname("handle_");
+      funcname += fieldname.getString();
 
-	  /* add the field handler to the handler registry */
-	  PyDict_SetItemString(PRIVATE(this)->handler_registry_dict,
-						   fieldname.getString(),
-						   PyString_FromString(funcname.getString()));
+      /* add the field handler to the handler registry */
+      PyDict_SetItemString(PRIVATE(this)->handler_registry_dict,
+                           fieldname.getString(),
+                           PyString_FromString(funcname.getString()));
     }
   }
   inherited::copyContents(from, copyConn);

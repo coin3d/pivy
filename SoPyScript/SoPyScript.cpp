@@ -62,14 +62,10 @@ typedef struct swig_type_info {
   struct swig_type_info  *prev;
 } swig_type_info;
 
-#define SWIG_ConvertPtr(obj, pp, type, flags) \
-  SWIG_Python_ConvertPtr(obj, pp, type, flags)
-#define SWIG_NewPointerObj(p, type, flags) \
-  SWIG_Python_NewPointerObj(p, type, flags)
+#define SWIG_NewPointerObj SWIG_Python_NewPointerObj
 #define SWIG_TypeQuery SWIG_Python_TypeQuery
 
 extern "C" {
-int SWIG_Python_ConvertPtr(PyObject *, void **, swig_type_info *, int);
 PyObject * SWIG_Python_NewPointerObj(void *, swig_type_info *,int own);
 swig_type_info * SWIG_TypeQuery(const char *);
 }
@@ -121,19 +117,18 @@ SoPyScript::SoPyScript(void)
   Py_SetProgramName("SoPyScript");
   this->globalModuleDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
-
   /* shovel the the node itself on to the Python interpreter as self instance */
   swig_type_info * swig_type = 0;
 
   if ((swig_type = SWIG_TypeQuery("SoNode *")) == 0) {
     SoDebugError::post("SoPyScript::SoPyScript",
-                       "No SoPyscript SWIG type found!");        
+                       "SoNode type could not be found!");
   }
 
   /* add the field to the global dict */
   PyDict_SetItemString((PyObject*)this->globalModuleDict, 
                        "self",
-                       SWIG_NewPointerObj((void *)this, swig_type, 0));
+                       SWIG_NewPointerObj(this, swig_type, 0));
 
   PyThreadState_Swap(tstate);
 }
@@ -225,7 +220,7 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
             *soTypeVal += typeVal;
             if ((swig_type = SWIG_TypeQuery(soTypeVal->getString())) == 0) {
               SoDebugError::post("SoPyScript::readInstance",
-                                 "%s unknown to Pivy!", typeVal.getString());
+                                 "field type %s unknown!", typeVal.getString());
               
               return FALSE;
             }
@@ -236,7 +231,7 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
           /* add the field to the global dict */
           PyDict_SetItemString((PyObject*)this->globalModuleDict, 
                                fieldname,
-                               SWIG_NewPointerObj((void *)field, swig_type, 0));
+                               SWIG_NewPointerObj(field, swig_type, 0));
           PyThreadState_Swap(tstate);
         }
       }
@@ -301,7 +296,7 @@ SoPyScript::doAction(SoAction * action, const char * funcname)
     PyObject * pyAction = NULL;
 
     if (swig_type) {
-      pyAction = SWIG_NewPointerObj((void *) action, swig_type, 0);
+      pyAction = SWIG_NewPointerObj(action, swig_type, 0);
     }
 
     PyObject * argtuple = NULL;

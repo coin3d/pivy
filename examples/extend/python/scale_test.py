@@ -10,7 +10,7 @@ from sogui import *
 from pivy import *
 
 from random import random
-import sys, traceback
+import sys
 
 def construct_new_marker(v):
     markerroot = SoSeparator()

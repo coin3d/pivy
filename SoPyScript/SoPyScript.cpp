@@ -554,6 +554,12 @@ SoPyScript::executePyScript(void)
   }
 
   /* check if the script denotes an URL or path */
+  /* FIXME: maybe, just maybe, we could do a little better error
+     handling here??? throwing a Syntax Error at the user's face in
+     case of a not resolving URL or non existent file for the reason
+     of being to lame to catch a couple of exceptions is absolutely
+     pathetic!  reconsider the whole approach as it smells like a
+     lousy hack! 20041021 tamer. */
   if (src.getLength()) {
     PyObject * url = PyString_FromString(pyString.getString());
     /* add the url to the global dict */

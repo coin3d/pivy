@@ -140,6 +140,9 @@ public:
 	float __getitem__(int i) {
 	  return (self->getValue())[i];
 	}
+	void  __setitem__(int i, float value) {
+	  (*self)[i] = value;
+	}
   }
 #else
   float & operator [](const int i);

@@ -70,25 +70,8 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
 
 %}
 
-/**
- * SWIG - interface includes and general typemap definitions starts here
- **/
-
-%include "typemaps.i"
-
-/* ignore the following methods */
-%ignore SoXt::init(int argc, char ** argv, const char * appname, const char * classname = "SoXt");
-%ignore SoXt::init(Widget * toplevelwidget);
-
-/* ignores for undefined Symbols */
-%ignore SoGuiColorEditor::getClassNodekitCatalog(void);
-%ignore SoGuiColorEditor::getClassTypeId(void);
-
-%rename(output) print(FILE * fp) const;
-%rename(output) print(FILE * const fp) const;
-%rename(output) print(FILE * const file = stdout);
-%rename(srcFrom) from;
-%rename(destTo) to;
+/* include the typemaps common to all pivy modules */
+%include pivy_common_typemaps.i
 
 %include Inventor/Xt/devices/SoXtLinuxJoystick.h
 %include Inventor/Xt/devices/SoXtDevice.h

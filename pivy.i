@@ -714,65 +714,10 @@ cast(PyObject *self, PyObject *args)
 }
 %}
 
-
-/**
- * SWIG - interface includes and general typemap definitions starts here
- **/
-
-%include "typemaps.i"
-
-/* if SWIG thinks the class is abstract, then it refuses to 
- * generate constructors of any kind. the following %feature
- * declarations take care about this for the classes we still
- * want a constructor for.
- */
-%feature("notabstract") SoBoolOperation;
-%feature("notabstract") SoComposeRotation;
-%feature("notabstract") SoComposeVec3f;
-%feature("notabstract") SoDecomposeVec3f;
-
 %native(cast) PyObject *cast(PyObject *self, PyObject *args);
 
-%rename(output) print(FILE * fp) const;
-%rename(output) print(FILE * const fp) const;
-%rename(output) print(FILE * const file = stdout);
-%rename(srcFrom) from;
-%rename(destTo) to;
-
-/* generic typemaps to allow using python types instead of instances
- * within the python interpreter
- */
-%typemap(in) SbName & {
-  if (PyString_Check($input)) {
-    $1 = new SbName(PyString_AsString($input));
-  } else {
-    SWIG_ConvertPtr($input,(void **) &$1, SWIGTYPE_p_SbName, 1);
-  }
-}
-
-%typemap(in) SbString & {
-  if (PyString_Check($input)) {
-    $1 = new SbString(PyString_AsString($input));
-  } else {
-    SWIG_ConvertPtr($input,(void **) &$1, SWIGTYPE_p_SbString, 1);
-  }
-}
-
-%typemap(in) SbTime & {
-  if (PyFloat_Check($input)) {
-    $1 = new SbTime(PyFloat_AsDouble($input));
-  } else {
-    SWIG_ConvertPtr($input,(void **) &$1, SWIGTYPE_p_SbTime, 1);
-  }
-}
-
-%typemap(in) FILE * {
-  if (PyFile_Check($input)) {
-	$1 = PyFile_AsFile($input);
-  } else {
-	PyErr_SetString(PyExc_TypeError, "expected a file object.");
-  }
-}
+/* include the typemaps common to all pivy modules */
+%include pivy_common_typemaps.i
 
 %include Inventor/C/base/hash.h
 %include Inventor/C/base/heap.h

@@ -69,25 +69,8 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
 
 %}
 
-/**
- * SWIG - interface includes and general typemap definitions starts here
- **/
-
-%include "typemaps.i"
-
-/* ignore the following methods */
-%ignore SoQt::init(int & argc, char ** argv, const char * appname, const char * classname = "SoQt");
-%ignore SoQt::init(QWidget * toplevelwidget);
-
-/* ignores for undefined Symbols */
-%ignore SoGuiColorEditor::getClassNodekitCatalog(void);
-%ignore SoGuiColorEditor::getClassTypeId(void);
-
-%rename(output) print(FILE * fp) const;
-%rename(output) print(FILE * const fp) const;
-%rename(output) print(FILE * const file = stdout);
-%rename(srcFrom) from;
-%rename(destTo) to;
+/* include the typemaps common to all pivy modules */
+%include pivy_common_typemaps.i
 
 %include Inventor/Qt/devices/SoQtDevice.h
 %include Inventor/Qt/devices/SoQtKeyboard.h

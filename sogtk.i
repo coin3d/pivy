@@ -62,25 +62,8 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
 
 %}
 
-/**
- * SWIG - interface includes and general typemap definitions starts here
- **/
-
-%include "typemaps.i"
-
-/* ignore the following methods */
-%ignore SoGtk::init(int argc, char ** argv, const char * appname, const char * classname = "SoGtk");
-%ignore SoGtk::init(GtkWidget * toplevelwidget);
-
-/* ignores for undefined Symbols */
-%ignore SoGuiColorEditor::getClassNodekitCatalog(void);
-%ignore SoGuiColorEditor::getClassTypeId(void);
-
-%rename(output) print(FILE * fp) const;
-%rename(output) print(FILE * const fp) const;
-%rename(output) print(FILE * const file = stdout);
-%rename(srcFrom) from;
-%rename(destTo) to;
+/* include the typemaps common to all pivy modules */
+%include pivy_common_typemaps.i
 
 %include Inventor/Gtk/devices/SoGtkDevice.h
 %include Inventor/Gtk/devices/SoGtkKeyboard.h

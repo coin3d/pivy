@@ -405,11 +405,21 @@ SoPyScript::notify(SoNotList * list)
     }
     else if (f == &this->script) {
       PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
-      PyRun_SimpleString((char *)script.getValue().getString());
+
+      /* strip out possible \r's that could come from win32 line endings */
+      SbString src = script.getValue();
+      SbString pyString;
+      for (int i=0; i < script.getValue().getLength(); i++) {
+        if (src[i] != '\r') { pyString += src[i]; }
+      }
+
+      PyRun_SimpleString((char *)pyString.getString());
+
       if (coin_getenv("PIVY_DEBUG")) {
         SoDebugError::postInfo("SoPyScript::readInstance",
                              "script executed at full length!");
       }
+
       PyThreadState_Swap(tstate);
     }
     else {
@@ -493,11 +503,21 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
   }
 
   PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
-  PyRun_SimpleString((char *)script.getValue().getString());
+
+  /* strip out possible \r's that could come from win32 line endings */
+  SbString src = script.getValue();
+  SbString pyString;
+  for (int i=0; i < script.getValue().getLength(); i++) {
+    if (src[i] != '\r') { pyString += src[i]; }
+  }
+  
+  PyRun_SimpleString((char *)pyString.getString());
+
   if (coin_getenv("PIVY_DEBUG")) {
     SoDebugError::postInfo("SoPyScript::readInstance",
                            "script executed at full length!");
   }
+
   PyThreadState_Swap(tstate);
 
   PRIVATE(this)->isReading = FALSE;

@@ -591,7 +591,6 @@
 #include <Inventor/Gtk/SoGtkComponent.h>
 #include <Inventor/Gtk/SoGtkGLWidget.h>
 #include <Inventor/Gtk/SoGtkRenderArea.h>
-#include <Inventor/Gtk/SoGtkMaterialList.h>
 #include <Inventor/Gtk/devices/SoGtkDevice.h>
 #include <Inventor/Gtk/devices/SoGtkInputFocus.h>
 #include <Inventor/Gtk/devices/SoGtkKeyboard.h>
@@ -1248,7 +1247,6 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/Gtk/SoGtkGraphEditor.h
 %include Inventor/Gtk/SoGtkGLWidget.h
 %include Inventor/Gtk/SoGtkRenderArea.h
-%include Inventor/Gtk/SoGtkMaterialList.h
 %include Inventor/Gtk/SoGtkRoster.h
 %include Inventor/Gtk/SoGtkGraphEditor.h
 %include Inventor/Gtk/devices/SoGtkDevice.h

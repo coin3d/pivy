@@ -37,7 +37,7 @@ public:
   void setEnums(const int num, const int * vals, const SbName * names);
 
 #ifdef __PIVY__
-  %addmethods {
+  %extend {
 	void __call__(int i) {
 	  self->setValue(i);
 	}

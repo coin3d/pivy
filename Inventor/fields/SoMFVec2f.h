@@ -118,7 +118,7 @@ public:
   void setValue(const float x, const float y);
 
 #ifdef __PIVY__
-  %addmethods {
+  %extend {
         void __call__(float xy[2]) {
           self->setValue(xy);
         }

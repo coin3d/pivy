@@ -233,7 +233,7 @@ public:
 
 #ifdef __PIVY__
   /* add python specific callback functions */
-  %addmethods {
+  %extend {
 	void addPythonPreCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {
 	  PyObject *t = PyTuple_New(2);
 	  PyTuple_SetItem(t, 0, pyfunc);

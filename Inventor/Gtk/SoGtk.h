@@ -1,22 +1,27 @@
-/**************************************************************************
+/**************************************************************************\
  *
- *  This file is part of the Coin GUI binding libraries.
- *  Copyright (C) 1998-2001 by Systems in Motion.  All rights reserved.
+ *  This file is part of the Coin GUI toolkit libraries.
+ *  Copyright (C) 1998-2002 by Systems in Motion.  All rights reserved.
  *
- *  The libraries this file is part of is free software; you can
- *  redistribute them and/or modify them under the terms of the GNU
- *  Lesser General Public License version 2.1 as published by the
- *  Free Software Foundation.  See the file LICENSE.LGPL at the root
- *  directory of the distribution for all the details.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public License
+ *  version 2.1 as published by the Free Software Foundation.  See the
+ *  file LICENSE.LGPL at the root directory of this source distribution
+ *  for more details.
  *
- *  If you want to use the Coin GUI binding libraries for applications
- *  not compatible with the LGPL, contact SIM about acquiring a
- *  Professional Edition License.
+ *  If you want to use this library with software that is incompatible
+ *  licensewise with the LGPL, and / or you would like to take
+ *  advantage of the additional benefits with regard to our support
+ *  services, please contact Systems in Motion about acquiring a Coin
+ *  Professional Edition License.  See <URL:http://www.coin3d.org> for
+ *  more information.
  *
- *  Systems in Motion, Prof Brochs gate 6, N-7030 Trondheim, NORWAY
- *  http://www.sim.no/ support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
+ *  <URL:http://www.sim.no>, <mailto:support@sim.no>
  *
- **************************************************************************/
+\**************************************************************************/
+
+// Generated automatically from SoGui.h.in by configure.
 
 #ifndef SOGTK_H
 #define SOGTK_H
@@ -24,7 +29,6 @@
 #include <Inventor/Gtk/SoGtkBasic.h>
 
 #ifdef __COIN_SOQT__
-#include <qevent.h>
 #include <qobject.h>
 #endif // __COIN_SOQT__
 #ifdef __COIN_SOXT__
@@ -32,6 +36,10 @@
 #include <Xm/Xm.h>
 #endif // __COIN_SOXT__
 #ifdef __COIN_SOGTK__
+// Fetch stdlib.h, so NULL is defined before glib.h is (indirectly)
+// included. Otherwise we get a compile error with KCC on some
+// systems.
+#include <stdlib.h>
 #include <gtk/gtk.h>
 class SoGtkComponent;
 class SbPList;
@@ -54,11 +62,7 @@ class SbPList;
 #endif
 
 class SOGTK_DLL_API SoGtk
-#ifdef __COIN_SOQT__
-  : public QObject
-#endif // __COIN_SOQT__
 {
-  
 
 public:
   static GtkWidget * init(const char * appname, const char * classname = "SoGtk")
@@ -89,9 +93,9 @@ public:
   static SbVec2s getWidgetSize(const GtkWidget * widget);
 
   static void createSimpleErrorDialog(GtkWidget * widget,
-                                      const char * dialogTitle,
-                                      const char * errorStr1,
-                                      const char * errorStr2 = NULL);
+                                      const char * title,
+                                      const char * string1,
+                                      const char * string2 = NULL);
 
   static void getVersionInfo(int * major = NULL,
                              int * minor = NULL,
@@ -99,9 +103,9 @@ public:
   static const char * getVersionString(void);
 
   enum FatalErrors {
-    NO_OPENGL_CANVAS = 0,
-    INTERNAL_ASSERT,
-    UNSPECIFIED_ERROR
+    UNSPECIFIED_ERROR = 0,
+    NO_OPENGL_CANVAS,
+    INTERNAL_ASSERT
   };
   typedef void FatalErrorCB(const SbString errmsg, SoGtk::FatalErrors errcode,
                             void * userdata);
@@ -119,8 +123,11 @@ private:
   // default constructor and the destructor so nobody can instantiate
   // it.
   SoGtk(void);
-  ~SoGtk();
-  friend class SoGtkP; // SoQtP needs this to set up an object for the slots.
+  virtual ~SoGtk();
+
+#ifndef DOXYGEN_SKIP_THIS // To avoid having it show up in Doxygen doc.
+  friend class SoGtkP;
+#endif // DOXYGEN_SKIP_THIS
 
   static void sensorQueueChanged(void * cbdata);
 
@@ -188,20 +195,6 @@ protected:
                                        WPARAM wparam, LPARAM lparam);
 
 #endif // __COIN_SOWIN__
-
-#ifdef __COIN_SOQT__
-public:
-  enum CustomEventId { SPACEBALL_EVENT = QEvent::User };
-  static class QApplication * getApplication(void);
-
-protected:
-  bool eventFilter(QObject *, QEvent *);
-
-private slots:
-  void slot_timedOutSensor(void);
-  void slot_idleSensor(void);
-  void slot_delaytimeoutSensor(void);
-#endif // __COIN_SOQT__
 
 #ifdef __COIN_SOGTK__
 public:

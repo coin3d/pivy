@@ -78,6 +78,7 @@ def __init__(self,*args):
 	PyErr_SetString(PyExc_TypeError, "tuple expected!");
 	return NULL;
   }
+
   Py_INCREF($input);
   $1 = (void *)$input;
 %}

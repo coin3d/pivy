@@ -1,25 +1,27 @@
-/**************************************************************************
+/**************************************************************************\
  *
- *  This file is part of the Coin GUI binding libraries.
- *  Copyright (C) 2000 by Systems in Motion.  All rights reserved.
+ *  This file is part of the Coin GUI toolkit libraries.
+ *  Copyright (C) 1998-2002 by Systems in Motion.  All rights reserved.
  *
- *  The libraries this file is part of is free software; you can
- *  redistribute them and/or modify them under the terms of the GNU
- *  Lesser General Public License version 2.1 as published by the
- *  Free Software Foundation.  See the file LICENSE.LGPL at the root
- *  directory of the distribution for all the details.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public License
+ *  version 2.1 as published by the Free Software Foundation.  See the
+ *  file LICENSE.LGPL at the root directory of this source distribution
+ *  for more details.
  *
- *  If you want to use the Coin GUI binding libraries for applications
- *  not compatible with the LGPL, contact SIM about acquiring a
- *  Professional Edition License.
+ *  If you want to use this library with software that is incompatible
+ *  licensewise with the LGPL, and / or you would like to take
+ *  advantage of the additional benefits with regard to our support
+ *  services, please contact Systems in Motion about acquiring a Coin
+ *  Professional Edition License.  See <URL:http://www.coin3d.org> for
+ *  more information.
  *
- *  Systems in Motion, Prof Brochs gate 6, N-7030 Trondheim, NORWAY
- *  http://www.sim.no/ support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
+ *  <URL:http://www.sim.no>, <mailto:support@sim.no>
  *
- **************************************************************************/
+\**************************************************************************/
 
 // Generated automatically from SoGuiRenderArea.h.in by configure.
-// $Id: SoGtkRenderArea.h,v 1.1 2002/04/01 06:20:16 tamer Exp $
 
 #ifndef SOGTK_RENDERAREA_H
 #define SOGTK_RENDERAREA_H
@@ -36,8 +38,14 @@ class SoNode;
 class SoSelection;
 
 class SoGtkDevice;
+// SoGtkRenderAreaP is only used in the "friend class" statement in
+// the class definition, so this shouldn't really be necessary. But
+// the OSF1/cxx compiler complains if it's left out.
+class SoGtkRenderAreaP;
 
 typedef SbBool SoGtkRenderAreaEventCB(void * closure, GdkEvent * event);
+
+// *************************************************************************
 
 #ifdef __PIVY__
 %{
@@ -78,20 +86,17 @@ SoGtkRenderAreaEventPythonCB(void * closure, GdkEvent * event)
 %}
 #endif
 
-// *************************************************************************
-
 class SOGTK_DLL_API SoGtkRenderArea : public SoGtkGLWidget {
   SOGTK_OBJECT_HEADER(SoGtkRenderArea, SoGtkGLWidget);
   
 
 public:
-  SoGtkRenderArea(
-    GtkWidget * parent = NULL,
-    const char * name = NULL,
-    SbBool embed = TRUE,
-    SbBool mouseInput = TRUE,
-    SbBool keyboardInput = TRUE);
-  ~SoGtkRenderArea(void);
+  SoGtkRenderArea(GtkWidget * parent = NULL,
+                    const char * name = NULL,
+                    SbBool embed = TRUE,
+                    SbBool mouseInput = TRUE,
+                    SbBool keyboardInput = TRUE);
+  ~SoGtkRenderArea();
 
   virtual void setSceneGraph(SoNode * scene);
   virtual SoNode * getSceneGraph(void);
@@ -134,7 +139,7 @@ public:
 
 #ifdef __PIVY__
   /* add python specific callback functions */
-  %addmethods {
+  %extend {
 	void setPythonEventCallback(PyObject *pyfunc, PyObject *user = NULL) {
 	  if (user == NULL) {
 		Py_INCREF(Py_None);
@@ -164,13 +169,12 @@ public:
   SbBool sendSoEvent(const SoEvent * event);
 
 protected:
-  SoGtkRenderArea(
-    GtkWidget * parent,
-    const char * name,
-    SbBool embed,
-    SbBool mouseInput,
-    SbBool keyboardInput,
-    SbBool build);
+  SoGtkRenderArea(GtkWidget * parent,
+                    const char * name,
+                    SbBool embed,
+                    SbBool mouseInput,
+                    SbBool keyboardInput,
+                    SbBool build);
 
   virtual void redraw(void);
   virtual void actualRedraw(void);
@@ -193,24 +197,10 @@ protected:
 
   virtual SbBool glScheduleRedraw(void);
 
-  SbBool invokeAppCB(GdkEvent * event);
-
-  const SoEvent * getSoEvent(GdkEvent * event);
-
-  SbPList * deviceList;
-
-  SoGtkRenderAreaEventCB * appEventHandler;
-  void * appEventHandlerData;
-
 private:
   friend class SoGtkRenderAreaP;
   class SoGtkRenderAreaP * priv;
-
-  void constructor(SbBool mouseInput, SbBool keyboardInput, SbBool build);
-  static void renderCB(void * user, SoSceneManager * manager);
-  static void selection_redraw_cb(void * data, SoSelection * sel);
-  void setDevicesWindowSize(const SbVec2s size);
-}; // class SoGtkRenderArea
+};
 
 // *************************************************************************
 

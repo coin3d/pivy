@@ -220,7 +220,7 @@ public:
 
 #ifdef __PIVY__
   /* add python specific callback functions */
-  %addmethods {
+  %extend {
 	void addPythonSelectionCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
 	  if (userdata == NULL) {
 		Py_INCREF(Py_None);

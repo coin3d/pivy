@@ -56,7 +56,7 @@ public:
   static void initClass(void);
 
 #ifdef __PIVY__
-  %addmethods {
+  %extend {
 	void __call__(SbVec3f & axis, float angle) {
 	  self->setValue(axis, angle);
 	}

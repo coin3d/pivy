@@ -133,7 +133,7 @@ public:
 
 #ifdef __PIVY__
   // add a method for wrapping c++ operator[] access
-  %addmethods {
+  %extend {
 	float __getitem__(int i) {
 	  return (self->getValue())[i];
 	}

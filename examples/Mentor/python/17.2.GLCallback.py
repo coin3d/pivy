@@ -94,7 +94,6 @@ def drawFloor():
 		glVertex3fv(floorObj[(i*18)+8])
 		glVertex3fv(floorObj[(i*18)+17])
 		glVertex3fv(floorObj[(i*18)+9])
-
 	i+=1
 	glVertex3fv(floorObj[i*18])
 	glVertex3fv(floorObj[(i*18)+8])

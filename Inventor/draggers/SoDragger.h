@@ -134,7 +134,7 @@ public:
 
 #ifdef __PIVY__
   /* add python specific callback functions */
-  %addmethods {
+  %extend {
 	void addPythonStartCallback(PyObject *pyfunc, PyObject *data = NULL) {
 	  if (data == NULL) {
 		Py_INCREF(Py_None);

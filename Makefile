@@ -26,24 +26,6 @@ pivy_wrap.cxx: pivy.i
 cleanpivy:
 	rm -f pivycmodule.so pivy_wrap.cxx pivy.py pivy.pyc
 
-###
-# pivyGtk
-#
-pivyGtk: pivyGtkcmodule.so
-
-pivyGtkcmodule.so: pivycmodule.so pivyGtk_wrap.cxx
-	g++ -shared $(OPTS) $(CXXFLAGS) `sogtk-config --cppflags --ldflags --libs` \
-	-o pivyGtkcmodule.so pivyGtk_wrap.cxx 
-
-wrapGtk: pivyGtk_wrap.cxx
-
-pivyGtk_wrap.cxx: pivyGtk.i
-	swig -v -python -shadow -c++ -Ifake_headers \
-		 -o pivyGtk_wrap.cxx pivyGtk.i
-
-cleanpivyGtk:
-	rm -f pivyGtkc.so pivyGtk_wrap.cxx pivyGtk.py pivyGtk.pyc
-
 clean:
 	rm -f *~ *.so pivy_wrap.cxx pivy.py pivy.pyc \
 	      pivyGtk_wrap.cxx pivyGtk.py pivyGtk.pyc

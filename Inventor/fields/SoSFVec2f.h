@@ -52,7 +52,7 @@ public:
   static void initClass(void);
 
 #ifdef __PIVY__
-  %addmethods {
+  %extend {
         void __call__(float xy[2]) {
           self->setValue(xy);
         }

@@ -86,7 +86,7 @@ public:
 
 #ifdef __PIVY__
   /* add python specific callback functions */
-  %addmethods {
+  %extend {
 	void addPythonEventCallback(SoType eventtype, 
 								PyObject *pyfunc, 
 								PyObject *userdata = NULL) {

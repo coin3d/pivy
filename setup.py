@@ -270,7 +270,7 @@ class pivy_build(build):
                     print blue("to ") + turquoise(file_h)
                     shutil.copyfile(os.path.join(coin_includedir, file_h), file_h)
                     print blue("Pivyizing ") + turquoise(file_h),
-                    fd = open(file_h, 'rw+')
+                    fd = open(file_h, 'r+')
                     contents = fd.readlines()
 
                     ins_line_nr = -1

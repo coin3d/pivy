@@ -2,14 +2,14 @@
   int len;
 
   if (PySequence_Check($input)) {
-	len = PySequence_Length($input);
+    len = PySequence_Length($input);
 
-	temp = (float (*)[3]) malloc(len*3*sizeof(float));
-	convert_SoMFVec3f_array($input, len, temp);
+    temp = (float (*)[3]) malloc(len*3*sizeof(float));
+    convert_SoMFVec3f_array($input, len, temp);
   
-	$1 = temp;
+    $1 = temp;
   } else {
-	PyErr_SetString(PyExc_TypeError, "expected a sequence.");
+    PyErr_SetString(PyExc_TypeError, "expected a sequence.");
   }
 }
 
@@ -93,5 +93,11 @@ def setValues(*args):
   }
   void __call__(const float r, const float g, const float b) {
     self->setValue(r,g,b);
+  }
+  const SbColor & __getitem__(int i) {
+    return (*self)[i];
+  }
+  void  __setitem__(int i, const SbColor & value) {
+    self->set1Value(i, value);
   }
 }

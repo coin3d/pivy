@@ -5,19 +5,19 @@ convert_SoMFVec4f_array(PyObject *input, int len, float temp[][4])
   int i,j;
 
   for (i=0; i<len; i++) {
-	PyObject *oi = PySequence_GetItem(input,i);
+    PyObject *oi = PySequence_GetItem(input,i);
 
-	for (j=0; j<4; j++) {
-	  PyObject *oj = PySequence_GetItem(oi,j);
+    for (j=0; j<4; j++) {
+      PyObject *oj = PySequence_GetItem(oi,j);
 
-	  if (PyNumber_Check(oj)) {
-		temp[i][j] = (float) PyFloat_AsDouble(oj);
-	  } else {
-		PyErr_SetString(PyExc_ValueError,"Sequence elements must be numbers");
-		free(temp);       
-		return;
-	  }
-	}
+      if (PyNumber_Check(oj)) {
+        temp[i][j] = (float) PyFloat_AsDouble(oj);
+      } else {
+        PyErr_SetString(PyExc_ValueError,"Sequence elements must be numbers");
+        free(temp);       
+        return;
+      }
+    }
   }
   return;
 }
@@ -27,14 +27,14 @@ convert_SoMFVec4f_array(PyObject *input, int len, float temp[][4])
   int len;
 
   if (PySequence_Check($input)) {
-	len = PySequence_Length($input);
+    len = PySequence_Length($input);
 
-	temp = (float (*)[4]) malloc(len*4*sizeof(float));
-	convert_SoMFVec4f_array($input, len, temp);
+    temp = (float (*)[4]) malloc(len*4*sizeof(float));
+    convert_SoMFVec4f_array($input, len, temp);
   
-	$1 = temp;
+    $1 = temp;
   } else {
-	PyErr_SetString(PyExc_TypeError, "expected a sequence.");
+    PyErr_SetString(PyExc_TypeError, "expected a sequence.");
   }
 }
 
@@ -86,4 +86,10 @@ def setValues(*args):
   void __call__(float xyzw[4]) {
     self->setValue(xyzw);
   }
+  const SbVec4f & __getitem__(int i) {
+    return (*self)[i];
+  }
+  void  __setitem__(int i, const SbVec4f & value) {
+    self->set1Value(i, value);
+  }  
 }

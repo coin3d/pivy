@@ -35,4 +35,10 @@ def setValues(*args):
   void __call__(char * str) {
     self->setValue(str);
   }
+  const SbString & __getitem__(int i) {
+    return (*self)[i];
+  }
+  void  __setitem__(int i, const SbString & value) {
+    self->set1Value(i, value);
+  }
 }

@@ -32,7 +32,7 @@
 #ifndef PIVY_SOPYSCRIPT_H
 #define PIVY_SOPYSCRIPT_H
 
-#if defined(WIN32) && defined(PYSCRIPT_DLL)
+#if defined(_WIN32) && defined(PYSCRIPT_DLL)
   #ifdef PYSCRIPT_EXPORTS
     #define PYSCRIPT_API __declspec(dllexport)
   #else

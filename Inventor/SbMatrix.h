@@ -56,27 +56,10 @@ convert_SbMat_array(PyObject *input, SbMat temp)
 }
 %}
 
-%typemap(in) SbMat & (SbMat temp) {
+%typemap(in) SbMat * (SbMat temp) {
   convert_SbMat_array($input, temp);
   $1 = &temp;
 }
-
-/**
- * the ugliest workaround ever - the problem is an unnecessary cast of the
- * swig code generator which spoils everything ->
- * result = (SbMatrix *)new SbMatrix((SbMat const &)*arg1);
- **/
-%typemap(argout) SbMat & matrix %{
-  result = (SbMatrix *)new SbMatrix(*arg1);
-  resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_SbMatrix, 1);
-%}
-
-/**
- * same workaround for the setValue member method :(((
- **/
-%typemap(argout) SbMat & m %{
-  (arg1)->setValue(*arg2);
-%}
 
 %typemap(out) SbMat & {
   int i,j;
@@ -96,7 +79,7 @@ convert_SbMat_array(PyObject *input, SbMat temp)
 										 const float a21, const float a22, const float a23, const float a24,
 										 const float a31, const float a32, const float a33, const float a34,
 										 const float a41, const float a42, const float a43, const float a44);
-%rename(SbMatrix_SbMat) SbMatrix::SbMatrix(const SbMat & matrix);
+%rename(SbMatrix_SbMat) SbMatrix::SbMatrix(const SbMat * matrix);
 
 %feature("shadow") SbMatrix::SbMatrix %{
 def __init__(self,*args):
@@ -182,15 +165,31 @@ public:
            const float a21, const float a22, const float a23, const float a24,
            const float a31, const float a32, const float a33, const float a34,
            const float a41, const float a42, const float a43, const float a44);
+#ifndef __PIVY__
   SbMatrix(const SbMat & matrix);
+#endif
   SbMatrix(const SbMat * matrix);
+
   ~SbMatrix(void);
 
   SbMatrix & operator =(const SbMat & m);
 
   operator float*(void);
   SbMatrix & operator =(const SbMatrix & m);
+
+/**
+ * workaround for swig generating an unnecessary cast
+ * -> (SbMat const &)*arg);
+ **/
+#ifdef __PIVY__
+%extend {
+  void setValue(const SbMat * m) {
+    self->setValue(*m);
+  }
+}
+#else
   void setValue(const SbMat & m);
+#endif
   const SbMat & getValue(void) const;
 
   void makeIdentity(void);

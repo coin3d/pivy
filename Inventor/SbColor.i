@@ -1,0 +1,45 @@
+%typemap(in) float hsv[3] (float temp[3]) {
+  convert_SbVec3f_array($input, temp);
+  $1 = temp;
+}
+
+%typemap(in) float *rgb (float temp[3]) {
+  convert_SbVec3f_array($input, temp);
+  $1 = temp;
+}
+
+%rename(SbColor_vec) SbColor::SbColor(const SbVec3f &v);
+%rename(SbColor_rgb) SbColor::SbColor(const float *const rgb);
+%rename(SbColor_fff) SbColor::SbColor(const float r, const float g, const float b);
+
+%feature("shadow") SbColor::SbColor %{
+def __init__(self,*args):
+   if len(args) == 1:
+      if isinstance(args[0], SbVec3f):
+         self.this = apply(_pivy.new_SbColor_vec,args)
+         self.thisown = 1
+         return
+      else:
+         self.this = apply(_pivy.new_SbColor_rgb,args)
+         self.thisown = 1
+         return
+   elif len(args) == 3:
+      self.this = apply(_pivy.new_SbColor_fff,args)
+      self.thisown = 1
+      return
+   self.this = apply(_pivy.new_SbColor,args)
+   self.thisown = 1
+%}
+
+%rename(setHSVValue_fff) SbColor::setHSVValue(float h, float s, float v);
+
+%feature("shadow") SbColor::setHSVValue(const float hsv[3]) %{
+def setHSVValue(*args):
+   if len(args) == 4:
+      return apply(_pivy.SbColor_setHSVValue_fff,args)
+   return apply(_pivy.SbColor_setHSVValue,args)
+%}
+
+%apply float *OUTPUT { float & h, float & s, float & v };
+
+%ignore SbColor::getHSVValue(float hsv[3]) const;

@@ -177,3 +177,42 @@ autocast(SoNode * node)
 }
 
 %native(cast) PyObject *cast(PyObject *self, PyObject *args);
+
+#ifdef PIVY_WIN32
+/* some ignores for missing COIN_DLL_API specifications */
+%ignore cc_rbptree_init;
+%ignore cc_rbptree_clean;
+%ignore cc_rbptree_insert;
+%ignore cc_rbptree_remove;
+%ignore cc_rbptree_size;
+%ignore cc_rbptree_traverse;
+%ignore cc_rbptree_debug;
+%ignore so_plane_data::so_plane_data;
+%ignore SoGLRenderCache::SoGLRenderCache;
+%ignore SoGLRenderCache::open;
+%ignore SoGLRenderCache::close;
+%ignore SoGLRenderCache::call;
+%ignore SoGLRenderCache::getCacheContext;
+%ignore SoGLRenderCache::getPreLazyState;
+%ignore SoGLRenderCache::getPostLazyState;
+%ignore SoGLCacheList::SoGLCacheList;
+%ignore SoGLCacheList::~SoGLCacheList;
+%ignore SoGLCacheList::call;
+%ignore SoGLCacheList::open;
+%ignore SoGLCacheList::close;
+%ignore SoGLCacheList::invalidateAll;
+%ignore SoNormalBundle::SoNormalBundle;
+%ignore SoNormalBundle::~SoNormalBundle;
+%ignore SoNormalBundle::shouldGenerate;
+%ignore SoNormalBundle::initGenerator;
+%ignore SoNormalBundle::beginPolygon;
+%ignore SoNormalBundle::polygonVertex;
+%ignore SoNormalBundle::endPolygon;
+%ignore SoNormalBundle::triangle;
+%ignore SoNormalBundle::generate;
+%ignore SoNormalBundle::getGeneratedNormals;
+%ignore SoNormalBundle::getNumGeneratedNormals;
+%ignore SoNormalBundle::set;
+%ignore SoNormalBundle::get;
+%ignore SoNormalBundle::send;
+#endif

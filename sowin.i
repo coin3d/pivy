@@ -58,11 +58,15 @@
 #include <Inventor/Win/SoWinGLWidget.h>
 #include <Inventor/Win/SoWinRenderArea.h>
 
+#include <Inventor/nodes/SoNode.h>
+
 #include <Inventor/SbDPMatrix.h>
 #include <Inventor/SbDPRotation.h>
 #include <Inventor/SbVec2d.h>
 #include <Inventor/C/threads/thread.h>
 
+/* make CustomCursor in SoWinCursor known to SWIG */
+typedef SoWinCursor::CustomCursor CustomCursor;
 
 /* FIXME: there is a major pitfall reg. this solution, namely
  * thread safety! reconsider! 20030626 tamer.

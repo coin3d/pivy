@@ -1,5 +1,5 @@
 include AUTHORS ChangeLog LICENSE THANKS
-include pivy.i
+include pivy.i pivy_common_typemaps.i soqt.i soxt.i sogtk.i
 recursive-include Inventor *.h
 graft docs
 graft examples

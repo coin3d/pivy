@@ -26,7 +26,11 @@ convert_SbVec2d_array(PyObject *input, double temp[2])
 def __init__(self,*args):
    newobj = None
    if len(args) == 1:
-      newobj = apply(_pivy.new_SbVec2d_vec,args)
+      if isinstance(args[0], SbVec2d):
+         newobj = _pivy.new_SbVec2d()
+         newobj.setValue(args[0])
+      else:
+         newobj = apply(_pivy.new_SbVec2d_vec,args)
    elif len(args) == 2:
       newobj = apply(_pivy.new_SbVec2d_dd,args)
    else:
@@ -43,6 +47,9 @@ def __init__(self,*args):
 def setValue(*args):
    if len(args) == 3:
       return apply(_pivy.SbVec2d_setValue_dd,args)
+   elif len(args) == 2:
+      if isinstance(args[1], SbVec2d):
+         return _pivy.SbVec2d_setValue_dd(args[0], args[1][0], args[1][1])
    return apply(_pivy.SbVec2d_setValue,args)
 %}
 

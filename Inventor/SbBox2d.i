@@ -8,4 +8,10 @@
     {
         return *self != u;
     };
+    
+    SbBox2d & setValue(const SbBox2d & u)
+    {
+        self->setBounds(u.getMin(), u.getMax());
+        return *self;
+    };
 }

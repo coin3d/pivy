@@ -59,18 +59,6 @@ class SbPList;
 
 // *************************************************************************
 
-#ifdef __PIVY__
-%{
-/* FIXME: there is a major pitfall reg. this solution. neither
- *   Python nor Qt are thread safe! reconsider! 20030626 tamer.
- */
-static void *Pivy_PythonInteractiveLoop(void *data) {
-  PyRun_InteractiveLoop(stdin, "<stdin>");
-  return NULL;
-}
-%}
-#endif
-
 class SOQT_DLL_API SoQt
 {
 

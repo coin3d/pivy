@@ -63,7 +63,7 @@ convert_SbMat_array(PyObject *input, SbMat temp)
 
 /**
  * the ugliest workaround ever - the problem is an unnecessary cast of the
- * swig code generator which spoils everything -> 
+ * swig code generator which spoils everything ->
  * result = (SbMatrix *)new SbMatrix((SbMat const &)*arg1);
  **/
 %typemap(argout) SbMat & matrix %{

@@ -113,6 +113,7 @@ public:
 #else
   SbBool getFieldName(const SoField * const field, SbName & name) const;
 #endif
+
   SbBool enableNotify(const SbBool flag);
   SbBool isNotifyEnabled(void) const;
 

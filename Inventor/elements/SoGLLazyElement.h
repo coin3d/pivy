@@ -83,6 +83,8 @@ public:
     int32_t alphatest;
   } GLState;
 
+  // These members were left public by mistake. Don't attempt to read
+  // or write any of these values. They will be private in Coin-3.
   uint32_t didsetbitmask;
   uint32_t didntsetbitmask;
   uint32_t cachebitmask;

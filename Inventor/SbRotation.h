@@ -113,10 +113,12 @@ public:
   SbRotation(const SbMatrix & m);
   SbRotation(const SbVec3f & rotateFrom, const SbVec3f & rotateTo);
   const float * getValue(void) const;
+#ifndef __PIVY__
+  void getValue(float & q0, float & q1, float & q2, float & q3) const;
+#endif
   SbRotation & setValue(const float q0, const float q1,
                         const float q2, const float q3);
 #ifndef __PIVY__
-  void getValue(float & q0, float & q1, float & q2, float & q3) const;
   void getValue(SbVec3f & axis, float & radians) const;
   void getValue(SbMatrix & matrix) const;
 #endif

@@ -1,0 +1,36 @@
+This example shows how to integrate an existing NodeKit or Node.
+
+The example has been taken from the Coin documentation of SoBaseKit that
+you will find here: http://doc.coin3d.org/Coin/classSoBaseKit.html
+
+Simply generate a swig interface file like I did for the ShapeScale
+nodekit.  The first line tells swig about the module name; in our case:
+
+%module shapescale
+
+then add a %{...%} section where you include all headers of your NodeKits
+that you want to provide in your module. They are needed for compilation.
+
+afterwards follows a standard boilerplate template for different default
+typemaps from pivy.i. Later i will probably provide a script or a file that
+you simply can include and contains all these. For this to work you will
+have to include the SbTime header in the above %{...%} section.
+
+Finally add all the headers (of your Nodekits) that swig should actually
+parse, hence the "%include ShapeScale.h" directive at the end.
+
+Look at the Makefile for information in how to build the module.
+
+Note: You will have to specify the -c option to swig so that it just
+      generates the raw wrapper code in order to allow the Swig Type
+      Runtime system to get all the type handling sorted out through the
+      swig python library. So therefore you should also link against
+      libswigpy as shown in the Makefile.
+
+If everything is build just import the freshly generated module like
+e.g. so:
+
+>>> from shapescale import *
+
+Note: Make sure it is imported _before_ the sogui or pivy module otherwise
+      the type system gets confused.

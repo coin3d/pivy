@@ -68,7 +68,7 @@ cast(PyObject *self, PyObject *args)
 }
 
 /* an autocasting helper function */
-PyObject *
+SWIGEXPORT(PyObject *)
 autocast(SoNode * node)
 {
   char * cast_name = NULL;
@@ -117,8 +117,8 @@ autocast(SoNode * node)
  **/
 
 %include "typemaps.i"
-
 %include "cpointer.i"
+
 %pointer_class(char, charp);
 %pointer_class(int, intp);
 %pointer_class(long, longp);

@@ -1,6 +1,8 @@
 CXXFLAGS+= -I/usr/include/python
 
-OPTS=-fPIC # -O2
+OPTS=-shared -fPIC # -O2
+# comment out the next line for MacOS X
+# OPTS=-bundle -bundle_loader `which python`
 
 all: pivy
 
@@ -13,7 +15,7 @@ pivy.pyc: pivy.py
 	python -c "import pivy"
 
 _pivy.so: pivy_wrap.cxx
-	g++ -shared $(OPTS) $(CXXFLAGS) `soqt-config --cppflags --ldflags --libs` \
+	g++ $(OPTS) $(CXXFLAGS) `soqt-config --cppflags --ldflags --libs` \
 	-o _pivy.so pivy_wrap.cxx 
 
 wrap: pivy_wrap.cxx

@@ -1,4 +1,3 @@
-DEBUG=-g
 CXXFLAGS=-g -Wall
 COIN_CXXFLAGS=`soqt-config --cppflags`
 COIN_LDFLAGS=`soqt-config --libs --ldflags`

@@ -83,19 +83,52 @@ PyObject * SWIG_NewPointerObj(void *, swig_type_info *, int own);
 swig_type_info * SWIG_TypeQuery(const char *);
 }
 
+class GlobalLock {
+public:
+  GlobalLock(void)
+  {
+    state = PyGILState_Ensure();
+  }
+  ~GlobalLock()
+  {
+    PyGILState_Release(state);	
+  }
+protected:
+  PyGILState_STATE state;
+};
+
 class SoPyScriptP {
 public:
   SoPyScriptP(SoPyScript * master) :
     isReading(FALSE),
-    oneshotSensor(new SoOneShotSensor(SoPyScript::eval_cb, master)),
-    thread_state(Py_NewInterpreter()),
-    global_module_dict(NULL),
-    handler_registry_dict(PyDict_New())
-  {}
+    oneshotSensor(new SoOneShotSensor(SoPyScript::eval_cb, master))
+  {
+    if(!global_module_dict)
+    {
+      Py_SetProgramName("SoPyScript");
+      Py_Initialize();
+      global_module_dict = PyModule_GetDict(PyImport_AddModule("__main__"));
+
+      if (PyRun_SimpleString("from pivy import *")) {
+         SoDebugError::postWarning("SoPyScript::initClass",
+                                   "\n*Yuk!* The box containing a fierce looking python snake to drive\n"
+                                   "this node has arrived but was found to be empty! The Pivy module\n"
+                                   "required for the Python Scripting Node could not be successfully\n"
+                                   "imported! Check your setup and fix it so that the python snake can\n"
+                                   "happily wiggle and byte you in the ass...");
+      }
+    }
+    GlobalLock lock;
+    // create a local copy of the global dictionary to use for executing the script
+    local_module_dict = PyDict_Copy(global_module_dict);
+    handler_registry_dict = PyDict_New();
+  }
 
   ~SoPyScriptP() {
+    GlobalLock lock;
     delete this->oneshotSensor;
     Py_DECREF(handler_registry_dict);
+    Py_DECREF(local_module_dict);
   }
 
   PyObject *
@@ -117,10 +150,12 @@ public:
 
   SbBool isReading;
   SoOneShotSensor * oneshotSensor;
-  PyThreadState * thread_state;
-  PyObject * global_module_dict;
+  static PyObject * global_module_dict;
+  PyObject * local_module_dict;
   PyObject * handler_registry_dict;
 };
+
+PyObject * SoPyScriptP::global_module_dict = NULL;
 
 #define PRIVATE(_this_) (_this_)->pimpl
 
@@ -140,8 +175,6 @@ SoPyScript::initClass(void)
                                   SoNode::COIN_2_0|SoNode::COIN_2_2|SoNode::COIN_2_3);
 
     SoAudioRenderAction::addMethod(SoPyScript::getClassTypeId(), SoNode::audioRenderS);
-
-    Py_Initialize();
   }
 }
 
@@ -160,19 +193,8 @@ SoPyScript::SoPyScript(void)
 
   this->initFieldData();
  
-  if (PyRun_SimpleString("from pivy import *")) {
-    SoDebugError::postWarning("SoPyScript::initClass",
-                              "\n*Yuk!* The box containing a fierce looking python snake to drive\n"
-                              "this node has arrived but was found to be empty! The Pivy module\n"
-                              "required for the Python Scripting Node could not be successfully\n"
-                              "imported! Check your setup and fix it so that the python snake can\n"
-                              "happily wiggle and byte you in the ass...");
-  }
-
-  PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
-  Py_SetProgramName("SoPyScript");
-  PRIVATE(this)->global_module_dict = PyModule_GetDict(PyImport_AddModule("__main__"));
-
+  GlobalLock lock;
+  
   /* shovel the the node itself on to the Python interpreter as self instance */
   swig_type_info * swig_type = 0;
 
@@ -182,16 +204,14 @@ SoPyScript::SoPyScript(void)
   }
 
   /* add the field to the global dict */
-  PyDict_SetItemString(PRIVATE(this)->global_module_dict, 
+  PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
                        "self",
                        SWIG_NewPointerObj(this, swig_type, 0));
 
   /* add the handler registry dict to the global dict */
-  PyDict_SetItemString(PRIVATE(this)->global_module_dict, 
+  PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
                        "handler_registry",
                        PRIVATE(this)->handler_registry_dict);
-
-  PyThreadState_Swap(tstate);
 }
 
 // Doc in parent
@@ -210,10 +230,6 @@ SoPyScript::getTypeId(void) const
 
 SoPyScript::~SoPyScript()
 {
-  PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
-  Py_EndInterpreter(PRIVATE(this)->thread_state);
-  PyThreadState_Swap(tstate);
-  
   delete PRIVATE(this);
 
   const int n = this->fielddata->getNumFields();
@@ -229,7 +245,7 @@ void
 SoPyScript::doAction(SoAction * action, const char * funcname)
 {
   if (funcname && !script.isIgnored()) {
-    PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
+    GlobalLock lock;
 
     if (coin_getenv("PIVY_DEBUG")) {
       SoDebugError::postInfo("SoPyScript::doAction",
@@ -248,7 +264,7 @@ SoPyScript::doAction(SoAction * action, const char * funcname)
       return;
     }
 
-    PyObject * func = PyDict_GetItemString(PRIVATE(this)->global_module_dict, funcname);
+    PyObject * func = PyDict_GetItemString(PRIVATE(this)->local_module_dict, funcname);
 
     if (func) {
       if (!PyCallable_Check(func)) {
@@ -274,7 +290,6 @@ SoPyScript::doAction(SoAction * action, const char * funcname)
     }
 
     Py_DECREF(pyAction);
-    PyThreadState_Swap(tstate);
   }
   inherited::doAction(action);
 }
@@ -479,7 +494,7 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
           field->setContainer(this);
           this->fielddata->addField(this, fieldname.getString(), field);
 
-          PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
+          GlobalLock lock;
 
           /* shovel the field instance on to the Python interpreter */
           PyObject * pyField = NULL;
@@ -492,7 +507,7 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
           }
 
           /* add the field to the global dict */
-          PyDict_SetItemString(PRIVATE(this)->global_module_dict, 
+          PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
                                fieldname.getString(),
                                pyField);
 
@@ -503,8 +518,6 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
           PyDict_SetItemString(PRIVATE(this)->handler_registry_dict, 
                                fieldname.getString(),
                                PyString_FromString(funcname.getString()));
-
-          PyThreadState_Swap(tstate);
         }
       }
     }
@@ -546,14 +559,14 @@ SoPyScript::getFieldData(void) const
 void
 SoPyScript::executePyScript(void)
 {
-  PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
-
   /* strip out possible \r's that could come from win32 line endings */
   SbString src = script.getValue();
   SbString pyString;
   for (int i=0; i < src.getLength(); i++) {
     if (src[i] != '\r') { pyString += src[i]; }
   }
+
+  GlobalLock lock;
 
   /* check if the script denotes an URL or path */
   /* FIXME: maybe, just maybe, we could do a little better error
@@ -565,27 +578,29 @@ SoPyScript::executePyScript(void)
   if (src.getLength()) {
     PyObject * url = PyString_FromString(pyString.getString());
     /* add the url to the global dict */
-    PyDict_SetItemString(PRIVATE(this)->global_module_dict, "url", url);
-
-    PyRun_SimpleString(PYTHON_URLLIB_URLOPEN);
-
-    PyObject * script_new = PyDict_GetItemString(PRIVATE(this)->global_module_dict, "script");
+    PyDict_SetItemString(PRIVATE(this)->local_module_dict, "url", url);
+    PyObject * res = PyRun_String(PYTHON_URLLIB_URLOPEN, Py_file_input, PRIVATE(this)->local_module_dict, PRIVATE(this)->local_module_dict);
+    if(!res)
+      PyErr_Print();
+    else
+      Py_DECREF(res);
+    PyObject * script_new = PyDict_GetItemString(PRIVATE(this)->local_module_dict, "script");
     if (script_new != Py_None) {
       pyString.makeEmpty();
       pyString = PyString_AsString(script_new);
     }
-
     Py_DECREF(url);
   }
 
-  PyRun_SimpleString((char *)pyString.getString());
-
+  PyObject * res = PyRun_String((char *)pyString.getString(),Py_file_input, PRIVATE(this)->local_module_dict, PRIVATE(this)->local_module_dict);
+  if(!res)
+    PyErr_Print();
+  else
+    Py_DECREF(res);
   if (coin_getenv("PIVY_DEBUG")) {
     SoDebugError::postInfo("SoPyScript::executePyScript",
                            "script executed at full length!");
   }
-
-  PyThreadState_Swap(tstate);
 }
 
 // callback for oneshotSensor
@@ -593,8 +608,6 @@ void
 SoPyScript::eval_cb(void * data, SoSensor *)
 {
   SoPyScript * self = (SoPyScript*)data;
- 
-  PyThreadState * tstate = PyThreadState_Swap(PRIVATE(self)->thread_state);
 
   if (coin_getenv("PIVY_DEBUG")) {
     SoDebugError::postInfo("SoPyScript::eval_cb",
@@ -606,6 +619,8 @@ SoPyScript::eval_cb(void * data, SoSensor *)
     if (f != &self->script || f != &self->mustEvaluate) {
  
       if (f->getDirty()) {
+        GlobalLock lock;
+
         SbString fieldname(self->fielddata->getFieldName(i).getString());
 
         /* look up the function name in the handler registry */
@@ -616,7 +631,7 @@ SoPyScript::eval_cb(void * data, SoSensor *)
         /* check if it is a string */
         if (PyString_Check(funcname)) {
           /* get the function handle in the global module dictionary if available */
-          PyObject * func = PyDict_GetItemString(PRIVATE(self)->global_module_dict,
+          PyObject * func = PyDict_GetItemString(PRIVATE(self)->local_module_dict,
                                                  PyString_AsString(funcname));
           
           if (!func) { continue; }
@@ -641,11 +656,9 @@ SoPyScript::eval_cb(void * data, SoSensor *)
             Py_XDECREF(result);
           }
         }
-      }
+      } // if(f->getDirty()) - lock released here
     }
   }
-
-  PyThreadState_Swap(tstate);
 }
 
 #undef PRIVATE

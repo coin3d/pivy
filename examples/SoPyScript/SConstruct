@@ -57,7 +57,8 @@ examin_env.ParseConfig('soqt-config --cppflags --libs --ldflags')
 
 examin_env.Append(LIBPATH = distutils.sysconfig.get_python_lib())
 examin_env.Append(LIBS = 'pivy_runtime')
-examin_env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars()['BLDLIBRARY'].split())
+examin_env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars()['LINKFORSHARED'].split() +
+                              distutils.sysconfig.get_config_vars()['BLDLIBRARY'].split())
 if str(Platform()) == 'posix':
     examin_env.Append(LINKFLAGS = '-Wl,-R' + distutils.sysconfig.get_python_lib())
 

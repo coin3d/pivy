@@ -49,15 +49,15 @@ SoIntersectionVisitationPythonCB(void * closure,
                                  const SoPath * where)
    {
   PyObject *func, *arglist;
-  PyObject *result, *isCB;
+  PyObject *result, *path;
   int iresult = 0;
 
-  isCB = SWIG_NewPointerObj((void *) where, SWIGTYPE_p_SoPath, 1);
+  path = SWIG_NewPointerObj((void *) where, SWIGTYPE_p_SoPath, 1);
 
   /* the first item in the userdata sequence is the python callback
    * function; the second is the supplied userdata python object */
   func = PyTuple_GetItem((PyObject *)closure, 0);
-  arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)closure, 1), isCB);
+  arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)closure, 1), path);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
 	printf("SoIntersectionVisitationPythonCB(void * closure, const SoPath * where) failed!\n");

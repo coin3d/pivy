@@ -61,13 +61,43 @@ def setHSVValue(*args):
    return apply(_pivy.SbColor4f_setHSVValue,args)
 %}
 
-%rename(SbColor4f_mul) operator *(const SbColor4f &c, const float d);
-%rename(SbColor4f_d_mul) operator *(const float d, const SbColor4f &c);
-%rename(SbColor4f_add) operator +(const SbColor4f &v1, const SbColor4f &v2);
-%rename(SbColor4f_sub) operator -(const SbColor4f &v1, const SbColor4f &v2);
-%rename(SbColor4f_div) operator /(const SbColor4f &c, const float d);
-%rename(SbColor4f_eq) operator ==(const SbColor4f &v1, const SbColor4f &v2);
-%rename(SbColor4f_neq) operator !=(const SbColor4f &v1, const SbColor4f &v2);
+/* add operator overloading methods instead of the global functions */
+%extend SbColor4f {
+    SbColor4f __add__(const SbColor4f &u)
+    {
+        return *self + u;
+    };
+    
+    SbColor4f __sub__(const SbColor4f &u)
+    {
+       return *self - u;
+    };
+    
+    SbColor4f __mul__(const float d)
+    {
+       return *self * d;
+    };
+    
+    SbColor4f __rmul__(const float d)
+    {
+           return *self * d;
+    };
+    
+    SbColor4f __div__(const float d)
+    {
+        return *self / d;
+    };
+    
+    int __eq__( const SbColor4f &u )
+    {
+        return *self == u;
+    };
+    
+    int __nq__( const SbColor4f &u )
+    {
+        return *self != u;
+    };
+}
 
 %apply float *OUTPUT { float &r, float &g, float &b, float &a };
 %apply float *OUTPUT { float &h, float &s, float &v };

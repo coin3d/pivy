@@ -1,1 +1,11 @@
-%rename(SoNodeKitPath_eq) operator==(const SoNodeKitPath & p1, const SoNodeKitPath & p2);
+%extend SoNodeKitPath {      
+    int __eq__( const SoNodeKitPath &u )
+    {
+        return *self == u;
+    };
+    
+    int __nq__( const SoNodeKitPath &u )
+    {
+        return !(*self == u);
+    };
+}

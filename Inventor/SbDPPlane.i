@@ -1,2 +1,11 @@
-%rename(SbDPPlane_eq) operator ==(const SbDPPlane & p1, const SbDPPlane & p2);
-%rename(SbDPPlane_neq) operator !=(const SbDPPlane & p1, const SbDPPlane & p2);
+%extend SbDPPlane {
+    int __eq__(const SbDPPlane & u)
+    {
+        return *self == u;
+    };
+    
+    int __ne__(const SbDPPlane & u)
+    {
+        return *self != u;
+    };
+}

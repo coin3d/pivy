@@ -61,9 +61,38 @@ def setValue(*args):
    return apply(_pivy.SbDPRotation_setValue,args)
 %}
 
-%rename(SbDPRotation_eq) operator ==(const SbDPRotation & q1, const SbDPRotation & q2);
-%rename(SbDPRotation_neq) operator !=(const SbDPRotation & q1, const SbDPRotation & q2);
-%rename(SbDPRotation_mul) operator *(const SbDPRotation & q1, const SbDPRotation & q2);
+/* add operator overloading methods instead of the global functions */
+%extend SbDPRotation {
+   
+    SbDPRotation __mul__( const SbDPRotation &u )
+    {
+       return *self * u;
+    };
+    
+    SbDPRotation __mul__( const double d )
+    {
+        SbDPRotation res(*self);
+        res *= d;
+        return res;
+    };        
+        
+    SbVec3d __mul__( const SbVec3d & v )
+    {
+        SbVec3d res;
+        self->multVec( v, res );
+        return res;
+    };
+    
+    int __eq__( const SbDPRotation &u )
+    {
+        return *self == u;
+    };
+    
+    int __nq__( const SbDPRotation &u )
+    {
+        return *self != u;
+    };
+}
 
 %ignore SbDPRotation::getValue(double & q0, double & q1, double & q2, double & q3) const;
 %ignore SbDPRotation::getValue(SbVec3f & axis, double & radians) const;

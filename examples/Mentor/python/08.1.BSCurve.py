@@ -113,7 +113,7 @@ Separator {\n
    USE FloorPanel\n
 }"""
 
-##############################
+##############################################################
 # CODE FOR The Inventor Mentor STARTS HERE
 
 # The control points for this curve
@@ -131,105 +131,105 @@ knots = (1, 2, 3, 4, 5, 5, 6, 7, 8, 9)
 
 # Create the nodes needed for the B-Spline curve.
 def makeCurve():
-	curveSep = SoSeparator()
-	curveSep.ref()
-
-	# Set the draw style of the curve.
-	drawStyle = SoDrawStyle()
-	drawStyle.lineWidth(4)
-	curveSep.addChild(drawStyle)
-
-	# Define the NURBS curve including the control points
-	# and a complexity.
-	complexity = SoComplexity()
-	controlPts = SoCoordinate3()
-	curve      = SoNurbsCurve()
-	complexity.value(0.8)
-	controlPts.point.setValues(0, 7, pts)
-	curve.numControlPoints(7)
-	curve.knotVector.setValues(0, 10, knots)
-	curveSep.addChild(complexity)
-	curveSep.addChild(controlPts)
-	curveSep.addChild(curve)
-
-	curveSep.unrefNoDelete()
-	return curveSep
+    curveSep = SoSeparator()
+    curveSep.ref()
+    
+    # Set the draw style of the curve.
+    drawStyle = SoDrawStyle()
+    drawStyle.lineWidth(4)
+    curveSep.addChild(drawStyle)
+    
+    # Define the NURBS curve including the control points
+    # and a complexity.
+    complexity = SoComplexity()
+    controlPts = SoCoordinate3()
+    curve      = SoNurbsCurve()
+    complexity.value(0.8)
+    controlPts.point.setValues(0, 7, pts)
+    curve.numControlPoints(7)
+    curve.knotVector.setValues(0, 10, knots)
+    curveSep.addChild(complexity)
+    curveSep.addChild(controlPts)
+    curveSep.addChild(curve)
+    
+    curveSep.unrefNoDelete()
+    return curveSep
 
 # CODE FOR The Inventor Mentor ENDS HERE
-##############################
+##############################################################
 
 def main():   
-	# Initialize Inventor and Gtk
-	appWindow = SoGtk_init(sys.argv[0])
-	if appWindow == None:
-		sys.exit(1)
-
-	root = SoSeparator()
-	root.ref()
-
-	# Create the scene graph for the heart
-	heart    = SoSeparator()
-	curveSep = makeCurve()
-	lmodel   = SoLightModel()
-	clr      = SoBaseColor()
-
-	lmodel.model(SoLightModel.BASE_COLOR)
-	clr.rgb.setValue(SbColor(1.0, 0.0, 0.1))
-	heart.addChild(lmodel)
-	heart.addChild(clr)
-	heart.addChild(curveSep)
-	root.addChild(heart)
-
-	# Create the scene graph for the floor
-	floor = SoSeparator()
-	xlate = SoTranslation()
-	rot   = SoRotation()
-	scale = SoScale()
-	input = SoInput()
-
-	input.setBuffer(floorData)
-	result = SoDB_readAll(input)
-	xlate.translation.setValue(SbVec3f(-12.0, -5.0, -5.0))
-	scale.scaleFactor.setValue(SbVec3f(2.0, 1.0, 2.0))
-	rot.rotation.setValue(SbRotation(SbVec3f(0.0, 1.0, 0.0), M_PI/2.0))
-	floor.addChild(rot)
-	floor.addChild(xlate)
-	floor.addChild(scale)
-	floor.addChild(result)
-	root.addChild(floor)
-
-	# Create the scene graph for the heart's shadow
-	shadow = SoSeparator()
-	shmdl  = SoLightModel()
-	shmtl  = SoMaterial()
-	shclr  = SoBaseColor()
-	shxl   = SoTranslation()
-	shscl  = SoScale()
-   
-	shmdl.model(SoLightModel.BASE_COLOR)
-	shclr.rgb.setValue(SbColor(0.21, 0.15, 0.09))
-	shmtl.transparency(0.5)
-	shxl.translation.setValue(SbVec3f(0.0, -4.9, 0.0))
-	shscl.scaleFactor.setValue(SbVec3f(1.0, 0.0, 1.0))
-	shadow.addChild(shmtl)
-	shadow.addChild(shmdl)
-	shadow.addChild(shclr)
-	shadow.addChild(shxl)
-	shadow.addChild(shscl)
-	shadow.addChild(curveSep)
-	root.addChild(shadow)
-
-	# Initialize an Examiner Viewer
-	viewer = SoGtkExaminerViewer(appWindow)
-	viewer.setSceneGraph(root)
-	viewer.setTitle("B-Spline Curve")
-	cam = viewer.getCamera()
-	cam.position.setValue(SbVec3f(-6.0, 8.0, 20.0))
-	cam.pointAt(SbVec3f(0.0, -2.0, -4.0))
-	viewer.show()
-
-	SoGtk_show(appWindow)
-	SoGtk_mainLoop()
+    # Initialize Inventor and Gtk
+    appWindow = SoGtk_init(sys.argv[0])
+    if appWindow == None:
+	sys.exit(1)
+        
+    root = SoSeparator()
+    root.ref()
+    
+    # Create the scene graph for the heart
+    heart    = SoSeparator()
+    curveSep = makeCurve()
+    lmodel   = SoLightModel()
+    clr      = SoBaseColor()
+    
+    lmodel.model(SoLightModel.BASE_COLOR)
+    clr.rgb.setValue(SbColor(1.0, 0.0, 0.1))
+    heart.addChild(lmodel)
+    heart.addChild(clr)
+    heart.addChild(curveSep)
+    root.addChild(heart)
+    
+    # Create the scene graph for the floor
+    floor = SoSeparator()
+    xlate = SoTranslation()
+    rot   = SoRotation()
+    scale = SoScale()
+    input = SoInput()
+    
+    input.setBuffer(floorData)
+    result = SoDB_readAll(input)
+    xlate.translation.setValue(SbVec3f(-12.0, -5.0, -5.0))
+    scale.scaleFactor.setValue(SbVec3f(2.0, 1.0, 2.0))
+    rot.rotation.setValue(SbRotation(SbVec3f(0.0, 1.0, 0.0), M_PI/2.0))
+    floor.addChild(rot)
+    floor.addChild(xlate)
+    floor.addChild(scale)
+    floor.addChild(result)
+    root.addChild(floor)
+    
+    # Create the scene graph for the heart's shadow
+    shadow = SoSeparator()
+    shmdl  = SoLightModel()
+    shmtl  = SoMaterial()
+    shclr  = SoBaseColor()
+    shxl   = SoTranslation()
+    shscl  = SoScale()
+    
+    shmdl.model(SoLightModel.BASE_COLOR)
+    shclr.rgb.setValue(SbColor(0.21, 0.15, 0.09))
+    shmtl.transparency(0.5)
+    shxl.translation.setValue(SbVec3f(0.0, -4.9, 0.0))
+    shscl.scaleFactor.setValue(SbVec3f(1.0, 0.0, 1.0))
+    shadow.addChild(shmtl)
+    shadow.addChild(shmdl)
+    shadow.addChild(shclr)
+    shadow.addChild(shxl)
+    shadow.addChild(shscl)
+    shadow.addChild(curveSep)
+    root.addChild(shadow)
+    
+    # Initialize an Examiner Viewer
+    viewer = SoGtkExaminerViewer(appWindow)
+    viewer.setSceneGraph(root)
+    viewer.setTitle("B-Spline Curve")
+    cam = viewer.getCamera()
+    cam.position.setValue(SbVec3f(-6.0, 8.0, 20.0))
+    cam.pointAt(SbVec3f(0.0, -2.0, -4.0))
+    viewer.show()
+    
+    SoGtk_show(appWindow)
+    SoGtk_mainLoop()
 
 if __name__ == "__main__":
-	main()
+    main()

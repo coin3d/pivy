@@ -85,9 +85,9 @@ extern "C" {
 
 class GlobalLock {
   public:
-    GlobalLock(void) { state = PyGILState_Ensure(); }
+    GlobalLock(void) : state(PyGILState_Ensure()) {}
     ~GlobalLock() { PyGILState_Release(state); }
-  private:
+  protected:
     PyGILState_STATE state;
 };
 
@@ -163,7 +163,7 @@ SoPyScript::initClass(void)
                          SoPyScript::createInstance,
                          SoNode::nextActionMethodIndex++);
 
-#if 0 // FIXME: needed or unneeded?
+#if 0 // FIXME: necessary or not necessary? 20040412 tamer.
     SoNode::setCompatibilityTypes(SoPyScript::getClassTypeId(),
                                   SoNode::COIN_2_0|SoNode::COIN_2_2|SoNode::COIN_2_3);
 #endif
@@ -397,7 +397,7 @@ SoPyScript::copyContents(const SoFieldContainer * from,
     if (f != &fromnode->script &&
         f != &fromnode->mustEvaluate) {
       SoField * cp = (SoField*) f->getTypeId().createInstance();
-      SbString fieldname = src->getFieldName(i);
+      SbString fieldname = src->getFieldName(i).getString();
       
       cp->setContainer(this);
       this->fielddata->addField(this, fieldname.getString(), cp);
@@ -405,7 +405,7 @@ SoPyScript::copyContents(const SoFieldContainer * from,
       GlobalLock lock;
       
       /* shovel the field instance on to the Python interpreter */
-      SbString typeVal = cp->getTypeId().getName();      
+      SbString typeVal = cp->getTypeId().getName().getString();
 	  PyObject * pyField = NULL;
 	  if ((pyField = PRIVATE(this)->createPySwigType(typeVal, cp)) == NULL) {
 	  	SoDebugError::post("SoPyScript::copyContents",

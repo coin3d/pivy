@@ -706,18 +706,17 @@ typedef SoGLLazyElement::GLState GLState;
 
 %}
 
-/* GR: probably a correct way to get ref counting into the wrapper
-   taken from the swig mailing list. 
+/* probably a correct way to get ref counting into the wrapper taken
+   from the swig mailing list.
 */
-
 %define RefCount(...)
   %typemap(newfree) __VA_ARGS__ * { $1->ref(); }
   %extend __VA_ARGS__ { ~__VA_ARGS__() { self->unref(); } }
   %ignore __VA_ARGS__::~__VA_ARGS__();
 %enddef
 
-/* has to be declared for all classes it should apply to :/. In our case all 
-   classes derived from and including SoBase ... */
+/* has to be declared for all classes it should apply to :/. In our
+   case all classes derived from and including SoBase ... */
 RefCount(SoNode)
 RefCount(SoBase)
 RefCount(SoProtoInstance)
@@ -1056,31 +1055,6 @@ class MFieldIterator:
 %include Inventor/SoInput.h
 %include Inventor/SoPickedPoint.h
 %include Inventor/SoOutput.h
-%include Inventor/C/base/hash.h
-%include Inventor/C/base/heap.h
-%include Inventor/C/base/list.h
-%include Inventor/C/base/rbptree.h
-%include Inventor/C/base/time.h
-%include Inventor/C/base/string.h
-%include Inventor/C/base/memalloc.h
-%include Inventor/C/glue/dl.h
-%include Inventor/C/glue/gl.h
-%include Inventor/C/threads/barrier.h
-%include Inventor/C/threads/condvar.h
-%include Inventor/C/threads/sched.h
-%include Inventor/C/threads/common.h
-%include Inventor/C/threads/fifo.h
-%include Inventor/C/threads/worker.h
-%include Inventor/C/threads/mutex.h
-%include Inventor/C/threads/sync.h
-%include Inventor/C/threads/thread.h
-%include Inventor/C/threads/rwmutex.h
-%include Inventor/C/threads/storage.h
-%include Inventor/C/threads/wpool.h
-%include Inventor/C/errors/debugerror.h
-%include Inventor/C/errors/error.h
-%include Inventor/C/basic.h
-%include Inventor/C/tidbits.h
 %include Inventor/collision/SoIntersectionDetectionAction.h
 %include Inventor/lock/SoLockMgr.h
 %include Inventor/misc/SoAuditorList.h

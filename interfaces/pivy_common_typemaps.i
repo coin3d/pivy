@@ -238,7 +238,7 @@ autocast_field(SoField * field)
 
 %rename(output) print(FILE * fp) const;
 %rename(output) print(FILE * const fp) const;
-%rename(output) print(FILE * const file = stdout);
+%rename(output) print(FILE * const file = stdout) const;
 %rename(srcFrom) from;
 %rename(destTo) to;
 

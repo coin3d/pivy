@@ -146,7 +146,7 @@ def select(*args):
 %rename(deselect_i) SoSelection::deselect(const int which);
 %rename(deselect_nod) SoSelection::deselect(SoNode *node);
 
-%feature("shadow") SoSelection::select(const SoPath * path) %{
+%feature("shadow") SoSelection::deselect(const SoPath * path) %{
 def deselect(*args):
    if isinstance(args[1], SoNode):
       return apply(_pivy.SoSelection_deselect_nod,args)

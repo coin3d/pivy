@@ -28,6 +28,45 @@ def setValues(*args):
    return apply(_pivy.SoMFString_setValues,args)
 %}
 
+/* FIXME: need to merge with the stuff above
+%feature("shadow") SoMFString::setValues %{
+def setValues(*args):
+   if len(args) == 2:
+      if isinstance(args[1], SoMFString):
+         val = args[1].getValues()
+         return _pivy.SoMFString_setValues(args[0],0,len(val),val)
+      else:
+         return _pivy.SoMFString_setValues(args[0],0,len(args[1]),args[1])
+   elif len(args) == 3:
+      if isinstance(args[2], SoMFString):
+         val = args[2].getValues()
+         return _pivy.SoMFString_setValues(args[0],args[1],len(val),val)
+      else:
+         return _pivy.SoMFString_setValues(args[0],args[1],len(args[2]),args[2])
+   return _pivy.SoMFString_setValues(*args)
+%}
+*/
+
+%ignore SoMFString::getValues(const int start) const;
+
+%typemap(in,numinputs=1) (int & len, int i) {
+   $1 = new int;
+   *$1 = 0;
+   $2 = PyInt_AsLong($input);
+}
+
+%typemap(argout) (int & len, int i) {
+  Py_XDECREF($result);   /* Blow away any previous result */
+  $result = PyList_New(*$1);
+  if(result) {
+    for(int i = 0; i < *$1; i++){ 
+      PyObject * str = PyString_FromString(result[i].getString());
+      PyList_SetItem($result, i, str);
+    }
+  }
+  delete $1;
+}
+
 %extend SoMFString {
   void __call__(const SbString & sbstr) {
     self->setValue(sbstr);
@@ -41,4 +80,23 @@ def setValues(*args):
   void  __setitem__(int i, const SbString & value) {
     self->set1Value(i, value);
   }
+  const SbString * __getValuesHelper__(int & len, int i) {
+    if( i < 0 || i > self->getNum())
+      return 0;
+    len = self->getNum() - i;
+    return self->getValues(i);
+  }
+/* implement getValues to have default argument etc. */
+%pythoncode %{
+   def getValues(*args):
+     if len(args) == 1:
+        return _pivy.SoMFString___getValuesHelper__(args[0], 0)
+     return _pivy.SoMFString___getValuesHelper__(*args)
+%}
+/* shadow __iter__ to return a new iterator object */
+%pythoncode %{
+   def __iter__(self):
+      iter = MFieldIterator(self)
+      return iter
+%}
 }

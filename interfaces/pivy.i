@@ -977,6 +977,21 @@ RefCount(SoSeparatorKit)
 RefCount(SoInteractionKit)
 RefCount(SoSceneKit)
 
+/* a common iterator class for all MField nodes */
+%pythoncode %{   
+class MFieldIterator:
+  def __init__(self, field):
+     self.field = field
+     self.index = 0
+  def __iter__(self):
+     return self
+  def next(self):
+     if self.index < self.field.getNum():
+        val = self.field[self.index]
+        self.index += 1
+        return val
+     raise StopIteration
+%}
 
 /* include the typemaps common to all pivy modules */
 %include pivy_common_typemaps.i

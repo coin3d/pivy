@@ -74,7 +74,7 @@ SoCallbackActionPythonCB(void * userdata,
 						 const SoNode * node) {
   PyObject *func, *arglist;
   PyObject *result, *acCB, *pynode;
-  int ires = 0;
+  int iresult = 0;
 
   acCB = SWIG_NewPointerObj((void *) action, SWIGTYPE_p_SoCallbackAction, 1);
   pynode = SWIG_NewPointerObj((void *) node, SWIGTYPE_p_SoNode, 1);
@@ -88,20 +88,13 @@ SoCallbackActionPythonCB(void * userdata,
 	printf("SoCallbackActionPythonCB(void * userdata, SoCallbackAction * action, const SoNode * node) failed!\n");
   }
   else {
-	ires = PyInt_AsLong(result);
+	iresult = PyInt_AsLong(result);
   }
   
   Py_DECREF(arglist);
   Py_XDECREF(result);
 
-  switch(ires) {
-  case 0:
-	return SoCallbackAction::CONTINUE;
-  case 1:
-	return SoCallbackAction::ABORT;
-  case 2:
-	return SoCallbackAction::PRUNE;
-  }
+  return (SoCallbackAction::Response)iresult;
 }
 
 static void

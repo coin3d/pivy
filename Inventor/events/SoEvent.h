@@ -31,7 +31,7 @@ class SbVec2f;
 %rename(getPosition_vpr) SoEvent::getPosition(const SbViewportRegion & vpRgn) const;
 
 %feature("shadow") SoEvent::getPosition(void) %{
-def getPositon(*args):
+def getPosition(*args):
    if len(args) == 2:
       return apply(pivyc.SoEvent_getPosition_vpr,args)
    return apply(pivyc.SoEvent_getPosition,args)

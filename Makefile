@@ -1,6 +1,6 @@
 CXXFLAGS+= -I/usr/include/python
 
-OPTS=-fPIC -O2
+OPTS=-fPIC # -O2
 
 
 all: pivy

@@ -46,15 +46,16 @@ SoEventPythonCallBack(void * userdata, SoEventCallback * node)
   PyObject *result, *evCB;
 
   evCB = SWIG_NewPointerObj((void *) node, SWIGTYPE_p_SoEventCallback, 1);
+
   /* the first item in the userdata sequence is the python callback
    * function; the second is the supplied userdata python object */
-  func = PySequence_GetItem((PyObject *)userdata, 0);
-  arglist = Py_BuildValue("(OO)", PySequence_GetItem((PyObject *)userdata, 1), evCB);
-  result = PyEval_CallObject(func, arglist);
+  func = PyTuple_GetItem((PyObject *)userdata, 0);
+  arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)userdata, 1), evCB);
+
+  if ((result = PyEval_CallObject(func, arglist)) == NULL) 
+	printf("SoEventPythonCallBack(void * userdata, SoEventCallback * node) failed!\n");
   Py_DECREF(arglist);
   Py_XDECREF(result);
-
-  printf("exiting SoEventPythonCallBack...\n");
 
   return /*void*/;
 }
@@ -87,28 +88,32 @@ public:
 	void addPythonEventCallback(SoType eventtype, 
 								PyObject *pyfunc, 
 								PyObject *userdata = NULL) {
-
-	  userdata = userdata != NULL ? userdata : Py_None;
+	  if (userdata == NULL) {
+		Py_INCREF(Py_None);
+		userdata = Py_None;
+	  }
+	  
 	  PyObject *t = PyTuple_New(2);
 	  PyTuple_SetItem(t, 0, pyfunc);
 	  PyTuple_SetItem(t, 1, userdata);
-	
-	  self->addEventCallback(eventtype, SoEventPythonCallBack, (void *) t);
 	  Py_INCREF(pyfunc);
 	  Py_INCREF(userdata);
+
+	  self->addEventCallback(eventtype, SoEventPythonCallBack, (void *) t);
 	}
 
 	void removePythonEventCallback(SoType eventtype, 
 								   PyObject *pyfunc, 
 								   PyObject *userdata = NULL) {
-	  userdata = userdata != NULL ? userdata : Py_None;
+	  if (userdata == NULL) {
+		Py_INCREF(Py_None);
+		userdata = Py_None;
+	  }
 	  PyObject *t = PyTuple_New(2);
 	  PyTuple_SetItem(t, 0, pyfunc);
 	  PyTuple_SetItem(t, 1, userdata);
 	
 	  self->removeEventCallback(eventtype, SoEventPythonCallBack, (void *) t);
-	  Py_INCREF(pyfunc);
-	  Py_INCREF(userdata);
 	}
   }
 #endif

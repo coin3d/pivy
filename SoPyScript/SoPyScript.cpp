@@ -30,7 +30,9 @@
  **/
 
 #include <Python.h>
+#include <assert.h>
 
+#include <Inventor/C/tidbits.h>
 #include <Inventor/actions/SoAudioRenderAction.h>
 #include <Inventor/actions/SoCallbackAction.h>
 #include <Inventor/actions/SoGetBoundingBoxAction.h>
@@ -44,7 +46,7 @@
 #include <Inventor/actions/SoWriteAction.h>
 #include <Inventor/errors/SoDebugError.h>
 #include <Inventor/errors/SoReadError.h>
-#include <Inventor/C/tidbits.h>
+#include <Inventor/sensors/SoOneShotSensor.h>
 
 #include "SoPyScript.h"
 
@@ -53,13 +55,13 @@ typedef void *(*swig_converter_func)(void *);
 typedef struct swig_type_info *(*swig_dycast_func)(void **);
 
 typedef struct swig_type_info {
-  const char             *name;
-  swig_converter_func     converter;
-  const char             *str;
-  void                   *clientdata;
-  swig_dycast_func        dcast;
-  struct swig_type_info  *next;
-  struct swig_type_info  *prev;
+  const char * name;
+  swig_converter_func converter;
+  const char * str;
+  void * clientdata;
+  swig_dycast_func dcast;
+  struct swig_type_info * next;
+  struct swig_type_info * prev;
 } swig_type_info;
 
 #define SWIG_NewPointerObj SWIG_Python_NewPointerObj
@@ -69,6 +71,41 @@ extern "C" {
 PyObject * SWIG_Python_NewPointerObj(void *, swig_type_info *,int own);
 swig_type_info * SWIG_TypeQuery(const char *);
 }
+
+class SoPyScriptP {
+public:
+  SoPyScriptP(SoPyScript * master) {
+    this->oneshotsensor = new SoOneShotSensor(SoPyScript::eval_cb, master);
+    this->isReading = FALSE;
+  }
+  ~SoPyScriptP() {
+    delete this->oneshotsensor;
+  }
+
+  PyObject *
+  createPySwigType(SbString typeVal, void * obj) {
+    swig_type_info * swig_type = NULL;
+    
+    typeVal += " *";
+    if ((swig_type = SWIG_TypeQuery(typeVal.getString())) == NULL) {
+      /* try again by prefixing the typename with So */
+      SbString soTypeVal("So");
+      soTypeVal += typeVal;
+      if ((swig_type = SWIG_TypeQuery(soTypeVal.getString())) == NULL) {
+        return NULL;
+      }
+    }
+
+    return SWIG_NewPointerObj(obj, swig_type, 0);
+  }
+
+  SbBool isReading;
+  SoOneShotSensor * oneshotsensor;
+  PyThreadState * thread_state;
+  PyObject * globalModuleDict;
+};
+
+#define PRIVATE(_this_) (_this_)->pimpl
 
 SoType SoPyScript::classTypeId;
 
@@ -89,17 +126,19 @@ SoPyScript::initClass(void)
 SoPyScript::SoPyScript(void)
   : fielddata(NULL)
 {
+  PRIVATE(this) = new SoPyScriptP(this);
   this->isBuiltIn = FALSE;
   assert(SoPyScript::classTypeId != SoType::badType());
 
   this->script.setValue(NULL);
   this->script.setContainer(this);
 
-  if (this->fielddata) delete this->fielddata;
-  this->fielddata = new SoFieldData;
-  this->fielddata->addField(this, "script", &this->script);
+  this->mustEvaluate.setValue(FALSE);
+  this->mustEvaluate.setContainer(this);
+
+  this->initFieldData();
  
-  if (!(thread_state = Py_NewInterpreter())) {
+  if (!(PRIVATE(this)->thread_state = Py_NewInterpreter())) {
     SoDebugError::postWarning("SoPyScript::initClass",
                               "Creation of new sub-interpreter failed!");
   }
@@ -113,9 +152,9 @@ SoPyScript::SoPyScript(void)
                               "happily wiggle and byte you in the ass...");
   }
 
-  PyThreadState * tstate = PyThreadState_Swap((PyThreadState*)thread_state);
+  PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
   Py_SetProgramName("SoPyScript");
-  this->globalModuleDict = PyModule_GetDict(PyImport_AddModule("__main__"));
+  PRIVATE(this)->globalModuleDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
   /* shovel the the node itself on to the Python interpreter as self instance */
   swig_type_info * swig_type = 0;
@@ -126,23 +165,11 @@ SoPyScript::SoPyScript(void)
   }
 
   /* add the field to the global dict */
-  PyDict_SetItemString((PyObject*)this->globalModuleDict, 
+  PyDict_SetItemString(PRIVATE(this)->globalModuleDict, 
                        "self",
                        SWIG_NewPointerObj(this, swig_type, 0));
 
   PyThreadState_Swap(tstate);
-}
-
-SoPyScript::~SoPyScript()
-{
-  Py_EndInterpreter((PyThreadState*)thread_state);
-
-  const int n = this->fielddata->getNumFields();
-  for (int i = 0; i < n; i++) {
-    SoField * f = this->fielddata->getField(this, i);
-    if (f != &this->script) delete f;
-  }
-  delete this->fielddata;
 }
 
 // Doc in parent
@@ -159,148 +186,50 @@ SoPyScript::getTypeId(void) const
   return SoPyScript::classTypeId;
 }
 
-// Doc in parent
-void *
-SoPyScript::createInstance(void)
+SoPyScript::~SoPyScript()
 {
-  return (void*) new SoPyScript;
-}
+  delete PRIVATE(this);
 
-// Doc in parent
-const SoFieldData *
-SoPyScript::getFieldData(void) const
-{
-  return this->fielddata;
-}
+  Py_EndInterpreter(PRIVATE(this)->thread_state);
 
-SbBool
-SoPyScript::readInstance(SoInput * in, unsigned short flags)
-{
-  SbString name, typeVal;
-
-  /* read in the first string */
-  if (in->read(typeVal) && typeVal == "fields") {
-    if (in->read(typeVal) && typeVal == "[") {
-    
-      while (in->read(typeVal) && typeVal != "]") {
-        SoType type = SoType::fromName(typeVal);
-        
-        /* if it denotes a valid type and is derived from SoField then
-           read in the next string representing the name of the
-           field */
-        if (type != SoType::badType() && 
-            type.isDerivedFrom(SoField::getClassTypeId()) &&
-            in->read(name))
-        {
-          // check for a comma at the end and strip it off
-          const char * fieldname = 
-            (name[name.getLength()-1] == ',') ? name.getSubString(0, name.getLength()-2).getString() : name.getString();
-
-          /* skip the script field */
-          if (!strcmp(fieldname, "script")) { continue; }
-          
-          /* instantiate the field and conduct similar actions as the
-             SO_NODE_ADD_FIELD macro */
-          SoField * field = (SoField *)type.createInstance();
-          field->setContainer(this);
-          this->fielddata->addField(this, fieldname, field);
-
-          /* shovel the field instance on to the Python interpreter */
-          swig_type_info * swig_type = 0;
-
-          /* FIXME: query if the So prefix is needed or not by calling
-             the node->getIsBuiltIn() method. 20041012 tamer. */
-          typeVal += " *";
-          if ((swig_type = SWIG_TypeQuery(typeVal.getString())) == 0) {
-            /* FIXME: if soTypeVal is created on the stack, the stack
-               gets corrupted. why is this so, by the big fat ass of
-               teutates??? 20041012 tamer. */
-            /* try again by prefixing the typename with So */
-            SbString * soTypeVal = new SbString("So");
-            *soTypeVal += typeVal;
-            if ((swig_type = SWIG_TypeQuery(soTypeVal->getString())) == 0) {
-              SoDebugError::post("SoPyScript::readInstance",
-                                 "field type %s unknown!", typeVal.getString());
-              
-              return FALSE;
-            }
-            delete soTypeVal;
-          }
-          PyThreadState * tstate = PyThreadState_Swap((PyThreadState*)thread_state);
-
-          /* add the field to the global dict */
-          PyDict_SetItemString((PyObject*)this->globalModuleDict, 
-                               fieldname,
-                               SWIG_NewPointerObj(field, swig_type, 0));
-          PyThreadState_Swap(tstate);
-        }
-      }
-    }
+  const int n = this->fielddata->getNumFields();
+  for (int i = 0; i < n; i++) {
+    SoField * f = this->fielddata->getField(this, i);
+    if (f != &this->script || f != &this->mustEvaluate) { delete f; }
   }
-
-  /* ...and let the regular readInstance() method parse the rest */
-  SbBool ok = inherited::readInstance(in, flags);
-
-  PyThreadState * tstate = PyThreadState_Swap((PyThreadState*)thread_state);
-  PyRun_SimpleString((char *)script.getValue().getString());
-  if (coin_getenv("PIVY_DEBUG")) {
-    SoDebugError::postInfo("SoPyScript::readInstance",
-                           "script executed at full length!");
-  }
-  PyThreadState_Swap(tstate);
-
-  return ok;
+  delete this->fielddata;
 }
 
+// Doc in parent
 void
 SoPyScript::doAction(SoAction * action, const char * funcname)
 {
   if (funcname && !script.isIgnored()) {
-    PyThreadState * tstate = PyThreadState_Swap((PyThreadState*)thread_state);
+    PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
 
     if (coin_getenv("PIVY_DEBUG")) {
       SoDebugError::postInfo("SoPyScript::doAction",
                              "%s called!", action->getTypeId().getName().getString());
-      SoDebugError::postInfo("SoPyScript::doAction",
-                             "threadstate=%p:%p", tstate, thread_state);
     }
 
     /* convert the action instance to a Python object */
-    swig_type_info * swig_type = 0;
-
     SbString typeVal(action->getTypeId().getName().getString());
 
-    /* FIXME: query if the So prefix is needed or not by calling
-       the node->getIsBuiltIn() method. 20041012 tamer. */
-    typeVal += " *";
-    if ((swig_type = SWIG_TypeQuery(typeVal.getString())) == 0) {
-      /* FIXME: if soTypeVal is created on the stack, the stack gets
-         corrupted. why is this so, by the big fat ass of teutates??? 
-         20041012 tamer. */
-      /* try again by prefixing the typename with So */
-      SbString * soTypeVal = new SbString("So");
-      *soTypeVal += typeVal;
-      if ((swig_type = SWIG_TypeQuery(soTypeVal->getString())) == 0) {
-        SoDebugError::post("SoPyScript::doAction",
-                           "%s unknown to Pivy!", typeVal.getString());        
-      }
-      delete soTypeVal;
-    }
-
-    if (coin_getenv("PIVY_DEBUG")) {
-      SoDebugError::postInfo("SoPyScript::doAction",
-                             "typeVal: %s", typeVal.getString());
-    }
-
-    PyObject * func = PyDict_GetItemString((PyObject*)this->globalModuleDict, funcname);
     PyObject * pyAction = NULL;
-
-    if (swig_type) {
-      pyAction = SWIG_NewPointerObj(action, swig_type, 0);
+    if ((pyAction = PRIVATE(this)->createPySwigType(typeVal, action)) == NULL) {
+      SoDebugError::post("SoPyScript::doAction",
+                         "%s could not be created!",
+                         typeVal.getString());
+      inherited::doAction(action);
+      return;
     }
 
+    PyObject * func = PyDict_GetItemString(PRIVATE(this)->globalModuleDict, funcname);
     PyObject * argtuple = NULL;
-    argtuple = Py_BuildValue("(O)", pyAction);
+
+    if (pyAction) {
+      argtuple = Py_BuildValue("(O)", pyAction);
+    }
 
     if (coin_getenv("PIVY_DEBUG")) {
       SoDebugError::postInfo("SoPyScript::doAction",
@@ -325,12 +254,12 @@ SoPyScript::doAction(SoAction * action, const char * funcname)
       Py_DECREF(pyAction);
     }
 
-    // PyRun_SimpleString((char *)script.getValue().getString());
     PyThreadState_Swap(tstate);
   }
   inherited::doAction(action);
 }
 
+// Doc in parent
 void
 SoPyScript::GLRender(SoGLRenderAction * action)
 {
@@ -338,6 +267,7 @@ SoPyScript::GLRender(SoGLRenderAction * action)
   inherited::GLRender(action);
 }
 
+// Doc in parent
 void
 SoPyScript::GLRenderBelowPath(SoGLRenderAction * action)
 {
@@ -345,6 +275,7 @@ SoPyScript::GLRenderBelowPath(SoGLRenderAction * action)
   inherited::GLRenderBelowPath(action);
 }
 
+// Doc in parent
 void
 SoPyScript::GLRenderInPath(SoGLRenderAction * action)
 {
@@ -352,6 +283,7 @@ SoPyScript::GLRenderInPath(SoGLRenderAction * action)
   inherited::GLRenderInPath(action);
 }
 
+// Doc in parent
 void
 SoPyScript::GLRenderOffPath(SoGLRenderAction * action)
 {
@@ -359,6 +291,7 @@ SoPyScript::GLRenderOffPath(SoGLRenderAction * action)
   inherited::GLRenderOffPath(action);
 }
 
+// Doc in parent
 void
 SoPyScript::callback(SoCallbackAction * action)
 {
@@ -366,6 +299,7 @@ SoPyScript::callback(SoCallbackAction * action)
   inherited::callback(action);
 }
 
+// Doc in parent
 void
 SoPyScript::getBoundingBox(SoGetBoundingBoxAction * action)
 {
@@ -373,6 +307,7 @@ SoPyScript::getBoundingBox(SoGetBoundingBoxAction * action)
   inherited::getBoundingBox(action);
 }
 
+// Doc in parent
 void
 SoPyScript::getMatrix(SoGetMatrixAction * action)
 {
@@ -380,6 +315,7 @@ SoPyScript::getMatrix(SoGetMatrixAction * action)
   inherited::getMatrix(action);
 }
 
+// Doc in parent
 void
 SoPyScript::handleEvent(SoHandleEventAction * action)
 {
@@ -387,6 +323,7 @@ SoPyScript::handleEvent(SoHandleEventAction * action)
   inherited::handleEvent(action);
 }
 
+// Doc in parent
 void
 SoPyScript::pick(SoPickAction * action)
 {
@@ -394,6 +331,7 @@ SoPyScript::pick(SoPickAction * action)
   inherited::pick(action);
 }
 
+// Doc in parent
 void
 SoPyScript::rayPick(SoRayPickAction * action)
 {
@@ -401,6 +339,7 @@ SoPyScript::rayPick(SoRayPickAction * action)
   inherited::rayPick(action);
 }
 
+// Doc in parent
 void
 SoPyScript::search(SoSearchAction * action)
 {
@@ -408,6 +347,7 @@ SoPyScript::search(SoSearchAction * action)
   inherited::search(action);
 }
 
+// Doc in parent
 void
 SoPyScript::write(SoWriteAction * action)
 {
@@ -415,6 +355,7 @@ SoPyScript::write(SoWriteAction * action)
   inherited::write(action);
 }
 
+// Doc in parent
 void
 SoPyScript::audioRender(SoAudioRenderAction * action)
 {
@@ -422,9 +363,217 @@ SoPyScript::audioRender(SoAudioRenderAction * action)
   inherited::audioRender(action);
 }
 
+// Doc in parent
 void
 SoPyScript::getPrimitiveCount(SoGetPrimitiveCountAction * action)
 {
   SoPyScript::doAction(action, "getPrimitiveCount");
   inherited::getPrimitiveCount(action);
 }
+
+// Doc in parent
+void
+SoPyScript::copyContents(const SoFieldContainer * from,
+                         SbBool copyConn)
+{
+  assert(from->isOfType(SoPyScript::getClassTypeId()));
+  this->initFieldData();
+
+  const SoPyScript * fromnode = (SoPyScript*) from;
+
+  const SoFieldData * src = from->getFieldData();
+  const int n = src->getNumFields();
+  for (int i = 0; i < n; i++) {
+    const SoField * f = src->getField(from, i);
+    if (f != &fromnode->script &&
+        f != &fromnode->mustEvaluate) {
+      SoField * cp = (SoField*) f->getTypeId().createInstance();
+      cp->setContainer(this);
+      this->fielddata->addField(this, src->getFieldName(i), cp);
+    }
+  }
+  inherited::copyContents(from, copyConn);
+}
+
+// Doc in parent
+void 
+SoPyScript::notify(SoNotList * list)
+{
+  if (!PRIVATE(this)->isReading) {
+    SoField * f = list->getLastField();
+
+    if (f == &this->mustEvaluate) {
+      int pri = this->mustEvaluate.getValue() ? 0 : 
+        SoDelayQueueSensor::getDefaultPriority();
+      PRIVATE(this)->oneshotsensor->setPriority(pri);
+    }
+    else if (f == &this->script) {
+      PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
+      PyRun_SimpleString((char *)script.getValue().getString());
+      if (coin_getenv("PIVY_DEBUG")) {
+        SoDebugError::postInfo("SoPyScript::readInstance",
+                             "script executed at full length!");
+      }
+      PyThreadState_Swap(tstate);
+    }
+    else {
+      PRIVATE(this)->oneshotsensor->schedule();
+    }
+  }
+  inherited::notify(list);
+}
+
+// Doc in parent
+void *
+SoPyScript::createInstance(void)
+{
+  return (void*) new SoPyScript;
+}
+
+SbBool
+SoPyScript::readInstance(SoInput * in, unsigned short flags)
+{
+  // avoid triggering the eval cb while reading the file.
+  PRIVATE(this)->isReading = TRUE;
+
+  SbString name, typeVal;
+
+  /* read in the first string */
+  if (in->read(typeVal) && typeVal == "fields") {
+    if (in->read(typeVal) && typeVal == "[") {
+    
+      while (in->read(typeVal) && typeVal != "]") {
+        SoType type = SoType::fromName(typeVal);
+        
+        /* if it denotes a valid type and is derived from SoField then
+           read in the next string representing the name of the
+           field */
+        if (type != SoType::badType() && 
+            type.isDerivedFrom(SoField::getClassTypeId()) &&
+            in->read(name))
+        {
+          // check for a comma at the end and strip it off
+          const SbString fieldname = 
+            (name[name.getLength()-1] == ',') ? name.getSubString(0, name.getLength()-2) : name;
+
+          /* skip the static fields */
+          if (fieldname == "script" || fieldname == "mustEvaluate") { continue; }
+          
+          /* instantiate the field and conduct similar actions as the
+             SO_NODE_ADD_FIELD macro */
+          SoField * field = (SoField *)type.createInstance();
+          field->setContainer(this);
+          this->fielddata->addField(this, fieldname.getString(), field);
+
+          PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
+
+          /* shovel the field instance on to the Python interpreter */
+          PyObject * pyField = NULL;
+          if ((pyField = PRIVATE(this)->createPySwigType(typeVal, field)) == NULL) {
+            SoDebugError::post("SoPyScript::readInstance",
+                               "field type %s could not be created!",
+                               typeVal.getString());
+            
+            return FALSE;
+          }
+
+          /* add the field to the global dict */
+          PyDict_SetItemString(PRIVATE(this)->globalModuleDict, 
+                               fieldname.getString(),
+                               pyField);
+
+          PyThreadState_Swap(tstate);
+        }
+      }
+    }
+  }
+
+  /* ...and let the regular readInstance() method parse the rest */
+  SbBool ok = inherited::readInstance(in, flags);
+
+  if (!ok) {
+    // evaluate script
+    PRIVATE(this)->oneshotsensor->schedule();
+  }
+
+  PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
+  PyRun_SimpleString((char *)script.getValue().getString());
+  if (coin_getenv("PIVY_DEBUG")) {
+    SoDebugError::postInfo("SoPyScript::readInstance",
+                           "script executed at full length!");
+  }
+  PyThreadState_Swap(tstate);
+
+  PRIVATE(this)->isReading = FALSE;
+
+  return ok;
+}
+
+// Initializes the field data and adds the default fields.
+void
+SoPyScript::initFieldData(void)
+{
+  if (this->fielddata) delete this->fielddata;
+  this->fielddata = new SoFieldData;
+  this->fielddata->addField(this, "script", &this->script);
+  this->fielddata->addField(this, "mustEvaluate", &this->mustEvaluate);
+}
+
+// Doc in parent
+const SoFieldData *
+SoPyScript::getFieldData(void) const
+{
+  return this->fielddata;
+}
+
+// callback for oneshotsensor
+void 
+SoPyScript::eval_cb(void * data, SoSensor *)
+{
+  SoPyScript * self = (SoPyScript*)data;
+ 
+  PyThreadState * tstate = PyThreadState_Swap(PRIVATE(self)->thread_state);
+
+  if (coin_getenv("PIVY_DEBUG")) {
+    SoDebugError::postInfo("SoPyScript::eval_cb",
+                           "eval_cb called!");
+  }
+
+  for (int i = 0; i < self->fielddata->getNumFields(); i++) {
+    SoField * f = self->fielddata->getField(self, i);
+    if (f != &self->script || f != &self->mustEvaluate) {
+ 
+      if (f->getDirty()) {
+        SbString funcname("handle_");
+        funcname += self->fielddata->getFieldName(i).getString();
+      
+        PyObject * func = PyDict_GetItemString(PRIVATE(self)->globalModuleDict, 
+                                               funcname.getString());
+      
+        if (coin_getenv("PIVY_DEBUG")) {
+          SoDebugError::postInfo("SoPyScript::eval_cb",
+                                 "funcname: %s, func: %p",
+                                 funcname.getString(), func);
+        }
+      
+        if (func) {
+          if (!PyCallable_Check(func)) {
+            SbString errMsg(funcname);
+            errMsg += " is not a callable object!";
+            PyErr_SetString(PyExc_TypeError, errMsg.getString());
+          } else {
+            PyObject * result;
+            if ((result = PyEval_CallObject(func, NULL)) == NULL) {
+              PyErr_Print();
+            }
+            Py_XDECREF(result);
+          }
+        }        
+      }
+    }
+  }
+
+  PyThreadState_Swap(tstate);
+}
+
+#undef PRIVATE

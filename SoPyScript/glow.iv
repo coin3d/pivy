@@ -11,25 +11,35 @@ print color.getValue().getValue()
 print foo.getValue().getString()
 "
    }
+   DEF shuttle SoShuttle {
+      translation0 0 0 0
+      translation1 0 1 0
+   }
    Material { diffuseColor = USE Script1.color }
    Sphere {}
    Material { diffuseColor 1.0 0.0 0.0 }
    DEF Script2 SoPyScript {
       fields [ SoSFColor color, SoSFFloat brightness, SoSFFloat transparency ]
-      color 0 1 0
+      color 1 0 0 = USE shuttle.translation
       brightness 0.1
-      transparency 0.5
+      transparency 0.1
       script "
 # Initialize the color Packer (required of any property node that
 # uses an SoColorPacker to set diffuse color or transparency:
 colorPacker = SoColorPacker()
 transpValue = floatp()
 
+def handle_color():
+    print 'handle_color:', color.getValue().getValue()
+    # color.setValue(0.0, 1.0, 1.0)
+    pass
+
 def doAction(action):
     global transpValue
 
     if not brightness.isIgnored() and not SoOverrideElement.getEmissiveColorOverride(action.getState()):
         emissiveColor = SbColor_mul(color.getValue(), brightness.getValue())
+        print 'doAction():', color.getValue().getValue()
 
         # Use the Lazy element to set emissive color. 
         # Note that this will not actually send the color to GL.       
@@ -52,7 +62,8 @@ def GLRender(action):
 def callback(action):
     doAction(action)
 
-print self
+wa = SoWriteAction()
+wa.apply(self)
 "
    }
    Cone {}

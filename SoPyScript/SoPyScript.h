@@ -32,9 +32,15 @@
 #ifndef COIN_SOPIVYSCRIPT_H
 #define COIN_SOPIVYSCRIPT_H
 
+#include <Inventor/fields/SoSFBool.h>
 #include <Inventor/fields/SoSFString.h>
-#include <Inventor/fields/SoSFVec3f.h>
 #include <Inventor/nodes/SoSubNode.h>
+
+class SoPyScript;
+class SoPyScriptP;
+class SoSensor;
+
+typedef void SoPyScriptEvaluateCB(void * closure, SoPyScript * node);
 
 class COIN_DLL_API SoPyScript : public SoNode {
   typedef SoNode inherited;
@@ -46,7 +52,8 @@ public:
   static SoType getClassTypeId(void);
   virtual SoType getTypeId(void) const;
 
-  SoSFString script; // holds the Python script
+  SoSFString script;     // holds the Python script
+  SoSFBool mustEvaluate; // immediate or delayed evaluation
 
 protected:
   virtual ~SoPyScript();
@@ -67,15 +74,23 @@ protected:
   virtual void audioRender(SoAudioRenderAction * action);
   virtual void getPrimitiveCount(SoGetPrimitiveCountAction * action);
 
+  virtual void copyContents(const SoFieldContainer * from, SbBool copyconn);
+  virtual void notify(SoNotList * list);
+
 private:
   static SoType classTypeId;
   static void * createInstance(void);
+
   virtual SbBool readInstance(SoInput * in, unsigned short flags);
-  virtual const SoFieldData * getFieldData(void) const;
 
   SoFieldData * fielddata;
-  void * thread_state;
-  void * globalModuleDict;
+  void initFieldData(void);
+  virtual const SoFieldData * getFieldData(void) const;
+
+  static void eval_cb(void * data, SoSensor *);
+
+  SoPyScriptP * pimpl;
+  friend class SoPyScriptP;
 };
 
 #endif // !COIN_SOPIVYSCRIPT_H

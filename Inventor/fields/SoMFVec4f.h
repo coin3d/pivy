@@ -58,7 +58,7 @@ convert_SoMFVec4f_array(PyObject *input, int len, float temp[][4])
   int len;
 
   if (PySequence_Check($input)) {
-	len  = PySequence_Length($input);
+	len = PySequence_Length($input);
 
 	temp = (float (*)[4]) malloc(len*4*sizeof(float));
 	convert_SoMFVec4f_array($input, len, temp);

@@ -33,7 +33,7 @@
   int len;
 
   if (PySequence_Check($input)) {
-	len  = PySequence_Length($input);
+	len = PySequence_Length($input);
 
 	temp = (float (*)[3]) malloc(len*3*sizeof(float));
 	convert_SoMFVec3f_array($input, len, temp);

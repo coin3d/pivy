@@ -96,7 +96,7 @@ public:
       void *retval = NULL;
       cc_thread_join(py_thread, &retval);
       cc_thread_destruct(py_thread);
-      exit(0);
+      Py_Exit(0);
     } else {
       Py_BEGIN_ALLOW_THREADS
       SoQt::mainLoop();

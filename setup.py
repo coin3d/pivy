@@ -48,28 +48,13 @@ BSD-style license.
 ###
 # Setup file for the Pivy distribution.
 #
-
-classifiers = """\
-Development Status :: 4 - Beta
-Intended Audience :: Developers
-License :: OSI Approved :: BSD License
-Programming Language :: Python
-Topic :: Software Development :: Libraries :: Python Modules
-Topic :: Multimedia :: Graphics
-Topic :: Multimedia :: Graphics :: 3D Modeling
-Topic :: Multimedia :: Graphics :: 3D Rendering
-Operating System :: Unix
-Operating System :: MacOS :: MacOS X
-Operating System :: Microsoft :: Windows
-"""
-
+import os, shutil, sys
 
 from distutils.command.build import build
 from distutils.command.clean import clean
 from distutils.core import setup
 from distutils.extension import Extension
 from distutils.sysconfig import get_python_inc
-import os, shutil, sys
 
 # if we are on a gentoo box salute the chap and output stuff in nice colors
 # Gentoo is Python friendly, so be especially friendly to them! ;)
@@ -83,8 +68,29 @@ except:
     def turquoise(text): return text
     def yellow(text): return text
 
+# patch distutils if it can't cope with the "classifiers" or
+# "download_url" keywords
+if sys.version < '2.2.3':
+    from distutils.dist import DistributionMetadata
+    DistributionMetadata.classifiers = None
+    DistributionMetadata.download_url = None
 
-VERSION = "0.1.0"
+
+PIVY_CLASSIFIERS = """\
+Development Status :: 4 - Beta
+Intended Audience :: Developers
+License :: OSI Approved :: BSD License
+Programming Language :: Python
+Topic :: Software Development :: Libraries :: Python Modules
+Topic :: Multimedia :: Graphics
+Topic :: Multimedia :: Graphics :: 3D Modeling
+Topic :: Multimedia :: Graphics :: 3D Rendering
+Operating System :: Unix
+Operating System :: MacOS :: MacOS X
+Operating System :: Microsoft :: Windows
+"""
+
+PIVY_VERSION = "0.1.0"
 
 class pivy_build(build):
     PIVY_SNAKES = r"""
@@ -124,7 +130,7 @@ class pivy_build(build):
                            Welcome to Pivy %s!
                  Building Pivy has never been so much fun!
 
-    """ % VERSION
+    """ % PIVY_VERSION
 
     pivy_header_include = """\
 #ifdef __PIVY__
@@ -246,43 +252,41 @@ class pivy_build(build):
             print yellow("Warning: Pivy has only been tested with the following" + \
                          "SWIG versions: %s." % " ".join(self.SUPPORTED_SWIG_VERSIONS))
 
-    def copy_and_swigify_coin_headers(self):
+
+    def copy_and_swigify_coin_headers(self, coin_includedir, dirname, files):
         """there are times where a function simply has to do what a function
         has to do. indeed, tralala..."""
 
-        coin_includedir = self.do_os_popen("coin-config --includedir")
+        for file in files:
+            if not os.path.isfile(os.path.join(dirname, file)):
+                continue
 
-        for root, dirs, files in os.walk("Inventor"):
-            if 'CVS' in dirs:
-                dirs.remove('CVS')
+            if file[-2:] == ".i":
+                file_i = os.path.join(dirname, file)
+                file_h = os.path.join(dirname, file)[:-2] + ".h"
 
-            for name in files:
-                if name[-2:] == ".i":
-                    file_i = os.path.join(root, name)
-                    file_h = os.path.join(root, name)[:-2] + ".h"
+                if not os.path.exists(file_h):
+                    print blue("Copying ") + turquoise(os.path.join(coin_includedir, file_h)),
+                    print blue("to ") + turquoise(file_h)
+                    shutil.copyfile(os.path.join(coin_includedir, file_h), file_h)
+                    print blue("Pivyizing ") + turquoise(file_h),
+                    fd = open(file_h, 'rw+')
+                    contents = fd.readlines()
 
-                    if not os.path.exists(file_h):
-                        print blue("Copying ") + turquoise(os.path.join(coin_includedir, file_h)),
-                        print blue("to ") + turquoise(file_h)
-                        shutil.copyfile(os.path.join(coin_includedir, file_h), file_h)
-                        print blue("Pivyizing ") + turquoise(file_h),
-                        fd = open(file_h, 'rw+')
-                        contents = fd.readlines()
+                    ins_line_nr = -1
+                    for line in contents:
+                        ins_line_nr += 1
+                        if line.find("#include ") != -1:
+                            break
 
-                        ins_line_nr = -1
-                        for line in contents:
-                            ins_line_nr += 1
-                            if "#include " in line:
-                                break
-
-                        if ins_line_nr != -1:
-                            contents.insert(ins_line_nr, self.pivy_header_include % (file_i))
-                            fd.seek(0)
-                            fd.writelines(contents)
-                            print blue("[") + green("done") + blue("]")
-                        else:
-                            print blue("[") + red("failed") + blue("]")
-                        fd.close
+                    if ins_line_nr != -1:
+                        contents.insert(ins_line_nr, self.pivy_header_include % (file_i))
+                        fd.seek(0)
+                        fd.writelines(contents)
+                        print blue("[") + green("done") + blue("]")
+                    else:
+                        print blue("[") + red("failed") + blue("]")
+                    fd.close
 
 
     def pivy_configure(self):
@@ -294,7 +298,8 @@ class pivy_build(build):
         if self.SOGUI: self.check_gui_bindings()
         self.get_coin_features()
         self.check_swig_version(self.SWIG)
-        self.copy_and_swigify_coin_headers()        
+        os.path.walk("Inventor", self.copy_and_swigify_coin_headers,
+                     self.do_os_popen("coin-config --includedir"))
 
     def swig_generate(self):
         "build all available modules"
@@ -339,21 +344,18 @@ class pivy_clean(clean):
                      'sogtk_wrap.cxx',
                      'soxt_wrap.cxx')
 
-    def remove_coin_headers(self):
+    def remove_coin_headers(self, arg, dirname, files):
         "remove the coin headers from the pivy Inventor directory"
-        
-        for root, dirs, files in os.walk("Inventor"):
-            if 'CVS' in dirs:
-                dirs.remove('CVS')
 
-            for file_name in files:
-                if file_name[-2:] == ".h":
-                    print blue("removing %s" % os.path.join(root, file_name))
-                    os.remove(os.path.join(root, file_name))
+        for file in files:
+            if not os.path.isfile(os.path.join(dirname, file)) or file[-2:] != ".h":
+                continue
+            print blue("removing %s" % os.path.join(dirname, file))
+            os.remove(os.path.join(dirname, file))
         
     def run(self):
         "the entry point for the distutils clean class"
-        self.remove_coin_headers()
+        os.path.walk("Inventor", self.remove_coin_headers, None)
         # remove the SWIG generated wrappers
         for wrapper_file in self.WRAPPER_FILES:
             if os.path.isfile(wrapper_file):
@@ -362,7 +364,7 @@ class pivy_clean(clean):
         clean.run(self)
 
 setup(name = "Pivy",
-      version = VERSION,
+      version = PIVY_VERSION,
       description = "A Python binding for Coin/Open Inventor",
       long_description = __doc__,
       author = "Tamer Fahmy",
@@ -373,7 +375,7 @@ setup(name = "Pivy",
                   'clean' : pivy_clean},
       ext_modules = pivy_build.ext_modules,
       py_modules  = pivy_build.py_modules,
-      classifiers = filter(None, classifiers.split("\n")),
+      classifiers = filter(None, PIVY_CLASSIFIERS.split("\n")),
       license = "BSD License",
       platforms = ['Any']
       )

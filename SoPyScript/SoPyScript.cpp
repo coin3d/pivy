@@ -210,9 +210,11 @@ SoPyScript::getTypeId(void) const
 
 SoPyScript::~SoPyScript()
 {
-  delete PRIVATE(this);
-
+  PyThreadState * tstate = PyThreadState_Swap(PRIVATE(this)->thread_state);
   Py_EndInterpreter(PRIVATE(this)->thread_state);
+  PyThreadState_Swap(tstate);
+  
+  delete PRIVATE(this);
 
   const int n = this->fielddata->getNumFields();
   for (int i = 0; i < n; i++) {

@@ -55,6 +55,14 @@ class COIN_DLL_API SoSFRotation : public SoSField {
 public:
   static void initClass(void);
 
+#ifdef __PIVY__
+  %addmethods {
+	void __call__(float q[4]) {
+	  self->setValue(q);
+	}
+  }
+#endif
+
   void getValue(SbVec3f & axis, float & angle) const;
   void setValue(const float q0, const float q1, const float q2, const float q3);
   void setValue(const float q[4]);

@@ -17,50 +17,29 @@
  *
 \**************************************************************************/
 
-#ifndef COIN_SOSFVEC4F_H
-#define COIN_SOSFVEC4F_H
+#ifndef COIN_SOSFBOOL_H
+#define COIN_SOSFBOOL_H
 
 #include <Inventor/fields/SoSField.h>
 #include <Inventor/fields/SoSubField.h>
-#include <Inventor/SbVec4f.h>
 
-#ifdef __PIVY__
-%typemap(in) float xyzw[4] (float temp[4]) {
-  convert_SbVec4f_array($input, temp);
-  $1 = temp;
-}
 
-%rename(setValue_ffff) SoSFVec4f::setValue(const float x, const float y, const float z, const float w);
-%rename(setValue_vec) SoSFVec4f::setValue(SbVec4f const &);
-
-%feature("shadow") SoSFVec4f::setValue(const float xyzw[4]) %{
-def setValue(*args):
-   if len(args) == 5:
-      return apply(pivyc.SoSFVec4f_setValue_ffff,args)
-   elif isinstance(args[1],SbVec4f):
-      return apply(pivyc.SoSFVec4f_setValue_vec,args)
-   return apply(pivyc.SoSFVec4f_setValue,args)
-%}
-#endif
-
-class COIN_DLL_API SoSFVec4f : public SoSField {
+class COIN_DLL_API SoSFBool : public SoSField {
   typedef SoSField inherited;
 
-  SO_SFIELD_HEADER(SoSFVec4f, SbVec4f, const SbVec4f &);
+  SO_SFIELD_HEADER(SoSFBool, SbBool, SbBool);
 
 public:
   static void initClass(void);
 
 #ifdef __PIVY__
   %addmethods {
-        void __call__(float xyzw[4]) {
-          self->setValue(xyzw);
+        void __call__(int i) {
+          self->setValue(i);
         }
   }
 #endif
 
-  void setValue(const float x, const float y, const float z, const float w);
-  void setValue(const float xyzw[4]);
 };
 
-#endif // !COIN_SOSFVEC4F_H
+#endif // !COIN_SOSFBOOL_H

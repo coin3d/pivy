@@ -35,7 +35,6 @@ class COIN_DLL_API SoSFInt32 : public SoSField {
 public:
   static void initClass(void);
 
-  
 #ifdef __PIVY__
   %addmethods {
         void __call__(int i) {

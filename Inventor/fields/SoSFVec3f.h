@@ -51,6 +51,14 @@ class COIN_DLL_API SoSFVec3f : public SoSField {
 public:
   static void initClass(void);
 
+#ifdef __PIVY__
+  %addmethods {
+        void __call__(float xyz[3]) {
+          self->setValue(xyz);
+        }
+  }
+#endif
+
   void setValue(const float x, const float y, const float z);
   void setValue(const float xyz[3]);
 };

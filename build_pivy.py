@@ -1,7 +1,44 @@
 #!/usr/bin/env python
 
 ###
+# Copyright (C) 2002-2004, Tamer Fahmy <tamer@tammura.at>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#   * Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#   * Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived
+#     from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+
+###
 # Pivy configure, build and install script.
+#
+
+###
+# FIXME: this unmaintainable completely waste of time ugly duck script was
+#   inspired by the devil himself. try to get rid of it asap and make
+#   use of distutils instead like anyone else not from hell.
+#   20040103 tamer.
 #
 
 """Pivy is an Open Inventor binding for Python. Open Inventor is an object
@@ -20,35 +57,36 @@ import getopt, os, sys
 # from distutils.extension import Extension
 import distutils.sysconfig
 
-VERSION = "0.2a"
+VERSION = "0.3a"
 
-PIVY_SNAKES = """                        _____                                       
+PIVY_SNAKES = r"""
+                        _____
                     .-'`     '.                                     
-                 __/  __       \\                                   
-                /  \\ /  \\       |    ___                          
-               | /`\\| /`\\|      | .-'  /^\\/^\\                   
-               | \\(/| \\(/|      |/     |) |)|                     
-              .-\\__/ \\__/       |      \\_/\\_/__..._             
+                 __/  __       \                                   
+                /  \ /  \       |    ___                          
+               | /`\| /`\|      | .-'  /^\/^\                   
+               | \(/| \(/|      |/     |) |)|                     
+              .-\__/ \__/       |      \_/\_/__..._             
       _...---'-.                /   _              '.               
-     /,      ,             \\   '|  `\\                \\           
-    | ))     ))           /`|   \\    `.       /)  /) |             
+     /,      ,             \   '|  `\                \           
+    | ))     ))           /`|   \    `.       /)  /) |             
     | `      `          .'       |     `-._         /               
-    \\                 .'         |     ,_  `--....-'               
+    \                 .'         |     ,_  `--....-'               
      `.           __.' ,         |     / /`'''`                     
        `'-.____.-' /  /,         |    / /                           
-           `. `-.-` .'  \\        /   / |                           
-             `-.__.'|    \\      |   |  |-.                         
+           `. `-.-` .'  \        /   / |                           
+             `-.__.'|    \      |   |  |-.                         
                 _.._|     |     /   |  |  `'.                       
           .-''``    |     |     |   /  |     `-.                    
        .'`         /      /     /  |   |        '.                  
-     /`           /      /     |   /   |\\         \\               
-    /            |      |      |   |   /\\          |               
+     /`           /      /     |   /   |\         \               
+    /            |      |      |   |   /\          |               
    ||            |      /      |   /     '.        |                
-   |\\            \\      |      /   |       '.      /              
-   \\ `.           '.    /      |    \\        '---'/               
-    \\  '.           `-./        \\    '.          /                
+   |\            \      |      /   |       '.      /              
+   \ `.           '.    /      |    \        '---'/               
+    \  '.           `-./        \    '.          /                
      '.  `'.            `-._     '.__  '-._____.'--'''''--.         
-       '-.  `'--._          `.__     `';----`              \\       
+       '-.  `'--._          `.__     `';----`              \       
           `-.     `-.          `.''```                     ;        
              `'-..,_ `-.         `'-.                     /         
                     '.  '.           '.                 .'          
@@ -67,17 +105,19 @@ DARWIN_OPTS = "-bundle -bundle_loader %s" % sys.executable
 
 SWIG = "swig"
 SWIG_SUPPRESS_WARNINGS = "-w302,306,307,312,389,362,503,509,510"
-SWIG_PARAMS = "-v -c++ -python -includeall " + \
-              "-D__PIVY__ %s -I. -Ifake_headers -I%s %s -o pivy_wrap.cxx pivy.i"
-MODULE_NAME = "_pivy.so"
+SWIG_PARAMS = "-c -v -c++ -python -includeall " + \
+              "-D__PIVY__ -I. -Ifake_headers -I%s %s -o %s_wrap.cxx %s.i"
+
+SOGUI = ['SoQt', 'SoXt', 'SoGtk']
+MODULES = {'pivy'  : ('_pivy.so',  'coin-config'),
+           'SoQt'  : ('_soqt.so',  'soqt-config'),
+           'SoXt'  : ('_soxt.so',  'soxt-config'),
+           'SoGtk' : ('_sogtk.so', 'sogtk-config')}
 
 SUPPORTED_SWIG_VERSIONS = ['1.3.19']
 SWIG_COND_SYMBOLS = []
 CXX_INCS = "-I" +  distutils.sysconfig.get_python_inc() + " "
-CXX_LIBS = ""
-
-SOGUI = ("SoQt", "soqt-config")
-SOGUI_DEF = "-DPIVY_USE_SOQT"
+CXX_LIBS = "-lswigpy" + " "
 
 config_log = None
 
@@ -124,22 +164,18 @@ def check_coin_version():
                   "versions 2.1.x.\n")
     write_log("%s\n" % version)
 
-def check_gui_bindings(SoGui, sogui_config):
-    "checks for availability of SoGui bindings and retrieves the " + \
-    "compiler flags and libs."
-    global CXX_INCS, CXX_LIBS
-    
-    if not check_cmd_exists(sogui_config):
-        return 0
+def check_gui_bindings():
+    "checks for availability of SoGui bindings and removes the not available ones."
+    global MODULES
 
-    write_log("Checking for %s version..." % SoGui)
-    version = do_os_popen("%s --version" % sogui_config)
-    write_log("%s\n" % version)
-
-    CXX_INCS += do_os_popen("%s --cppflags" % sogui_config)
-    CXX_LIBS += do_os_popen("%s --ldflags --libs" % sogui_config)
-
-    return 1
+    for gui in SOGUI:
+        gui_config_cmd = MODULES[gui][1]
+        if not check_cmd_exists(gui_config_cmd):
+            del MODULES[gui]
+        else:
+            write_log("Checking for %s version..." % gui)
+            version = do_os_popen("%s --version" % gui_config_cmd)
+            write_log("%s\n" % version)
 
 def get_coin_features():
     "sets the global variable SWIG_COND_SYMBOLS needed for conditional " + \
@@ -201,38 +237,52 @@ def configure():
     write_log("Platform...%s\n" % sys.platform)
     check_python_version()
     check_coin_version()
-    if not check_gui_bindings(SOGUI[0], SOGUI[1]):
-        write_log("%s couldn't be found. aborting...\n" % SOGUI[1])
-        write_log("Please check your $PATH or specify the installed GUI " + \
-                  "binding with one of the --with-gui options!\n")
-        sys.exit(1)
+    if SOGUI: check_gui_bindings()
     get_coin_features()
     check_compiler_version(CXX)
     check_swig_version(SWIG)
 
 def build():
-    "build Pivy"
-    write_log(SWIG + " " + SWIG_SUPPRESS_WARNINGS + " " + SWIG_PARAMS %
-              (SOGUI_DEF, do_os_popen("coin-config --includedir"),
-               CXX_INCS) + "\n")
-    if not os.system(SWIG + " " + SWIG_SUPPRESS_WARNINGS + " " + SWIG_PARAMS %
-                     (SOGUI_DEF, do_os_popen("coin-config --includedir"),
-                      CXX_INCS)):
-        OPTS = ""
-        if sys.platform.startswith("linux"):
-            OPTS=ELF_OPTS
-        elif sys.platform.startswith("darwin"):
-            OPTS=DARWIN_OPTS
-        sys.stdout.write("\n  +" + "-"*61 + "+\n");
-        sys.stdout.write("  | The remedy against bad times is to " + \
-                         "have patience with them! |\n")
-        sys.stdout.write("  +" + "-"*61 + "+\n\n");        
-        write_log(" ".join((CXX, OPTS, CXX_INCS, CXX_LIBS, SOGUI_DEF,
-                            "-o %s pivy_wrap.cxx" % MODULE_NAME)) + "\n")
-        if not os.system(" ".join((CXX, OPTS, CXX_INCS, CXX_LIBS, SOGUI_DEF,
-                                   "-o %s pivy_wrap.cxx" % MODULE_NAME))):
-            write_log("Importing pivy.py..." + "\n")
-            import pivy
+    "build all available modules"
+    for module in MODULES.keys():
+        module_name = MODULES[module][0]
+        config_cmd = MODULES[module][1]
+
+        sys.stdout.write("\n=== Building %s ===\n\n" % module)
+        
+        write_log(SWIG + " " + SWIG_SUPPRESS_WARNINGS + " " + SWIG_PARAMS %
+                  (do_os_popen("coin-config --includedir"),
+                   CXX_INCS + do_os_popen("%s --cppflags" % config_cmd),
+                   module.lower(),
+                   module.lower()) + "\n")
+        if not os.system(SWIG + " " + SWIG_SUPPRESS_WARNINGS + " " + SWIG_PARAMS %
+                         (do_os_popen("coin-config --includedir"),
+                          CXX_INCS + do_os_popen("%s --cppflags" % config_cmd),
+                          module.lower(), module.lower())):
+            OPTS = ""
+            if sys.platform.startswith("linux"):
+                OPTS=ELF_OPTS
+            elif sys.platform.startswith("darwin"):
+                OPTS=DARWIN_OPTS
+            sys.stdout.write("\n  +" + "-"*61 + "+\n")
+            sys.stdout.write("  | The remedy against bad times is to " + \
+                             "have patience with them! |\n")
+            sys.stdout.write("  +" + "-"*61 + "+\n\n")
+            write_log(" ".join((CXX, OPTS,
+                                CXX_INCS + do_os_popen("%s --cppflags" % config_cmd),
+                                CXX_LIBS + do_os_popen("%s --ldflags --libs" % config_cmd),
+                                "-o %s %s_wrap.cxx" % (module_name, module.lower()))) + "\n")
+            if not os.system(" ".join((CXX, OPTS,
+                                       CXX_INCS + do_os_popen("%s --cppflags" % config_cmd),
+                                       CXX_LIBS + do_os_popen("%s --ldflags --libs" % config_cmd),
+                                       "-o %s %s_wrap.cxx" % (module_name, module.lower())))):
+                write_log("Importing %s.py...\n" % module.lower())
+                __import__(module.lower())
+            else:
+                sys.exit(1)
+        else:
+            sys.exit(1)
+        
 
 def cleanup():
     "cleanup method"
@@ -244,9 +294,7 @@ def usage():
     sys.stdout.write(os.path.basename(sys.argv[0]) + " " + VERSION + ""
                      "\nUsage: " + os.path.basename(sys.argv[0]) + " [options]"
                      "\n\nwhere options include:\n"
-                     "\n--with-soqt      \tuse SoQt GUI binding [default]"
-                     "\n--with-soxt      \tuse SoXt GUI binding"                     
-                     "\n--with-sogtk     \tuse SoGtk GUI binding"
+                     "\n--without-sogui  \tbuild without GUI bindings"
                      "\n-w, --warn       \tdon't suppress SWIG warnings"
                      "\n-h, --help       \tprint this message and exit"
                      "\n-v, --version    \tprint version and exit"
@@ -254,34 +302,30 @@ def usage():
     
 def option_check():
     "check for options"
-    global SOGUI, SOGUI_DEF, SWIG_SUPPRESS_WARNINGS
+    global SOGUI, MODULES, SWIG_SUPPRESS_WARNINGS
     
     try:
-        (options, arguments) = getopt.getopt(sys.argv[1:], "whv",
-                                             ["with-soqt", "with-sogtk",
-                                              "with-soxt", "warn", "help",
-                                              "version"])
+        (options, arguments) = getopt.getopt(sys.argv[1:], "whvi",
+                                             ["without-sogui", "warn", "help",
+                                              "version", "install"])
         for opt in options:
-            if opt[0] == "--with-soqt":
-                SOGUI = ("SoQt", "soqt-config")
-                SOGUI_DEF = "-DPIVY_USE_SOQT"
-            elif opt[0] == "--with-soxt":
-                SOGUI = ("SoXt", "soxt-config")
-                SOGUI_DEF = "-DPIVY_USE_SOXT"
-            elif opt[0] == "--with-sogtk":
-                SOGUI = ("SoGtk", "sogtk-config")
+            if opt[0] == "--without-sogui":
+                for gui in SOGUI: del MODULES[gui]
+                SOGUI = None
             elif opt[0] in ("-w", "--warn"):
                 SWIG_SUPPRESS_WARNINGS = ""
             elif opt[0] in ("-h", "--help"):
-                SOGUI_DEF = "-DPIVY_USE_SOGTK"
                 usage(); sys.exit(0)
             elif opt[0] in ("-v", "--version"):
                 sys.stdout.write(os.path.basename(sys.argv[0]) + " " + \
                                  VERSION + "\n"); sys.exit(0)
+            elif opt[0] in ("-i", "--install"):
+                # FIXME: implement install procedure. 20040103 tamer.
+                pass
+                
     except getopt.error, error:
         usage()
         sys.exit(1)
-
 
 if __name__ == "__main__":
     option_check()

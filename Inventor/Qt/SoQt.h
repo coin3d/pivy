@@ -59,6 +59,17 @@ class SbPList;
 
 // *************************************************************************
 
+#ifdef __PIVY__
+%{
+/* FIXME: there is a major pitfall reg. this solution. neither
+ *   Python nor Qt are thread safe! reconsider! 20030626 tamer.
+ */
+static void *Pivy_PythonInteractiveLoop(void *data) {
+  PyRun_InteractiveLoop(stdin, "<stdin>");
+}
+%}
+#endif
+
 class SOQT_DLL_API SoQt
 {
 
@@ -71,9 +82,25 @@ public:
 #ifdef __PIVY__
 %extend {
   static void mainLoop(void) {
-    Py_BEGIN_ALLOW_THREADS
-    SoQt::mainLoop();
-    Py_END_ALLOW_THREADS
+    PyRun_SimpleString("import sys");
+    PyObject *d = PyModule_GetDict(PyImport_AddModule("__main__"));
+    PyObject *result = PyRun_String("sys.argv[0]", Py_eval_input, d, d);
+    /* if we are calling from within an interactive python interpreter
+     * session spawn a new InteractiveLoop in a new thread. determined
+     * by sys.argv[0] == ''. otherwise proceed as usual.
+     */
+    if (!strcmp(PyString_AsString(result), "")) {
+      cc_thread *py_thread = cc_thread_construct(Pivy_PythonInteractiveLoop, NULL);
+      SoQt::mainLoop();
+      void *retval = NULL;
+      cc_thread_join(py_thread, &retval);
+      cc_thread_destruct(py_thread);
+      exit(0);
+    } else {
+      Py_BEGIN_ALLOW_THREADS
+      SoQt::mainLoop();
+      Py_END_ALLOW_THREADS
+    }
   }
 }
 #else

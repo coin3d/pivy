@@ -67,6 +67,7 @@ class SoActionP;
 #ifdef __PIVY__
 %rename(apply_nod) SoAction::apply(SoNode *root);
 %rename(apply_pat) SoAction::apply(SoPath *path);
+%rename(apply_act) SoAction::apply(SoAction *beingApplied);
 
 %feature("shadow") SoAction::apply(const SoPathList &pathlist, SbBool obeysrules=FALSE) %{
 def apply(*args):
@@ -75,6 +76,8 @@ def apply(*args):
          return apply(_pivy.SoAction_apply_nod,args)
       elif isinstance(args[1], SoPath):
          return apply(_pivy.SoAction_apply_pat,args)
+      elif isinstance(args[1], SoAction):
+         return apply(_pivy.SoAction_apply_act,args)
    return apply(_pivy.SoAction_apply,args)
 %}
 

@@ -1,24 +1,30 @@
+#ifndef COIN_SOCALLBACKACTION_H
+#define COIN_SOCALLBACKACTION_H
+
 /**************************************************************************\
  *
  *  This file is part of the Coin 3D visualization library.
- *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
+ *  Copyright (C) 1998-2003 by Systems in Motion.  All rights reserved.
  *
  *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  version 2.1 as published by the Free Software Foundation. See the
- *  file LICENSE.LGPL at the root directory of the distribution for
- *  more details.
+ *  modify it under the terms of the GNU General Public License
+ *  ("GPL") version 2 as published by the Free Software Foundation.
+ *  See the file LICENSE.GPL at the root directory of this source
+ *  distribution for additional information about the GNU GPL.
  *
- *  If you want to use Coin for applications not compatible with the
- *  LGPL, please contact SIM to acquire a Professional Edition license.
+ *  For using Coin with software that can not be combined with the GNU
+ *  GPL, and for taking advantage of the additional benefits of our
+ *  support services, please contact Systems in Motion about acquiring
+ *  a Coin Professional Edition License.
  *
- *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
- *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *  See <URL:http://www.coin3d.org> for  more information.
+ *
+ *  Systems in Motion, Teknobyen, Abels Gate 5, 7030 Trondheim, NORWAY.
+ *  <URL:http://www.sim.no>.
  *
 \**************************************************************************/
 
-#ifndef COIN_SOCALLBACKACTION_H
-#define COIN_SOCALLBACKACTION_H
+// FIXME: Support getTextureFilename[s]() ? (kintel 20011205)
 
 #include <Inventor/actions/SoAction.h>
 #include <Inventor/actions/SoSubAction.h>
@@ -59,7 +65,6 @@ typedef void SoLineSegmentCB(void * userdata, SoCallbackAction * action,
 
 typedef void SoPointCB(void * userdata, SoCallbackAction * action,
                        const SoPrimitiveVertex * v);
-
 
 #ifdef __PIVY__
 %{
@@ -192,10 +197,10 @@ SoPointPythonCB(void * userdata, SoCallbackAction * action, const SoPrimitiveVer
 %feature("shadow") SoCallbackAction::SoCallbackAction %{
 def __init__(self,*args):
    if len(args) == 1:
-      self.this = apply(pivyc.new_SoCallbackAction_vpr,args)
+      self.this = apply(_pivy.new_SoCallbackAction_vpr,args)
       self.thisown = 1
       return
-   self.this = apply(pivyc.new_SoCallbackAction,args)
+   self.this = apply(_pivy.new_SoCallbackAction,args)
    self.thisown = 1
 %}
 #endif
@@ -339,14 +344,17 @@ public:
   float getCreaseAngle(void) const;
   int32_t getNumTextureCoordinates(void) const;
   const SbVec2f & getTextureCoordinate2(const int index) const;
+  const SbVec3f & getTextureCoordinate3(const int index) const;
   const SbVec4f & getTextureCoordinate4(const int index) const;
   SoTextureCoordinateBinding::Binding getTextureCoordinateBinding(void) const;
   const SbColor & getTextureBlendColor(void) const;
   const unsigned char * getTextureImage(SbVec2s & size, int & numcomps) const;
+  const unsigned char * getTextureImage(SbVec3s & size, int & numcomps) const;
   const SbMatrix & getTextureMatrix(void) const;
   SoTexture2::Model getTextureModel(void) const;
   SoTexture2::Wrap getTextureWrapS(void) const;
   SoTexture2::Wrap getTextureWrapT(void) const;
+  SoTexture2::Wrap getTextureWrapR(void) const;
   const SbMatrix & getModelMatrix(void) const;
   SoUnits::Units getUnits(void) const;
   float getFocalDistance(void) const;
@@ -383,7 +391,5 @@ private:
   class SoCallbackActionP * pimpl;
   friend class SoCallbackActionP;
 };
-
-
 
 #endif // !COIN_SOCALLBACKACTION_H

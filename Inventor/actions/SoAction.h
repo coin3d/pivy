@@ -1,29 +1,32 @@
+#ifndef COIN_SOACTION_H
+#define COIN_SOACTION_H
+
 /**************************************************************************\
  *
  *  This file is part of the Coin 3D visualization library.
- *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
+ *  Copyright (C) 1998-2003 by Systems in Motion.  All rights reserved.
  *
  *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  version 2.1 as published by the Free Software Foundation. See the
- *  file LICENSE.LGPL at the root directory of the distribution for
- *  more details.
+ *  modify it under the terms of the GNU General Public License
+ *  ("GPL") version 2 as published by the Free Software Foundation.
+ *  See the file LICENSE.GPL at the root directory of this source
+ *  distribution for additional information about the GNU GPL.
  *
- *  If you want to use Coin for applications not compatible with the
- *  LGPL, please contact SIM to acquire a Professional Edition license.
+ *  For using Coin with software that can not be combined with the GNU
+ *  GPL, and for taking advantage of the additional benefits of our
+ *  support services, please contact Systems in Motion about acquiring
+ *  a Coin Professional Edition License.
  *
- *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
- *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *  See <URL:http://www.coin3d.org> for  more information.
+ *
+ *  Systems in Motion, Teknobyen, Abels Gate 5, 7030 Trondheim, NORWAY.
+ *  <URL:http://www.sim.no>.
  *
 \**************************************************************************/
-
-#ifndef COIN_SOACTION_H
-#define COIN_SOACTION_H
 
 #include <Inventor/SbBasic.h>
 #include <Inventor/SoType.h>
 #include <Inventor/misc/SoTempPath.h>
-#include <Inventor/lists/SbList.h>
 
 // Include instead of using forward declarations to be compatible with
 // Open Inventor (and besides, all the other action class definitions
@@ -59,6 +62,7 @@ class SoNode;
 class SoPath;
 class SoPathList;
 class SoState;
+class SoActionP;
 
 #ifdef __PIVY__
 %rename(apply_nod) SoAction::apply(SoNode *root);
@@ -68,10 +72,10 @@ class SoState;
 def apply(*args):
    if len(args) == 2:
       if isinstance(args[1], SoNode):
-         return apply(pivyc.SoAction_apply_nod,args)
+         return apply(_pivy.SoAction_apply_nod,args)
       elif isinstance(args[1], SoPath):
-         return apply(pivyc.SoAction_apply_pat,args)
-   return apply(pivyc.SoAction_apply,args)
+         return apply(_pivy.SoAction_apply_pat,args)
+   return apply(_pivy.SoAction_apply,args)
 %}
 
 %rename(popCurPath_pc) SoAction::popCurPath(const PathCode prevpathcode);
@@ -79,8 +83,8 @@ def apply(*args):
 %feature("shadow") SoAction::popCurPath(void) %{
 def popCurPath(*args):
    if len(args) == 2:
-      return apply(pivyc.SoAction_popCurPath_pc,args)
-   return apply(pivyc.SoAction_popCurPath,args)
+      return apply(_pivy.SoAction_popCurPath_pc,args)
+   return apply(_pivy.SoAction_popCurPath,args)
 %}
 
 %rename(pushCurPath_i_nod) SoAction::pushCurPath(const int childindex, SoNode *node=NULL);
@@ -88,8 +92,8 @@ def popCurPath(*args):
 %feature("shadow") SoAction::pushCurPath(void) %{
 def popCurPath(*args):
    if len(args) >= 2:
-      return apply(pivyc.SoAction_pushCurPath_i_nod,args)
-   return apply(pivyc.SoAction_pushCurPath,args)
+      return apply(_pivy.SoAction_pushCurPath_i_nod,args)
+   return apply(_pivy.SoAction_pushCurPath,args)
 %}
 #endif
 
@@ -174,21 +178,10 @@ private:
   static SoEnabledElementsList * enabledElements;
   static SoActionMethodList * methods;
 
-  AppliedCode appliedcode;
-
-  union AppliedData {
-    SoNode * node;
-    SoPath * path;
-    struct {
-      const SoPathList * pathlist;
-      const SoPathList * origpathlist;
-    } pathlistdata;
-  } applieddata;
-
   SoTempPath currentpath;
-  SbBool terminated;
   PathCode currentpathcode;
-  SbList <SbList<int> *> pathcodearray;
+
+  SoActionP * pimpl;
 };
 
 // inline methods
@@ -205,6 +198,5 @@ SoAction::popCurPath(const PathCode prevpathcode)
   this->currentpath.pop();
   this->currentpathcode = prevpathcode;
 }
-
 
 #endif // !COIN_SOACTION_H

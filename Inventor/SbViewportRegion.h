@@ -1,24 +1,28 @@
+#ifndef COIN_SBVIEWPORTREGION_H
+#define COIN_SBVIEWPORTREGION_H
+
 /**************************************************************************\
  *
  *  This file is part of the Coin 3D visualization library.
- *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
+ *  Copyright (C) 1998-2003 by Systems in Motion.  All rights reserved.
  *
  *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  version 2.1 as published by the Free Software Foundation. See the
- *  file LICENSE.LGPL at the root directory of the distribution for
- *  more details.
+ *  modify it under the terms of the GNU General Public License
+ *  ("GPL") version 2 as published by the Free Software Foundation.
+ *  See the file LICENSE.GPL at the root directory of this source
+ *  distribution for additional information about the GNU GPL.
  *
- *  If you want to use Coin for applications not compatible with the
- *  LGPL, please contact SIM to acquire a Professional Edition license.
+ *  For using Coin with software that can not be combined with the GNU
+ *  GPL, and for taking advantage of the additional benefits of our
+ *  support services, please contact Systems in Motion about acquiring
+ *  a Coin Professional Edition License.
  *
- *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
- *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *  See <URL:http://www.coin3d.org> for  more information.
+ *
+ *  Systems in Motion, Teknobyen, Abels Gate 5, 7030 Trondheim, NORWAY.
+ *  <URL:http://www.sim.no>.
  *
 \**************************************************************************/
-
-#ifndef COIN_SBVIEWPORTREGION_H
-#define COIN_SBVIEWPORTREGION_H
 
 #include <stdio.h>
 #include <Inventor/SbVec2s.h>
@@ -33,18 +37,18 @@
 def __init__(self,*args):
    if len(args) == 1:
       if isinstance(args[0], SbVec2s):
-         self.this = apply(pivyc.new_SbViewportRegion_vec,args)
+         self.this = apply(_pivy.new_SbViewportRegion_vec,args)
          self.thisown = 1
          return
       else:
-         self.this = apply(pivyc.new_SbViewportRegion_vr,args)
+         self.this = apply(_pivy.new_SbViewportRegion_vr,args)
          self.thisown = 1
          return
    elif len(args) == 2:
-      self.this = apply(pivyc.new_SbViewportRegion_ss,args)
+      self.this = apply(_pivy.new_SbViewportRegion_ss,args)
       self.thisown = 1
       return
-   self.this = apply(pivyc.new_SbViewportRegion,args)
+   self.this = apply(_pivy.new_SbViewportRegion,args)
    self.thisown = 1
 %}
 
@@ -53,8 +57,8 @@ def __init__(self,*args):
 %feature("shadow") SbViewportRegion::setWindowSize(SbVec2s winSize) %{
 def setWindowSize(*args):
    if len(args) == 3:
-      return apply(pivyc.SbViewportRegion_setWindowSize_ss,args)
-   return apply(pivyc.SbViewportRegion_setWindowSize,args)
+      return apply(_pivy.SbViewportRegion_setWindowSize_ss,args)
+   return apply(_pivy.SbViewportRegion_setWindowSize,args)
 %}
 
 %rename(setViewport_ffff) SbViewportRegion::setViewport(float left, float bottom, float width, float height);
@@ -62,8 +66,8 @@ def setWindowSize(*args):
 %feature("shadow") SbViewportRegion::setViewport(SbVec2f origin, SbVec2f size) %{
 def setViewport(*args):
    if len(args) == 5:
-      return apply(pivyc.SbViewportRegion_setViewport_ffff,args)
-   return apply(pivyc.SbViewportRegion_setViewport,args)
+      return apply(_pivy.SbViewportRegion_setViewport_ffff,args)
+   return apply(_pivy.SbViewportRegion_setViewport,args)
 %}
 
 %rename(setViewportPixels_ssss) SbViewportRegion::setViewportPixels(short left, short bottom, short width, short height);
@@ -71,10 +75,9 @@ def setViewport(*args):
 %feature("shadow") SbViewportRegion::setViewportPixels(SbVec2s origin, SbVec2s size) %{
 def setViewportPixels(*args):
    if len(args) == 5:
-      return apply(pivyc.SbViewportRegion_setViewportPixels_ssss,args)
-   return apply(pivyc.SbViewportRegion_setViewportPixels,args)
+      return apply(_pivy.SbViewportRegion_setViewportPixels_ssss,args)
+   return apply(_pivy.SbViewportRegion_setViewportPixels,args)
 %}
-
 #endif
 
 class COIN_DLL_API SbViewportRegion {
@@ -117,8 +120,6 @@ private:
   float pixperinch;
 };
 
-#ifndef __PIVY__
 COIN_DLL_API int operator ==(const SbViewportRegion & reg1, const SbViewportRegion & reg2);
-#endif
 
 #endif // !COIN_SBVIEWPORTREGION_H

@@ -1,33 +1,37 @@
-/**************************************************************************\
- *
- *  This file is part of the Coin 3D visualization library.
- *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  version 2.1 as published by the Free Software Foundation. See the
- *  file LICENSE.LGPL at the root directory of the distribution for
- *  more details.
- *
- *  If you want to use Coin for applications not compatible with the
- *  LGPL, please contact SIM to acquire a Professional Edition license.
- *
- *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
- *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
- *
-\**************************************************************************/
-
 #ifndef COIN_SOTYPE_H
 #define COIN_SOTYPE_H
 
+/**************************************************************************\
+ *
+ *  This file is part of the Coin 3D visualization library.
+ *  Copyright (C) 1998-2003 by Systems in Motion.  All rights reserved.
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  ("GPL") version 2 as published by the Free Software Foundation.
+ *  See the file LICENSE.GPL at the root directory of this source
+ *  distribution for additional information about the GNU GPL.
+ *
+ *  For using Coin with software that can not be combined with the GNU
+ *  GPL, and for taking advantage of the additional benefits of our
+ *  support services, please contact Systems in Motion about acquiring
+ *  a Coin Professional Edition License.
+ *
+ *  See <URL:http://www.coin3d.org> for  more information.
+ *
+ *  Systems in Motion, Teknobyen, Abels Gate 5, 7030 Trondheim, NORWAY.
+ *  <URL:http://www.sim.no>.
+ *
+\**************************************************************************/
+
 #include <Inventor/SbBasic.h>
 #include <Inventor/SbDict.h>
-
 #include <stdlib.h> // For NULL definition.
 
 class SbName;
 class SoTypedObject;
 class SoTypeList;
+class SoFieldData;
 struct SoTypeData;
 template <class Type> class SbList;
 
@@ -60,12 +64,14 @@ public:
   static const SoType createType(const SoType parent, const SbName name,
                                  const instantiationMethod method,
                                  const uint16_t data = 0);
+
   static const SoType overrideType(const SoType originalType,
                                    const instantiationMethod method);
 #else
   static const SoType createType(const SoType parent, const SbName name,
                                  const instantiationMethod method = (instantiationMethod) NULL,
                                  const uint16_t data = 0);
+
   static const SoType overrideType(const SoType originalType,
                                    const instantiationMethod method = (instantiationMethod) NULL);
 #endif
@@ -81,14 +87,16 @@ public:
 
   static int getNumTypes(void);
 
+  instantiationMethod getInstantiationMethod(void) const;
+
 private:
   static void clean(void);
 
   int16_t index;
 
-  static SoTypeList * typelist;
   static SbList<SoTypeData *> * typedatalist;
   static SbDict * typedict;
+  static SbDict * moduledict;
 };
 
 /* inline methods ************************************************/

@@ -1,24 +1,28 @@
+#ifndef COIN_SOSFCOLOR_H
+#define COIN_SOSFCOLOR_H
+
 /**************************************************************************\
  *
  *  This file is part of the Coin 3D visualization library.
- *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
+ *  Copyright (C) 1998-2003 by Systems in Motion.  All rights reserved.
  *
  *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  version 2.1 as published by the Free Software Foundation. See the
- *  file LICENSE.LGPL at the root directory of the distribution for
- *  more details.
+ *  modify it under the terms of the GNU General Public License
+ *  ("GPL") version 2 as published by the Free Software Foundation.
+ *  See the file LICENSE.GPL at the root directory of this source
+ *  distribution for additional information about the GNU GPL.
  *
- *  If you want to use Coin for applications not compatible with the
- *  LGPL, please contact SIM to acquire a Professional Edition license.
+ *  For using Coin with software that can not be combined with the GNU
+ *  GPL, and for taking advantage of the additional benefits of our
+ *  support services, please contact Systems in Motion about acquiring
+ *  a Coin Professional Edition License.
  *
- *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
- *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *  See <URL:http://www.coin3d.org> for  more information.
+ *
+ *  Systems in Motion, Teknobyen, Abels Gate 5, 7030 Trondheim, NORWAY.
+ *  <URL:http://www.sim.no>.
  *
 \**************************************************************************/
-
-#ifndef COIN_SOSFCOLOR_H
-#define COIN_SOSFCOLOR_H
 
 #include <Inventor/fields/SoSField.h>
 #include <Inventor/fields/SoSubField.h>
@@ -44,12 +48,12 @@
 def setValue(*args):
    if len(args) == 2:
       if isinstance(args[1], SbVec3f):
-         return apply(pivyc.SoSFColor_setValue_vec,args)
+         return apply(_pivy.SoSFColor_setValue_vec,args)
       else:
-         return apply(pivyc.SoSFColor_setValue_col,args)
+         return apply(_pivy.SoSFColor_setValue_col,args)
    elif len(args) == 4:
-      return apply(pivyc.SoSFColor_setValue_fff,args)
-   return apply(pivyc.SoSFColor_setValue,args)
+      return apply(_pivy.SoSFColor_setValue_fff,args)
+   return apply(_pivy.SoSFColor_setValue,args)
 %}
 
 %rename(setHSVValue_fff) SoSFColor::setHSVValue(const float h, const float s, const float v);
@@ -57,10 +61,9 @@ def setValue(*args):
 %feature("shadow") SoSFColor::setHSVValue(const float hsv[3]) %{
 def setHSVValue(*args):
    if len(args) == 4:
-      return apply(pivyc.SoSFColor_setHSVValue_fff,args)
-   return apply(pivyc.SoSFColor_setHSVValue,args)
+      return apply(_pivy.SoSFColor_setHSVValue_fff,args)
+   return apply(_pivy.SoSFColor_setHSVValue,args)
 %}
-
 #endif
 
 class COIN_DLL_API SoSFColor : public SoSField {

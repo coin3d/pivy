@@ -1,24 +1,28 @@
+#ifndef COIN_SOFIELD_H
+#define COIN_SOFIELD_H
+
 /**************************************************************************\
  *
  *  This file is part of the Coin 3D visualization library.
- *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
+ *  Copyright (C) 1998-2003 by Systems in Motion.  All rights reserved.
  *
  *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  version 2.1 as published by the Free Software Foundation. See the
- *  file LICENSE.LGPL at the root directory of the distribution for
- *  more details.
+ *  modify it under the terms of the GNU General Public License
+ *  ("GPL") version 2 as published by the Free Software Foundation.
+ *  See the file LICENSE.GPL at the root directory of this source
+ *  distribution for additional information about the GNU GPL.
  *
- *  If you want to use Coin for applications not compatible with the
- *  LGPL, please contact SIM to acquire a Professional Edition license.
+ *  For using Coin with software that can not be combined with the GNU
+ *  GPL, and for taking advantage of the additional benefits of our
+ *  support services, please contact Systems in Motion about acquiring
+ *  a Coin Professional Edition License.
  *
- *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
- *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *  See <URL:http://www.coin3d.org> for  more information.
+ *
+ *  Systems in Motion, Teknobyen, Abels Gate 5, 7030 Trondheim, NORWAY.
+ *  <URL:http://www.sim.no>.
  *
 \**************************************************************************/
-
-#ifndef COIN_SOFIELD_H
-#define COIN_SOFIELD_H
 
 #include <Inventor/SoType.h>
 #include <Inventor/misc/SoNotification.h>
@@ -30,7 +34,8 @@ class SoFieldConverter;
 class SoFieldList;
 class SoInput;
 class SoOutput;
-class SoVRMLInterpOutput;
+
+class COIN_DLL_API SoField {
 
 #ifdef __PIVY__
 %rename(appendConnection_fie) SoField::appendConnection(SoField *master, SbBool notnotify=FALSE);
@@ -39,10 +44,10 @@ class SoVRMLInterpOutput;
 %feature("shadow") SoField::appendConnection(SoEngineOutput *master, SbBool notnotify=FALSE) %{
 def appendConnection(*args):
    if isinstance(args[1], SoField):
-      return apply(pivyc.SoField_appendConnection_fie,args)
+      return apply(_pivy.SoField_appendConnection_fie,args)
    elif isinstance(args[1], SoVRMLInterpOutput):
-      return apply(pivyc.SoField_appendConnection_vrm,args)
-   return apply(pivyc.SoField_appendConnection,args)
+      return apply(_pivy.SoField_appendConnection_vrm,args)
+   return apply(_pivy.SoField_appendConnection,args)
 %}
 
 %rename(connectFrom_fie) SoField::connectFrom(SoField *master, SbBool notnotify=FALSE, SbBool append=FALSE);
@@ -51,10 +56,10 @@ def appendConnection(*args):
 %feature("shadow") SoField::connectFrom(SoEngineOutput *master, SbBool notnotify=FALSE, SbBool append=FALSE) %{
 def connectFrom(*args):
    if isinstance(args[1], SoField):
-      return apply(pivyc.SoField_connectFrom_fie,args)
+      return apply(_pivy.SoField_connectFrom_fie,args)
    elif isinstance(args[1], SoVRMLInterpOutput):
-      return apply(pivyc.SoField_connectFrom_vrm,args)
-   return apply(pivyc.SoField_connectFrom,args)
+      return apply(_pivy.SoField_connectFrom_vrm,args)
+   return apply(_pivy.SoField_connectFrom,args)
 %}
 
 
@@ -65,16 +70,14 @@ def connectFrom(*args):
 %feature("shadow") SoField::disconnect(void) %{
 def disconnect(*args):
    if isinstance(args[1], SoEngineOutput):
-      return apply(pivyc.SoField_disconnect_fie,args)
+      return apply(_pivy.SoField_disconnect_fie,args)
    elif isinstance(args[1], SoField):
-      return apply(pivyc.SoField_disconnect_fie,args)
+      return apply(_pivy.SoField_disconnect_fie,args)
    elif isinstance(args[1], SoVRMLInterpOutput):
-      return apply(pivyc.SoField_disconnect_vrm,args)
-   return apply(pivyc.SoField_disconnect,args)
+      return apply(_pivy.SoField_disconnect_vrm,args)
+   return apply(_pivy.SoField_disconnect,args)
 %}
 #endif
-
-class COIN_DLL_API SoField {
 
 public:
   virtual ~SoField();
@@ -115,15 +118,6 @@ public:
   int getForwardConnections(SoFieldList & slavelist) const;
   int getConnections(SoFieldList & masterlist) const;
 
-  // Field<-Interpolator connection stuff.
-  SbBool connectFrom(SoVRMLInterpOutput * master,
-                     SbBool notnotify = FALSE, SbBool append = FALSE);
-  SbBool appendConnection(SoVRMLInterpOutput * master,
-                          SbBool notnotify = FALSE);
-  void disconnect(SoVRMLInterpOutput * interpoutput);
-  SbBool isConnectedFromVRMLInterp(void) const;
-  SbBool getConnectedVRMLInterp(SoVRMLInterpOutput *& master) const;
-
   void disconnect(void);
   SbBool isConnected(void) const;
 
@@ -161,13 +155,24 @@ public:
 
   virtual void countWriteRefs(SoOutput * out) const;
 
-  void evaluate(void) const;
+  // enums for setFieldType()/getFieldType()
+  enum FieldType {
+    NORMAL_FIELD = 0,
+    EVENTIN_FIELD,
+    EVENTOUT_FIELD,
+    EXPOSED_FIELD
+  };
 
   void setFieldType(int type);
   int getFieldType(void) const;
 
   SbBool getDirty(void) const;
   void setDirty(SbBool dirty);
+
+  void evaluate(void) const {
+    if ((this->statusbits & (FLAG_EXTSTORAGE|FLAG_NEEDEVALUATION)) == 
+        (FLAG_EXTSTORAGE|FLAG_NEEDEVALUATION)) this->evaluateField();
+  }
 
 protected:
   SoField(void);
@@ -182,6 +187,22 @@ protected:
   SbBool isDestructing(void) const;
 
 private:
+
+  enum FieldFlags {
+    FLAG_TYPEMASK = 0x0007,  // need 3 bits for values [0-5]
+    FLAG_ISDEFAULT = 0x0008,
+    FLAG_IGNORE = 0x0010,
+    FLAG_EXTSTORAGE = 0x0020,
+    FLAG_ENABLECONNECTS = 0x0040,
+    FLAG_NEEDEVALUATION = 0x0080,
+    FLAG_READONLY = 0x0100,
+    FLAG_DONOTIFY = 0x0200,
+    FLAG_ISDESTRUCTING = 0x0400,
+    FLAG_ISEVALUATING = 0x0800,
+    FLAG_ISNOTIFIED = 0x1000
+  };
+
+  void evaluateField(void) const;
   void extendStorageIfNecessary(void);
   SoFieldConverter * createConverter(SoType from) const;
   SoFieldContainer * resolveWriteConnection(SbName & mastername) const;

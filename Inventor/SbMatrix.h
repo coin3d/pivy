@@ -1,24 +1,28 @@
+#ifndef COIN_SBMATRIX_H
+#define COIN_SBMATRIX_H
+
 /**************************************************************************\
  *
  *  This file is part of the Coin 3D visualization library.
- *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
+ *  Copyright (C) 1998-2003 by Systems in Motion.  All rights reserved.
  *
  *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  version 2.1 as published by the Free Software Foundation. See the
- *  file LICENSE.LGPL at the root directory of the distribution for
- *  more details.
+ *  modify it under the terms of the GNU General Public License
+ *  ("GPL") version 2 as published by the Free Software Foundation.
+ *  See the file LICENSE.GPL at the root directory of this source
+ *  distribution for additional information about the GNU GPL.
  *
- *  If you want to use Coin for applications not compatible with the
- *  LGPL, please contact SIM to acquire a Professional Edition license.
+ *  For using Coin with software that can not be combined with the GNU
+ *  GPL, and for taking advantage of the additional benefits of our
+ *  support services, please contact Systems in Motion about acquiring
+ *  a Coin Professional Edition License.
  *
- *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
- *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *  See <URL:http://www.coin3d.org> for  more information.
+ *
+ *  Systems in Motion, Teknobyen, Abels Gate 5, 7030 Trondheim, NORWAY.
+ *  <URL:http://www.sim.no>.
  *
 \**************************************************************************/
-
-#ifndef COIN_SBMATRIX_H
-#define COIN_SBMATRIX_H
 
 #include <stdio.h>
 #include <Inventor/SbBasic.h>
@@ -97,14 +101,14 @@ convert_SbMat_array(PyObject *input, SbMat temp)
 %feature("shadow") SbMatrix::SbMatrix %{
 def __init__(self,*args):
    if len(args) == 1:
-      self.this = apply(pivyc.new_SbMatrix_SbMat,args)
+      self.this = apply(_pivy.new_SbMatrix_SbMat,args)
       self.thisown = 1
       return
    elif len(args) == 16:
-      self.this = apply(pivyc.new_SbMatrix_f16,args)
+      self.this = apply(_pivy.new_SbMatrix_f16,args)
       self.thisown = 1
       return
-   self.this = apply(pivyc.new_SbMatrix,args)
+   self.this = apply(_pivy.new_SbMatrix,args)
    self.thisown = 1
 %}
 
@@ -114,8 +118,8 @@ def __init__(self,*args):
 %feature("shadow") SbMatrix::setScale(const float s) %{
 def det3(*args):
    if len(args) == 7:
-      return apply(pivyc.SbMatrix_det3_i6,args)
-   return apply(pivyc.SbMatrix_det3,args)
+      return apply(_pivy.SbMatrix_det3_i6,args)
+   return apply(_pivy.SbMatrix_det3,args)
 %}
 
 %rename(setScale_vec3) SbMatrix::setScale(const SbVec3f & s);
@@ -123,8 +127,8 @@ def det3(*args):
 %feature("shadow") SbMatrix::setScale(const float s) %{
 def setScale(args):
   if type(args[1]) == type(0.0):
-	return apply(pivyc.SbMatrix_setScale,args)
-  return apply(pivyc.SbMatrix_setScale_vec3,args)
+	return apply(_pivy.SbMatrix_setScale,args)
+  return apply(_pivy.SbMatrix_setScale_vec3,args)
 %}
 
 %rename(setTransform_vec3_rot_vec3_rot) SbMatrix::setTransform(const SbVec3f & t, const SbRotation & r, const SbVec3f & s,
@@ -136,14 +140,11 @@ def setScale(args):
 %feature("shadow") SbMatrix::setTransform(const SbVec3f & t, const SbRotation & r, const SbVec3f & s) %{
 def setTransform(*args):
    if len(args) == 5:
-      return apply(pivyc.SbMatrix_setTransform_vec3_rot_vec3_rot,args)
+      return apply(_pivy.SbMatrix_setTransform_vec3_rot_vec3_rot,args)
    elif len(args) == 6:
-      return apply(pivyc.SbMatrix_setTransform_vec3_rot_vec3_rot_vec3,args)
-   return apply(pivyc.SbMatrix_setTransform,args)
+      return apply(_pivy.SbMatrix_setTransform_vec3_rot_vec3_rot_vec3,args)
+   return apply(_pivy.SbMatrix_setTransform,args)
 %}
-
-%apply trsso *OUTPUT { SbVec3f & t, SbRotation & r, SbVec3f & s, SbRotation & so };
-%apply trsso *OUTPUT { SbVec3f & translation, SbRotation & rotation, SbVec3f & scaleFactor, SbRotation & scaleOrientation };
 
 %rename(getTransform_vec3) SbMatrix::getTransform(SbVec3f & translation, SbRotation & rotation,
 												  SbVec3f & scaleFactor, SbRotation & scaleOrientation,
@@ -152,24 +153,18 @@ def setTransform(*args):
 %feature("shadow") SbMatrix::getTransform(SbVec3f & t, SbRotation & r, SbVec3f & s, SbRotation & so) %{
 def getTransform(*args):
    if len(args) == 2:
-      return apply(pivyc.SbMatrix_getTransform_vec3,args)
-   return apply(pivyc.SbMatrix_getTransform,args)
+      return apply(_pivy.SbMatrix_getTransform_vec3,args)
+   return apply(_pivy.SbMatrix_getTransform,args)
 %}
-
-%apply vec3 *OUTPUT { SbVec3f & dst };
-%apply vec4 *OUTPUT { SbVec4f & dst };
 
 %rename(multVecMatrix_vec4) SbMatrix::multVecMatrix(const SbVec4f & src, SbVec4f & dst) const;
 
 %feature("shadow") SbMatrix::multVecMatrix(const SbVec3f & src, SbVec3f & dst) %{
 def multVecMatrix(*args):
    if isinstance(args[1], SbVec4f):
-      return apply(pivyc.SbMatrix_multVecMatrix_vec4,args)
-   return apply(pivyc.SbMatrix_multVecMatrix,args)
+      return apply(_pivy.SbMatrix_multVecMatrix_vec4,args)
+   return apply(_pivy.SbMatrix_multVecMatrix,args)
 %}
-
-%apply line *OUTPUT { SbLine & dst };
-
 #endif
 
 class COIN_DLL_API SbMatrix {
@@ -179,22 +174,14 @@ public:
            const float a21, const float a22, const float a23, const float a24,
            const float a31, const float a32, const float a33, const float a34,
            const float a41, const float a42, const float a43, const float a44);
-
   SbMatrix(const SbMat & matrix);
-
-#ifndef __PIVY__
   SbMatrix(const SbMat * matrix);
-#endif
-
   ~SbMatrix(void);
 
-#ifndef __PIVY__
   SbMatrix & operator =(const SbMat & m);
-  SbMatrix & operator =(const SbMatrix & m);
-  SbMatrix & operator =(const SbRotation & q);
-  operator float*(void);
-#endif
 
+  operator float*(void);
+  SbMatrix & operator =(const SbMatrix & m);
   void setValue(const SbMat & m);
   const SbMat & getValue(void) const;
 
@@ -208,10 +195,8 @@ public:
 
   SbBool equals(const SbMatrix & m, float tolerance) const;
 
-#ifndef __PIVY__
-  operator SbMat&(void);
-#endif
 
+  operator SbMat&(void);
 #ifdef __PIVY__
   // add a method for wrapping c++ operator[] access
   %extend {
@@ -223,16 +208,12 @@ public:
   float * operator [](int i);
   const float * operator [](int i) const;
 #endif
-
+  SbMatrix & operator =(const SbRotation & q);
   SbMatrix & operator *=(const SbMatrix & m);
   friend COIN_DLL_API SbMatrix operator *(const SbMatrix & m1, const SbMatrix & m2);
   friend COIN_DLL_API int operator ==(const SbMatrix & m1, const SbMatrix & m2);
   friend COIN_DLL_API int operator !=(const SbMatrix & m1, const SbMatrix & m2);
-
-#ifndef __PIVY__
   void getValue(SbMat & m) const;
-#endif
-
   static SbMatrix identity(void);
   void setScale(const float s);
   void setScale(const SbVec3f & s);
@@ -248,7 +229,6 @@ public:
   void getTransform(SbVec3f & translation, SbRotation & rotation,
                     SbVec3f & scaleFactor, SbRotation & scaleOrientation,
                     const SbVec3f & center) const;
-
   SbBool factor(SbMatrix & r, SbVec3f & s, SbMatrix & u, SbVec3f & t,
                 SbMatrix & proj);
   SbBool LUDecomposition(int index[4], float & d);
@@ -256,7 +236,6 @@ public:
   SbMatrix transpose(void) const;
   SbMatrix & multRight(const SbMatrix & m);
   SbMatrix & multLeft(const SbMatrix & m);
-
   void multMatrixVec(const SbVec3f & src, SbVec3f & dst) const;
   void multVecMatrix(const SbVec3f & src, SbVec3f & dst) const;
   void multDirMatrix(const SbVec3f & src, SbVec3f & dst) const;
@@ -272,16 +251,8 @@ private:
   void operator *=(const float v);
 };
 
-#ifdef __PIVY__
-/* %typemap(in) SbMat & (SbMat temp); */
-%clear SbVec3f & translation, SbRotation & rotation, SbVec3f & scaleFactor, SbRotation & scaleOrientation;
-%clear SbVec3f & dst;
-%clear SbVec4f & dst;
-%clear SbLine & dst;
-#else
 COIN_DLL_API SbMatrix operator *(const SbMatrix & m1, const SbMatrix & m2);
 COIN_DLL_API int operator ==(const SbMatrix & m1, const SbMatrix & m2);
 COIN_DLL_API int operator !=(const SbMatrix & m1, const SbMatrix & m2);
-#endif
 
 #endif // !COIN_SBMATRIX_H

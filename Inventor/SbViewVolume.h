@@ -1,29 +1,34 @@
+#ifndef COIN_SBVIEWVOLUME_H
+#define COIN_SBVIEWVOLUME_H
+
 /**************************************************************************\
  *
  *  This file is part of the Coin 3D visualization library.
- *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
+ *  Copyright (C) 1998-2003 by Systems in Motion.  All rights reserved.
  *
  *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  version 2.1 as published by the Free Software Foundation. See the
- *  file LICENSE.LGPL at the root directory of the distribution for
- *  more details.
+ *  modify it under the terms of the GNU General Public License
+ *  ("GPL") version 2 as published by the Free Software Foundation.
+ *  See the file LICENSE.GPL at the root directory of this source
+ *  distribution for additional information about the GNU GPL.
  *
- *  If you want to use Coin for applications not compatible with the
- *  LGPL, please contact SIM to acquire a Professional Edition license.
+ *  For using Coin with software that can not be combined with the GNU
+ *  GPL, and for taking advantage of the additional benefits of our
+ *  support services, please contact Systems in Motion about acquiring
+ *  a Coin Professional Edition License.
  *
- *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
- *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *  See <URL:http://www.coin3d.org> for  more information.
+ *
+ *  Systems in Motion, Teknobyen, Abels Gate 5, 7030 Trondheim, NORWAY.
+ *  <URL:http://www.sim.no>.
  *
 \**************************************************************************/
-
-#ifndef COIN_SBVIEWVOLUME_H
-#define COIN_SBVIEWVOLUME_H
 
 #include <stdio.h>
 
 #include <Inventor/SbBasic.h>
 #include <Inventor/SbVec3f.h>
+#include <Inventor/SbDPViewVolume.h>
 
 class SbBox3f;
 class SbLine;
@@ -39,12 +44,9 @@ class SbVec3f;
 %feature("shadow") SbViewVolume::projectPointToLine(const SbVec2f& pt, SbLine& line) const %{
 def projectPointToLine(*args):
    if len(args) == 4:
-      return apply(pivyc.SbViewVolume_projectPointToLine_vec_vec_vec,args)
-   return apply(pivyc.SbViewVolume_projectPointToLine,args)
+      return apply(_pivy.SbViewVolume_projectPointToLine_vec_vec_vec,args)
+   return apply(_pivy.SbViewVolume_projectPointToLine,args)
 %}
-
-%apply SbLine *OUTPUT { SbLine& line };
-%apply SbVec3f *OUTPUT { SbVec3f& line0, SbVec3f& line1 };
 #endif
 
 class COIN_DLL_API SbViewVolume {
@@ -77,6 +79,9 @@ public:
              float nearval, float farval);
   void perspective(float fovy, float aspect,
                    float nearval, float farval);
+  void frustum(float left, float right,
+               float bottom, float top,
+               float nearval, float farval);
   void rotateCamera(const SbRotation& q);
   void translateCamera(const SbVec3f& v);
   SbVec3f zVector(void) const;
@@ -114,23 +119,8 @@ public:
   SbVec3f ulf;
 
 private:
-
-  static SbMatrix getOrthoProjection(const float left, const float right,
-                                     const float bottom, const float top,
-                                     const float nearval, const float farval);
-  static SbMatrix getPerspectiveProjection(const float left, const float right,
-                                           const float bottom, const float top,
-                                           const float nearval, const float farval);
-
-  void getPlaneRectangle(const float depth, SbVec3f & lowerleft, 
-                         SbVec3f & lowerright, SbVec3f & upperleft, 
-                         SbVec3f & upperright) const;
+  
+  SbDPViewVolume dpvv;
 };
-
-#ifdef __PIVY__
-%clear float & x, float & y;
-%clear SbLine& line;
-%clear SbVec3f& line0, SbVec3f& line1;
-#endif
 
 #endif // !COIN_SBVIEWVOLUME_H

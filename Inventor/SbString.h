@@ -1,32 +1,34 @@
-/**************************************************************************\
- *
- *  This file is part of the Coin 3D visualization library.
- *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  version 2.1 as published by the Free Software Foundation. See the
- *  file LICENSE.LGPL at the root directory of the distribution for
- *  more details.
- *
- *  If you want to use Coin for applications not compatible with the
- *  LGPL, please contact SIM to acquire a Professional Edition license.
- *
- *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
- *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
- *
-\**************************************************************************/
-
 #ifndef COIN_SBSTRING_H
 #define COIN_SBSTRING_H
 
+/**************************************************************************\
+ *
+ *  This file is part of the Coin 3D visualization library.
+ *  Copyright (C) 1998-2003 by Systems in Motion.  All rights reserved.
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  ("GPL") version 2 as published by the Free Software Foundation.
+ *  See the file LICENSE.GPL at the root directory of this source
+ *  distribution for additional information about the GNU GPL.
+ *
+ *  For using Coin with software that can not be combined with the GNU
+ *  GPL, and for taking advantage of the additional benefits of our
+ *  support services, please contact Systems in Motion about acquiring
+ *  a Coin Professional Edition License.
+ *
+ *  See <URL:http://www.coin3d.org> for  more information.
+ *
+ *  Systems in Motion, Teknobyen, Abels Gate 5, 7030 Trondheim, NORWAY.
+ *  <URL:http://www.sim.no>.
+ *
+\**************************************************************************/
+
 #include <Inventor/system/inttypes.h>
-#include <Inventor/SbBasic.h>
+#include <Inventor/C/base/string.h>
+#include <Inventor/lists/SbIntList.h>
 
-#include <stdio.h>
 #include <stdarg.h>
-
-#define SB_STRING_STATIC_STORAGE_SIZE 128
 
 #ifdef __PIVY__
 %rename(SbString_str) SbString::SbString(const char * str);
@@ -37,18 +39,18 @@
 def __init__(self,*args):
    if len(args) == 1:
       if type(args[0]) == type(1):
-         self.this = apply(pivyc.new_SbString_i,args)
+         self.this = apply(_pivy.new_SbString_i,args)
          self.thisown = 1
          return
       else:
-         self.this = apply(pivyc.new_SbString_str,args)
+         self.this = apply(_pivy.new_SbString_str,args)
          self.thisown = 1
          return
    elif len(args) == 3:
-      self.this = apply(pivyc.new_SbString_str_i_i,args)
+      self.this = apply(_pivy.new_SbString_str_i_i,args)
       self.thisown = 1
       return
-   self.this = apply(pivyc.new_SbString,args)
+   self.this = apply(_pivy.new_SbString,args)
    self.thisown = 1
 %}
 
@@ -57,32 +59,54 @@ def __init__(self,*args):
 %feature("shadow") SbString::hash(void) %{
 def hash(*args):
    if len(args) == 2:
-      return apply(pivyc.SbString_hash_str,args)
-   return apply(pivyc.SbString_hash,args)
+      return apply(_pivy.SbString_hash_str,args)
+   return apply(_pivy.SbString_hash,args)
 %}
 #endif
 
 class COIN_DLL_API SbString {
 public:
-  SbString(void);
-  SbString(const char * str);
-  SbString(const char * str, int start, int end);
+  SbString(void) { cc_string_construct(&this->str); }
 
-#ifndef __PIVY__
-  SbString(const SbString & str);
-#endif
+  SbString(const char * str)
+  { cc_string_construct(&this->str); cc_string_set_text(&this->str, str); }
 
-  SbString(const int digits);
-  ~SbString();
+  SbString(const char * str, int start, int end)
+  { cc_string_construct(&this->str); cc_string_set_subtext(&this->str, str, start, end); }
 
-  uint32_t hash(void);
-  int getLength(void) const;
-  void makeEmpty(SbBool freeold = TRUE);
-  const char * getString(void) const;
-  SbString getSubString(int startidx, int endidx = -1) const;
-  void deleteSubString(int startidx, int endidx = -1);
+  SbString(const SbString & str)
+  { cc_string_construct(&this->str); cc_string_set_string(&this->str, &str.str); }
 
-  void addIntString(const int value);
+  SbString(const int digits)
+  { cc_string_construct(&this->str); cc_string_set_integer(&this->str, digits); }
+
+  ~SbString() { cc_string_clean(&this->str); }
+
+  uint32_t hash(void) const { return cc_string_hash(&this->str); }
+  static uint32_t hash(const char * s) { return cc_string_hash_text(s); }
+
+  int getLength(void) const { return cc_string_length(&this->str); }
+
+  void makeEmpty(SbBool freeold = TRUE)
+  {
+    if ( freeold ) cc_string_clear(&this->str);
+    else cc_string_clear_no_free(&this->str);
+  }
+
+  const char * getString(void) const { return cc_string_get_text(&this->str); }
+
+  SbString getSubString(int startidx, int endidx = -1) const
+  {
+    SbString s;
+    cc_string_set_subtext(&s.str, cc_string_get_text(&this->str), startidx, endidx);
+    return s;
+  }
+  void deleteSubString(int startidx, int endidx = -1)
+  {
+    cc_string_remove_substring(&this->str, startidx, endidx);
+  }
+
+  void addIntString(const int value) { cc_string_append_integer(&this->str, value); }
 
 #ifdef __PIVY__
   // add a method for wrapping c++ operator[] access
@@ -92,46 +116,64 @@ public:
 	}
   }
 #else
-  char operator [](int index) const;
-  SbString & operator = (const char * str);
-  SbString & operator = (const SbString & str);
-  SbString & operator += (const char * str);
-  SbString & operator += (const SbString & str);
-  int operator ! (void) const;
-  friend COIN_DLL_API int operator == (const SbString & str, const char * s);
-  friend COIN_DLL_API int operator == (const char * s, const SbString & str);
-  friend COIN_DLL_API int operator == (const SbString & str1, const SbString & str2);
-  friend COIN_DLL_API int operator != (const SbString & str, const char * s);
-  friend COIN_DLL_API int operator != (const char * s, const SbString & str);
-  friend COIN_DLL_API int operator != (const SbString & str1, const SbString & str2);
+  char operator[](int index) const { return this->str.pointer[index]; }
 #endif
 
-  static uint32_t hash(const char * s);
+  SbString & operator=(const char * str)
+  { cc_string_set_text(&this->str, str); return *this; }
+  SbString & operator=(const SbString & str)
+  { cc_string_set_text(&this->str, str.str.pointer); return *this; }
 
-  SbString & operator += (const char c);
+  SbString & operator+=(const char * str)
+  { cc_string_append_text(&this->str, str); return *this; }
+  SbString & operator+=(const SbString & str)
+  { cc_string_append_string(&this->str, &str.str); return *this; }
+  SbString & operator+=(const char c)
+  { cc_string_append_char(&this->str, c); return *this; }
 
-#ifndef __PIVY__
-  SbString & sprintf(const char * formatstr, ...);
-  SbString & vsprintf(const char * formatstr, va_list args);
-#endif
+  int operator!(void) const { return ! cc_string_is(&this->str); }
 
-  void print(FILE * file = stdout) const;
+  int compareSubString(const char * text, int offset = 0) const
+  { return cc_string_compare_subtext(&this->str, text, offset); }
+
+  SbString & sprintf(const char * formatstr, ...)
+  {
+    va_list args; va_start(args, formatstr);
+    cc_string_vsprintf(&this->str, formatstr, args);
+    va_end(args); return *this;
+  }
+  SbString & vsprintf(const char * formatstr, va_list args)
+  { cc_string_vsprintf(&this->str, formatstr, args); return *this; }
+
+  void apply(char (*func)(char input)) { cc_string_apply(&this->str, (cc_apply_f)func); }
+
+  int find(const SbString & str) const;
+  SbBool findAll(const SbString & str, SbIntList & found) const;
+
+  friend int operator==(const SbString & str, const char * s);
+  friend int operator==(const char * s, const SbString & str);
+  friend int operator==(const SbString & str1, const SbString & str2);
+  friend int operator!=(const SbString & str, const char * s);
+  friend int operator!=(const char * s, const SbString & str);
+  friend int operator!=(const SbString & str1, const SbString & str2);
 
 private:
-  char * sstring;
-  int storagesize;
-  char staticstorage[SB_STRING_STATIC_STORAGE_SIZE];
-  void expand(int additional);
+  struct cc_string str;
 };
 
-#ifndef __PIVY__
-COIN_DLL_API int operator == (const SbString & str, const char * s);
-COIN_DLL_API int operator == (const char * s, const SbString & str);
-COIN_DLL_API int operator == (const SbString & str1, const SbString & str2);
-COIN_DLL_API int operator != (const SbString & str, const char * s);
-COIN_DLL_API int operator != (const char * s, const SbString & str);
-COIN_DLL_API int operator != (const SbString & str1, const SbString & str2);
-#endif
+inline int operator==(const SbString & str, const char * s)
+{ return (cc_string_compare_text(str.str.pointer, s) == 0); }
+inline int operator==(const char * s, const SbString & str)
+{ return (cc_string_compare_text(s, str.str.pointer) == 0); }
+inline int operator==(const SbString & str1, const SbString & str2)
+{ return (cc_string_compare_text(str1.str.pointer, str2.str.pointer) == 0); }
+
+inline int operator!=(const SbString & str, const char * s)
+{ return (cc_string_compare_text(str.str.pointer, s) != 0); }
+inline int operator!=(const char * s, const SbString & str)
+{ return (cc_string_compare_text(s, str.str.pointer) != 0); }
+inline int operator!=(const SbString & str1, const SbString & str2)
+{ return (cc_string_compare_text(str1.str.pointer, str2.str.pointer) != 0); }
 
 #ifndef COIN_INTERNAL
 // For Open Inventor compatibility.

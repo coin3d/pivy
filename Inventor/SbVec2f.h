@@ -1,24 +1,28 @@
+#ifndef COIN_SBVEC2F_H
+#define COIN_SBVEC2F_H
+
 /**************************************************************************\
  *
  *  This file is part of the Coin 3D visualization library.
- *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
+ *  Copyright (C) 1998-2003 by Systems in Motion.  All rights reserved.
  *
  *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  version 2.1 as published by the Free Software Foundation. See the
- *  file LICENSE.LGPL at the root directory of the distribution for
- *  more details.
+ *  modify it under the terms of the GNU General Public License
+ *  ("GPL") version 2 as published by the Free Software Foundation.
+ *  See the file LICENSE.GPL at the root directory of this source
+ *  distribution for additional information about the GNU GPL.
  *
- *  If you want to use Coin for applications not compatible with the
- *  LGPL, please contact SIM to acquire a Professional Edition license.
+ *  For using Coin with software that can not be combined with the GNU
+ *  GPL, and for taking advantage of the additional benefits of our
+ *  support services, please contact Systems in Motion about acquiring
+ *  a Coin Professional Edition License.
  *
- *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
- *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *  See <URL:http://www.coin3d.org> for  more information.
+ *
+ *  Systems in Motion, Teknobyen, Abels Gate 5, 7030 Trondheim, NORWAY.
+ *  <URL:http://www.sim.no>.
  *
 \**************************************************************************/
-
-#ifndef COIN_SBVEC2F_H
-#define COIN_SBVEC2F_H
 
 #include <stdio.h>
 
@@ -53,14 +57,14 @@ convert_SbVec2f_array(PyObject *input, float temp[2])
 %feature("shadow") SbVec2f::SbVec2f %{
 def __init__(self,*args):
    if len(args) == 1:
-      self.this = apply(pivyc.new_SbVec2f_vec,args)
+      self.this = apply(_pivy.new_SbVec2f_vec,args)
       self.thisown = 1
       return
    elif len(args) == 2:
-      self.this = apply(pivyc.new_SbVec2f_ff,args)
+      self.this = apply(_pivy.new_SbVec2f_ff,args)
       self.thisown = 1
       return
-   self.this = apply(pivyc.new_SbVec2f,args)
+   self.this = apply(_pivy.new_SbVec2f,args)
    self.thisown = 1
 %}
 
@@ -69,8 +73,8 @@ def __init__(self,*args):
 %feature("shadow") SbVec2f::setValue(const float vec[2]) %{
 def setValue(*args):
    if len(args) == 3:
-      return apply(pivyc.SbVec2f_setValue_ff,args)
-   return apply(pivyc.SbVec2f_setValue,args)
+      return apply(_pivy.SbVec2f_setValue_ff,args)
+   return apply(_pivy.SbVec2f_setValue,args)
 %}
 
 %apply float *OUTPUT { float & x, float & y };
@@ -83,19 +87,15 @@ public:
   SbVec2f(const float x, const float y);
   float dot(const SbVec2f & v) const;
   SbBool equals(const SbVec2f & v, const float tolerance) const;
-
 #ifndef __PIVY__
   const float * getValue(void) const;
 #endif
-
   void getValue(float & x, float & y) const;
   float length(void) const;
   void negate(void);
   float normalize(void);
-
   SbVec2f & setValue(const float v[2]);
   SbVec2f & setValue(const float x, const float y);
-
 #ifdef __PIVY__
   // add a method for wrapping c++ operator[] access
   %extend {
@@ -107,12 +107,11 @@ public:
   float & operator [] (const int i);
   const float & operator [] (const int i) const;
 #endif
-
   SbVec2f & operator *= (const float d);
   SbVec2f & operator /= (const float d);
   SbVec2f & operator += (const SbVec2f & u);
   SbVec2f & operator -= (const SbVec2f & u);
-  SbVec2f operator -(void) const;
+  SbVec2f operator-(void) const;
 
   friend COIN_DLL_API SbVec2f operator * (const SbVec2f & v, const float d);
   friend COIN_DLL_API SbVec2f operator * (const float d, const SbVec2f & v);
@@ -130,7 +129,8 @@ private:
 
 #ifdef __PIVY__
 %clear float & x, float & y;
-#else
+#endif
+
 COIN_DLL_API SbVec2f operator * (const SbVec2f & v, const float d);
 COIN_DLL_API SbVec2f operator * (const float d, const SbVec2f & v);
 COIN_DLL_API SbVec2f operator / (const SbVec2f & v, const float d);
@@ -138,11 +138,6 @@ COIN_DLL_API SbVec2f operator + (const SbVec2f & v1, const SbVec2f & v2);
 COIN_DLL_API SbVec2f operator - (const SbVec2f & v1, const SbVec2f & v2);
 COIN_DLL_API int operator == (const SbVec2f & v1, const SbVec2f & v2);
 COIN_DLL_API int operator != (const SbVec2f & v1, const SbVec2f & v2);
-#endif
-
-// *************************************************************************
-
-//$ IMPORT INLINE ../../src/SbVec2f.cpp
 
 // *************************************************************************
 

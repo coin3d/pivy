@@ -21,50 +21,50 @@
  *
 \**************************************************************************/
 
-// src/Inventor/Gtk/SoGtkRenderArea.h.  Generated from SoGuiRenderArea.h.in by configure.
+// src/Inventor/Qt/SoQtRenderArea.h.  Generated from SoGuiRenderArea.h.in by configure.
 
-#ifndef SOGTK_RENDERAREA_H
-#define SOGTK_RENDERAREA_H
+#ifndef SOQT_RENDERAREA_H
+#define SOQT_RENDERAREA_H
 
 #include <Inventor/SbColor.h>
 #include <Inventor/SbViewportRegion.h>
 #include <Inventor/actions/SoGLRenderAction.h>
 #include <Inventor/SoSceneManager.h>
 
-#include <Inventor/Gtk/SoGtkGLWidget.h>
+#include <Inventor/Qt/SoQtGLWidget.h>
 
 class SbColor;
 class SoNode;
 class SoSelection;
 
-class SoGtkDevice;
-// SoGtkRenderAreaP is only used in the "friend class" statement in
+class SoQtDevice;
+// SoQtRenderAreaP is only used in the "friend class" statement in
 // the class definition, so this shouldn't really be necessary. But
 // the OSF1/cxx compiler complains if it's left out.
-class SoGtkRenderAreaP;
+class SoQtRenderAreaP;
 
-typedef SbBool SoGtkRenderAreaEventCB(void * closure, GdkEvent * event);
+typedef SbBool SoQtRenderAreaEventCB(void * closure, QEvent * event);
 
 // *************************************************************************
 
 #ifdef __PIVY__
 %{
 static SbBool
-SoGtkRenderAreaEventPythonCB(void * closure, GdkEvent * event)
+SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
 {
   PyObject *func, *arglist;
-  PyObject *result, *gdkev;
+  PyObject *result, *qev;
   int ires = 0;
 
-  gdkev = SWIG_NewPointerObj((void *) event, SWIGTYPE_p_GdkEvent, 1);
+  qev = SWIG_NewPointerObj((void *) event, SWIGTYPE_p_QEvent, 1);
 
   /* the first item in the closure sequence is the python callback
    * function; the second is the supplied closure python object */
   func = PyTuple_GetItem((PyObject *)closure, 0);
-  arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)closure, 1), gdkev);
+  arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)closure, 1), qev);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
-	printf("SoGtkRenderAreaEventPythonCB(void * closure, GdkEvent * event) failed!\n");
+	printf("SoQtRenderAreaEventPythonCB(void * closure, QEvent * event) failed!\n");
   }
   else {
 	ires = PyInt_AsLong(result);
@@ -86,16 +86,16 @@ SoGtkRenderAreaEventPythonCB(void * closure, GdkEvent * event)
 %}
 #endif
 
-class SOGTK_DLL_API SoGtkRenderArea : public SoGtkGLWidget {
-  SOGTK_OBJECT_HEADER(SoGtkRenderArea, SoGtkGLWidget);
+class SOQT_DLL_API SoQtRenderArea : public SoQtGLWidget {
+  SOQT_OBJECT_HEADER(SoQtRenderArea, SoQtGLWidget);
 
 public:
-  SoGtkRenderArea(GtkWidget * parent = NULL,
+  SoQtRenderArea(QWidget * parent = NULL,
                     const char * name = NULL,
                     SbBool embed = TRUE,
                     SbBool mouseInput = TRUE,
                     SbBool keyboardInput = TRUE);
-  ~SoGtkRenderArea();
+  ~SoQtRenderArea();
 
   virtual void setSceneGraph(SoNode * scene);
   virtual SoNode * getSceneGraph(void);
@@ -132,8 +132,7 @@ public:
   void scheduleOverlayRedraw(void);
   void redrawOnSelectionChange(SoSelection * selection);
   void redrawOverlayOnSelectionChange(SoSelection * selection);
-  void setEventCallback(SoGtkRenderAreaEventCB * func, void * user = NULL);
-
+  void setEventCallback(SoQtRenderAreaEventCB * func, void * user = NULL);
 #ifdef __PIVY__
   /* add python specific callback functions */
   %extend {
@@ -149,11 +148,10 @@ public:
 	  Py_INCREF(pyfunc);
 	  Py_INCREF(user);
 
-	  self->setEventCallback(SoGtkRenderAreaEventPythonCB, (void *) t);
+	  self->setEventCallback(SoQtRenderAreaEventPythonCB, (void *) t);
 	}
   }
 #endif
-
   void setSceneManager(SoSceneManager * manager);
   SoSceneManager * getSceneManager(void) const;
   void setOverlaySceneManager(SoSceneManager * manager);
@@ -165,12 +163,12 @@ public:
 
   SbBool sendSoEvent(const SoEvent * event);
 
-  void registerDevice(SoGtkDevice * device);
-  void unregisterDevice(SoGtkDevice * device);
+  void registerDevice(SoQtDevice * device);
+  void unregisterDevice(SoQtDevice * device);
 
 
 protected:
-  SoGtkRenderArea(GtkWidget * parent,
+  SoQtRenderArea(QWidget * parent,
                     const char * name,
                     SbBool embed,
                     SbBool mouseInput,
@@ -183,14 +181,14 @@ protected:
   virtual void actualOverlayRedraw(void);
 
   virtual SbBool processSoEvent(const SoEvent * const event);
-  virtual void processEvent(GdkEvent * event);
+  virtual void processEvent(QEvent * event);
   virtual void initGraphic(void);
   virtual void initOverlayGraphic(void);
   virtual void sizeChanged(const SbVec2s & size);
-  virtual void widgetChanged(GtkWidget * widget);
+  virtual void widgetChanged(QWidget * widget);
   virtual void afterRealizeHook(void);
 
-  GtkWidget * buildWidget(GtkWidget * parent);
+  QWidget * buildWidget(QWidget * parent);
 
   virtual const char * getDefaultWidgetName(void) const;
   virtual const char * getDefaultTitle(void) const;
@@ -199,12 +197,12 @@ protected:
   virtual SbBool glScheduleRedraw(void);
 
 private:
-  class SoGtkRenderAreaP * pimpl;
+  class SoQtRenderAreaP * pimpl;
 #ifndef DOXYGEN_SKIP_THIS
-  friend class SoGtkRenderAreaP;
+  friend class SoQtRenderAreaP;
 #endif // DOXYGEN_SKIP_THIS
 };
 
 // *************************************************************************
 
-#endif // ! SOGTK_RENDERAREA_H
+#endif // ! SOQT_RENDERAREA_H

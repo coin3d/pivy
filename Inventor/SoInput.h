@@ -1,24 +1,28 @@
+#ifndef COIN_SOINPUT_H
+#define COIN_SOINPUT_H
+
 /**************************************************************************\
  *
  *  This file is part of the Coin 3D visualization library.
- *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
+ *  Copyright (C) 1998-2003 by Systems in Motion.  All rights reserved.
  *
  *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  version 2.1 as published by the Free Software Foundation. See the
- *  file LICENSE.LGPL at the root directory of the distribution for
- *  more details.
+ *  modify it under the terms of the GNU General Public License
+ *  ("GPL") version 2 as published by the Free Software Foundation.
+ *  See the file LICENSE.GPL at the root directory of this source
+ *  distribution for additional information about the GNU GPL.
  *
- *  If you want to use Coin for applications not compatible with the
- *  LGPL, please contact SIM to acquire a Professional Edition license.
+ *  For using Coin with software that can not be combined with the GNU
+ *  GPL, and for taking advantage of the additional benefits of our
+ *  support services, please contact Systems in Motion about acquiring
+ *  a Coin Professional Edition License.
  *
- *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
- *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *  See <URL:http://www.coin3d.org> for  more information.
+ *
+ *  Systems in Motion, Teknobyen, Abels Gate 5, 7030 Trondheim, NORWAY.
+ *  <URL:http://www.sim.no>.
  *
 \**************************************************************************/
-
-#ifndef COIN_SOINPUT_H
-#define COIN_SOINPUT_H
 
 #include <Inventor/system/inttypes.h>
 #include <Inventor/SbBasic.h>
@@ -36,6 +40,9 @@ class SbTime;
 class SbName;
 class SbStringList;
 class SoInput_FileInfo;
+class SoProto;
+class SoField;
+class SoFieldContainer;
 
 #ifdef __PIVY__
 %typemap(in) (void * bufpointer, size_t bufsize) {
@@ -52,6 +59,18 @@ class COIN_DLL_API SoInput {
 public:
   SoInput(void);
   SoInput(SoInput * dictIn);
+
+  void addProto(SoProto * proto);
+
+  void pushProto(SoProto * proto);
+  SoProto * getCurrentProto(void) const;
+  void popProto(void);
+
+  void addRoute(const SbName & fromnode, const SbName & fromfield,
+                const SbName & tonode, const SbName & tofield);
+  SbBool checkISReference(SoFieldContainer * container, const SbName & fieldname, 
+                          SbBool & readok);
+  
   virtual ~SoInput(void);
 
   virtual void setFilePointer(FILE * newFP);
@@ -126,15 +145,8 @@ protected:
   virtual SbBool popFile(void);
   void setIVVersion(float version);
   FILE * findFile(const char * fileName, SbString & fullName);
-
-#ifdef __PIVY__
   void initFile(FILE * newFP, const char * fileName, SbString * fullName,
-				SbBool openedHere, SbDict * refDict);
-#else
-  void initFile(FILE * newFP, const char * fileName, SbString * fullName,
-				SbBool openedHere, SbDict * refDict = (SbDict *) NULL);
-#endif
-
+                SbBool openedHere, SbDict * refDict = (SbDict *) NULL);
   SbBool checkHeader(SbBool bValidateBufferHeader = FALSE);
   SbBool fromBuffer(void) const;
   SbBool skipWhiteSpace(void);

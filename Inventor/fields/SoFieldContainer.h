@@ -1,24 +1,28 @@
+#ifndef COIN_SOFIELDCONTAINER_H
+#define COIN_SOFIELDCONTAINER_H
+
 /**************************************************************************\
  *
  *  This file is part of the Coin 3D visualization library.
- *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
+ *  Copyright (C) 1998-2003 by Systems in Motion.  All rights reserved.
  *
  *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  version 2.1 as published by the Free Software Foundation. See the
- *  file LICENSE.LGPL at the root directory of the distribution for
- *  more details.
+ *  modify it under the terms of the GNU General Public License
+ *  ("GPL") version 2 as published by the Free Software Foundation.
+ *  See the file LICENSE.GPL at the root directory of this source
+ *  distribution for additional information about the GNU GPL.
  *
- *  If you want to use Coin for applications not compatible with the
- *  LGPL, please contact SIM to acquire a Professional Edition license.
+ *  For using Coin with software that can not be combined with the GNU
+ *  GPL, and for taking advantage of the additional benefits of our
+ *  support services, please contact Systems in Motion about acquiring
+ *  a Coin Professional Edition License.
  *
- *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
- *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *  See <URL:http://www.coin3d.org> for  more information.
+ *
+ *  Systems in Motion, Teknobyen, Abels Gate 5, 7030 Trondheim, NORWAY.
+ *  <URL:http://www.sim.no>.
  *
 \**************************************************************************/
-
-#ifndef COIN_SOFIELDCONTAINER_H
-#define COIN_SOFIELDCONTAINER_H
 
 #include <Inventor/misc/SoBase.h>
 
@@ -33,8 +37,8 @@ class SoOutput;
 %feature("shadow") SoFieldContainer::set(const char * const fielddata) %{
 def set(*args):
    if len(args) == 3:
-      return apply(pivyc.SoFieldContainer_set_str_in,args)
-   return apply(pivyc.SoFieldContainer_set,args)
+      return apply(_pivy.SoFieldContainer_set_str_in,args)
+   return apply(_pivy.SoFieldContainer_set,args)
 %}
 
 %rename(get_str_out) SoFieldContainer::get(SbString & fielddata, SoOutput * out);
@@ -42,8 +46,8 @@ def set(*args):
 %feature("shadow") SoFieldContainer::get(SbString & fielddata) %{
 def get(*args):
    if len(args) == 3:
-      return apply(pivyc.SoFieldContainer_get_str_out,args)
-   return apply(pivyc.SoFieldContainer_get,args)
+      return apply(_pivy.SoFieldContainer_get_str_out,args)
+   return apply(_pivy.SoFieldContainer_get,args)
 %}
 
 /**
@@ -81,12 +85,7 @@ def get(*args):
 %typemap(ignore) SbName & getFieldName_name (SbName *temp) {
     $1 = new SbName();
 }
-
-%apply SbString *OUTPUT { SbString & fielddata };
-%apply SoFieldList *OUTPUT { SoFieldList & l };
-%apply SoFieldList *INOUT { SoFieldList & l_inout };
 #endif
-
 
 class COIN_DLL_API SoFieldContainer : public SoBase {
   typedef SoBase inherited;
@@ -110,13 +109,11 @@ public:
   virtual SoField * getField(const SbName & name) const;
   virtual SoField * getEventIn(const SbName & name) const;
   virtual SoField * getEventOut(const SbName & name) const;
-
 #ifdef __PIVY__
   SbBool getFieldName(const SoField * const field, SbName & getFieldName_name) const;
 #else
   SbBool getFieldName(const SoField * const field, SbName & name) const;
 #endif
-
   SbBool enableNotify(const SbBool flag);
   SbBool isNotifyEnabled(void) const;
 
@@ -145,6 +142,9 @@ public:
                                      const SbBool copyconnections);
   static void copyDone(void);
 
+  void setUserData(void * userdata) const;
+  void * getUserData(void) const;
+
 protected:
   SoFieldContainer(void);
   ~SoFieldContainer();
@@ -156,11 +156,5 @@ private:
   static SoType classTypeId;
   SbBool donotify;
 };
-
-#ifdef __PIVY__
-%clear SbString & fielddata;
-%clear SoFieldList & l;
-%clear SoFieldList & l_inout;
-#endif
 
 #endif // !COIN_SOFIELDCONTAINER_H

@@ -1,30 +1,35 @@
+#ifndef COIN_SBVEC3F_H
+#define COIN_SBVEC3F_H
+
 /**************************************************************************\
  *
  *  This file is part of the Coin 3D visualization library.
- *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
+ *  Copyright (C) 1998-2003 by Systems in Motion.  All rights reserved.
  *
  *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  version 2.1 as published by the Free Software Foundation. See the
- *  file LICENSE.LGPL at the root directory of the distribution for
- *  more details.
+ *  modify it under the terms of the GNU General Public License
+ *  ("GPL") version 2 as published by the Free Software Foundation.
+ *  See the file LICENSE.GPL at the root directory of this source
+ *  distribution for additional information about the GNU GPL.
  *
- *  If you want to use Coin for applications not compatible with the
- *  LGPL, please contact SIM to acquire a Professional Edition license.
+ *  For using Coin with software that can not be combined with the GNU
+ *  GPL, and for taking advantage of the additional benefits of our
+ *  support services, please contact Systems in Motion about acquiring
+ *  a Coin Professional Edition License.
  *
- *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
- *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *  See <URL:http://www.coin3d.org> for  more information.
+ *
+ *  Systems in Motion, Teknobyen, Abels Gate 5, 7030 Trondheim, NORWAY.
+ *  <URL:http://www.sim.no>.
  *
 \**************************************************************************/
-
-#ifndef COIN_SBVEC3F_H
-#define COIN_SBVEC3F_H
 
 #include <stdio.h>
 
 #include <Inventor/SbBasic.h>
 
 class SbPlane;
+class SbVec3d;
 
 #ifdef __PIVY__
 %{
@@ -69,32 +74,35 @@ convert_SbVec3f_array(PyObject *input, float temp[3])
 %feature("shadow") SbVec3f::SbVec3f %{
 def __init__(self,*args):
    if len(args) == 1:
-      self.this = apply(pivyc.new_SbVec3f_vec,args)
+      self.this = apply(_pivy.new_SbVec3f_vec,args)
       self.thisown = 1
       return
    elif len(args) == 3:
       if isinstance(args[0], SbPlane):
-         self.this = apply(pivyc.new_SbVec3f_pl_pl_pl,args)
+         self.this = apply(_pivy.new_SbVec3f_pl_pl_pl,args)
          self.thisown = 1
          return
       else:
-         self.this = apply(pivyc.new_SbVec3f_fff,args)
+         self.this = apply(_pivy.new_SbVec3f_fff,args)
          self.thisown = 1
          return
-   self.this = apply(pivyc.new_SbVec3f,args)
+   self.this = apply(_pivy.new_SbVec3f,args)
    self.thisown = 1
 %}
 
 %rename(setValue_fff) SbVec3f::setValue(const float x, const float y, const float z);
 %rename(setValue_vec_vec_vec_vec) SbVec3f::setValue(const SbVec3f & barycentric, const SbVec3f & v0, const SbVec3f & v1, const SbVec3f & v2);
+%rename(setValue_vec) SbVec3f::setValue(const SbVec3d & v);
 
 %feature("shadow") SbVec3f::setValue(const float vec[3]) %{
 def setValue(*args):
    if len(args) == 4:
-      return apply(pivyc.SbVec3f_setValue_fff,args)
+      return apply(_pivy.SbVec3f_setValue_fff,args)
    elif len(args) == 5:
-      return apply(pivyc.SbVec3f_setValue_vec_vec_vec_vec,args)
-   return apply(pivyc.SbVec3f_setValue,args)
+      return apply(_pivy.SbVec3f_setValue_vec_vec_vec_vec,args)
+   elif len(args) == 2:
+      return apply(_pivy.SbVec3f_setValue_vec,args)
+   return apply(_pivy.SbVec3f_setValue,args)
 %}
 
 %apply float *OUTPUT { float & x, float & y, float & z };
@@ -102,35 +110,30 @@ def setValue(*args):
 
 class COIN_DLL_API SbVec3f {
 public:
-  SbVec3f(void);
+  SbVec3f(void) { }
   SbVec3f(const float v[3]);
   SbVec3f(const float x, const float y, const float z);
   SbVec3f(const SbPlane & p0, const SbPlane & p1, const SbPlane & p2);
-
+  SbVec3f(const SbVec3d & v);
   SbVec3f cross(const SbVec3f & v) const;
-
   float dot(const SbVec3f & v) const;
   SbBool equals(const SbVec3f & v, const float tolerance) const;
   SbVec3f getClosestAxis(void) const;
-
   const float * getValue(void) const;
-
 #ifndef __PIVY__
   void getValue(float & x, float & y, float & z) const;
 #endif
-
   float length(void) const;
   float sqrLength() const;
   void negate(void);
   float normalize(void);
-
   SbVec3f & setValue(const float v[3]);
   SbVec3f & setValue(const float x, const float y, const float z);
   SbVec3f & setValue(const SbVec3f & barycentric,
                      const SbVec3f & v0,
                      const SbVec3f & v1,
                      const SbVec3f & v2);
-
+  SbVec3f & setValue(const SbVec3d & v);
 #ifdef __PIVY__
   // add a method for wrapping c++ operator[] access
   %extend {
@@ -142,12 +145,11 @@ public:
   float & operator [](const int i);
   const float & operator [](const int i) const;
 #endif
-
   SbVec3f & operator *=(const float d);
   SbVec3f & operator /=(const float d);
   SbVec3f & operator +=(const SbVec3f & u);
   SbVec3f & operator -=(const SbVec3f & u);
-  SbVec3f operator -(void) const;
+  SbVec3f operator-(void) const;
   friend COIN_DLL_API SbVec3f operator *(const SbVec3f & v, const float d);
   friend COIN_DLL_API SbVec3f operator *(const float d, const SbVec3f & v);
   friend COIN_DLL_API SbVec3f operator /(const SbVec3f & v, const float d);
@@ -166,7 +168,6 @@ private:
 %clear float & x, float & y, float & z;
 #endif
 
-#ifndef __PIVY__
 COIN_DLL_API SbVec3f operator *(const SbVec3f & v, const float d);
 COIN_DLL_API SbVec3f operator *(const float d, const SbVec3f & v);
 COIN_DLL_API SbVec3f operator /(const SbVec3f & v, const float d);
@@ -174,6 +175,7 @@ COIN_DLL_API SbVec3f operator +(const SbVec3f & v1, const SbVec3f & v2);
 COIN_DLL_API SbVec3f operator -(const SbVec3f & v1, const SbVec3f & v2);
 COIN_DLL_API int operator ==(const SbVec3f & v1, const SbVec3f & v2);
 COIN_DLL_API int operator !=(const SbVec3f & v1, const SbVec3f & v2);
+
 
 /* inlined methods ********************************************************/
 
@@ -188,6 +190,5 @@ SbVec3f::operator [](const int i) const
 {
   return this->vec[i];
 }
-#endif
 
 #endif // !COIN_SBVEC3F_H

@@ -1,24 +1,28 @@
+#ifndef COIN_SOSELECTION_H
+#define COIN_SOSELECTION_H
+
 /**************************************************************************\
  *
  *  This file is part of the Coin 3D visualization library.
- *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
+ *  Copyright (C) 1998-2003 by Systems in Motion.  All rights reserved.
  *
  *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  version 2.1 as published by the Free Software Foundation. See the
- *  file LICENSE.LGPL at the root directory of the distribution for
- *  more details.
+ *  modify it under the terms of the GNU General Public License
+ *  ("GPL") version 2 as published by the Free Software Foundation.
+ *  See the file LICENSE.GPL at the root directory of this source
+ *  distribution for additional information about the GNU GPL.
  *
- *  If you want to use Coin for applications not compatible with the
- *  LGPL, please contact SIM to acquire a Professional Edition license.
+ *  For using Coin with software that can not be combined with the GNU
+ *  GPL, and for taking advantage of the additional benefits of our
+ *  support services, please contact Systems in Motion about acquiring
+ *  a Coin Professional Edition License.
  *
- *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
- *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *  See <URL:http://www.coin3d.org> for  more information.
+ *
+ *  Systems in Motion, Teknobyen, Abels Gate 5, 7030 Trondheim, NORWAY.
+ *  <URL:http://www.sim.no>.
  *
 \**************************************************************************/
-
-#ifndef COIN_SOSELECTION_H
-#define COIN_SOSELECTION_H
 
 #include <Inventor/nodes/SoSubNode.h>
 #include <Inventor/nodes/SoSeparator.h>
@@ -123,10 +127,10 @@ SoSelectionPickPythonCB(void * data, const SoPickedPoint * pick)
 %feature("shadow") SoSelection::SoSelection %{
 def __init__(self,*args):
    if len(args) == 1:
-      self.this = apply(pivyc.new_SoSelection_i,args)
+      self.this = apply(_pivy.new_SoSelection_i,args)
       self.thisown = 1
       return
-   self.this = apply(pivyc.new_SoSelection,args)
+   self.this = apply(_pivy.new_SoSelection,args)
    self.thisown = 1
 %}
 
@@ -135,8 +139,8 @@ def __init__(self,*args):
 %feature("shadow") SoSelection::select(const SoPath * path) %{
 def select(*args):
    if isinstance(args[1], SoNode):
-      return apply(pivyc.SoSelection_select_nod,args)
-   return apply(pivyc.SoSelection_select,args)
+      return apply(_pivy.SoSelection_select_nod,args)
+   return apply(_pivy.SoSelection_select,args)
 %}
 
 %rename(deselect_i) SoSelection::deselect(const int which);
@@ -145,10 +149,10 @@ def select(*args):
 %feature("shadow") SoSelection::select(const SoPath * path) %{
 def deselect(*args):
    if isinstance(args[1], SoNode):
-      return apply(pivyc.SoSelection_deselect_nod,args)
+      return apply(_pivy.SoSelection_deselect_nod,args)
    elif type(args[1]) == type(1):
-      return apply(pivyc.SoSelection_deselect_i,args)
-   return apply(pivyc.SoSelection_select,args)
+      return apply(_pivy.SoSelection_deselect_i,args)
+   return apply(_pivy.SoSelection_select,args)
 %}
 
 %rename(toggle_nod) SoSelection::toggle(SoNode * node);
@@ -156,8 +160,8 @@ def deselect(*args):
 %feature("shadow") SoSelection::toggle(const SoPath * path) %{
 def toggle(*args):
    if isinstance(args[1], SoNode):
-      return apply(pivyc.SoSelection_toggle_nod,args)
-   return apply(pivyc.SoSelection_toggle,args)
+      return apply(_pivy.SoSelection_toggle_nod,args)
+   return apply(_pivy.SoSelection_toggle,args)
 %}
 
 %rename(isSelected_nod) SoSelection::isSelected(SoNode * node) const;
@@ -165,8 +169,8 @@ def toggle(*args):
 %feature("shadow") isSelected(const SoPath * path) const %{
 def isSelected(*args):
    if isinstance(args[1], SoNode):
-      return apply(pivyc.SoSelection_isSelected_nod,args)
-   return apply(pivyc.SoSelection_isSelected,args)
+      return apply(_pivy.SoSelection_isSelected_nod,args)
+   return apply(_pivy.SoSelection_isSelected,args)
 %}
 #endif
 
@@ -416,7 +420,6 @@ private:
   SoPath *searchNode(SoNode * node) const;
   SoPath *getSelectionPath(SoHandleEventAction *action,
                            SbBool &ignorepick, SbBool &haltaction);
-
 };
 
 #endif // !COIN_SOSELECTION_H

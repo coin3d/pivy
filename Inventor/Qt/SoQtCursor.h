@@ -31,24 +31,27 @@
 %rename(SoQtCursor_sha) SoQtCursor::SoQtCursor(const Shape shape);
 %rename(SoQtCursor_cc) SoQtCursor::SoQtCursor(const SoQtCursor::CustomCursor * cc);
 
-%feature("shadow") SoGtkCursor::SoGtkCursor %{
+%feature("shadow") SoQtCursor::SoQtCursor %{
 def __init__(self,*args):
    if len(args) == 1:
       if isinstance(args[0], CustomCursor):
-         self.this = apply(pivyc.new_SoGtkCursor_cc,args)
+         self.this = apply(_pivy.new_SoQtCursor_cc,args)
          self.thisown = 1
          return
       else:
-         self.this = apply(pivyc.new_SoGtkCursor_sha,args)
+         self.this = apply(_pivy.new_SoQtCursor_sha,args)
          self.thisown = 1
          return
-   self.this = apply(pivyc.new_SoGtkCursor,args)
+   self.this = apply(_pivy.new_SoQtCursor,args)
    self.thisown = 1
 %}
 #endif
 
 class SOQT_DLL_API SoQtCursor {
 public:
+#ifdef __PIVY__
+  typedef struct CustomCursor CustomCursor;
+#endif
   struct CustomCursor {
     SbVec2s dim;
     SbVec2s hotspot;
@@ -68,14 +71,15 @@ public:
   
   SoQtCursor(void);
   SoQtCursor(const Shape shape);
-
 #ifdef __PIVY__
   SoQtCursor(const SoQtCursor::CustomCursor * cc);
 #else
   SoQtCursor(const CustomCursor * cc);
 #endif
-
+  SoQtCursor(const SoQtCursor & cursor);
   ~SoQtCursor();
+
+  SoQtCursor & operator=(const SoQtCursor & c);
 
   Shape getShape(void) const;
   void setShape(const Shape shape);

@@ -1,24 +1,28 @@
+#ifndef COIN_SBCOLOR4F_H
+#define COIN_SBCOLOR4F_H
+
 /**************************************************************************\
  *
  *  This file is part of the Coin 3D visualization library.
- *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
+ *  Copyright (C) 1998-2003 by Systems in Motion.  All rights reserved.
  *
  *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  version 2.1 as published by the Free Software Foundation. See the
- *  file LICENSE.LGPL at the root directory of the distribution for
- *  more details.
+ *  modify it under the terms of the GNU General Public License
+ *  ("GPL") version 2 as published by the Free Software Foundation.
+ *  See the file LICENSE.GPL at the root directory of this source
+ *  distribution for additional information about the GNU GPL.
  *
- *  If you want to use Coin for applications not compatible with the
- *  LGPL, please contact SIM to acquire a Professional Edition license.
+ *  For using Coin with software that can not be combined with the GNU
+ *  GPL, and for taking advantage of the additional benefits of our
+ *  support services, please contact Systems in Motion about acquiring
+ *  a Coin Professional Edition License.
  *
- *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
- *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *  See <URL:http://www.coin3d.org> for  more information.
+ *
+ *  Systems in Motion, Teknobyen, Abels Gate 5, 7030 Trondheim, NORWAY.
+ *  <URL:http://www.sim.no>.
  *
 \**************************************************************************/
-
-#ifndef COIN_SBCOLOR4F_H
-#define COIN_SBCOLOR4F_H
 
 #include <Inventor/system/inttypes.h>
 #include <Inventor/SbColor.h>
@@ -55,22 +59,22 @@ class SbVec4f;
 def __init__(self,*args):
    if len(args) == 1:
       if isinstance(args[0], SbVec4f):
-         self.this = apply(pivyc.new_SbColor4f_vec,args)
+         self.this = apply(_pivy.new_SbColor4f_vec,args)
          self.thisown = 1
          return
       else:
-         self.this = apply(pivyc.new_SbColor4f_rgb,args)
+         self.this = apply(_pivy.new_SbColor4f_rgb,args)
          self.thisown = 1
          return
    elif len(args) == 2:
-      self.this = apply(pivyc.new_SbColor4f_col_f,args)
+      self.this = apply(_pivy.new_SbColor4f_col_f,args)
       self.thisown = 1
       return
    elif len(args) == 3:
-      self.this = apply(pivyc.new_SbColor4f_ffff,args)
+      self.this = apply(_pivy.new_SbColor4f_ffff,args)
       self.thisown = 1
       return
-   self.this = apply(pivyc.new_SbColor4f,args)
+   self.this = apply(_pivy.new_SbColor4f,args)
    self.thisown = 1
 %}
 
@@ -79,8 +83,8 @@ def __init__(self,*args):
 %feature("shadow") SbColor4f::setValue(const float col[4]) %{
 def setValue(*args):
    if len(args) == 5:
-      return apply(pivyc.SbColor4f_setValue_ffff,args)
-   return apply(pivyc.SbColor4f_setValue,args)
+      return apply(_pivy.SbColor4f_setValue_ffff,args)
+   return apply(_pivy.SbColor4f_setValue,args)
 %}
 
 %rename(setHSVValue_ffff) SbColor4f::setHSVValue(float h, float s, float v, float a=1.0f);
@@ -88,15 +92,13 @@ def setValue(*args):
 %feature("shadow") SbColor4f::setHSVValue(const float hsv[3], float alpha=1.0f) %{
 def setHSVValue(*args):
    if len(args) == 5:
-      return apply(pivyc.SbColor4f_setHSVValue_ffff,args)
-   return apply(pivyc.SbColor4f_setHSVValue,args)
+      return apply(_pivy.SbColor4f_setHSVValue_ffff,args)
+   return apply(_pivy.SbColor4f_setHSVValue,args)
 %}
 
 %apply float *OUTPUT { float &r, float &g, float &b, float &a };
 %apply float *OUTPUT { float &h, float &s, float &v };
-
 #endif
-
 
 class COIN_DLL_API SbColor4f {
 public:
@@ -109,11 +111,9 @@ public:
   void setValue(const float r, const float g, const float b,
                 const float a = 1.0f);
   void setValue(const float col[4]);
-
 #ifndef __PIVY__
   const float *getValue() const;
 #endif
-
   void getValue(float &r, float &g, float &b, float &a);
 
 
@@ -122,11 +122,9 @@ public:
   SbColor4f& setHSVValue(float h, float s, float v, float a = 1.0f);
   SbColor4f& setHSVValue(const float hsv[3], float alpha = 1.0f);
   void getHSVValue(float &h, float &s, float &v) const;
-
 #ifndef __PIVY__
   void getHSVValue(float hsv[3]) const;
 #endif
-
   SbColor4f& setPackedValue(const uint32_t rgba);
   uint32_t getPackedValue() const;
 
@@ -168,7 +166,6 @@ private:
 %clear float &h, float &s, float &v;
 #endif
 
-#ifndef __PIVY__
 COIN_DLL_API SbColor4f operator *(const SbColor4f &c, const float d);
 COIN_DLL_API SbColor4f operator *(const float d, const SbColor4f &c);
 COIN_DLL_API SbColor4f operator /(const SbColor4f &c, const float d);
@@ -176,6 +173,5 @@ COIN_DLL_API SbColor4f operator +(const SbColor4f &v1, const SbColor4f &v2);
 COIN_DLL_API SbColor4f operator -(const SbColor4f &v1, const SbColor4f &v2);
 COIN_DLL_API int operator ==(const SbColor4f &v1, const SbColor4f &v2);
 COIN_DLL_API int operator !=(const SbColor4f &v1, const SbColor4f &v2);
-#endif
 
 #endif // !COIN_SBCOLOR4F_H

@@ -1,26 +1,32 @@
-/**************************************************************************\
- *
- *  This file is part of the Coin 3D visualization library.
- *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  version 2.1 as published by the Free Software Foundation. See the
- *  file LICENSE.LGPL at the root directory of the distribution for
- *  more details.
- *
- *  If you want to use Coin for applications not compatible with the
- *  LGPL, please contact SIM to acquire a Professional Edition license.
- *
- *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
- *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
- *
-\**************************************************************************/
-
 #ifndef COIN_SOGROUP_H
 #define COIN_SOGROUP_H
 
+/**************************************************************************\
+ *
+ *  This file is part of the Coin 3D visualization library.
+ *  Copyright (C) 1998-2003 by Systems in Motion.  All rights reserved.
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  ("GPL") version 2 as published by the Free Software Foundation.
+ *  See the file LICENSE.GPL at the root directory of this source
+ *  distribution for additional information about the GNU GPL.
+ *
+ *  For using Coin with software that can not be combined with the GNU
+ *  GPL, and for taking advantage of the additional benefits of our
+ *  support services, please contact Systems in Motion about acquiring
+ *  a Coin Professional Edition License.
+ *
+ *  See <URL:http://www.coin3d.org> for  more information.
+ *
+ *  Systems in Motion, Teknobyen, Abels Gate 5, 7030 Trondheim, NORWAY.
+ *  <URL:http://www.sim.no>.
+ *
+\**************************************************************************/
+
 #include <Inventor/nodes/SoSubNode.h>
+
+class SoGroupP;
 
 #ifdef __PIVY__
 %rename(SoGroup_i) SoGroup::SoGroup(int nchildren);
@@ -28,10 +34,10 @@
 %feature("shadow") SoGroup::SoGroup %{
 def __init__(self,*args):
    if len(args) == 1:
-      self.this = apply(pivyc.new_SoGroup_i,args)
+      self.this = apply(_pivy.new_SoGroup_i,args)
       self.thisown = 1
       return
-   self.this = apply(pivyc.new_SoGroup,args)
+   self.this = apply(_pivy.new_SoGroup,args)
    self.thisown = 1
 %}
 
@@ -40,8 +46,8 @@ def __init__(self,*args):
 %feature("shadow") SoGroup::removeChild(const int childindex) %{
 def removeChild(*args):
    if isinstance(args[1], SoNode):
-      return apply(pivyc.SoGroup_removeChild_nod,args)
-   return apply(pivyc.SoGroup_removeChild,args)
+      return apply(_pivy.SoGroup_removeChild_nod,args)
+   return apply(_pivy.SoGroup_removeChild,args)
 %}
 
 %rename(replaceChild_nod_nod) SoGroup::replaceChild(SoNode * const oldchild, SoNode * const newchild);
@@ -49,8 +55,8 @@ def removeChild(*args):
 %feature("shadow") SoGroup::replaceChild(const int index, SoNode * const newchild) %{
 def replaceChild(*args):
    if isinstance(args[1], SoNode):
-      return apply(pivyc.SoGroup_replaceChild_nod_nod,args)
-   return apply(pivyc.SoGroup_replaceChild,args)
+      return apply(_pivy.SoGroup_replaceChild_nod_nod,args)
+   return apply(_pivy.SoGroup_replaceChild,args)
 %}
 #endif
 
@@ -64,17 +70,17 @@ public:
   SoGroup(void);
 
   SoGroup(int nchildren);
-
-  void addChild(SoNode * const node);
-  void insertChild(SoNode * const child, const int newchildindex);
-  SoNode * getChild(const int index) const;
-  int findChild(const SoNode * const node) const;
-  int getNumChildren(void) const;
-  void removeChild(const int childindex);
-  void removeChild(SoNode * const child);
-  void removeAllChildren(void);
-  void replaceChild(const int index, SoNode * const newchild);
-  void replaceChild(SoNode * const oldchild, SoNode * const newchild);
+ 
+  virtual void addChild(SoNode * node);
+  virtual void insertChild(SoNode * child, int newchildindex);
+  virtual SoNode * getChild(int index) const;
+  virtual int findChild(const SoNode * node) const;
+  virtual int getNumChildren(void) const;
+  virtual void removeChild(int childindex);
+  virtual void removeChild(SoNode * child);
+  virtual void removeAllChildren(void);
+  virtual void replaceChild(int index, SoNode * newchild);
+  virtual void replaceChild(SoNode * oldchild, SoNode * newchild);
 
   virtual void doAction(SoAction * action);
   virtual void GLRender(SoGLRenderAction * action);
@@ -86,7 +92,8 @@ public:
   virtual void search(SoSearchAction * action);
   virtual void write(SoWriteAction * action);
   virtual void getPrimitiveCount(SoGetPrimitiveCountAction * action);
-  SoChildList * getChildren(void) const;
+  virtual void audioRender(SoAudioRenderAction * action);
+  virtual SoChildList * getChildren(void) const;
 
 protected:
   virtual ~SoGroup();
@@ -99,13 +106,9 @@ protected:
 
   SoChildList * children;
 
-  // FIXME: there's a bug in Doxygen (at least with version 1.2.9)
-  // which causes the following statement to be regarded as a member
-  // variable. Remove this workaround when the bug has been
-  // fixed. 20011113 mortene.
-#ifndef DOXYGEN_SKIP_THIS
+private:
   friend class SoUnknownNode; // Let SoUnknownNode access readChildren().
-#endif // DOXYGEN_SKIP_THIS
+  SoGroupP * pimpl;
 };
 
 #endif // !COIN_SOGROUP_H

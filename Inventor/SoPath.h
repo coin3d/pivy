@@ -1,24 +1,28 @@
+#ifndef COIN_SOPATH_H
+#define COIN_SOPATH_H
+
 /**************************************************************************\
  *
  *  This file is part of the Coin 3D visualization library.
- *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
+ *  Copyright (C) 1998-2003 by Systems in Motion.  All rights reserved.
  *
  *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  version 2.1 as published by the Free Software Foundation. See the
- *  file LICENSE.LGPL at the root directory of the distribution for
- *  more details.
+ *  modify it under the terms of the GNU General Public License
+ *  ("GPL") version 2 as published by the Free Software Foundation.
+ *  See the file LICENSE.GPL at the root directory of this source
+ *  distribution for additional information about the GNU GPL.
  *
- *  If you want to use Coin for applications not compatible with the
- *  LGPL, please contact SIM to acquire a Professional Edition license.
+ *  For using Coin with software that can not be combined with the GNU
+ *  GPL, and for taking advantage of the additional benefits of our
+ *  support services, please contact Systems in Motion about acquiring
+ *  a Coin Professional Edition License.
  *
- *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
- *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *  See <URL:http://www.coin3d.org> for  more information.
+ *
+ *  Systems in Motion, Teknobyen, Abels Gate 5, 7030 Trondheim, NORWAY.
+ *  <URL:http://www.sim.no>.
  *
 \**************************************************************************/
-
-#ifndef COIN_SOPATH_H
-#define COIN_SOPATH_H
 
 #include <Inventor/misc/SoBase.h>
 #include <Inventor/lists/SbList.h>
@@ -35,6 +39,7 @@ class SoNotList;
 class SoInput;
 class SoPathList;
 
+
 #ifdef __PIVY__
 %rename(SoPath_nod) SoPath::SoPath(SoNode * const head);
 %rename(SoPath_pat) SoPath::SoPath(const SoPath & rhs);
@@ -42,14 +47,14 @@ class SoPathList;
 %feature("shadow") SoPath::SoPath %{
 def __init__(self,*args):
    if isinstance(args[0], SoNode):
-      self.this = apply(pivyc.new_SoPath_nod,args)
+      self.this = apply(_pivy.new_SoPath_nod,args)
       self.thisown = 1
       return
    elif isinstance(args[0], SoPath):
-      self.this = apply(pivyc.new_SoPath_pat,args)
+      self.this = apply(_pivy.new_SoPath_pat,args)
       self.thisown = 1
       return
-   self.this = apply(pivyc.new_SoPath,args)
+   self.this = apply(_pivy.new_SoPath,args)
    self.thisown = 1
 %}
 
@@ -59,10 +64,10 @@ def __init__(self,*args):
 %feature("shadow") SoPath::append(const int childindex) %{
 def append(*args):
    if isinstance(args[1], SoNode):
-      return apply(pivyc.SoPath_append_nod,args)
+      return apply(_pivy.SoPath_append_nod,args)
    elif isinstance(args[1], SoPath):
-      return apply(pivyc.SoPath_append_pat,args)
-   return apply(pivyc.SoPath_append,args)
+      return apply(_pivy.SoPath_append_pat,args)
+   return apply(_pivy.SoPath_append,args)
 %}
 
 %rename(getByName_nam_pal) SoPath::getByName(const SbName name, SoPathList & l);
@@ -70,8 +75,8 @@ def append(*args):
 %feature("shadow") SoPath::getByName(const SbName name) %{
 def getByName(*args):
    if len(args) == 3:
-      return apply(pivyc.SoPath_getByName_nam_pal,args)
-   return apply(pivyc.SoPath_getByName,args)
+      return apply(_pivy.SoPath_getByName_nam_pal,args)
+   return apply(_pivy.SoPath_getByName,args)
 %}
 #endif
 
@@ -85,9 +90,7 @@ public:
   SoPath(SoNode * const head);
   SoPath(const SoPath & rhs);
 
-#ifndef __PIVY__
   SoPath & operator=(const SoPath & rhs);
-#endif
 
   static SoType getClassTypeId(void);
   virtual SoType getTypeId(void) const;

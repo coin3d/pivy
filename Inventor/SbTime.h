@@ -1,24 +1,32 @@
+#ifndef COIN_SBTIME_H
+#define COIN_SBTIME_H
+
 /**************************************************************************\
  *
  *  This file is part of the Coin 3D visualization library.
- *  Copyright (C) 1998-2002 by Systems in Motion. All rights reserved.
+ *  Copyright (C) 1998-2003 by Systems in Motion.  All rights reserved.
  *
  *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public License
- *  version 2.1 as published by the Free Software Foundation. See the
- *  file LICENSE.LGPL at the root directory of the distribution for
- *  more details.
+ *  modify it under the terms of the GNU General Public License
+ *  ("GPL") version 2 as published by the Free Software Foundation.
+ *  See the file LICENSE.GPL at the root directory of this source
+ *  distribution for additional information about the GNU GPL.
  *
- *  If you want to use Coin for applications not compatible with the
- *  LGPL, please contact SIM to acquire a Professional Edition license.
+ *  For using Coin with software that can not be combined with the GNU
+ *  GPL, and for taking advantage of the additional benefits of our
+ *  support services, please contact Systems in Motion about acquiring
+ *  a Coin Professional Edition License.
  *
- *  Systems in Motion, Prof Brochs gate 6, 7030 Trondheim, NORWAY
- *  http://www.sim.no support@sim.no Voice: +47 22114160 Fax: +47 22207097
+ *  See <URL:http://www.coin3d.org> for  more information.
+ *
+ *  Systems in Motion, Teknobyen, Abels Gate 5, 7030 Trondheim, NORWAY.
+ *  <URL:http://www.sim.no>.
  *
 \**************************************************************************/
 
-#ifndef COIN_SBTIME_H
-#define COIN_SBTIME_H
+// FIXME: the following system testing and conditional header file
+// inclusion is a mess. Sort it out properly (with configure checks,
+// probably). 20011019 mortene.
 
 // Usually you get all you need from time.h
 #include <time.h>
@@ -46,18 +54,18 @@ struct timeval;
 def __init__(self,*args):
    if len(args) == 1:
       if type(args[0]) == type(1.0):
-         self.this = apply(pivyc.new_SbTime_d,args)
+         self.this = apply(_pivy.new_SbTime_d,args)
          self.thisown = 1
          return
       else:
-         self.this = apply(pivyc.new_SbTime_tv,args)
+         self.this = apply(_pivy.new_SbTime_tv,args)
          self.thisown = 1
          return      
    elif len(args) == 2:
-      self.this = apply(pivyc.new_SbTime_i_l,args)
+      self.this = apply(_pivy.new_SbTime_i_l,args)
       self.thisown = 1
       return
-   self.this = apply(pivyc.new_SbTime,args)
+   self.this = apply(_pivy.new_SbTime,args)
    self.thisown = 1
 %}
 
@@ -69,15 +77,13 @@ def __init__(self,*args):
 def setValue(*args):
    if len(args) == 2:
       if type(args[0]) == type(1.0):
-         return apply(pivyc.SbTime_setValue_d,args)
+         return apply(_pivy.SbTime_setValue_d,args)
       else:
-         return apply(pivyc.SbTime_setValue_tv,args)
+         return apply(_pivy.SbTime_setValue_tv,args)
    elif len(args) == 2:
-      return apply(pivyc.SbTime_setValue_i_l,args)   
-   return apply(pivyc.SbTime_setValue,args)
+      return apply(_pivy.SbTime_setValue_i_l,args)   
+   return apply(_pivy.SbTime_setValue,args)
 %}
-
-
 #endif
 
 class COIN_DLL_API SbTime {
@@ -92,7 +98,7 @@ public:
 
   // "max" is a #define somewhere in the Win32 include hierarchy mess.
   // Believe it or not. Is there no end to the stupidity?
-#ifndef _WIN32
+#ifndef _WIN32 // FIXME: #ifdef'ing on system is bad design. 20011019 mortene.
   static SbTime max(void);
 #endif // _WIN32
 
@@ -102,32 +108,26 @@ public:
   void setValue(const struct timeval * const tv);
   void setMsecValue(const unsigned long msec);
   double getValue(void) const;
-
 #ifndef __PIVY__
   void getValue(time_t & sec, long & usec) const;
   void getValue(struct timeval * tv) const;
 #endif
-
   unsigned long getMsecValue(void) const;
   SbString format(const char * const fmt = "%S.%i") const;
-#ifndef _WIN32
+#ifndef _WIN32 // FIXME: #ifdef'ing on system is bad design. 20011019 mortene.
   SbString formatDate(const char * const fmt = "%A, %D %r") const;
 #else // _WIN32
   SbString formatDate(const char * const fmt = "%#c") const;
 #endif // _WIN32
   SbBool parsedate(const char * const date);
   friend COIN_DLL_API SbTime operator +(const SbTime & t0, const SbTime & t1);
-
-#ifndef __PIVY__
   friend COIN_DLL_API SbTime operator -(const SbTime & t0, const SbTime & t1);
-  friend COIN_DLL_API SbTime operator /(const SbTime & tm, const double s);
-#endif
-
   SbTime & operator +=(const SbTime & tm);
   SbTime & operator -=(const SbTime & tm);
-  SbTime operator -(void) const;
+  SbTime operator-(void) const;
   friend COIN_DLL_API SbTime operator *(const double s, const SbTime & tm);
   friend COIN_DLL_API SbTime operator *(const SbTime & tm, const double s);
+  friend COIN_DLL_API SbTime operator /(const SbTime & tm, const double s);
   SbTime & operator *=(const double s);
   SbTime & operator /=(const double s);
   double operator /(const SbTime & tm) const;
@@ -146,12 +146,10 @@ private:
   void addToString(SbString & str, const double val) const;
 };
 
-#ifndef __PIVY__
 COIN_DLL_API SbTime operator +(const SbTime & t0, const SbTime & t1);
 COIN_DLL_API SbTime operator -(const SbTime & t0, const SbTime & t1);
 COIN_DLL_API SbTime operator *(const double s, const SbTime & tm);
 COIN_DLL_API SbTime operator *(const SbTime & tm, const double s);
 COIN_DLL_API SbTime operator /(const SbTime & tm, const double s);
-#endif
 
 #endif // !COIN_SBTIME_H

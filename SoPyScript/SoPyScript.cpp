@@ -101,7 +101,9 @@ class SoPyScriptP {
 public:
   SoPyScriptP(SoPyScript * master) :
     isReading(FALSE),
-    oneshotSensor(new SoOneShotSensor(SoPyScript::eval_cb, master))
+    oneshotSensor(new SoOneShotSensor(SoPyScript::eval_cb, master)),
+    handler_registry_dict(PyDict_New()),
+    local_module_dict(PyDict_New())
   {
     if(!global_module_dict)
     {
@@ -117,11 +119,7 @@ public:
                                    "imported! Check your setup and fix it so that the python snake can\n"
                                    "happily wiggle and byte you in the ass...");
       }
-    }
-    GlobalLock lock;
-    // create a local copy of the global dictionary to use for executing the script
-    local_module_dict = PyDict_Copy(global_module_dict);
-    handler_registry_dict = PyDict_New();
+    }    
   }
 
   ~SoPyScriptP() {
@@ -171,8 +169,8 @@ SoPyScript::initClass(void)
                          SoPyScript::createInstance,
                          SoNode::nextActionMethodIndex++);
  
-    SoNode::setCompatibilityTypes(SoPyScript::getClassTypeId(),
-                                  SoNode::COIN_2_0|SoNode::COIN_2_2|SoNode::COIN_2_3);
+    //SoNode::setCompatibilityTypes(SoPyScript::getClassTypeId(),
+    //                              SoNode::COIN_2_0|SoNode::COIN_2_2|SoNode::COIN_2_3);
 
     SoAudioRenderAction::addMethod(SoPyScript::getClassTypeId(), SoNode::audioRenderS);
   }
@@ -192,26 +190,6 @@ SoPyScript::SoPyScript(void)
   this->mustEvaluate.setContainer(this);
 
   this->initFieldData();
- 
-  GlobalLock lock;
-  
-  /* shovel the the node itself on to the Python interpreter as self instance */
-  swig_type_info * swig_type = 0;
-
-  if ((swig_type = SWIG_TypeQuery("SoNode *")) == 0) {
-    SoDebugError::post("SoPyScript::SoPyScript",
-                       "SoNode type could not be found!");
-  }
-
-  /* add the field to the global dict */
-  PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
-                       "self",
-                       SWIG_NewPointerObj(this, swig_type, 0));
-
-  /* add the handler registry dict to the global dict */
-  PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
-                       "handler_registry",
-                       PRIVATE(this)->handler_registry_dict);
 }
 
 // Doc in parent
@@ -423,11 +401,40 @@ SoPyScript::copyContents(const SoFieldContainer * from,
     if (f != &fromnode->script &&
         f != &fromnode->mustEvaluate) {
       SoField * cp = (SoField*) f->getTypeId().createInstance();
+      SbString fieldname = src->getFieldName(i);
+      
       cp->setContainer(this);
-      this->fielddata->addField(this, src->getFieldName(i), cp);
+      this->fielddata->addField(this, fieldname.getString(), cp);
+      
+      GlobalLock lock;
+      
+      /* shovel the field instance on to the Python interpreter */
+      SbString typeVal = cp->getTypeId().getName();      
+	  PyObject * pyField = NULL;
+	  if ((pyField = PRIVATE(this)->createPySwigType(typeVal, cp)) == NULL) {
+	  	SoDebugError::post("SoPyScript::copyContents",
+	                       "field type %s could not be created!",
+	                       typeVal.getString());
+	    continue;
+	  }
+
+	  /* add the field to the global dict */
+	  PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
+						   fieldname.getString(),
+						   pyField);
+
+	  SbString funcname("handle_");
+	  funcname += fieldname.getString();
+
+	  /* add the field handler to the handler registry */
+	  PyDict_SetItemString(PRIVATE(this)->handler_registry_dict,
+						   fieldname.getString(),
+						   PyString_FromString(funcname.getString()));
     }
   }
   inherited::copyContents(from, copyConn);
+  
+  GlobalLock lock;  
 }
 
 // Doc in parent
@@ -546,6 +553,31 @@ SoPyScript::initFieldData(void)
   this->fielddata = new SoFieldData;
   this->fielddata->addField(this, "script", &this->script);
   this->fielddata->addField(this, "mustEvaluate", &this->mustEvaluate);
+  
+  GlobalLock lock;
+
+  /* create a local copy of the global dictionary to use for executing the script */
+  PyDict_Clear(PRIVATE(this)->local_module_dict);
+  PyDict_Update(PRIVATE(this)->local_module_dict,PRIVATE(this)->global_module_dict);
+  PyDict_Clear(PRIVATE(this)->handler_registry_dict);
+    
+  /* shovel the the node itself on to the Python interpreter as self instance */
+  swig_type_info * swig_type = 0;
+
+  if ((swig_type = SWIG_TypeQuery("SoNode *")) == 0) {
+    SoDebugError::post("SoPyScript::SoPyScript",
+                       "SoNode type could not be found!");
+  }
+
+  /* add the field to the global dict */
+  PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
+                       "self",
+                       SWIG_NewPointerObj(this, swig_type, 0));
+
+  /* add the handler registry dict to the global dict */
+  PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
+                       "handler_registry",
+                       PRIVATE(this)->handler_registry_dict);
 }
 
 // Doc in parent
@@ -623,9 +655,11 @@ SoPyScript::eval_cb(void * data, SoSensor *)
 
         SbString fieldname(self->fielddata->getFieldName(i).getString());
 
+		printf("fieldname %s\n", fieldname.getString());
         /* look up the function name in the handler registry */
         PyObject * funcname = PyDict_GetItemString(PRIVATE(self)->handler_registry_dict,
                                                    fieldname.getString());
+		printf("funcname %x\n", funcname);
         if (!funcname) { continue; }
         
         /* check if it is a string */
@@ -633,7 +667,7 @@ SoPyScript::eval_cb(void * data, SoSensor *)
           /* get the function handle in the global module dictionary if available */
           PyObject * func = PyDict_GetItemString(PRIVATE(self)->local_module_dict,
                                                  PyString_AsString(funcname));
-          
+          printf("func %x\n", func);
           if (!func) { continue; }
           
           if (coin_getenv("PIVY_DEBUG")) {

@@ -84,6 +84,12 @@ def setValue(*args):
       return apply(_pivy.SbTime_setValue_i_l,args)   
    return apply(_pivy.SbTime_setValue,args)
 %}
+
+%rename(SbTime_add) operator+(const SbTime & t0, const SbTime & t1);
+%rename(SbTime_sub) operator-(const SbTime & t0, const SbTime & t1);
+%rename(SbTime_d_mult) operator *(const double s, const SbTime & tm);
+%rename(SbTime_mult) operator *(const SbTime & tm, const double s);
+%rename(SbTime_div) operator /(const SbTime & tm, const double s);
 #endif
 
 class COIN_DLL_API SbTime {

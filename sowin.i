@@ -75,7 +75,6 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
   PyRun_InteractiveLoop(stdin, "<stdin>");
   return NULL;
 }
-
 %}
 
 /* include the typemaps common to all pivy modules */

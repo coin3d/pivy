@@ -10,10 +10,11 @@ def __init__(self,*args):
    if newobj:
       self.this = newobj.this
       self.thisown = 1
+      del newobj.thisown
 %}
 
 %rename(applyToAll_func_void) SbDict::applyToAll(void (* rtn)(unsigned long key, void * value, void * data),
-												 void * data) const;
+                                                 void * data) const;
 
 %feature("shadow") SbDict::applyToAll(void (* rtn)(unsigned long key, void * value)) %{
 def applyToAll(*args):

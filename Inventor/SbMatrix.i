@@ -43,7 +43,7 @@ convert_SbMat_array(PyObject *input, SbMat temp)
       PyObject *oj = PyFloat_FromDouble((double)(*$1)[i][j]);
       PyList_SetItem(oi, j, oj);
     }
-    PyTuple_SetItem($result, i, oi);	
+    PyTuple_SetItem($result, i, oi);    
   }
 }
 
@@ -65,10 +65,11 @@ def __init__(self,*args):
    if newobj:
       self.this = newobj.this
       self.thisown = 1
+      del newobj.thisown
 %}
 
 %rename(det3_i6) SbMatrix::det3(int r1, int r2, int r3,
-								int c1, int c2, int c3) const;
+                                int c1, int c2, int c3) const;
 
 %feature("shadow") SbMatrix::setScale(const float s) %{
 def det3(*args):
@@ -82,15 +83,15 @@ def det3(*args):
 %feature("shadow") SbMatrix::setScale(const float s) %{
 def setScale(args):
   if type(args[1]) == type(0.0):
-	return apply(_pivy.SbMatrix_setScale,args)
+    return apply(_pivy.SbMatrix_setScale,args)
   return apply(_pivy.SbMatrix_setScale_vec3,args)
 %}
 
 %rename(setTransform_vec3_rot_vec3_rot) SbMatrix::setTransform(const SbVec3f & t, const SbRotation & r, const SbVec3f & s,
-															   const SbRotation & so);
+                                                               const SbRotation & so);
 %rename(setTransform_vec3_rot_vec3_rot_vec3) SbMatrix::setTransform(const SbVec3f & translation,
-																	const SbRotation & rotation, const SbVec3f & scaleFactor,
-																	const SbRotation & scaleOrientation, const SbVec3f & center);
+                                                                    const SbRotation & rotation, const SbVec3f & scaleFactor,
+                                                                    const SbRotation & scaleOrientation, const SbVec3f & center);
 
 %feature("shadow") SbMatrix::setTransform(const SbVec3f & t, const SbRotation & r, const SbVec3f & s) %{
 def setTransform(*args):
@@ -102,8 +103,8 @@ def setTransform(*args):
 %}
 
 %ignore SbMatrix::getTransform(SbVec3f & translation, SbRotation & rotation,
-												  SbVec3f & scaleFactor, SbRotation & scaleOrientation,
-												  const SbVec3f & center) const;
+                                                  SbVec3f & scaleFactor, SbRotation & scaleOrientation,
+                                                  const SbVec3f & center) const;
 
 %ignore SbMatrix::getTransform(SbVec3f & t, SbRotation & r, SbVec3f & s, SbRotation & so);
 

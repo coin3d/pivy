@@ -36,6 +36,7 @@ def __init__(self,*args):
    if newobj:
       self.this = newobj.this
       self.thisown = 1
+      del newobj.thisown
 %}
 
 %rename(setValue_ss) SbVec3s::setValue(short x, short y, short z);

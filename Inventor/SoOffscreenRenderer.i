@@ -10,6 +10,7 @@ def __init__(self,*args):
    if newobj:
       self.this = newobj.this
       self.thisown = 1
+      del newobj.thisown
 %}
 
 %rename(render_nod) SoOffscreenRenderer::render(SoNode * scene);

@@ -59,8 +59,8 @@ SoTrianglePythonCB(void * userdata, SoCallbackAction * action,
 
 static void
 SoLineSegmentPythonCB(void * userdata, SoCallbackAction * action,
-				const SoPrimitiveVertex * v1,
-				const SoPrimitiveVertex * v2)
+                const SoPrimitiveVertex * v1,
+                const SoPrimitiveVertex * v2)
 {
   PyObject *func, *arglist;
   PyObject *result, *acCB;
@@ -129,6 +129,7 @@ def __init__(self,*args):
    if newobj:
       self.this = newobj.this
       self.thisown = 1
+      del newobj.thisown
 %}
 
   /* add python specific callback functions */

@@ -93,6 +93,7 @@ def __init__(self,*args):
    if newobj:
       self.this = newobj.this
       self.thisown = 1
+      del newobj.thisown
 %}
 
 %rename(select_nod) SoSelection::select(SoNode *node);
@@ -141,7 +142,7 @@ def isSelected(*args):
       Py_INCREF(Py_None);
       userdata = Py_None;
     }
-	  
+      
     PyObject *t = PyTuple_New(2);
     PyTuple_SetItem(t, 0, pyfunc);
     PyTuple_SetItem(t, 1, userdata);
@@ -156,7 +157,7 @@ def isSelected(*args):
       Py_INCREF(Py_None);
       userdata = Py_None;
     }
-	  
+      
     PyObject *t = PyTuple_New(2);
     PyTuple_SetItem(t, 0, pyfunc);
     PyTuple_SetItem(t, 1, userdata);
@@ -169,7 +170,7 @@ def isSelected(*args):
       Py_INCREF(Py_None);
       userdata = Py_None;
     }
-	  
+      
     PyObject *t = PyTuple_New(2);
     PyTuple_SetItem(t, 0, pyfunc);
     PyTuple_SetItem(t, 1, userdata);
@@ -184,7 +185,7 @@ def isSelected(*args):
       Py_INCREF(Py_None);
       userdata = Py_None;
     }
-	  
+      
     PyObject *t = PyTuple_New(2);
     PyTuple_SetItem(t, 0, pyfunc);
     PyTuple_SetItem(t, 1, userdata);
@@ -197,7 +198,7 @@ def isSelected(*args):
       Py_INCREF(Py_None);
       userdata = Py_None;
     }
-	  
+      
     PyObject *t = PyTuple_New(2);
     PyTuple_SetItem(t, 0, pyfunc);
     PyTuple_SetItem(t, 1, userdata);
@@ -212,7 +213,7 @@ def isSelected(*args):
       Py_INCREF(Py_None);
       userdata = Py_None;
     }
-	  
+      
     PyObject *t = PyTuple_New(2);
     PyTuple_SetItem(t, 0, pyfunc);
     PyTuple_SetItem(t, 1, userdata);
@@ -225,7 +226,7 @@ def isSelected(*args):
       Py_INCREF(Py_None);
       userdata = Py_None;
     }
-	  
+      
     PyObject *t = PyTuple_New(2);
     PyTuple_SetItem(t, 0, pyfunc);
     PyTuple_SetItem(t, 1, userdata);
@@ -240,7 +241,7 @@ def isSelected(*args):
       Py_INCREF(Py_None);
       userdata = Py_None;
     }
-	  
+      
     PyObject *t = PyTuple_New(2);
     PyTuple_SetItem(t, 0, pyfunc);
     PyTuple_SetItem(t, 1, userdata);
@@ -253,7 +254,7 @@ def isSelected(*args):
       Py_INCREF(Py_None);
       userdata = Py_None;
     }
-	  
+      
     PyObject *t = PyTuple_New(2);
     PyTuple_SetItem(t, 0, pyfunc);
     PyTuple_SetItem(t, 1, userdata);
@@ -268,7 +269,7 @@ def isSelected(*args):
       Py_INCREF(Py_None);
       userdata = Py_None;
     }
-	  
+      
     PyObject *t = PyTuple_New(2);
     PyTuple_SetItem(t, 0, pyfunc);
     PyTuple_SetItem(t, 1, userdata);
@@ -283,7 +284,7 @@ def isSelected(*args):
       Py_INCREF(Py_None);
       userdata = Py_None;
     }
-	  
+      
     PyObject *t = PyTuple_New(2);
     PyTuple_SetItem(t, 0, pyfunc);
     PyTuple_SetItem(t, 1, userdata);

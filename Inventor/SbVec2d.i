@@ -34,6 +34,7 @@ def __init__(self,*args):
    if newobj:
       self.this = newobj.this
       self.thisown = 1
+      del newobj.thisown
 %}
 
 %rename(setValue_dd) SbVec2d::setValue(const double x, const double y);

@@ -30,7 +30,7 @@ convert_SbVec3d_array(PyObject *input, double temp[3])
   $result = PyTuple_New(3);
   
   for (i=0; i<3; i++) {
-	PyTuple_SetItem($result, i, PyFloat_FromDouble((double)(*($1+i))));
+    PyTuple_SetItem($result, i, PyFloat_FromDouble((double)(*($1+i))));
   }
 }
 
@@ -53,6 +53,7 @@ def __init__(self,*args):
    if newobj:
       self.this = newobj.this
       self.thisown = 1
+      del newobj.thisown
 %}
 
 %rename(setValue_fff) SbVec3d::setValue(const double x, const double y, const double z);

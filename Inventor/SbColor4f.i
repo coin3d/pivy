@@ -40,6 +40,7 @@ def __init__(self,*args):
    if newobj:
       self.this = newobj.this
       self.thisown = 1
+      del newobj.thisown
 %}
 
 %rename(setValue_ffff) SbColor4f::setValue(const float r, const float g, const float b, const float a=1.0f);

@@ -17,6 +17,7 @@ def __init__(self,*args):
    if newobj:
       self.this = newobj.this
       self.thisown = 1
+      del newobj.thisown
 %}
 
 %rename(SbName_eq) operator ==(const SbName & lhs, const SbName & rhs);

@@ -65,7 +65,6 @@ def event_cb(viewer, n):
         for i in range(p.getLength()):
             n = p.getNodeFromTail(i)
             if n.isOfType(SoGroup.getClassTypeId()):
-                n = cast(n, "SoGroup")
                 n.addChild(construct_new_marker(point.getPoint()))
                 break
         

@@ -56,12 +56,13 @@ env.ParseConfig('coin-config --cppflags --libs --ldflags')
 env.Append(CPPPATH = ['.', distutils.sysconfig.get_python_inc()])
 env.Append(LIBPATH = distutils.sysconfig.get_python_lib())
 env.Append(LIBS = 'pivy_runtime')
+env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars()['LINKFORSHARED'])
 if str(Platform()) == 'posix':
     env.Append(LINKFLAGS = '-Wl,-R' + distutils.sysconfig.get_python_lib())
 
 PIVY_ROOT = '../..'
 SWIG_SUPPRESS_WARNINGS = "-w302,306,307,312,389,361,362,503,509,510"
-env.Append(SWIGFLAGS = "-v -noruntime -c++ -python -includeall -D__PIVY__ " +
+env.Append(SWIGFLAGS = "-noruntime -c++ -python -includeall -D__PIVY__ " +
            "-I. -I%s -I%s/fake_headers -I/usr/local/include %s" %
            (PIVY_ROOT, PIVY_ROOT, SWIG_SUPPRESS_WARNINGS))
 

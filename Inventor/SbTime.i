@@ -4,21 +4,19 @@
 
 %feature("shadow") SbTime::SbTime %{
 def __init__(self,*args):
+   newobj = None
    if len(args) == 1:
       if type(args[0]) == type(1.0):
-         self.this = apply(_pivy.new_SbTime_d,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbTime_d,args)
       else:
-         self.this = apply(_pivy.new_SbTime_tv,args)
-         self.thisown = 1
-         return      
+         newobj = apply(_pivy.new_SbTime_tv,args)
    elif len(args) == 2:
-      self.this = apply(_pivy.new_SbTime_i_l,args)
+      newobj = apply(_pivy.new_SbTime_i_l,args)
+   else:
+      newobj = apply(_pivy.new_SbTime,args)
+   if newobj:
+      self.this = newobj.this
       self.thisown = 1
-      return
-   self.this = apply(_pivy.new_SbTime,args)
-   self.thisown = 1
 %}
 
 %rename(setValue_d) SbTime::setValue(const double sec);

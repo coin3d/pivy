@@ -14,21 +14,19 @@
 
 %feature("shadow") SbColor::SbColor %{
 def __init__(self,*args):
+   newobj = None
    if len(args) == 1:
       if isinstance(args[0], SbVec3f):
-         self.this = apply(_pivy.new_SbColor_vec,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbColor_vec,args)
       else:
-         self.this = apply(_pivy.new_SbColor_rgb,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbColor_rgb,args)
    elif len(args) == 3:
-      self.this = apply(_pivy.new_SbColor_fff,args)
+      newobj = apply(_pivy.new_SbColor_fff,args)
+   else:
+      newobj = apply(_pivy.new_SbColor,args)
+   if newobj:
+      self.this = newobj.this
       self.thisown = 1
-      return
-   self.this = apply(_pivy.new_SbColor,args)
-   self.thisown = 1
 %}
 
 %rename(setHSVValue_fff) SbColor::setHSVValue(float h, float s, float v);

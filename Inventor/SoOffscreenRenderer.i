@@ -2,12 +2,14 @@
 
 %feature("shadow") SoOffscreenRenderer::SoOffscreenRenderer %{
 def __init__(self,*args):
+   newobj = None
    if isinstance(args[0], SoGLRenderAction):
-      self.this = apply(_pivy.new_SoOffscreenRenderer_gl,args)
+      newobj = apply(_pivy.new_SoOffscreenRenderer_gl,args)
+   else:
+      newobj = apply(_pivy.new_SoOffscreenRenderer,args)
+   if newobj:
+      self.this = newobj.this
       self.thisown = 1
-      return
-   self.this = apply(_pivy.new_SoOffscreenRenderer,args)
-   self.thisown = 1
 %}
 
 %rename(render_nod) SoOffscreenRenderer::render(SoNode * scene);

@@ -20,30 +20,24 @@
 
 %feature("shadow") SbRotation::SbRotation %{
 def __init__(self,*args):
+   newobj = None
    if len(args) == 1:
       if isinstance(args[0], SbMatrix):
-         self.this = apply(_pivy.new_SbRotation_mat,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbRotation_mat,args)
       else:
-         self.this = apply(_pivy.new_SbRotation_arr,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbRotation_arr,args)
    elif len(args) == 2:
       if isinstance(args[1], SbVec3f):
-         self.this = apply(_pivy.new_SbRotation_vec_vec,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbRotation_vec_vec,args)
       else:
-         self.this = apply(_pivy.new_SbRotation_vec_f,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbRotation_vec_f,args)
    elif len(args) == 4:
-      self.this = apply(_pivy.new_SbRotation_ffff,args)
+      newobj = apply(_pivy.new_SbRotation_ffff,args)
+   else:
+      newobj = apply(_pivy.new_SbRotation,args)
+   if newobj:
+      self.this = newobj.this
       self.thisown = 1
-      return
-   self.this = apply(_pivy.new_SbRotation,args)
-   self.thisown = 1
 %}
 
 %rename(setValue_arr) SbRotation::setValue(const float q[4]);
@@ -66,7 +60,7 @@ def setValue(*args):
    return apply(_pivy.SbRotation_setValue,args)
 %}
 
-/* GR: add operator overloading methods instead of the global functions */
+/* add operator overloading methods instead of the global functions */
 %extend SbRotation {
    
     SbRotation __mul__( const SbRotation &u )

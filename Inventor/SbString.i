@@ -4,21 +4,19 @@
 
 %feature("shadow") SbString::SbString %{
 def __init__(self,*args):
+   newobj = None
    if len(args) == 1:
       if type(args[0]) == type(1):
-         self.this = apply(_pivy.new_SbString_i,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbString_i,args)
       else:
-         self.this = apply(_pivy.new_SbString_str,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbString_str,args)
    elif len(args) == 3:
-      self.this = apply(_pivy.new_SbString_str_i_i,args)
+      newobj = apply(_pivy.new_SbString_str_i_i,args)
+   else:
+      newobj = apply(_pivy.new_SbString,args)
+   if newobj:
+      self.this = newobj.this
       self.thisown = 1
-      return
-   self.this = apply(_pivy.new_SbString,args)
-   self.thisown = 1
 %}
 
 %rename(hash_str) SbString::hash(const char * s);
@@ -30,8 +28,18 @@ def hash(*args):
    return apply(_pivy.SbString_hash,args)
 %}
 
-%rename(SbString_eq) operator==(const SbString & str1, const SbString & str2);
-%rename(SbString_neq) operator!=(const SbString & str1, const SbString & str2);
+/* add operator overloading methods instead of the global functions */
+%extend SbString {      
+    int __eq__( const SbString &u )
+    {
+        return *self == u;
+    };
+    
+    int __nq__( const SbString &u )
+    {
+        return *self != u;
+    };
+}
 
 // add a method for wrapping c++ operator[] access
 %extend SbString {

@@ -24,16 +24,16 @@ convert_SbVec2d_array(PyObject *input, double temp[2])
 
 %feature("shadow") SbVec2d::SbVec2d %{
 def __init__(self,*args):
+   newobj = Nonw
    if len(args) == 1:
-      self.this = apply(_pivy.new_SbVec2d_vec,args)
-      self.thisown = 1
-      return
+      newobj = apply(_pivy.new_SbVec2d_vec,args)
    elif len(args) == 2:
-      self.this = apply(_pivy.new_SbVec2d_dd,args)
+      newobj = apply(_pivy.new_SbVec2d_dd,args)
+   else:
+      newobj = apply(_pivy.new_SbVec2d,args)
+   if newobj:
+      self.this = newobj.this
       self.thisown = 1
-      return
-   self.this = apply(_pivy.new_SbVec2d,args)
-   self.thisown = 1
 %}
 
 %rename(setValue_dd) SbVec2d::setValue(const double x, const double y);
@@ -45,7 +45,7 @@ def setValue(*args):
    return apply(_pivy.SbVec2d_setValue,args)
 %}
 
-/* GR: add operator overloading methods instead of the global functions */
+/* add operator overloading methods instead of the global functions */
 %extend SbVec2d {
     SbVec2d __add__( const SbVec2d &u)
     {

@@ -121,12 +121,14 @@ SoPointPythonCB(void * userdata, SoCallbackAction * action, const SoPrimitiveVer
 
 %feature("shadow") SoCallbackAction::SoCallbackAction %{
 def __init__(self,*args):
+   newobj = None
    if len(args) == 1:
-      self.this = apply(_pivy.new_SoCallbackAction_vpr,args)
+      newobj = apply(_pivy.new_SoCallbackAction_vpr,args)
+   else:
+      newobj = apply(_pivy.new_SoCallbackAction,args)
+   if newobj:
+      self.this = newobj.this
       self.thisown = 1
-      return
-   self.this = apply(_pivy.new_SoCallbackAction,args)
-   self.thisown = 1
 %}
 
   /* add python specific callback functions */

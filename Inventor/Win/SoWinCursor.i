@@ -3,15 +3,15 @@
 
 %feature("shadow") SoWinCursor::SoWinCursor %{
 def __init__(self,*args):
+   newobj = None
    if len(args) == 1:
       if isinstance(args[0], CustomCursor):
-         self.this = apply(_pivy.new_SoWinCursor_cc,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SoWinCursor_cc,args)
       else:
-         self.this = apply(_pivy.new_SoWinCursor_sha,args)
-         self.thisown = 1
-         return
-   self.this = apply(_pivy.new_SoWinCursor,args)
-   self.thisown = 1
+         newobj = apply(_pivy.new_SoWinCursor_sha,args)
+   else:
+      newobj = apply(_pivy.new_SoWinCursor,args)
+   if newobj:
+      self.this = newobj.this
+      self.thisown = 1
 %}

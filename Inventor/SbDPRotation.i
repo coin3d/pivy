@@ -20,30 +20,24 @@
 
 %feature("shadow") SbDPRotation::SbDPRotation %{
 def __init__(self,*args):
+   newobj = None
    if len(args) == 1:
       if isinstance(args[0], SbMatrix):
-         self.this = apply(_pivy.new_SbDPRotation_mat,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbDPRotation_mat,args)
       else:
-         self.this = apply(_pivy.new_SbDPRotation_arr,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbDPRotation_arr,args)
    elif len(args) == 2:
       if isinstance(args[1], SbVec3f):
-         self.this = apply(_pivy.new_SbDPRotation_vec_vec,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbDPRotation_vec_vec,args)
       else:
-         self.this = apply(_pivy.new_SbDPRotation_vec_d,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbDPRotation_vec_d,args)
    elif len(args) == 4:
-      self.this = apply(_pivy.new_SbDPRotation_dddd,args)
+      newobj = apply(_pivy.new_SbDPRotation_dddd,args)
+   else:
+      newobj = apply(_pivy.new_SbDPRotation,args)
+   if newobj:
+      self.this = newobj.this
       self.thisown = 1
-      return
-   self.this = apply(_pivy.new_SbDPRotation,args)
-   self.thisown = 1
 %}
 
 %rename(setValue_arr) SbDPRotation::setValue(const double q[4]);

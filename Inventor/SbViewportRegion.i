@@ -4,21 +4,19 @@
 
 %feature("shadow") SbViewportRegion::SbViewportRegion %{
 def __init__(self,*args):
+   newobj = None
    if len(args) == 1:
       if isinstance(args[0], SbVec2s):
-         self.this = apply(_pivy.new_SbViewportRegion_vec,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbViewportRegion_vec,args)
       else:
-         self.this = apply(_pivy.new_SbViewportRegion_vr,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbViewportRegion_vr,args)
    elif len(args) == 2:
-      self.this = apply(_pivy.new_SbViewportRegion_ss,args)
+      newobj = apply(_pivy.new_SbViewportRegion_ss,args)
+   else:   
+      newobj = apply(_pivy.new_SbViewportRegion,args)
+   if newobj:
+      self.this = newobj.this
       self.thisown = 1
-      return
-   self.this = apply(_pivy.new_SbViewportRegion,args)
-   self.thisown = 1
 %}
 
 %rename(setWindowSize_ss) SbViewportRegion::setWindowSize(short width, short height);
@@ -48,7 +46,7 @@ def setViewportPixels(*args):
    return apply(_pivy.SbViewportRegion_setViewportPixels,args)
 %}
 
-/* GR: add operator overloading methods instead of the global functions */
+/* add operator overloading methods instead of the global functions */
 %extend SbViewportRegion {    
     int __eq__( const SbViewportRegion &u )
     {

@@ -4,21 +4,19 @@
 
 %feature("shadow") SbName::SbName %{
 def __init__(self,*args):
+   newobj = None
    if len(args) == 1:
       if isinstance(args[0], SbName):
-         self.this = apply(_pivy.new_SbName_str,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbName_str,args)
       elif isinstance(args[0], SbName):
-         self.this = apply(_pivy.new_SbName_name,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbName_name,args)
       else:
-         self.this = apply(_pivy.new_SbName_char,args)
-         self.thisown = 1
-         return
-   self.this = apply(_pivy.new_SbName,args)
-   self.thisown = 1
+         newobj = apply(_pivy.new_SbName_char,args)
+   else:
+      newobj = apply(_pivy.new_SbName,args)
+   if newobj:
+      self.this = newobj.this
+      self.thisown = 1
 %}
 
 %rename(SbName_eq) operator ==(const SbName & lhs, const SbName & rhs);

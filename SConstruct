@@ -52,7 +52,7 @@ if str(Platform()) != 'win32' and env['warnings']:
     env.Append(CCFLAGS = '-Wall')
 
 env.Append(CPPPATH = distutils.sysconfig.get_python_inc())
-env.Append(SWIGFLAGS = '-runtime -python -noproxy')
+env.Append(SWIGFLAGS = '-runtime -python -noproxy -modern')
 env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars().get('LINKFORSHARED', ''))
 
 if str(Platform()) == 'win32':

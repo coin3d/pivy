@@ -2,12 +2,14 @@
 
 %feature("shadow") SbDict::SbDict %{
 def __init__(self,*args):
+   newobj = None
    if type(args[0]) == type(1):
-      self.this = apply(_pivy.new_SbDict,args)
+      newobj = apply(_pivy.new_SbDict,args)
+   else:
+      newobj = apply(_pivy.new_SbDict_dict,args)
+   if newobj:
+      self.this = newobj.this
       self.thisown = 1
-      return
-   self.this = apply(_pivy.new_SbDict_dict,args)
-   self.thisown = 1
 %}
 
 %rename(applyToAll_func_void) SbDict::applyToAll(void (* rtn)(unsigned long key, void * value, void * data),

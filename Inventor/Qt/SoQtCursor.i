@@ -3,15 +3,15 @@
 
 %feature("shadow") SoQtCursor::SoQtCursor %{
 def __init__(self,*args):
+   newobj = None
    if len(args) == 1:
       if isinstance(args[0], CustomCursor):
-         self.this = apply(_pivy.new_SoQtCursor_cc,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SoQtCursor_cc,args)
       else:
-         self.this = apply(_pivy.new_SoQtCursor_sha,args)
-         self.thisown = 1
-         return
-   self.this = apply(_pivy.new_SoQtCursor,args)
-   self.thisown = 1
+         newobj = apply(_pivy.new_SoQtCursor_sha,args)
+   else:
+      newobj = apply(_pivy.new_SoQtCursor,args)
+   if newobj:
+      self.this = newobj.this
+      self.thisown = 1
 %}

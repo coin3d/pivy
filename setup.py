@@ -143,7 +143,7 @@ class pivy_build(build):
     SWIG = ((sys.platform == "win32" and "swig.exe") or "swig")
 
     SWIG_SUPPRESS_WARNINGS = "-w302,306,307,312,389,361,362,503,509,510"
-    SWIG_PARAMS = "-noruntime -c++ -python -includeall " + \
+    SWIG_PARAMS = "-noruntime -c++ -python -includeall -modern " + \
                   "-D__PIVY__ -I. -Ifake_headers -I%s %s -o %s_wrap.cpp interfaces" + os.sep + "%s.i"
 
     SOGUI = ['SoQt', 'SoXt', 'SoGtk', 'SoWin']
@@ -209,7 +209,7 @@ class pivy_build(build):
             print "Using SoWin by default for Windows builds!"
             self.MODULES = {'pivy'  : ('_pivy',  'coin-config'),
                             'SoWin' : ('_sowin', 'sowin-config')}
-            return            
+            return
         for gui in self.SOGUI:
             gui_config_cmd = self.MODULES[gui][1]
             if not self.check_cmd_exists(gui_config_cmd):
@@ -276,7 +276,7 @@ class pivy_build(build):
             if file[-2:] == ".i":
                 file_i = os.path.join(dirname, file)
                 file_h = os.path.join(dirname, file)[:-2] + ".h"
-                
+
                 if not os.path.exists(file_h) and \
                    os.path.exists(os.path.join(coin_includedir, file_h)):
                     print blue("Copying ") + turquoise(os.path.join(coin_includedir, file_h)),
@@ -344,7 +344,7 @@ class pivy_build(build):
                 sys.exit(1)
         else:
             print red("=== The shared pivy_runtime library already exists! ===")
-        
+
         for module in self.MODULES.keys():
             module_name = self.MODULES[module][0]
             config_cmd = self.MODULES[module][1]
@@ -360,7 +360,7 @@ class pivy_build(build):
                 INCLUDE_DIR = self.do_os_popen("coin-config --includedir")
                 CPP_FLAGS = self.do_os_popen("%s --cppflags" % config_cmd)
                 LDFLAGS_LIBS = self.do_os_popen("%s --ldflags --libs" % config_cmd)
-                
+
             if not os.path.isfile(module.lower() + "_wrap.cpp"):
                 print red("\n=== Generating %s_wrap.cpp for %s ===\n" % (module.lower(), module))
                 print blue(self.SWIG + " " + self.SWIG_SUPPRESS_WARNINGS + " " + self.SWIG_PARAMS %
@@ -381,7 +381,7 @@ class pivy_build(build):
             runtime_library_dirs = []
             library_dirs = [os.getcwd(), get_python_lib()]
             libraries = ['pivy_runtime']
-	    if sys.platform != 'win32':
+            if sys.platform != 'win32':
                 runtime_library_dirs = [get_python_lib()]
 
             self.ext_modules.append(Extension(module_name, [module.lower() + "_wrap.cpp"],
@@ -397,7 +397,7 @@ class pivy_build(build):
         if sys.platform == "win32" and not os.getenv("COIN3DDIR"):
             print "Please set the COIN3DDIR environment variable to your Coin root directory! ** Aborting **"
             sys.exit(1)
-        
+
         self.pivy_configure()
         self.swig_generate()
 
@@ -420,7 +420,7 @@ class pivy_clean(clean):
                 continue
             print blue("removing %s" % os.path.join(dirname, file))
             os.remove(os.path.join(dirname, file))
-        
+
     def run(self):
         "the entry point for the distutils clean class"
         os.path.walk("Inventor", self.remove_coin_headers, None)
@@ -435,7 +435,7 @@ class pivy_clean(clean):
         if os.system(sys.executable + " scons" + os.sep + "scons.py -Qc"):
             print red("Could not clean shared pivy_runtime library!")
 
-class pivy_install(install):        
+class pivy_install(install):
     def run(self):
         "the entry point for the distutils install class"
         install.run(self)

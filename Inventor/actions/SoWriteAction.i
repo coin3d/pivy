@@ -2,12 +2,14 @@
 
 %feature("shadow") SoWriteAction::SoWriteAction %{
 def __init__(self,*args):
+   newobj = None
    if len(args) == 1:
-      self.this = apply(_pivy.new_SoWriteAction_out,args)
+      newobj = apply(_pivy.new_SoWriteAction_out,args)
+   else:
+      newobj = apply(_pivy.new_SoWriteAction,args)
+   if newobj:
+      self.this = newobj.this
       self.thisown = 1
-      return
-   self.this = apply(_pivy.new_SoWriteAction,args)
-   self.thisown = 1
 %}
 
 %rename(continueToApply_nod) SoWriteAction::continueToApply(SoNode * node);

@@ -25,25 +25,21 @@
 
 %feature("shadow") SbColor4f::SbColor4f %{
 def __init__(self,*args):
+   newobj = None
    if len(args) == 1:
       if isinstance(args[0], SbVec4f):
-         self.this = apply(_pivy.new_SbColor4f_vec,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbColor4f_vec,args)
       else:
-         self.this = apply(_pivy.new_SbColor4f_rgb,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbColor4f_rgb,args)
    elif len(args) == 2:
-      self.this = apply(_pivy.new_SbColor4f_col_f,args)
-      self.thisown = 1
-      return
+      newobj = apply(_pivy.new_SbColor4f_col_f,args)
    elif len(args) == 3:
-      self.this = apply(_pivy.new_SbColor4f_ffff,args)
+      newobj = apply(_pivy.new_SbColor4f_ffff,args)
+   else:
+      newobj = apply(_pivy.new_SbColor4f,args)
+   if newobj:
+      self.this = newobj.this
       self.thisown = 1
-      return
-   self.this = apply(_pivy.new_SbColor4f,args)
-   self.thisown = 1
 %}
 
 %rename(setValue_ffff) SbColor4f::setValue(const float r, const float g, const float b, const float a=1.0f);

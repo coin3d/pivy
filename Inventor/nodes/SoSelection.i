@@ -85,12 +85,14 @@ SoSelectionPickPythonCB(void * data, const SoPickedPoint * pick)
 
 %feature("shadow") SoSelection::SoSelection %{
 def __init__(self,*args):
+   newobj = None
    if len(args) == 1:
-      self.this = apply(_pivy.new_SoSelection_i,args)
+      newobj = apply(_pivy.new_SoSelection_i,args)
+   else:
+      newobj = apply(_pivy.new_SoSelection,args)
+   if newobj:
+      self.this = newobj.this
       self.thisown = 1
-      return
-   self.this = apply(_pivy.new_SoSelection,args)
-   self.thisown = 1
 %}
 
 %rename(select_nod) SoSelection::select(SoNode *node);

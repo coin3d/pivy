@@ -55,16 +55,16 @@ convert_SbMat_array(PyObject *input, SbMat temp)
 
 %feature("shadow") SbMatrix::SbMatrix %{
 def __init__(self,*args):
+   newobj = None
    if len(args) == 1:
-      self.this = apply(_pivy.new_SbMatrix_SbMat,args)
-      self.thisown = 1
-      return
+      newobj = apply(_pivy.new_SbMatrix_SbMat,args)
    elif len(args) == 16:
-      self.this = apply(_pivy.new_SbMatrix_f16,args)
+      newobj = apply(_pivy.new_SbMatrix_f16,args)
+   else:
+      newobj = apply(_pivy.new_SbMatrix,args)
+   if newobj:
+      self.this = newobj.this
       self.thisown = 1
-      return
-   self.this = apply(_pivy.new_SbMatrix,args)
-   self.thisown = 1
 %}
 
 %rename(det3_i6) SbMatrix::det3(int r1, int r2, int r3,
@@ -128,7 +128,7 @@ def multVecMatrix(*args):
 %rename(SbMatrix_eq) operator ==(const SbMatrix & m1, const SbMatrix & m2);
 %rename(SbMatrix_neq) operator !=(const SbMatrix & m1, const SbMatrix & m2);
 
-/* GR: add operator overloading methods instead of the global functions */
+/* add operator overloading methods instead of the global functions */
 %extend SbMatrix {
     SbMatrix __mul__( const SbMatrix & u)
     {

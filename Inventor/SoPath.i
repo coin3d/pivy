@@ -3,16 +3,16 @@
 
 %feature("shadow") SoPath::SoPath %{
 def __init__(self,*args):
+   newobj = None
    if isinstance(args[0], SoNode):
-      self.this = apply(_pivy.new_SoPath_nod,args)
-      self.thisown = 1
-      return
+      newobj = apply(_pivy.new_SoPath_nod,args)
    elif isinstance(args[0], SoPath):
-      self.this = apply(_pivy.new_SoPath_pat,args)
+      newobj = apply(_pivy.new_SoPath_pat,args)
+   else:
+      newobj = apply(_pivy.new_SoPath,args)
+   if newobj:
+      self.this = newobj.this
       self.thisown = 1
-      return
-   self.this = apply(_pivy.new_SoPath,args)
-   self.thisown = 1
 %}
 
 %rename(append_nod) SoPath::append(SoNode * const node);
@@ -36,5 +36,15 @@ def getByName(*args):
    return apply(_pivy.SoPath_getByName,args)
 %}
 
-%rename(SoPath_eq) operator==(const SoPath & lhs, const SoPath & rhs);
-%rename(SoPath_neq) operator!=(const SoPath & lhs, const SoPath & rhs);
+/* add operator overloading methods instead of the global functions */
+%extend SoPath {      
+    int __eq__( const SoPath &u )
+    {
+        return *self == u;
+    };
+    
+    int __nq__( const SoPath &u )
+    {
+        return *self != u;
+    };
+}

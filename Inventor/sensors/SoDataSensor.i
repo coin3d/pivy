@@ -2,11 +2,13 @@
 
 %feature("shadow") SoDataSensor::SoDataSensor %{
 def __init__(self,*args):
+   newobj = None
    if len(args) == 2:
       args = (args[0], (args[0], args[1]))
-      self.this = apply(_pivy.new_SoDataSensor_scb_v,args)
+      newobj = apply(_pivy.new_SoDataSensor_scb_v,args)
+   else:
+      newobj = apply(_pivy.new_SoDataSensor,args)
+   if newobj:
+      self.this = newobj.this
       self.thisown = 1
-      return
-   self.this = apply(_pivy.new_SoDataSensor,args)
-   self.thisown = 1
 %}

@@ -85,17 +85,17 @@
  
 %feature("shadow") SbImage::SbImage %{
 def __init__(self,*args):
+  newobj = None
   if len(args) == 3:
-      if isinstance(args[1], SbVec2s):
-          self.this = apply(_pivy.new_SbImage_vec2s,args)
-          self.thisown = 1
-          return
-      elif isinstance(args[1], SbVec3s):
-          self.this = apply(_pivy.new_SbImage_vec3s,args)
-          self.thisown = 1
-          return
-  self.this = apply(_pivy.new_SbImage,args)
-  self.thisown = 1
+     if isinstance(args[1], SbVec2s):
+        newobj = apply(_pivy.new_SbImage_vec2s,args)
+     elif isinstance(args[1], SbVec3s):
+        newobj = apply(_pivy.new_SbImage_vec3s,args)
+  else:
+     newobj = apply(_pivy.new_SbImage,args)
+  if newobj:
+     self.this = newobj.this
+     self.thisown = 1
 %}
 
 

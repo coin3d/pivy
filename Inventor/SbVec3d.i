@@ -40,21 +40,19 @@ convert_SbVec3d_array(PyObject *input, double temp[3])
 
 %feature("shadow") SbVec3d::SbVec3d %{
 def __init__(self,*args):
+   newobj = None
    if len(args) == 1:
-      self.this = apply(_pivy.new_SbVec3d_vec,args)
-      self.thisown = 1
-      return
+      newobj = apply(_pivy.new_SbVec3d_vec,args)
    elif len(args) == 3:
       if isinstance(args[0], SbPlane):
-         self.this = apply(_pivy.new_SbVec3d_pl_pl_pl,args)
-         self.thisown = 1
-         return
+         newobj = apply(_pivy.new_SbVec3d_pl_pl_pl,args)
       else:
-         self.this = apply(_pivy.new_SbVec3d_fff,args)
-         self.thisown = 1
-         return
-   self.this = apply(_pivy.new_SbVec3d,args)
-   self.thisown = 1
+         newobj = apply(_pivy.new_SbVec3d_fff,args)
+   else:
+      newobj = apply(_pivy.new_SbVec3d,args)
+   if newobj:
+      self.this = newobj.this
+      self.thisown = 1
 %}
 
 %rename(setValue_fff) SbVec3d::setValue(const double x, const double y, const double z);
@@ -72,7 +70,7 @@ def setValue(*args):
    return apply(_pivy.SbVec3d_setValue,args)
 %}
 
-/* GR: add operator overloading methods instead of the global functions */
+/* add operator overloading methods instead of the global functions */
 %extend SbVec3d {
     SbVec3d __add__( const SbVec3d &u)
     {

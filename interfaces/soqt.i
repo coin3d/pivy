@@ -84,7 +84,6 @@ Pivy_PythonInteractiveLoop(void *data) {
 %include pivy_common_typemaps.i
 
 /* typemaps to bridge against PyQt */
-
 %typemap(out) QEvent * {
   $result = NULL;
   {
@@ -215,7 +214,7 @@ Pivy_PythonInteractiveLoop(void *data) {
 
   if (PyErr_ExceptionMatches(PyExc_ImportError) || !$1) {
     PyErr_Clear();
-    if ((SWIG_ConvertPtr($input, (void **)(&$1), SWIGTYPE_p_QEvent,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+    if ((SWIG_ConvertPtr($input, (void **)(&$1), SWIGTYPE_p_QEvent, SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
   }
 }
 
@@ -254,7 +253,7 @@ Pivy_PythonInteractiveLoop(void *data) {
   
     if (PyErr_ExceptionMatches(PyExc_ImportError) || !$1) {
       PyErr_Clear();
-      if ((SWIG_ConvertPtr($input, (void **)(&$1), SWIGTYPE_p_QWidget,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+      if ((SWIG_ConvertPtr($input, (void **)(&$1), SWIGTYPE_p_QWidget, SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
     }
   }  
 }

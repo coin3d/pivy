@@ -65,22 +65,26 @@ class SoGui_Proxy:
         self.debug = debug
         
         # if no binding has been specified check for availability of a known
-        # one in a defined order SoQt -> SoXt -> SoGtk
+        # one in a defined order SoQt -> SoWin -> SoXt -> SoGtk
         if not gui:
             try:
                 sogui = __import__('soqt')
                 gui = 'SoQt'
             except ImportError:
                 try:
-                    sogui = __import__('soxt')
-                    gui = 'SoXt'
+                    sogui = __import__('sowin')
+                    gui = 'SoWin'
                 except ImportError:
                     try:
-                        sogui = __import__('sogtk')
-                        gui = 'SoGtk'
+                        sogui = __import__('soxt')
+                        gui = 'SoXt'
                     except ImportError:
-                        print "SoGui proxy error: None of the known Gui bindings were found! Please specify one!"
-                        sys.exit(1)
+                        try:
+                            sogui = __import__('sogtk')
+                            gui = 'SoGtk'
+                        except ImportError:
+                            print "SoGui proxy error: None of the known Gui bindings were found! Please specify one!"
+                            sys.exit(1)
 
         # check if object is a user provided string possibly a new unknown SoGui binding.
         # try to bind it.

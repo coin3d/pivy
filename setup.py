@@ -373,6 +373,9 @@ class pivy_build(build):
 
     def run(self):
         "the entry point for the distutils build class"
+	if sys.platform == "win32" and not os.getenv("COIN3DDIR"):
+	    print "Please set the COIN3DDIR environment variable to your Coin root directory! ** Aborting **"
+	    sys.exit(1)
         self.pivy_configure()
         self.swig_generate()
 

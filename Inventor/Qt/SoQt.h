@@ -98,9 +98,7 @@ public:
       cc_thread_destruct(py_thread);
       Py_Exit(0);
     } else {
-      Py_BEGIN_ALLOW_THREADS
       SoQt::mainLoop();
-      Py_END_ALLOW_THREADS
     }
   }
 }

@@ -34,67 +34,6 @@
 
 #undef ANY
 
-#include <Inventor/SbBasic.h>
-#include <Inventor/SbPList.h>
-#include <Inventor/So.h>
-#include <Inventor/SoDB.h>
-#include <Inventor/SoFullPath.h>
-#include <Inventor/SoNodeKitPath.h>
-#include <Inventor/SoInput.h>
-#include <Inventor/SoInteraction.h>
-#include <Inventor/SoOffscreenRenderer.h>
-#include <Inventor/SoOutput.h>
-#include <Inventor/SoPath.h>
-#include <Inventor/SoPickedPoint.h>
-#include <Inventor/SoPrimitiveVertex.h>
-#include <Inventor/SoSceneManager.h>
-#include <Inventor/SoType.h>
-#include <Inventor/Sb.h>
-#include <Inventor/SbBox.h>
-#include <Inventor/SbBSPTree.h>
-#include <Inventor/SbLinear.h>
-#include <Inventor/SbDPLinear.h>
-#include <Inventor/SoLists.h>
-#include <Inventor/SbBox2s.h>
-#include <Inventor/SbBox3s.h>
-#include <Inventor/SbBox2f.h>
-#include <Inventor/SbBox2d.h>
-#include <Inventor/SbBox3f.h>
-#include <Inventor/SbClip.h>
-#include <Inventor/SbColor.h>
-#include <Inventor/SbColor4f.h>
-#include <Inventor/SbCylinder.h>
-#include <Inventor/SbDict.h>
-#include <Inventor/SbDPLine.h>
-#include <Inventor/SbDPMatrix.h>
-#include <Inventor/SbDPPlane.h>
-#include <Inventor/SbDPRotation.h>
-#include <Inventor/SbHeap.h>
-#include <Inventor/SbImage.h>
-#include <Inventor/SbLine.h>
-#include <Inventor/SbMatrix.h>
-#include <Inventor/SbName.h>
-#include <Inventor/SbOctTree.h>
-#include <Inventor/SbPlane.h>
-#include <Inventor/SbRotation.h>
-#include <Inventor/SbSphere.h>
-#include <Inventor/SbString.h>
-#include <Inventor/SbTesselator.h>
-#include <Inventor/SbTime.h>
-#include <Inventor/SbVec2s.h>
-#include <Inventor/SbVec2f.h>
-#include <Inventor/SbVec2d.h>
-#include <Inventor/SbVec3s.h>
-#include <Inventor/SbVec3f.h>
-#include <Inventor/SbVec3d.h>
-#include <Inventor/SbVec4f.h>
-#include <Inventor/SbVec4d.h>
-#include <Inventor/SbViewVolume.h>
-#include <Inventor/SbDPViewVolume.h>
-#include <Inventor/SbViewportRegion.h>
-#include <Inventor/SbXfBox3f.h>
-#include <Inventor/C/tidbits.h>
-#include <Inventor/C/basic.h>
 #include <Inventor/C/base/hash.h>
 #include <Inventor/C/base/heap.h>
 #include <Inventor/C/base/memalloc.h>
@@ -118,9 +57,12 @@
 #include <Inventor/C/threads/sync.h>
 #include <Inventor/C/threads/fifo.h>
 #include <Inventor/C/threads/barrier.h>
+#include <Inventor/C/tidbits.h>
+#include <Inventor/C/basic.h>
 #include <Inventor/lock/SoLockMgr.h>
 #include <Inventor/system/gl.h>
 #include <Inventor/system/inttypes.h>
+#include <Inventor/SbBasic.h>
 #include <Inventor/actions/SoSubAction.h>
 #include <Inventor/actions/SoActions.h>
 #include <Inventor/actions/SoAction.h>
@@ -592,6 +534,12 @@
 #include <Inventor/sensors/SoSensorManager.h>
 #include <Inventor/sensors/SoTimerQueueSensor.h>
 #include <Inventor/sensors/SoTimerSensor.h>
+#include <Inventor/collision/SoIntersectionDetectionAction.h>
+#include <Inventor/annex/HardCopy/SoHardCopy.h>
+#include <Inventor/annex/HardCopy/SoPSVectorOutput.h>
+#include <Inventor/annex/HardCopy/SoVectorOutput.h>
+#include <Inventor/annex/HardCopy/SoVectorizeAction.h>
+#include <Inventor/annex/HardCopy/SoVectorizePSAction.h>
 #include <Inventor/threads/SbThread.h>
 #include <Inventor/threads/SbMutex.h>
 #include <Inventor/threads/SbRWMutex.h>
@@ -671,6 +619,81 @@
 #include <Inventor/VRMLnodes/SoVRMLViewpoint.h>
 #include <Inventor/VRMLnodes/SoVRMLVisibilitySensor.h>
 #include <Inventor/VRMLnodes/SoVRMLWorldInfo.h>
+#include <Inventor/SbPList.h>
+#include <Inventor/So.h>
+#include <Inventor/SoDB.h>
+#include <Inventor/SoFullPath.h>
+#include <Inventor/SoNodeKitPath.h>
+#include <Inventor/SoInput.h>
+#include <Inventor/SoInteraction.h>
+#include <Inventor/SoOffscreenRenderer.h>
+#include <Inventor/SoOutput.h>
+#include <Inventor/SoPath.h>
+#include <Inventor/SoPickedPoint.h>
+#include <Inventor/SoPrimitiveVertex.h>
+#include <Inventor/SoSceneManager.h>
+#include <Inventor/SoType.h>
+#include <Inventor/Sb.h>
+#include <Inventor/SbBox.h>
+#include <Inventor/SbBSPTree.h>
+#include <Inventor/SbLinear.h>
+#include <Inventor/SbDPLinear.h>
+#include <Inventor/SoLists.h>
+#include <Inventor/SbBox2s.h>
+#include <Inventor/SbBox3s.h>
+#include <Inventor/SbBox2f.h>
+#include <Inventor/SbBox2d.h>
+#include <Inventor/SbBox3f.h>
+#include <Inventor/SbClip.h>
+#include <Inventor/SbColor.h>
+#include <Inventor/SbColor4f.h>
+#include <Inventor/SbCylinder.h>
+#include <Inventor/SbDict.h>
+#include <Inventor/SbDPLine.h>
+#include <Inventor/SbDPMatrix.h>
+#include <Inventor/SbDPPlane.h>
+#include <Inventor/SbDPRotation.h>
+#include <Inventor/SbHeap.h>
+#include <Inventor/SbImage.h>
+#include <Inventor/SbLine.h>
+#include <Inventor/SbMatrix.h>
+#include <Inventor/SbName.h>
+#include <Inventor/SbOctTree.h>
+#include <Inventor/SbPlane.h>
+#include <Inventor/SbRotation.h>
+#include <Inventor/SbSphere.h>
+#include <Inventor/SbString.h>
+#include <Inventor/SbTesselator.h>
+#include <Inventor/SbTime.h>
+#include <Inventor/SbVec2s.h>
+#include <Inventor/SbVec2f.h>
+#include <Inventor/SbVec2d.h>
+#include <Inventor/SbVec3s.h>
+#include <Inventor/SbVec3f.h>
+#include <Inventor/SbVec3d.h>
+#include <Inventor/SbVec4f.h>
+#include <Inventor/SbVec4d.h>
+#include <Inventor/SbViewVolume.h>
+#include <Inventor/SbDPViewVolume.h>
+#include <Inventor/SbViewportRegion.h>
+#include <Inventor/SbXfBox3f.h>
+
+#ifdef PIVY_USE_SOQT
+
+#include <Inventor/Qt/devices/SoQtDevice.h>
+#include <Inventor/Qt/devices/SoQtKeyboard.h>
+#include <Inventor/Qt/devices/SoQtMouse.h>
+#include <Inventor/Qt/devices/SoQtSpaceball.h>
+#include <Inventor/Qt/editors/SoQtColorEditor.h>
+#include <Inventor/Qt/nodes/SoGuiColorEditor.h>
+#include <Inventor/Qt/viewers/SoQtViewer.h>
+#include <Inventor/Qt/viewers/SoQtFullViewer.h>
+#include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
+#include <Inventor/Qt/viewers/SoQtPlaneViewer.h>
+#include <Inventor/Qt/viewers/SoQtConstrainedViewer.h>
+#include <Inventor/Qt/viewers/SoQtFlyViewer.h>
+#include <Inventor/Qt/widgets/SoQtPopupMenu.h>
+#include <Inventor/Qt/SoQtColorEditor.h>
 #include <Inventor/Qt/SoQt.h>
 #include <Inventor/Qt/SoQtBasic.h>
 #include <Inventor/Qt/SoQtObject.h>
@@ -678,58 +701,71 @@
 #include <Inventor/Qt/SoQtComponent.h>
 #include <Inventor/Qt/SoQtGLWidget.h>
 #include <Inventor/Qt/SoQtRenderArea.h>
-#include <Inventor/Qt/devices/SoQtDevice.h>
-#include <Inventor/Qt/devices/SoQtKeyboard.h>
-#include <Inventor/Qt/devices/SoQtMouse.h>
-#include <Inventor/Qt/devices/SoQtSpaceball.h>
-#include <Inventor/Qt/viewers/SoQtViewer.h>
-#include <Inventor/Qt/viewers/SoQtConstrainedViewer.h>
-#include <Inventor/Qt/viewers/SoQtFullViewer.h>
-#include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
-#include <Inventor/Qt/viewers/SoQtFlyViewer.h>
-#include <Inventor/Qt/viewers/SoQtPlaneViewer.h>
-#include <Inventor/Qt/widgets/SoQtPopupMenu.h>
-/* #include <Inventor/Gtk/SoGtkGraphEditor.h> */
-/* #include <Inventor/Gtk/SoGtkRoster.h> */
-/* #include <Inventor/Gtk/SoGtk.h> */
-/* #include <Inventor/Gtk/SoGtkBasic.h> */
-/* #include <Inventor/Gtk/SoGtkObject.h> */
-/* #include <Inventor/Gtk/SoGtkCursor.h> */
-/* #include <Inventor/Gtk/SoGtkComponent.h> */
-/* #include <Inventor/Gtk/SoGtkGLWidget.h> */
-/* #include <Inventor/Gtk/SoGtkRenderArea.h> */
-/* #include <Inventor/Gtk/devices/SoGtkDevice.h> */
-/* #include <Inventor/Gtk/devices/SoGtkKeyboard.h> */
-/* #include <Inventor/Gtk/devices/SoGtkMouse.h> */
-/* #include <Inventor/Gtk/devices/SoGtkSpaceball.h> */
-/* #include <Inventor/Gtk/widgets/SoGtkPopupMenu.h> */
-/* #include <Inventor/Gtk/viewers/SoGtkViewer.h> */
-/* #include <Inventor/Gtk/viewers/SoGtkConstrainedViewer.h> */
-/* #include <Inventor/Gtk/viewers/SoGtkFullViewer.h> */
-/* #include <Inventor/Gtk/viewers/SoGtkExaminerViewer.h> */
-/* #include <Inventor/Gtk/viewers/SoGtkFlyViewer.h> */
-/* #include <Inventor/Gtk/viewers/SoGtkPlaneViewer.h> */
-/* #include <Inventor/Xt/SoXtResource.h> */
-/* #include <Inventor/Xt/SoXt.h> */
-/* #include <Inventor/Xt/SoXtBasic.h> */
-/* #include <Inventor/Xt/SoXtObject.h> */
-/* #include <Inventor/Xt/SoXtCursor.h> */
-/* #include <Inventor/Xt/SoXtComponent.h> */
-/* #include <Inventor/Xt/SoXtGLWidget.h> */
-/* #include <Inventor/Xt/SoXtRenderArea.h> */
-/* #include <Inventor/Xt/devices/SoXtDevice.h> */
-/* #include <Inventor/Xt/devices/SoXtKeyboard.h> */
-/* #include <Inventor/Xt/devices/SoXtMouse.h> */
-/* #include <Inventor/Xt/devices/SoXtSpaceball.h> */
-/* #include <Inventor/Xt/devices/SoXtLinuxJoystick.h> */
-/* #include <Inventor/Xt/widgets/SoXtPopupMenu.h> */
-/* #include <Inventor/Xt/viewers/SoXtViewer.h> */
-/* #include <Inventor/Xt/viewers/SoXtConstrainedViewer.h> */
-/* #include <Inventor/Xt/viewers/SoXtFullViewer.h> */
-/* #include <Inventor/Xt/viewers/SoXtExaminerViewer.h> */
-/* #include <Inventor/Xt/viewers/SoXtFlyViewer.h> */
-/* #include <Inventor/Xt/viewers/SoXtPlaneViewer.h> */
 
+#elif PIVY_USE_SOGTK
+
+#include <Inventor/Gtk/devices/SoGtkDevice.h>
+#include <Inventor/Gtk/devices/SoGtkKeyboard.h>
+#include <Inventor/Gtk/devices/SoGtkMouse.h>
+#include <Inventor/Gtk/devices/SoGtkSpaceball.h>
+#include <Inventor/Gtk/widgets/SoGtkPopupMenu.h>
+#include <Inventor/Gtk/viewers/SoGtkViewer.h>
+#include <Inventor/Gtk/viewers/SoGtkConstrainedViewer.h>
+#include <Inventor/Gtk/viewers/SoGtkFullViewer.h>
+#include <Inventor/Gtk/viewers/SoGtkExaminerViewer.h>
+#include <Inventor/Gtk/viewers/SoGtkFlyViewer.h>
+#include <Inventor/Gtk/viewers/SoGtkPlaneViewer.h>
+#include <Inventor/Gtk/SoGtkGraphEditor.h>
+#include <Inventor/Gtk/SoGtkRoster.h>
+#include <Inventor/Gtk/SoGtk.h>
+#include <Inventor/Gtk/SoGtkBasic.h>
+#include <Inventor/Gtk/SoGtkObject.h>
+#include <Inventor/Gtk/SoGtkCursor.h>
+#include <Inventor/Gtk/SoGtkComponent.h>
+#include <Inventor/Gtk/SoGtkGLWidget.h>
+#include <Inventor/Gtk/SoGtkRenderArea.h>
+
+
+#elif PIVY_USE_SOXT
+
+#include <Inventor/Xt/devices/SoXtLinuxJoystick.h>
+#include <Inventor/Xt/devices/SoXtDevice.h>
+#include <Inventor/Xt/devices/SoXtKeyboard.h>
+#include <Inventor/Xt/devices/SoXtMouse.h>
+#include <Inventor/Xt/devices/SoXtSpaceball.h>
+#include <Inventor/Xt/editors/SoXtColorEditor.h>
+#include <Inventor/Xt/editors/SoXtMaterialEditor.h>
+#include <Inventor/Xt/nodes/SoGuiColorEditor.h>
+#include <Inventor/Xt/nodes/SoGuiMaterialEditor.h>
+#include <Inventor/Xt/viewers/SoXtViewer.h>
+#include <Inventor/Xt/viewers/SoXtConstrainedViewer.h>
+#include <Inventor/Xt/viewers/SoXtFullViewer.h>
+#include <Inventor/Xt/viewers/SoXtExaminerViewer.h>
+#include <Inventor/Xt/viewers/SoXtFlyViewer.h>
+#include <Inventor/Xt/viewers/SoXtPlaneViewer.h>
+#include <Inventor/Xt/widgets/SoXtPopupMenu.h>
+#include <Inventor/Xt/SoXtResource.h>
+#include <Inventor/Xt/SoXt.h>
+#include <Inventor/Xt/SoXtBasic.h>
+#include <Inventor/Xt/SoXtObject.h>
+#include <Inventor/Xt/SoXtCursor.h>
+#include <Inventor/Xt/SoXtComponent.h>
+#include <Inventor/Xt/SoXtGLWidget.h>
+#include <Inventor/Xt/SoXtRenderArea.h>
+#include <Inventor/Xt/SoXtColorEditor.h>
+#include <Inventor/Xt/SoXtMaterialEditor.h>
+
+#endif
+
+/* FIXME: there is a major pitfall reg. this solution, namely
+ * thread safety! reconsider! 20030626 tamer.
+ */
+static void *Pivy_PythonInteractiveLoop(void *data) {
+  PyRun_InteractiveLoop(stdin, "<stdin>");
+  return NULL;
+}
+
+/* a casting helper function */
 PyObject *
 cast(PyObject *self, PyObject *args)
 {
@@ -774,10 +810,10 @@ cast(PyObject *self, PyObject *args)
 /* ignore the following methods */
 %ignore SoQt::init(int & argc, char ** argv, const char * appname, const char * classname = "SoQt");
 %ignore SoQt::init(QWidget * toplevelwidget);
-/* %ignore SoGtk::init(int argc, char ** argv, const char * appname, const char * classname = "SoGtk"); */
-/* %ignore SoGtk::init(GtkWidget * toplevelwidget); */
-/* %ignore SoXt::init(int argc, char ** argv, const char * appname, const char * classname = "SoXt"); */
-/* %ignore SoXt::init(Widget * toplevelwidget); */
+%ignore SoGtk::init(int argc, char ** argv, const char * appname, const char * classname = "SoGtk");
+%ignore SoGtk::init(GtkWidget * toplevelwidget);
+%ignore SoXt::init(int argc, char ** argv, const char * appname, const char * classname = "SoXt");
+%ignore SoXt::init(Widget * toplevelwidget);
 
 %ignore SoVRMLAudioClip::getDefaultIntroPause();
 %ignore SoVRMLAudioClip::getDefaultPauseBetweenTracks();
@@ -792,8 +828,10 @@ cast(PyObject *self, PyObject *args)
  * declarations take care about this for the classes we still
  * want a constructor for.
  */
-%feature("notabstract") SoComposeVec3f;
 %feature("notabstract") SoBoolOperation;
+%feature("notabstract") SoComposeRotation;
+%feature("notabstract") SoComposeVec3f;
+%feature("notabstract") SoDecomposeVec3f;
 
 %native(cast) PyObject *cast(PyObject *self, PyObject *args);
 
@@ -838,67 +876,6 @@ cast(PyObject *self, PyObject *args)
   }
 }
 
-%include Inventor/SbBasic.h
-%include Inventor/SbPList.h
-%include Inventor/So.h
-%include Inventor/SoDB.h
-%include Inventor/SoFullPath.h
-%include Inventor/SoNodeKitPath.h
-%include Inventor/SoInput.h
-%include Inventor/SoInteraction.h
-%include Inventor/SoOffscreenRenderer.h
-%include Inventor/SoOutput.h
-%include Inventor/SoPath.h
-%include Inventor/SoPickedPoint.h
-%include Inventor/SoPrimitiveVertex.h
-%include Inventor/SoSceneManager.h
-%include Inventor/SoType.h
-%include Inventor/Sb.h
-%include Inventor/SbBox.h
-%include Inventor/SbBSPTree.h
-%include Inventor/SbLinear.h
-%include Inventor/SbDPLinear.h
-%include Inventor/SoLists.h
-%include Inventor/SbBox2s.h
-%include Inventor/SbBox3s.h
-%include Inventor/SbBox2f.h
-%include Inventor/SbBox2d.h
-%include Inventor/SbBox3f.h
-%include Inventor/SbClip.h
-%include Inventor/SbColor.h
-%include Inventor/SbColor4f.h
-%include Inventor/SbCylinder.h
-%include Inventor/SbDict.h
-%include Inventor/SbDPLine.h
-%include Inventor/SbDPMatrix.h
-%include Inventor/SbDPPlane.h
-%include Inventor/SbDPRotation.h
-%include Inventor/SbHeap.h
-%include Inventor/SbImage.h
-%include Inventor/SbLine.h
-%include Inventor/SbMatrix.h
-%include Inventor/SbName.h
-%include Inventor/SbOctTree.h
-%include Inventor/SbPlane.h
-%include Inventor/SbRotation.h
-%include Inventor/SbSphere.h
-%include Inventor/SbString.h
-%include Inventor/SbTesselator.h
-%include Inventor/SbTime.h
-%include Inventor/SbVec2s.h
-%include Inventor/SbVec2f.h
-%include Inventor/SbVec2d.h
-%include Inventor/SbVec3s.h
-%include Inventor/SbVec3f.h
-%include Inventor/SbVec3d.h
-%include Inventor/SbVec4f.h
-%include Inventor/SbVec4d.h
-%include Inventor/SbViewVolume.h
-%include Inventor/SbDPViewVolume.h
-%include Inventor/SbViewportRegion.h
-%include Inventor/SbXfBox3f.h
-%include Inventor/C/tidbits.h
-%include Inventor/C/basic.h
 %include Inventor/C/base/hash.h
 %include Inventor/C/base/heap.h
 %include Inventor/C/base/memalloc.h
@@ -922,9 +899,12 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/C/threads/sync.h
 %include Inventor/C/threads/fifo.h
 %include Inventor/C/threads/barrier.h
+%include Inventor/C/tidbits.h
+%include Inventor/C/basic.h
 %include Inventor/lock/SoLockMgr.h
 %include Inventor/system/gl.h
 %include Inventor/system/inttypes.h
+%include Inventor/SbBasic.h
 %include Inventor/actions/SoSubAction.h
 %include Inventor/actions/SoActions.h
 %include Inventor/actions/SoAction.h
@@ -1396,6 +1376,12 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/sensors/SoSensorManager.h
 %include Inventor/sensors/SoTimerQueueSensor.h
 %include Inventor/sensors/SoTimerSensor.h
+%include Inventor/collision/SoIntersectionDetectionAction.h
+%include Inventor/annex/HardCopy/SoHardCopy.h
+%include Inventor/annex/HardCopy/SoPSVectorOutput.h
+%include Inventor/annex/HardCopy/SoVectorOutput.h
+%include Inventor/annex/HardCopy/SoVectorizeAction.h
+%include Inventor/annex/HardCopy/SoVectorizePSAction.h
 %include Inventor/threads/SbThread.h
 %include Inventor/threads/SbMutex.h
 %include Inventor/threads/SbRWMutex.h
@@ -1475,6 +1461,81 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/VRMLnodes/SoVRMLViewpoint.h
 %include Inventor/VRMLnodes/SoVRMLVisibilitySensor.h
 %include Inventor/VRMLnodes/SoVRMLWorldInfo.h
+%include Inventor/SbPList.h
+%include Inventor/So.h
+%include Inventor/SoDB.h
+%include Inventor/SoFullPath.h
+%include Inventor/SoNodeKitPath.h
+%include Inventor/SoInput.h
+%include Inventor/SoInteraction.h
+%include Inventor/SoOffscreenRenderer.h
+%include Inventor/SoOutput.h
+%include Inventor/SoPath.h
+%include Inventor/SoPickedPoint.h
+%include Inventor/SoPrimitiveVertex.h
+%include Inventor/SoSceneManager.h
+%include Inventor/SoType.h
+%include Inventor/Sb.h
+%include Inventor/SbBox.h
+%include Inventor/SbBSPTree.h
+%include Inventor/SbLinear.h
+%include Inventor/SbDPLinear.h
+%include Inventor/SoLists.h
+%include Inventor/SbBox2s.h
+%include Inventor/SbBox3s.h
+%include Inventor/SbBox2f.h
+%include Inventor/SbBox2d.h
+%include Inventor/SbBox3f.h
+%include Inventor/SbClip.h
+%include Inventor/SbColor.h
+%include Inventor/SbColor4f.h
+%include Inventor/SbCylinder.h
+%include Inventor/SbDict.h
+%include Inventor/SbDPLine.h
+%include Inventor/SbDPMatrix.h
+%include Inventor/SbDPPlane.h
+%include Inventor/SbDPRotation.h
+%include Inventor/SbHeap.h
+%include Inventor/SbImage.h
+%include Inventor/SbLine.h
+%include Inventor/SbMatrix.h
+%include Inventor/SbName.h
+%include Inventor/SbOctTree.h
+%include Inventor/SbPlane.h
+%include Inventor/SbRotation.h
+%include Inventor/SbSphere.h
+%include Inventor/SbString.h
+%include Inventor/SbTesselator.h
+%include Inventor/SbTime.h
+%include Inventor/SbVec2s.h
+%include Inventor/SbVec2f.h
+%include Inventor/SbVec2d.h
+%include Inventor/SbVec3s.h
+%include Inventor/SbVec3f.h
+%include Inventor/SbVec3d.h
+%include Inventor/SbVec4f.h
+%include Inventor/SbVec4d.h
+%include Inventor/SbViewVolume.h
+%include Inventor/SbDPViewVolume.h
+%include Inventor/SbViewportRegion.h
+%include Inventor/SbXfBox3f.h
+
+#ifdef PIVY_USE_SOQT
+
+%include Inventor/Qt/devices/SoQtDevice.h
+%include Inventor/Qt/devices/SoQtKeyboard.h
+%include Inventor/Qt/devices/SoQtMouse.h
+%include Inventor/Qt/devices/SoQtSpaceball.h
+%include Inventor/Qt/editors/SoQtColorEditor.h
+%include Inventor/Qt/nodes/SoGuiColorEditor.h
+%include Inventor/Qt/viewers/SoQtViewer.h
+%include Inventor/Qt/viewers/SoQtFullViewer.h
+%include Inventor/Qt/viewers/SoQtExaminerViewer.h
+%include Inventor/Qt/viewers/SoQtPlaneViewer.h
+%include Inventor/Qt/viewers/SoQtConstrainedViewer.h
+%include Inventor/Qt/viewers/SoQtFlyViewer.h
+%include Inventor/Qt/widgets/SoQtPopupMenu.h
+%include Inventor/Qt/SoQtColorEditor.h
 %include Inventor/Qt/SoQt.h
 %include Inventor/Qt/SoQtBasic.h
 %include Inventor/Qt/SoQtObject.h
@@ -1482,54 +1543,57 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/Qt/SoQtComponent.h
 %include Inventor/Qt/SoQtGLWidget.h
 %include Inventor/Qt/SoQtRenderArea.h
-%include Inventor/Qt/devices/SoQtDevice.h
-%include Inventor/Qt/devices/SoQtKeyboard.h
-%include Inventor/Qt/devices/SoQtMouse.h
-%include Inventor/Qt/devices/SoQtSpaceball.h
-%include Inventor/Qt/viewers/SoQtViewer.h
-%include Inventor/Qt/viewers/SoQtConstrainedViewer.h
-%include Inventor/Qt/viewers/SoQtFullViewer.h
-%include Inventor/Qt/viewers/SoQtExaminerViewer.h
-%include Inventor/Qt/viewers/SoQtFlyViewer.h
-%include Inventor/Qt/viewers/SoQtPlaneViewer.h
-%include Inventor/Qt/widgets/SoQtPopupMenu.h
-/* %include Inventor/Gtk/SoGtkGraphEditor.h */
-/* %include Inventor/Gtk/SoGtkRoster.h */
-/* %include Inventor/Gtk/SoGtk.h */
-/* %include Inventor/Gtk/SoGtkBasic.h */
-/* %include Inventor/Gtk/SoGtkObject.h */
-/* %include Inventor/Gtk/SoGtkCursor.h */
-/* %include Inventor/Gtk/SoGtkComponent.h */
-/* %include Inventor/Gtk/SoGtkGLWidget.h */
-/* %include Inventor/Gtk/SoGtkRenderArea.h */
-/* %include Inventor/Gtk/devices/SoGtkDevice.h */
-/* %include Inventor/Gtk/devices/SoGtkKeyboard.h */
-/* %include Inventor/Gtk/devices/SoGtkMouse.h */
-/* %include Inventor/Gtk/devices/SoGtkSpaceball.h */
-/* %include Inventor/Gtk/widgets/SoGtkPopupMenu.h */
-/* %include Inventor/Gtk/viewers/SoGtkViewer.h */
-/* %include Inventor/Gtk/viewers/SoGtkConstrainedViewer.h */
-/* %include Inventor/Gtk/viewers/SoGtkFullViewer.h */
-/* %include Inventor/Gtk/viewers/SoGtkExaminerViewer.h */
-/* %include Inventor/Gtk/viewers/SoGtkFlyViewer.h */
-/* %include Inventor/Gtk/viewers/SoGtkPlaneViewer.h */
-/* %include Inventor/Xt/SoXtResource.h */
-/* %include Inventor/Xt/SoXt.h */
-/* %include Inventor/Xt/SoXtBasic.h */
-/* %include Inventor/Xt/SoXtObject.h */
-/* %include Inventor/Xt/SoXtCursor.h */
-/* %include Inventor/Xt/SoXtComponent.h */
-/* %include Inventor/Xt/SoXtGLWidget.h */
-/* %include Inventor/Xt/SoXtRenderArea.h */
-/* %include Inventor/Xt/devices/SoXtDevice.h */
-/* %include Inventor/Xt/devices/SoXtKeyboard.h */
-/* %include Inventor/Xt/devices/SoXtMouse.h */
-/* %include Inventor/Xt/devices/SoXtSpaceball.h */
-/* %include Inventor/Xt/devices/SoXtLinuxJoystick.h */
-/* %include Inventor/Xt/widgets/SoXtPopupMenu.h */
-/* %include Inventor/Xt/viewers/SoXtViewer.h */
-/* %include Inventor/Xt/viewers/SoXtConstrainedViewer.h */
-/* %include Inventor/Xt/viewers/SoXtFullViewer.h */
-/* %include Inventor/Xt/viewers/SoXtExaminerViewer.h */
-/* %include Inventor/Xt/viewers/SoXtFlyViewer.h */
-/* %include Inventor/Xt/viewers/SoXtPlaneViewer.h */
+
+#elif PIVY_USE_SOGTK
+
+%include Inventor/Gtk/devices/SoGtkDevice.h
+%include Inventor/Gtk/devices/SoGtkKeyboard.h
+%include Inventor/Gtk/devices/SoGtkMouse.h
+%include Inventor/Gtk/devices/SoGtkSpaceball.h
+%include Inventor/Gtk/widgets/SoGtkPopupMenu.h
+%include Inventor/Gtk/viewers/SoGtkViewer.h
+%include Inventor/Gtk/viewers/SoGtkConstrainedViewer.h
+%include Inventor/Gtk/viewers/SoGtkFullViewer.h
+%include Inventor/Gtk/viewers/SoGtkExaminerViewer.h
+%include Inventor/Gtk/viewers/SoGtkFlyViewer.h
+%include Inventor/Gtk/viewers/SoGtkPlaneViewer.h
+%include Inventor/Gtk/SoGtkGraphEditor.h
+%include Inventor/Gtk/SoGtkRoster.h
+%include Inventor/Gtk/SoGtk.h
+%include Inventor/Gtk/SoGtkBasic.h
+%include Inventor/Gtk/SoGtkObject.h
+%include Inventor/Gtk/SoGtkCursor.h
+%include Inventor/Gtk/SoGtkComponent.h
+%include Inventor/Gtk/SoGtkGLWidget.h
+%include Inventor/Gtk/SoGtkRenderArea.h
+
+#elif PIVY_USE_SOXT
+
+%include Inventor/Xt/devices/SoXtLinuxJoystick.h
+%include Inventor/Xt/devices/SoXtDevice.h
+%include Inventor/Xt/devices/SoXtKeyboard.h
+%include Inventor/Xt/devices/SoXtMouse.h
+%include Inventor/Xt/devices/SoXtSpaceball.h
+%include Inventor/Xt/editors/SoXtColorEditor.h
+%include Inventor/Xt/editors/SoXtMaterialEditor.h
+%include Inventor/Xt/nodes/SoGuiColorEditor.h
+%include Inventor/Xt/nodes/SoGuiMaterialEditor.h
+%include Inventor/Xt/viewers/SoXtViewer.h
+%include Inventor/Xt/viewers/SoXtConstrainedViewer.h
+%include Inventor/Xt/viewers/SoXtFullViewer.h
+%include Inventor/Xt/viewers/SoXtExaminerViewer.h
+%include Inventor/Xt/viewers/SoXtFlyViewer.h
+%include Inventor/Xt/viewers/SoXtPlaneViewer.h
+%include Inventor/Xt/widgets/SoXtPopupMenu.h
+%include Inventor/Xt/SoXtResource.h
+%include Inventor/Xt/SoXt.h
+%include Inventor/Xt/SoXtBasic.h
+%include Inventor/Xt/SoXtObject.h
+%include Inventor/Xt/SoXtCursor.h
+%include Inventor/Xt/SoXtComponent.h
+%include Inventor/Xt/SoXtGLWidget.h
+%include Inventor/Xt/SoXtRenderArea.h
+%include Inventor/Xt/SoXtColorEditor.h
+%include Inventor/Xt/SoXtMaterialEditor.h
+
+#endif

@@ -68,6 +68,14 @@ class COIN_DLL_API SoMFInt32 : public SoMField {
 public:
   static void initClass(void);
 
+#ifdef __PIVY__
+  %addmethods {
+        void __call__(int i) {
+          self->setValue(i);
+        }
+  }
+#endif
+
 private:
   virtual int getNumValuesPerLine(void) const;
 };

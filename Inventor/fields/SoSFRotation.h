@@ -57,8 +57,8 @@ public:
 
 #ifdef __PIVY__
   %addmethods {
-	void __call__(float q[4]) {
-	  self->setValue(q);
+	void __call__(SbVec3f & axis, float angle) {
+	  self->setValue(axis, angle);
 	}
   }
 #endif

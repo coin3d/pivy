@@ -124,6 +124,14 @@ public:
   void setValues(const int start, const int num, const float rgb[][3]);
   void setHSVValues(const int start, const int num, const float hsv[][3]);
 
+#ifdef __PIVY__
+  %addmethods {
+        void __call__(float rgb[3]) {
+          self->setValue(rgb);
+        }
+  }
+#endif
+
   void setValue(const SbVec3f & vec);
   void setValue(const float r, const float g, const float b);
   void setValue(const float rgb[3]);

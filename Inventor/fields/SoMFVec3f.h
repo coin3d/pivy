@@ -116,6 +116,15 @@ public:
   void set1Value(const int idx, const float x, const float y, const float z);
   void set1Value(const int idx, const float xyz[3]);
   void setValue(const float x, const float y, const float z);
+
+#ifdef __PIVY__
+  %addmethods {
+        void __call__(float xyz[3]) {
+          self->setValue(xyz);
+        }
+  }
+#endif
+
   void setValue(const float xyz[3]);
 };
 

@@ -600,7 +600,7 @@
 #include <Inventor/Gtk/viewers/SoGtkFullViewer.h>
 #include <Inventor/Gtk/viewers/SoGtkExaminerViewer.h>
 #include <Inventor/Gtk/viewers/SoGtkPlaneViewer.h>
-#include <Inventor/Gtk/viewers/SoGtkWalkViewer.h>
+/* #include <Inventor/Gtk/viewers/SoGtkWalkViewer.h> */
 #include <Inventor/Gtk/viewers/SoGtkViewer.h>
 #include <Inventor/Gtk/viewers/SoGtkConstrainedViewer.h>
 #include <Inventor/Gtk/viewers/SoGtkFlyViewer.h>
@@ -1260,5 +1260,5 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/Gtk/viewers/SoGtkConstrainedViewer.h
 %include Inventor/Gtk/viewers/SoGtkExaminerViewer.h
 %include Inventor/Gtk/viewers/SoGtkPlaneViewer.h
-%include Inventor/Gtk/viewers/SoGtkWalkViewer.h
+/* %include Inventor/Gtk/viewers/SoGtkWalkViewer.h */
 %include Inventor/Gtk/viewers/SoGtkFlyViewer.h

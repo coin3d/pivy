@@ -29,7 +29,7 @@
 
 #ifdef __PIVY__
 %rename(SoGtkCursor_sha) SoGtkCursor::SoGtkCursor(const Shape shape);
-%rename(SoGtkCursor_cc) SoGtkCursor::SoGtkCursor(const CustomCursor * cc);
+%rename(SoGtkCursor_cc) SoGtkCursor::SoGtkCursor(const SoGtkCursor::CustomCursor * cc);
 
 %feature("shadow") SoGtkCursor::SoGtkCursor %{
 def __init__(self,*args):
@@ -61,7 +61,6 @@ public:
     unsigned char * mask;
   };
 
-
   // FIXME: add more default shapes. 20011119 pederb.
   enum Shape {
     CUSTOM_BITMAP = -1,
@@ -73,13 +72,23 @@ public:
   
   SoGtkCursor(void);
   SoGtkCursor(const Shape shape);
+
+#ifdef __PIVY__
+  SoGtkCursor(const SoGtkCursor::CustomCursor * cc);
+#else
   SoGtkCursor(const CustomCursor * cc);
+#endif
+
   ~SoGtkCursor();
 
   Shape getShape(void) const;
   void setShape(const Shape shape);
 
+#ifdef __PIVY__
+  const SoGtkCursor::CustomCursor & getCustomCursor(void) const;
+#else
   const CustomCursor & getCustomCursor(void) const;
+#endif
 
   static const SoGtkCursor & getZoomCursor(void);
   static const SoGtkCursor & getPanCursor(void);

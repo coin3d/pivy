@@ -80,9 +80,9 @@ def writeToPostScript(*args):
    return apply(_pivy.SoOffscreenRenderer_writeToPostScript,args)
 %}
 
-%rename(writeToRGB_chr) SoOffscreenRenderer::writeToRGB(FILE * fp) const;
+%rename(writeToRGB_chr) SoOffscreenRenderer::writeToRGB(const char * filename) const;
 
-%feature("shadow") SoOffscreenRenderer::writeToRGB(const char * filename) const %{
+%feature("shadow") SoOffscreenRenderer::writeToRGB(FILE * fp) const %{
 def writeToRGB(*args):
    if type(args[1]) == type(""):
          return apply(_pivy.SoOffscreenRenderer_writeToRGB_chr,args)

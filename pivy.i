@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2002, Tamer Fahmy <tamer@tammura.at>
+ * Copyright (C) 2002-2004, Tamer Fahmy <tamer@tammura.at>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -678,92 +678,6 @@
 #include <Inventor/SbViewportRegion.h>
 #include <Inventor/SbXfBox3f.h>
 
-#ifdef PIVY_USE_SOQT
-
-#include <Inventor/Qt/devices/SoQtDevice.h>
-#include <Inventor/Qt/devices/SoQtKeyboard.h>
-#include <Inventor/Qt/devices/SoQtMouse.h>
-#include <Inventor/Qt/devices/SoQtSpaceball.h>
-#include <Inventor/Qt/editors/SoQtColorEditor.h>
-#include <Inventor/Qt/nodes/SoGuiColorEditor.h>
-#include <Inventor/Qt/viewers/SoQtViewer.h>
-#include <Inventor/Qt/viewers/SoQtFullViewer.h>
-#include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
-#include <Inventor/Qt/viewers/SoQtPlaneViewer.h>
-#include <Inventor/Qt/viewers/SoQtConstrainedViewer.h>
-#include <Inventor/Qt/viewers/SoQtFlyViewer.h>
-#include <Inventor/Qt/widgets/SoQtPopupMenu.h>
-#include <Inventor/Qt/SoQtColorEditor.h>
-#include <Inventor/Qt/SoQt.h>
-#include <Inventor/Qt/SoQtBasic.h>
-#include <Inventor/Qt/SoQtObject.h>
-#include <Inventor/Qt/SoQtCursor.h>
-#include <Inventor/Qt/SoQtComponent.h>
-#include <Inventor/Qt/SoQtGLWidget.h>
-#include <Inventor/Qt/SoQtRenderArea.h>
-
-#elif PIVY_USE_SOGTK
-
-#include <Inventor/Gtk/devices/SoGtkDevice.h>
-#include <Inventor/Gtk/devices/SoGtkKeyboard.h>
-#include <Inventor/Gtk/devices/SoGtkMouse.h>
-#include <Inventor/Gtk/devices/SoGtkSpaceball.h>
-#include <Inventor/Gtk/widgets/SoGtkPopupMenu.h>
-#include <Inventor/Gtk/viewers/SoGtkViewer.h>
-#include <Inventor/Gtk/viewers/SoGtkConstrainedViewer.h>
-#include <Inventor/Gtk/viewers/SoGtkFullViewer.h>
-#include <Inventor/Gtk/viewers/SoGtkExaminerViewer.h>
-#include <Inventor/Gtk/viewers/SoGtkFlyViewer.h>
-#include <Inventor/Gtk/viewers/SoGtkPlaneViewer.h>
-#include <Inventor/Gtk/SoGtkGraphEditor.h>
-#include <Inventor/Gtk/SoGtkRoster.h>
-#include <Inventor/Gtk/SoGtk.h>
-#include <Inventor/Gtk/SoGtkBasic.h>
-#include <Inventor/Gtk/SoGtkObject.h>
-#include <Inventor/Gtk/SoGtkCursor.h>
-#include <Inventor/Gtk/SoGtkComponent.h>
-#include <Inventor/Gtk/SoGtkGLWidget.h>
-#include <Inventor/Gtk/SoGtkRenderArea.h>
-
-
-#elif PIVY_USE_SOXT
-
-#include <Inventor/Xt/devices/SoXtLinuxJoystick.h>
-#include <Inventor/Xt/devices/SoXtDevice.h>
-#include <Inventor/Xt/devices/SoXtKeyboard.h>
-#include <Inventor/Xt/devices/SoXtMouse.h>
-#include <Inventor/Xt/devices/SoXtSpaceball.h>
-#include <Inventor/Xt/editors/SoXtColorEditor.h>
-#include <Inventor/Xt/editors/SoXtMaterialEditor.h>
-#include <Inventor/Xt/nodes/SoGuiColorEditor.h>
-#include <Inventor/Xt/nodes/SoGuiMaterialEditor.h>
-#include <Inventor/Xt/viewers/SoXtViewer.h>
-#include <Inventor/Xt/viewers/SoXtConstrainedViewer.h>
-#include <Inventor/Xt/viewers/SoXtFullViewer.h>
-#include <Inventor/Xt/viewers/SoXtExaminerViewer.h>
-#include <Inventor/Xt/viewers/SoXtFlyViewer.h>
-#include <Inventor/Xt/viewers/SoXtPlaneViewer.h>
-#include <Inventor/Xt/widgets/SoXtPopupMenu.h>
-#include <Inventor/Xt/SoXtResource.h>
-#include <Inventor/Xt/SoXt.h>
-#include <Inventor/Xt/SoXtBasic.h>
-#include <Inventor/Xt/SoXtObject.h>
-#include <Inventor/Xt/SoXtCursor.h>
-#include <Inventor/Xt/SoXtComponent.h>
-#include <Inventor/Xt/SoXtGLWidget.h>
-#include <Inventor/Xt/SoXtRenderArea.h>
-#include <Inventor/Xt/SoXtColorEditor.h>
-#include <Inventor/Xt/SoXtMaterialEditor.h>
-
-#endif
-
-/* FIXME: there is a major pitfall reg. this solution, namely
- * thread safety! reconsider! 20030626 tamer.
- */
-static void *Pivy_PythonInteractiveLoop(void *data) {
-  PyRun_InteractiveLoop(stdin, "<stdin>");
-  return NULL;
-}
 
 /* a casting helper function */
 PyObject *
@@ -806,19 +720,6 @@ cast(PyObject *self, PyObject *args)
  **/
 
 %include "typemaps.i"
-
-/* ignore the following methods */
-%ignore SoQt::init(int & argc, char ** argv, const char * appname, const char * classname = "SoQt");
-%ignore SoQt::init(QWidget * toplevelwidget);
-%ignore SoGtk::init(int argc, char ** argv, const char * appname, const char * classname = "SoGtk");
-%ignore SoGtk::init(GtkWidget * toplevelwidget);
-%ignore SoXt::init(int argc, char ** argv, const char * appname, const char * classname = "SoXt");
-%ignore SoXt::init(Widget * toplevelwidget);
-
-/* ignores for undefined Symbols */
-%ignore SoGuiColorEditor::getClassNodekitCatalog(void);
-%ignore SoGuiColorEditor::getClassTypeId(void);
-
 
 /* if SWIG thinks the class is abstract, then it refuses to 
  * generate constructors of any kind. the following %feature
@@ -1516,81 +1417,3 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/SbDPViewVolume.h
 %include Inventor/SbViewportRegion.h
 %include Inventor/SbXfBox3f.h
-
-#ifdef PIVY_USE_SOQT
-
-%include Inventor/Qt/devices/SoQtDevice.h
-%include Inventor/Qt/devices/SoQtKeyboard.h
-%include Inventor/Qt/devices/SoQtMouse.h
-%include Inventor/Qt/devices/SoQtSpaceball.h
-%include Inventor/Qt/editors/SoQtColorEditor.h
-%include Inventor/Qt/nodes/SoGuiColorEditor.h
-%include Inventor/Qt/viewers/SoQtViewer.h
-%include Inventor/Qt/viewers/SoQtFullViewer.h
-%include Inventor/Qt/viewers/SoQtExaminerViewer.h
-%include Inventor/Qt/viewers/SoQtPlaneViewer.h
-%include Inventor/Qt/viewers/SoQtConstrainedViewer.h
-%include Inventor/Qt/viewers/SoQtFlyViewer.h
-%include Inventor/Qt/widgets/SoQtPopupMenu.h
-%include Inventor/Qt/SoQtColorEditor.h
-%include Inventor/Qt/SoQt.h
-%include Inventor/Qt/SoQtBasic.h
-%include Inventor/Qt/SoQtObject.h
-%include Inventor/Qt/SoQtCursor.h
-%include Inventor/Qt/SoQtComponent.h
-%include Inventor/Qt/SoQtGLWidget.h
-%include Inventor/Qt/SoQtRenderArea.h
-
-#elif PIVY_USE_SOGTK
-
-%include Inventor/Gtk/devices/SoGtkDevice.h
-%include Inventor/Gtk/devices/SoGtkKeyboard.h
-%include Inventor/Gtk/devices/SoGtkMouse.h
-%include Inventor/Gtk/devices/SoGtkSpaceball.h
-%include Inventor/Gtk/widgets/SoGtkPopupMenu.h
-%include Inventor/Gtk/viewers/SoGtkViewer.h
-%include Inventor/Gtk/viewers/SoGtkConstrainedViewer.h
-%include Inventor/Gtk/viewers/SoGtkFullViewer.h
-%include Inventor/Gtk/viewers/SoGtkExaminerViewer.h
-%include Inventor/Gtk/viewers/SoGtkFlyViewer.h
-%include Inventor/Gtk/viewers/SoGtkPlaneViewer.h
-%include Inventor/Gtk/SoGtkGraphEditor.h
-%include Inventor/Gtk/SoGtkRoster.h
-%include Inventor/Gtk/SoGtk.h
-%include Inventor/Gtk/SoGtkBasic.h
-%include Inventor/Gtk/SoGtkObject.h
-%include Inventor/Gtk/SoGtkCursor.h
-%include Inventor/Gtk/SoGtkComponent.h
-%include Inventor/Gtk/SoGtkGLWidget.h
-%include Inventor/Gtk/SoGtkRenderArea.h
-
-#elif PIVY_USE_SOXT
-
-%include Inventor/Xt/devices/SoXtLinuxJoystick.h
-%include Inventor/Xt/devices/SoXtDevice.h
-%include Inventor/Xt/devices/SoXtKeyboard.h
-%include Inventor/Xt/devices/SoXtMouse.h
-%include Inventor/Xt/devices/SoXtSpaceball.h
-%include Inventor/Xt/editors/SoXtColorEditor.h
-%include Inventor/Xt/editors/SoXtMaterialEditor.h
-%include Inventor/Xt/nodes/SoGuiColorEditor.h
-%include Inventor/Xt/nodes/SoGuiMaterialEditor.h
-%include Inventor/Xt/viewers/SoXtViewer.h
-%include Inventor/Xt/viewers/SoXtConstrainedViewer.h
-%include Inventor/Xt/viewers/SoXtFullViewer.h
-%include Inventor/Xt/viewers/SoXtExaminerViewer.h
-%include Inventor/Xt/viewers/SoXtFlyViewer.h
-%include Inventor/Xt/viewers/SoXtPlaneViewer.h
-%include Inventor/Xt/widgets/SoXtPopupMenu.h
-%include Inventor/Xt/SoXtResource.h
-%include Inventor/Xt/SoXt.h
-%include Inventor/Xt/SoXtBasic.h
-%include Inventor/Xt/SoXtObject.h
-%include Inventor/Xt/SoXtCursor.h
-%include Inventor/Xt/SoXtComponent.h
-%include Inventor/Xt/SoXtGLWidget.h
-%include Inventor/Xt/SoXtRenderArea.h
-%include Inventor/Xt/SoXtColorEditor.h
-%include Inventor/Xt/SoXtMaterialEditor.h
-
-#endif

@@ -56,7 +56,7 @@ SoGuiConstrainedViewer = None
 class SoGui_Proxy:
     "a proxy object which routes the calls through their counterparts"
     
-    def __init__(self, obj, debug):
+    def __init__(self, gui, debug):
         global SoGuiCursor, SoGuiComponent, SoGuiGLWidget, SoGuiRenderArea
         global SoGuiViewer, SoGuiFullViewer, SoGuiFlyViewer, SoGuiPlaneViewer
         global SoGuiDevice, SoGuiKeyboard, SoGuiMouse, SoGuiSpaceball
@@ -66,104 +66,61 @@ class SoGui_Proxy:
         
         # if no binding has been specified check for availability of a known
         # one in a defined order SoQt -> SoXt -> SoGtk
-        if not obj:
+        if not gui:
             try:
-                soqt = __import__('soqt')
-                obj = soqt.SoQt
-                SoGuiCursor      = soqt.SoQtCursor
-                SoGuiComponent   = soqt.SoQtComponent
-                SoGuiGLWidget    = soqt.SoQtGLWidget
-                SoGuiRenderArea  = soqt.SoQtRenderArea
-                SoGuiViewer      = soqt.SoQtViewer
-                SoGuiFullViewer  = soqt.SoQtFullViewer
-                SoGuiFlyViewer   = soqt.SoQtFlyViewer
-                SoGuiPlaneViewer = soqt.SoQtPlaneViewer
-                SoGuiDevice      = soqt.SoQtDevice
-                SoGuiKeyboard    = soqt.SoQtKeyboard
-                SoGuiMouse       = soqt.SoQtMouse
-                SoGuiSpaceball   = soqt.SoQtSpaceball
-                SoGuiExaminerViewer = soqt.SoQtExaminerViewer                
-                SoGuiConstrainedViewer = soqt.SoQtConstrainedViewer
+                sogui = __import__('soqt')
+                gui = 'SoQt'
             except ImportError:
                 try:
-                    soxt = __import__('soxt')
-                    obj = soxt.Soxt
-                    SoGuiCursor      = soxt.SoXtCursor
-                    SoGuiComponent   = soxt.SoXtComponent
-                    SoGuiGLWidget    = soxt.SoXtGLWidget
-                    SoGuiRenderArea  = soxt.SoXtRenderArea
-                    SoGuiViewer      = soxt.SoXtViewer
-                    SoGuiFullViewer  = soxt.SoXtFullViewer
-                    SoGuiFlyViewer   = soxt.SoXtFlyViewer
-                    SoGuiPlaneViewer = soxt.SoXtPlaneViewer
-                    SoGuiDevice      = soxt.SoXtDevice
-                    SoGuiKeyboard    = soxt.SoXtKeyboard
-                    SoGuiMouse       = soxt.SoXtMouse
-                    SoGuiSpaceball   = soxt.SoXtSpaceball
-                    SoGuiExaminerViewer = soxt.SoXtExaminerViewer                
-                    SoGuiConstrainedViewer = soxt.SoXtConstrainedViewer
+                    sogui = __import__('soxt')
+                    gui = 'SoXt'
                 except ImportError:
                     try:
-                        sogtk = __import__('sogtk')
-                        obj = sogtk.SoGtk
-                        SoGuiCursor      = sogtk.SoGtkCursor
-                        SoGuiComponent   = sogtk.SoGtkComponent
-                        SoGuiGLWidget    = sogtk.SoGtkGLWidget
-                        SoGuiRenderArea  = sogtk.SoGtkRenderArea
-                        SoGuiViewer      = sogtk.SoGtkViewer
-                        SoGuiFullViewer  = sogtk.SoGtkFullViewer
-                        SoGuiFlyViewer   = sogtk.SoGtkFlyViewer
-                        SoGuiPlaneViewer = sogtk.SoGtkPlaneViewer
-                        SoGuiDevice      = sogtk.SoGtkDevice
-                        SoGuiKeyboard    = sogtk.SoGtkKeyboard
-                        SoGuiMouse       = sogtk.SoGtkMouse
-                        SoGuiSpaceball   = sogtk.SoGtkSpaceball
-                        SoGuiExaminerViewer = sogtk.SoGtkExaminerViewer                
-                        SoGuiConstrainedViewer = sogtk.SoGtkConstrainedViewer
+                        sogui = __import__('sogtk')
+                        gui = 'SoGtk'
                     except ImportError:
                         print "SoGui proxy error: None of the known Gui bindings were found! Please specify one!"
                         sys.exit(1)
 
         # check if object is a user provided string possibly a new unknown SoGui binding.
         # try to bind it.
-        elif type(obj) == type(""):
+        elif type(gui) == type(""):
             try:
-                sogui = __import__(obj.lower())
-                gui = obj
-                obj = eval("sogui." + obj)
-                SoGuiCursor      = eval("sogui." + gui + "Cursor")
-                SoGuiComponent   = eval("sogui." + gui + "Component")
-                SoGuiGLWidget    = eval("sogui." + gui + "GLWidget")
-                SoGuiRenderArea  = eval("sogui." + gui + "RenderArea")
-                SoGuiViewer      = eval("sogui." + gui + "Viewer")
-                SoGuiFullViewer  = eval("sogui." + gui + "FullViewer")
-                SoGuiFlyViewer   = eval("sogui." + gui + "FlyViewer")
-                SoGuiPlaneViewer = eval("sogui." + gui + "PlaneViewer")
-                SoGuiDevice      = eval("sogui." + gui + "Device")
-                SoGuiKeyboard    = eval("sogui." + gui + "Keyboard")
-                SoGuiMouse       = eval("sogui." + gui + "Mouse")
-                SoGuiSpaceball   = eval("sogui." + gui + "Spaceball")
-                SoGuiExaminerViewer = eval("sogui." + gui + "ExaminerViewer")
-                SoGuiConstrainedViewer = eval("sogui." + gui + "ConstrainedViewer")
+                sogui = __import__(gui.lower())
             except ImportError:
                 print "SoGui proxy error: The specified Gui binding could not be bound!"
                 sys.exit(1)
+
+        SoGuiCursor            = eval("sogui." + gui + "Cursor")
+        SoGuiComponent         = eval("sogui." + gui + "Component")
+        SoGuiGLWidget          = eval("sogui." + gui + "GLWidget")
+        SoGuiRenderArea        = eval("sogui." + gui + "RenderArea")
+        SoGuiViewer            = eval("sogui." + gui + "Viewer")
+        SoGuiFullViewer        = eval("sogui." + gui + "FullViewer")
+        SoGuiFlyViewer         = eval("sogui." + gui + "FlyViewer")
+        SoGuiPlaneViewer       = eval("sogui." + gui + "PlaneViewer")
+        SoGuiDevice            = eval("sogui." + gui + "Device")
+        SoGuiKeyboard          = eval("sogui." + gui + "Keyboard")
+        SoGuiMouse             = eval("sogui." + gui + "Mouse")
+        SoGuiSpaceball         = eval("sogui." + gui + "Spaceball")
+        SoGuiExaminerViewer    = eval("sogui." + gui + "ExaminerViewer")
+        SoGuiConstrainedViewer = eval("sogui." + gui + "ConstrainedViewer")
                 
-        self.__obj__ = obj
+        self.__gui__ = eval("sogui." + gui)
 
     def __getattr__(self, name):
         if self.debug:
             print "getattr called for", name
-        return getattr(self.__obj__, name)
+        return getattr(self.__gui__, name)
 
     def __repr__(self):
-        return "SoGui proxy for " + `self.__obj__`
+        return "SoGui proxy for " + `self.__gui__`
 
     __str__ = __repr__
 
 
 # instantiate the proxy
-obj = None; debug = 0
+gui = None; debug = 0
 
 # look for user overrides in the main dictionary of the interpreter
 if sys.modules.has_key('__main__'):
@@ -173,8 +130,8 @@ if sys.modules.has_key('__main__'):
         pass
     
     try:
-        obj = sys.modules['__main__'].SOGUI_BINDING
+        gui = sys.modules['__main__'].SOGUI_BINDING
     except AttributeError:
         pass
 
-SoGui = SoGui_Proxy(obj, debug)
+SoGui = SoGui_Proxy(gui, debug)

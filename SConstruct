@@ -53,6 +53,7 @@ if str(Platform()) != "win32" and env['warnings']:
 
 env.Append(CPPPATH=[distutils.sysconfig.get_python_inc()])
 env.Append(SWIGFLAGS = "-runtime -python -noproxy")
+env.Append(LINKFLAGS=distutils.sysconfig.get_config_vars()['LINKFORSHARED'])
 
 pivy_runtime = env.SharedLibrary('pivy_runtime',
                                  'interfaces/pivy_runtime.i')

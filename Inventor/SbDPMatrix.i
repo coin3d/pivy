@@ -43,13 +43,45 @@ convert_SbDPMat_array(PyObject *input, SbDPMat temp)
       PyObject *oj = PyFloat_FromDouble((double)(*$1)[i][j]);
       PyList_SetItem(oi, j, oj);
     }
-    PyTuple_SetItem($result, i, oi);	
+    PyTuple_SetItem($result, i, oi);    
   }
 }
 
 %rename(SbDPMatrix_mul) operator *(const SbDPMatrix & m1, const SbDPMatrix & m2);
 %rename(SbDPMatrix_eq) operator ==(const SbDPMatrix & m1, const SbDPMatrix & m2);
 %rename(SbDPMatrix_neq) operator !=(const SbDPMatrix & m1, const SbDPMatrix & m2);
+
+/* add operator overloading methods instead of the global functions */
+%extend SbDPMatrix {
+    SbDPMatrix __mul__( const SbDPMatrix & u)
+    {
+        return *self * u;
+    };
+
+    SbVec3d __mul__( const SbVec3d & u )
+    {
+        SbVec3d res;
+        self->multMatrixVec( u, res );
+        return res;
+    };
+    
+    SbVec3d __rmul__( const SbVec3d & u )
+    {
+        SbVec3d res;
+        self->multVecMatrix( u, res );
+        return res;
+    };
+    
+    int __eq__( const SbDPMatrix & u )
+    {
+        return *self == u;
+    };
+    
+    int __ne__( const SbDPMatrix & u )
+    {
+        return *self != u;
+    };       
+}
 
 %ignore SbDPMatrix::SbDPMatrix(const SbDPMat & matrix);
 

@@ -1,2 +1,11 @@
-%rename(SbBox2f_eq) operator ==(const SbBox2f & b1, const SbBox2f & b2);
-%rename(SbBox2f_neq) operator !=(const SbBox2f & b1, const SbBox2f & b2);
+%extend SbBox2f {
+    int __eq__( const SbBox2f & u )
+    {
+        return *self == u;
+    };
+    
+    int __ne__( const SbBox2f & u )
+    {
+        return *self != u;
+    };       
+}

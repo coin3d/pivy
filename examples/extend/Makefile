@@ -24,7 +24,7 @@ wrap: shapescale_wrap.cpp
 shapescale_wrap.cpp: shapescale.i
 	swig -v -noruntime -c++ -python -includeall -D__PIVY__ \
 	     -I. -I${PIVY_ROOT} -I${PIVY_ROOT}/fake_headers \
-	     -I/usr/local/include -I/usr/include -o shapescale_wrap.cpp shapescale.i
+	     -I/usr/local/include -o shapescale_wrap.cpp shapescale.i
 
 cleanshapescale:
 	rm -f _shapescale.so shapescale_wrap.cpp shapescale.py shapescale.pyc

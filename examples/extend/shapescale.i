@@ -35,6 +35,6 @@
 %}
 
 /* include the typemaps common to all pivy modules */
-%include pivy_common_typemaps.i
+%include interfaces/pivy_common_typemaps.i
 
 %include ShapeScale.h

@@ -20,3 +20,6 @@ def __init__(self,*args):
    self.this = apply(_pivy.new_SbName,args)
    self.thisown = 1
 %}
+
+%rename(SbName_eq) operator ==(const SbName & lhs, const SbName & rhs);
+%rename(SbName_neq) operator !=(const SbName & lhs, const SbName & rhs);

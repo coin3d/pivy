@@ -47,6 +47,10 @@ convert_SbDPMat_array(PyObject *input, SbDPMat temp)
   }
 }
 
+%rename(SbDPMatrix_mul) operator *(const SbDPMatrix & m1, const SbDPMatrix & m2);
+%rename(SbDPMatrix_eq) operator ==(const SbDPMatrix & m1, const SbDPMatrix & m2);
+%rename(SbDPMatrix_neq) operator !=(const SbDPMatrix & m1, const SbDPMatrix & m2);
+
 %ignore SbDPMatrix::SbDPMatrix(const SbDPMat & matrix);
 
 /**

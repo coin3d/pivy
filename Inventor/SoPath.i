@@ -35,3 +35,6 @@ def getByName(*args):
       return apply(_pivy.SoPath_getByName_nam_pal,args)
    return apply(_pivy.SoPath_getByName,args)
 %}
+
+%rename(SoPath_eq) operator==(const SoPath & lhs, const SoPath & rhs);
+%rename(SoPath_neq) operator!=(const SoPath & lhs, const SoPath & rhs);

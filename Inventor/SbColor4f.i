@@ -64,6 +64,14 @@ def setHSVValue(*args):
    return apply(_pivy.SbColor4f_setHSVValue,args)
 %}
 
+%rename(SbColor4f_mul) operator *(const SbColor4f &c, const float d);
+%rename(SbColor4f_d_mul) operator *(const float d, const SbColor4f &c);
+%rename(SbColor4f_add) operator +(const SbColor4f &v1, const SbColor4f &v2);
+%rename(SbColor4f_sub) operator -(const SbColor4f &v1, const SbColor4f &v2);
+%rename(SbColor4f_div) operator /(const SbColor4f &c, const float d);
+%rename(SbColor4f_eq) operator ==(const SbColor4f &v1, const SbColor4f &v2);
+%rename(SbColor4f_neq) operator !=(const SbColor4f &v1, const SbColor4f &v2);
+
 %apply float *OUTPUT { float &r, float &g, float &b, float &a };
 %apply float *OUTPUT { float &h, float &s, float &v };
 

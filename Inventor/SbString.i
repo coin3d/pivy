@@ -30,6 +30,9 @@ def hash(*args):
    return apply(_pivy.SbString_hash,args)
 %}
 
+%rename(SbString_eq) operator==(const SbString & str1, const SbString & str2);
+%rename(SbString_neq) operator!=(const SbString & str1, const SbString & str2);
+
 // add a method for wrapping c++ operator[] access
 %extend SbString {
   float __getitem__(int i) {

@@ -39,8 +39,8 @@ def setValue(*args):
 
 %rename(SbTime_add) operator+(const SbTime & t0, const SbTime & t1);
 %rename(SbTime_sub) operator-(const SbTime & t0, const SbTime & t1);
-%rename(SbTime_d_mult) operator *(const double s, const SbTime & tm);
-%rename(SbTime_mult) operator *(const SbTime & tm, const double s);
+%rename(SbTime_d_mul) operator *(const double s, const SbTime & tm);
+%rename(SbTime_mul) operator *(const SbTime & tm, const double s);
 %rename(SbTime_div) operator /(const SbTime & tm, const double s);
 
 %ignore SbTime::getValue(time_t & sec, long & usec) const;

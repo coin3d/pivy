@@ -62,6 +62,14 @@ def setValue(*args):
    return apply(_pivy.SbVec4f_setValue,args)
 %}
 
+%rename(SbVec4f_mul) operator *(const SbVec4f & v, const float d);
+%rename(SbVec4f_d_mul) operator *(const float d, const SbVec4f & v);
+%rename(SbVec4f_add) operator+(const SbVec4f & v1, const SbVec4f & v2);
+%rename(SbVec4f_sub) operator-(const SbVec4f & v1, const SbVec4f & v2);
+%rename(SbVec4f_div) operator /(const SbVec4f & v, const float d);
+%rename(SbVec4f_eq) operator ==(const SbVec4f & v1, const SbVec4f & v2);
+%rename(SbVec4f_neq) operator !=(const SbVec4f & v1, const SbVec4f & v2);
+
 %apply float *OUTPUT { float& x, float& y, float& z, float& w };
 
 %ignore SbVec4f::getValue(float& x, float& y, float& z, float& w) const;

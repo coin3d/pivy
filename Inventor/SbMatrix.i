@@ -124,6 +124,10 @@ def multVecMatrix(*args):
     $1 = new $1_basetype();
 }
 
+%rename(SbMatrix_mul) operator *(const SbMatrix & m1, const SbMatrix & m2);
+%rename(SbMatrix_eq) operator ==(const SbMatrix & m1, const SbMatrix & m2);
+%rename(SbMatrix_neq) operator !=(const SbMatrix & m1, const SbMatrix & m2);
+
 %ignore SbMatrix::SbMatrix(const SbMat & matrix);
 %ignore SbMatrix::setValue(const SbMat & m);
 

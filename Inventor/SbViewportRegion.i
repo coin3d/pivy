@@ -47,3 +47,5 @@ def setViewportPixels(*args):
       return apply(_pivy.SbViewportRegion_setViewportPixels_ssss,args)
    return apply(_pivy.SbViewportRegion_setViewportPixels,args)
 %}
+
+%rename(SbViewportRegion_eq) operator ==(const SbViewportRegion & reg1, const SbViewportRegion & reg2);

@@ -436,35 +436,36 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
   SbString name, typeVal;
 
   /* read in the first string */
-  if (in->read(typeVal) && typeVal == "fields") {
-    if (in->read(typeVal) && typeVal == "[") {
-    
-      while (in->read(typeVal) && typeVal != "]") {
-        SoType type = SoType::fromName(typeVal);
-        
-        /* if it denotes a valid type and is derived from SoField then
-           read in the next string representing the name of the
-           field */
-        if (type != SoType::badType() && 
-            type.isDerivedFrom(SoField::getClassTypeId()) &&
-            in->read(name))
-        {
-          // check for a comma at the end and strip it off
-          const SbString fieldname = 
-            (name[name.getLength()-1] == ',') ? name.getSubString(0, name.getLength()-2) : name;
+  if (in->read(typeVal))
+    if(typeVal == "fields") {
+      if (in->read(typeVal) && typeVal == "[") {
 
-          /* skip the static fields */
-          if (fieldname == "script" || fieldname == "mustEvaluate") { continue; }
-          
-          /* instantiate the field and conduct similar actions as the
-             SO_NODE_ADD_FIELD macro */
-          SoField * field = (SoField *)type.createInstance();
-          field->setContainer(this);
-          this->fielddata->addField(this, fieldname.getString(), field);
+        while (in->read(typeVal) && typeVal != "]") {
+          SoType type = SoType::fromName(typeVal);
+
+          /* if it denotes a valid type and is derived from SoField then
+             read in the next string representing the name of the
+             field */
+          if (type != SoType::badType() && 
+              type.isDerivedFrom(SoField::getClassTypeId()) &&
+              in->read(name))
+          {
+            // check for a comma at the end and strip it off
+            const SbString fieldname = 
+              (name[name.getLength()-1] == ',') ? name.getSubString(0, name.getLength()-2) : name;
+
+            /* skip the static fields */
+            if (fieldname == "script" || fieldname == "mustEvaluate") { continue; }
+
+            /* instantiate the field and conduct similar actions as the
+               SO_NODE_ADD_FIELD macro */
+            SoField * field = (SoField *)type.createInstance();
+            field->setContainer(this);
+            this->fielddata->addField(this, fieldname.getString(), field);
+          }
         }
       }
-    }
-  }
+    } else { in->putBack(typeVal.getString()); }
 
   /* ...and let the regular readInstance() method parse the rest */
   SbBool ok = inherited::readInstance(in, flags);

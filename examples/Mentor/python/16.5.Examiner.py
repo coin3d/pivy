@@ -43,11 +43,11 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Gtk
-	myWindow = SoGtk_init(sys.argv[0])
+	# Initialize Inventor and Qt
+	myWindow = SoQt_init(sys.argv[0])
    
 	# Build the viewer in the applications main window
-	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer = SoQtExaminerViewer(myWindow)
    
 	# Read the geometry from a file and add to the scene
 	myInput = SoInput()
@@ -62,10 +62,10 @@ def main():
    
 	# Show the main window
 	myViewer.show()
-	SoGtk_show(myWindow)
+	SoQt_show(myWindow)
 
 	# Loop forever
-	SoGtk_mainLoop()
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -116,7 +116,7 @@ def tickerCallback(userData, sensor):
 # CODE FOR The Inventor Mentor STARTS HERE  (part 1)
 
 def myAppEventHandler(userData, anyevent):
-	myRenderArea = cast(userData, "SoGtkRenderArea")
+	myRenderArea = cast(userData, "SoQtRenderArea")
 	handled = TRUE
 
 	print anyevent
@@ -160,8 +160,8 @@ def main():
 	print "\tRight: deletes all the points"
 
 
-	# Initialize Inventor and Gtk
-	appWindow = SoGtk_init(sys.argv[0])
+	# Initialize Inventor and Qt
+	appWindow = SoQt_init(sys.argv[0])
 	if appWindow == None:
 		sys.exit(1)
 
@@ -196,7 +196,7 @@ def main():
 	myTicker.setInterval(UPDATE_RATE)
 
 	# Create a render area for viewing the scene
-	myRenderArea = SoGtkRenderArea(appWindow)
+	myRenderArea = SoQtRenderArea(appWindow)
 	myRenderArea.setSceneGraph(root)
 	myRenderArea.setTitle("My Event Handler")
 
@@ -212,8 +212,8 @@ def main():
 
 	# Show our application window, and loop forever...
 	myRenderArea.show()
-	SoGtk_show(appWindow)
-	SoGtk_mainLoop()
+	SoQt_show(appWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -98,7 +98,7 @@ def selectCB(userData, path):
 def mtlChangeCB(userData, mtl):
 	# Our material change callback is invoked when the
 	# user changes the material, and when we change it
-	# through a call to SoGtkMaterialEditor_setMaterial.
+	# through a call to SoQtMaterialEditor_setMaterial.
 	# In this latter case, we ignore the callback invocation
 	# ud = cast(userData, "UserData")
 
@@ -117,7 +117,7 @@ def mtlChangeCB(userData, mtl):
 
 def main():
 	# Initialization
-	mainWindow = SoGtk_init(sys.argv[0])
+	mainWindow = SoQt_init(sys.argv[0])
     
 	# Create our scene graph.
 	sel = SoSelection()
@@ -125,7 +125,7 @@ def main():
 	sel.addChild(buildScene())
 
 	# Create a viewer with a render action that displays highlights
-	viewer = SoGtkExaminerViewer(mainWindow)
+	viewer = SoQtExaminerViewer(mainWindow)
 	viewer.setSceneGraph(sel)
 	boxhra = SoBoxHighlightRenderAction()
 	viewer.setGLRenderAction(boxhra)
@@ -134,7 +134,7 @@ def main():
 	viewer.show()
 
 	# Create a material editor
-	ed = SoGtkMaterialEditor()
+	ed = SoQtMaterialEditor()
 	ed.show()
 
 	# User data for our callbacks
@@ -148,8 +148,8 @@ def main():
 	sel.setPythonPickFilterCallback(pickFilterCB)
 	sel.addPythonSelectionCallback(selectCB, userData)
    
-	SoGtk_show(mainWindow)
-	SoGtk_mainLoop()
+	SoQt_show(mainWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

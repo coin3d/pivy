@@ -14,7 +14,7 @@ pivy.pyc: pivy.py
 	python -c "import pivy"
 
 pivycmodule.so: pivy_wrap.cxx
-	g++ -shared $(OPTS) $(CXXFLAGS) `sogtk-config --cppflags --ldflags --libs` \
+	g++ -shared $(OPTS) $(CXXFLAGS) `soqt-config --cppflags --ldflags --libs` \
 	-o pivycmodule.so pivy_wrap.cxx 
 
 wrap: pivy_wrap.cxx
@@ -28,4 +28,4 @@ cleanpivy:
 
 clean:
 	rm -f *~ *.so pivy_wrap.cxx pivy.py pivy.pyc \
-	      pivyGtk_wrap.cxx pivyGtk.py pivyGtk.pyc
+	      pivyQt_wrap.cxx pivyQt.py pivyQt.pyc

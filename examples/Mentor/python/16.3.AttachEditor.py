@@ -43,15 +43,15 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Gtk
-	myWindow = SoGtk_init(sys.argv[0])  
+	# Initialize Inventor and Qt
+	myWindow = SoQt_init(sys.argv[0])  
    
 	# Build the render area in the applications main window
-	myRenderArea = SoGtkRenderArea(myWindow)
+	myRenderArea = SoQtRenderArea(myWindow)
 	myRenderArea.setSize(SbVec2s(200, 200))
    
 	# Build the material editor in its own window
-	myEditor = SoGtkMaterialEditor()
+	myEditor = SoQtMaterialEditor()
    
 	# Create a scene graph
 	root =SoSeparator()
@@ -83,11 +83,11 @@ def main():
 	# Show the application window and the material editor
 	myRenderArea.setTitle("Attach Editor")
 	myRenderArea.show()
-	SoGtk_show(myWindow)
+	SoQt_show(myWindow)
 	myEditor.show()
 
 	# Loop forever
-	SoGtk_mainLoop()
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

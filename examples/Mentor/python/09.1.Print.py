@@ -112,8 +112,8 @@ def processKeyEvents(data, cb):
 		cb.setHandled()
 
 def main():
-    # Initialize Inventor and Gtk
-    appWindow = SoGtk_init(sys.argv[0])
+    # Initialize Inventor and Qt
+    appWindow = SoQt_init(sys.argv[0])
     if appWindow == None:
 	sys.exit(1)
         
@@ -139,7 +139,7 @@ def main():
         sys.exit(1)
     root.addChild(geomObject)
 
-    viewer = SoGtkExaminerViewer(appWindow, "None", TRUE, SoGtkExaminerViewer.BUILD_ALL, SoGtkExaminerViewer.EDITOR)
+    viewer = SoQtExaminerViewer(appWindow, "None", TRUE, SoQtExaminerViewer.BUILD_ALL, SoQtExaminerViewer.EDITOR)
     viewer.setSceneGraph(root)
     viewer.setTitle("Print to PostScript")
     
@@ -151,8 +151,8 @@ def main():
     eventCB.addPythonEventCallback(SoKeyboardEvent_getClassTypeId(), processKeyEvents, data)
     viewer.show()
 
-    SoGtk_show(appWindow)
-    SoGtk_mainLoop()
+    SoQt_show(appWindow)
+    SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

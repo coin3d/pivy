@@ -237,8 +237,8 @@ def dragFinishCallback(myMaterial, # user data
 def main():
 	global myHandleBox, myTrackball, myTransformBox
 	
-	# Initialize Inventor and Gtk
-	myWindow = SoGtk_init(sys.argv[0])  
+	# Initialize Inventor and Qt
+	myWindow = SoQt_init(sys.argv[0])  
 	if myWindow == None: sys.exit(1)     
 
 	# create and set up the selection node
@@ -310,14 +310,14 @@ def main():
 	myDragger.addPythonStartCallback(dragStartCallback,wrapperMat)
 	myDragger.addPythonFinishCallback(dragFinishCallback,wrapperMat)
 
-	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer = SoQtExaminerViewer(myWindow)
 	myViewer.setSceneGraph(selectionRoot)
 	myViewer.setTitle("Attaching Manipulators")
 	myViewer.show()
 	myViewer.viewAll()
 	
-	SoGtk_show(myWindow)
-	SoGtk_mainLoop()
+	SoQt_show(myWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -270,8 +270,8 @@ def main():
 	print "<shift>Left mouse button - selects multiple objects"
 	print "Up and Down arrows       - scale selected objects"
 	
-	# Initialize Inventor and Gtk
-	myWindow = SoGtk_init(sys.argv[0])
+	# Initialize Inventor and Qt
+	myWindow = SoQt_init(sys.argv[0])
 	if myWindow == None: sys.exit(1)
 
 	# Create and set up the selection node
@@ -353,7 +353,7 @@ def main():
 ###############################################################
 
     # Create a render area for viewing the scene
-	myRenderArea = SoGtkRenderArea(myWindow)
+	myRenderArea = SoQtRenderArea(myWindow)
 	boxhra = SoBoxHighlightRenderAction()
 	myRenderArea.setGLRenderAction(boxhra)
 	myRenderArea.redrawOnSelectionChange(selectionRoot)
@@ -369,9 +369,9 @@ def main():
 
 	# Show our application window, and loop forever...
 	myRenderArea.show()
-	SoGtk_show(myWindow)
-	SoGtk_show(objectList)
-	SoGtk_mainLoop()
+	SoQt_show(myWindow)
+	SoQt_show(objectList)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

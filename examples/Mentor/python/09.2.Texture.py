@@ -60,8 +60,8 @@ def generateTextureMap(root, texture, textureWidth, textureHeight):
 	return TRUE
 
 def main():
-	# Initialize Inventor and Gtk
-	appWindow = SoGtk_init(sys.argv[0])
+	# Initialize Inventor and Qt
+	appWindow = SoQt_init(sys.argv[0])
 	if appWindow == None:
 		sys.exit(1)
 
@@ -100,18 +100,18 @@ def main():
 	root.addChild(SoCube())
 
 	# Initialize an Examiner Viewer
-	viewer = SoGtkExaminerViewer(appWindow)
+	viewer = SoQtExaminerViewer(appWindow)
 	viewer.setSceneGraph(root)
 	viewer.setTitle("Offscreen Rendered Texture")
 
 	# In Inventor 2.1, if the machine does not have hardware texture
 	# mapping, we must override the default drawStyle to display textures.
-	viewer.setDrawStyle(SoGtkViewer.STILL, SoGtkViewer.VIEW_AS_IS)
+	viewer.setDrawStyle(SoQtViewer.STILL, SoQtViewer.VIEW_AS_IS)
 
 	viewer.show()
 
-	SoGtk_show(appWindow)
-	SoGtk_mainLoop()
+	SoQt_show(appWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
 	main()

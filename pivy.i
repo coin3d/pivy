@@ -526,6 +526,8 @@
 #include <Inventor/nodes/SoWWWAnchor.h>
 #include <Inventor/nodes/SoWWWInline.h>
 
+
+
 /* #include <Inventor/projectors/SbProjectors.h> */
 /* #include <Inventor/projectors/SbCylinderPlaneProjector.h> */
 /* #include <Inventor/projectors/SbCylinderProjector.h> */
@@ -553,57 +555,46 @@
 #include <Inventor/sensors/SoTimerQueueSensor.h>
 #include <Inventor/sensors/SoTimerSensor.h>
 
+#include <Inventor/Qt/devices/SoQtDevice.h>
+#include <Inventor/Qt/devices/SoQtKeyboard.h>
+#include <Inventor/Qt/devices/SoQtMouse.h>
+#include <Inventor/Qt/devices/SoQtSpaceball.h>
+#include <Inventor/Qt/SoQtBasic.h>
+#include <Inventor/Qt/SoQtComponent.h>
+#include <Inventor/Qt/SoQtCursor.h>
+#include <Inventor/Qt/SoQtGLWidget.h>
+#include <Inventor/Qt/SoQt.h>
+#include <Inventor/Qt/SoQtObject.h>
+#include <Inventor/Qt/SoQtRenderArea.h>
+#include <Inventor/Qt/viewers/SoQtViewer.h>
+#include <Inventor/Qt/viewers/SoQtConstrainedViewer.h>
+#include <Inventor/Qt/viewers/SoQtFullViewer.h>
+#include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
+#include <Inventor/Qt/viewers/SoQtFlyViewer.h>
+#include <Inventor/Qt/viewers/SoQtPlaneViewer.h>
+#include <Inventor/Qt/widgets/SoQtPopupMenu.h>
 
-/* #include <Inventor/Qt/SoQtLightSliderSet.h> */
-/* #include <Inventor/Qt/SoQtMaterialSliderSet.h> */
-/* #include <Inventor/Qt/SoQtSliderSet.h> */
-/* #include <Inventor/Qt/SoQtSliderSetBase.h> */
-/* #include <Inventor/Qt/SoQtTransformSliderSet.h> */
-/* #include <Inventor/Qt/SoQt.h> */
-/* #include <Inventor/Qt/SoQtBasic.h> */
-/* #include <Inventor/Qt/SoQtObject.h> */
-/* #include <Inventor/Qt/SoQtCursors.h> */
-/* #include <Inventor/Qt/SoQtComponent.h> */
-/* #include <Inventor/Qt/SoQtGLWidget.h> */
-/* #include <Inventor/Qt/SoQtRenderArea.h> */
-/* #include <Inventor/Qt/SoQtMaterialList.h> */
-/* #include <Inventor/Qt/SoQtCursor.h> */
-/* #include <Inventor/Qt/devices/SoQtDevice.h> */
-/* #include <Inventor/Qt/devices/SoQtInputFocus.h> */
-/* #include <Inventor/Qt/devices/SoQtKeyboard.h> */
-/* #include <Inventor/Qt/devices/SoQtMouse.h> */
-/* #include <Inventor/Qt/devices/SoQtSpaceball.h> */
-/* #include <Inventor/Qt/viewers/SoQtFullViewer.h> */
-/* #include <Inventor/Qt/viewers/SoQtExaminerViewer.h> */
-/* #include <Inventor/Qt/viewers/SoQtPlaneViewer.h> */
-/* #include <Inventor/Qt/viewers/SoQtWalkViewer.h> */
-/* #include <Inventor/Qt/viewers/SoQtViewer.h> */
-/* #include <Inventor/Qt/viewers/SoQtConstrainedViewer.h> */
-/* #include <Inventor/Qt/viewers/SoQtFlyViewer.h> */
-/* #include <Inventor/Qt/widgets/SoQtPopupMenu.h> */
-
-#include <Inventor/Gtk/SoGtkGraphEditor.h>
-#include <Inventor/Gtk/SoGtkRoster.h>
-#include <Inventor/Gtk/SoGtk.h>
-#include <Inventor/Gtk/SoGtkBasic.h>
-#include <Inventor/Gtk/SoGtkObject.h>
-#include <Inventor/Gtk/SoGtkCursor.h>
-#include <Inventor/Gtk/SoGtkComponent.h>
-#include <Inventor/Gtk/SoGtkGLWidget.h>
-#include <Inventor/Gtk/SoGtkRenderArea.h>
-#include <Inventor/Gtk/devices/SoGtkDevice.h>
-#include <Inventor/Gtk/devices/SoGtkInputFocus.h>
-#include <Inventor/Gtk/devices/SoGtkKeyboard.h>
-#include <Inventor/Gtk/devices/SoGtkMouse.h>
-#include <Inventor/Gtk/devices/SoGtkSpaceball.h>
-#include <Inventor/Gtk/widgets/SoGtkPopupMenu.h>
-#include <Inventor/Gtk/viewers/SoGtkFullViewer.h>
-#include <Inventor/Gtk/viewers/SoGtkExaminerViewer.h>
-#include <Inventor/Gtk/viewers/SoGtkPlaneViewer.h>
-/* #include <Inventor/Gtk/viewers/SoGtkWalkViewer.h> */
-#include <Inventor/Gtk/viewers/SoGtkViewer.h>
-#include <Inventor/Gtk/viewers/SoGtkConstrainedViewer.h>
-#include <Inventor/Gtk/viewers/SoGtkFlyViewer.h>
+/* #include <Inventor/Gtk/SoGtkGraphEditor.h> */
+/* #include <Inventor/Gtk/SoGtkRoster.h> */
+/* #include <Inventor/Gtk/SoGtk.h> */
+/* #include <Inventor/Gtk/SoGtkBasic.h> */
+/* #include <Inventor/Gtk/SoGtkObject.h> */
+/* #include <Inventor/Gtk/SoGtkCursor.h> */
+/* #include <Inventor/Gtk/SoGtkComponent.h> */
+/* #include <Inventor/Gtk/SoGtkGLWidget.h> */
+/* #include <Inventor/Gtk/SoGtkRenderArea.h> */
+/* #include <Inventor/Gtk/devices/SoGtkDevice.h> */
+/* #include <Inventor/Gtk/devices/SoGtkInputFocus.h> */
+/* #include <Inventor/Gtk/devices/SoGtkKeyboard.h> */
+/* #include <Inventor/Gtk/devices/SoGtkMouse.h> */
+/* #include <Inventor/Gtk/devices/SoGtkSpaceball.h> */
+/* #include <Inventor/Gtk/widgets/SoGtkPopupMenu.h> */
+/* #include <Inventor/Gtk/viewers/SoGtkFullViewer.h> */
+/* #include <Inventor/Gtk/viewers/SoGtkExaminerViewer.h> */
+/* #include <Inventor/Gtk/viewers/SoGtkPlaneViewer.h> */
+/* #include <Inventor/Gtk/viewers/SoGtkViewer.h> */
+/* #include <Inventor/Gtk/viewers/SoGtkConstrainedViewer.h> */
+/* #include <Inventor/Gtk/viewers/SoGtkFlyViewer.h> */
 
 PyObject *
 cast(PyObject *self, PyObject *args)
@@ -1208,57 +1199,45 @@ cast(PyObject *self, PyObject *args)
 %include Inventor/sensors/SoTimerQueueSensor.h
 %include Inventor/sensors/SoTimerSensor.h
 
+%include Inventor/Qt/devices/SoQtDevice.h
+%include Inventor/Qt/devices/SoQtKeyboard.h
+%include Inventor/Qt/devices/SoQtMouse.h
+%include Inventor/Qt/devices/SoQtSpaceball.h
+%include Inventor/Qt/SoQtBasic.h
+%include Inventor/Qt/SoQtComponent.h
+%include Inventor/Qt/SoQtCursor.h
+%include Inventor/Qt/SoQtGLWidget.h
+%include Inventor/Qt/SoQt.h
+%include Inventor/Qt/SoQtObject.h
+%include Inventor/Qt/SoQtRenderArea.h
+%include Inventor/Qt/viewers/SoQtViewer.h
+%include Inventor/Qt/viewers/SoQtConstrainedViewer.h
+%include Inventor/Qt/viewers/SoQtFullViewer.h
+%include Inventor/Qt/viewers/SoQtExaminerViewer.h
+%include Inventor/Qt/viewers/SoQtFlyViewer.h
+%include Inventor/Qt/viewers/SoQtPlaneViewer.h
+%include Inventor/Qt/widgets/SoQtPopupMenu.h
 
-/* %include Inventor/Qt/SoQtLightSliderSet.h */
-/* %include Inventor/Qt/SoQtMaterialSliderSet.h */
-/* %include Inventor/Qt/SoQtSliderSet.h */
-/* %include Inventor/Qt/SoQtSliderSetBase.h */
-/* %include Inventor/Qt/SoQtTransformSliderSet.h */
-/* %include Inventor/Qt/SoQt.h */
-/* %include Inventor/Qt/SoQtBasic.h */
-/* %include Inventor/Qt/SoQtObject.h */
-/* %include Inventor/Qt/SoQtCursors.h */
-/* %include Inventor/Qt/SoQtComponent.h */
-/* %include Inventor/Qt/SoQtGLWidget.h */
-/* %include Inventor/Qt/SoQtRenderArea.h */
-/* %include Inventor/Qt/SoQtMaterialList.h */
-/* %include Inventor/Qt/SoQtCursor.h */
-/* %include Inventor/Qt/devices/SoQtDevice.h */
-/* %include Inventor/Qt/devices/SoQtInputFocus.h */
-/* %include Inventor/Qt/devices/SoQtKeyboard.h */
-/* %include Inventor/Qt/devices/SoQtMouse.h */
-/* %include Inventor/Qt/devices/SoQtSpaceball.h */
-/* %include Inventor/Qt/viewers/SoQtFullViewer.h */
-/* %include Inventor/Qt/viewers/SoQtExaminerViewer.h */
-/* %include Inventor/Qt/viewers/SoQtPlaneViewer.h */
-/* %include Inventor/Qt/viewers/SoQtWalkViewer.h */
-/* %include Inventor/Qt/viewers/SoQtViewer.h */
-/* %include Inventor/Qt/viewers/SoQtConstrainedViewer.h */
-/* %include Inventor/Qt/viewers/SoQtFlyViewer.h */
-/* %include Inventor/Qt/widgets/SoQtPopupMenu.h */
-
-
-%include Inventor/Gtk/SoGtkBasic.h
-%include Inventor/Gtk/SoGtk.h
-%include Inventor/Gtk/SoGtkObject.h
-%include Inventor/Gtk/SoGtkCursor.h
-%include Inventor/Gtk/SoGtkComponent.h
-%include Inventor/Gtk/SoGtkRoster.h
-%include Inventor/Gtk/SoGtkGraphEditor.h
-%include Inventor/Gtk/SoGtkGLWidget.h
-%include Inventor/Gtk/SoGtkRenderArea.h
-%include Inventor/Gtk/SoGtkRoster.h
-%include Inventor/Gtk/SoGtkGraphEditor.h
-%include Inventor/Gtk/devices/SoGtkDevice.h
-%include Inventor/Gtk/devices/SoGtkInputFocus.h
-%include Inventor/Gtk/devices/SoGtkKeyboard.h
-%include Inventor/Gtk/devices/SoGtkMouse.h
-%include Inventor/Gtk/devices/SoGtkSpaceball.h
-%include Inventor/Gtk/widgets/SoGtkPopupMenu.h
-%include Inventor/Gtk/viewers/SoGtkViewer.h
-%include Inventor/Gtk/viewers/SoGtkFullViewer.h
-%include Inventor/Gtk/viewers/SoGtkConstrainedViewer.h
-%include Inventor/Gtk/viewers/SoGtkExaminerViewer.h
-%include Inventor/Gtk/viewers/SoGtkPlaneViewer.h
-/* %include Inventor/Gtk/viewers/SoGtkWalkViewer.h */
-%include Inventor/Gtk/viewers/SoGtkFlyViewer.h
+/* %include Inventor/Gtk/SoGtkBasic.h */
+/* %include Inventor/Gtk/SoGtk.h */
+/* %include Inventor/Gtk/SoGtkObject.h */
+/* %include Inventor/Gtk/SoGtkCursor.h */
+/* %include Inventor/Gtk/SoGtkComponent.h */
+/* %include Inventor/Gtk/SoGtkRoster.h */
+/* %include Inventor/Gtk/SoGtkGraphEditor.h */
+/* %include Inventor/Gtk/SoGtkGLWidget.h */
+/* %include Inventor/Gtk/SoGtkRenderArea.h */
+/* %include Inventor/Gtk/SoGtkRoster.h */
+/* %include Inventor/Gtk/SoGtkGraphEditor.h */
+/* %include Inventor/Gtk/devices/SoGtkDevice.h */
+/* %include Inventor/Gtk/devices/SoGtkInputFocus.h */
+/* %include Inventor/Gtk/devices/SoGtkKeyboard.h */
+/* %include Inventor/Gtk/devices/SoGtkMouse.h */
+/* %include Inventor/Gtk/devices/SoGtkSpaceball.h */
+/* %include Inventor/Gtk/widgets/SoGtkPopupMenu.h */
+/* %include Inventor/Gtk/viewers/SoGtkViewer.h */
+/* %include Inventor/Gtk/viewers/SoGtkFullViewer.h */
+/* %include Inventor/Gtk/viewers/SoGtkConstrainedViewer.h */
+/* %include Inventor/Gtk/viewers/SoGtkExaminerViewer.h */
+/* %include Inventor/Gtk/viewers/SoGtkPlaneViewer.h */
+/* %include Inventor/Gtk/viewers/SoGtkFlyViewer.h */

@@ -152,21 +152,21 @@ def makeStellatedDodecahedron():
 ##############################################################
 
 def main():
-	# Initialize Inventor and Gtk
-	myWindow = SoGtk_init(sys.argv[0])
+	# Initialize Inventor and Qt
+	myWindow = SoQt_init(sys.argv[0])
 	if myWindow == None: sys.exit(1)
 
 	root = makeStellatedDodecahedron()
 	root.ref()
 
-	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer = SoQtExaminerViewer(myWindow)
 	myViewer.setSceneGraph(root)
 	myViewer.setTitle("Indexed Face Set: Stellated Dodecahedron")
 	myViewer.show()
 	myViewer.viewAll()
 
-	SoGtk_show(myWindow)
-	SoGtk_mainLoop()
+	SoQt_show(myWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
 	main()

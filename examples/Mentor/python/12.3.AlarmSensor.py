@@ -55,7 +55,7 @@ def raiseFlagCallback(data, sensor):
 
 
 def main():
-	myWindow = SoGtk_init(sys.argv[0]) # pass the app name
+	myWindow = SoQt_init(sys.argv[0]) # pass the app name
 	if myWindow == None: sys.exit(1)
 
 ###########################################################
@@ -78,15 +78,15 @@ def main():
 	myCone.bottomRadius(0.1)
 	root.addChild(myCone)
 
-	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer = SoQtExaminerViewer(myWindow)
 
 	# Put our scene in myViewer, change the title
 	myViewer.setSceneGraph(root)
 	myViewer.setTitle("Raise The Cone")
 	myViewer.show()
 
-	SoGtk_show(myWindow)  # Display main window
-	SoGtk_mainLoop()      # Main Inventor event loop
+	SoQt_show(myWindow)  # Display main window
+	SoQt_mainLoop()      # Main Inventor event loop
 
 if __name__ == "__main__":
     main()

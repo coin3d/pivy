@@ -41,7 +41,7 @@ from pivy import *
 import sys
 
 def main():
-	myWindow = SoGtk_init(sys.argv[0])
+	myWindow = SoQt_init(sys.argv[0])
 	if myWindow == None: sys.exit(1)
 
 	root = SoSeparator()
@@ -52,13 +52,13 @@ def main():
 	root.addChild(SoCone())
 
 	# Set up viewer:
-	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer = SoQtExaminerViewer(myWindow)
 	myViewer.setSceneGraph(root)
 	myViewer.setTitle("Examiner Viewer")
 	myViewer.show()
 
-	SoGtk_show(myWindow)
-	SoGtk_mainLoop()
+	SoQt_show(myWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
 	main()

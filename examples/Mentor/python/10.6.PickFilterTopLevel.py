@@ -60,7 +60,7 @@ def pickFilterCB(void, pick):
 
 def main():
 	# Initialization
-	mainWindow = SoGtk_init(sys.argv[0])
+	mainWindow = SoQt_init(sys.argv[0])
     
 	# Open the data file
 	input = SoInput()
@@ -83,14 +83,14 @@ def main():
 
 	# Create two viewers, one to show the pick filter for top level
 	# selection, the other to show default selection.
-	viewer1 = SoGtkExaminerViewer(mainWindow)
+	viewer1 = SoQtExaminerViewer(mainWindow)
 	viewer1.setSceneGraph(topLevelSel)
 	boxhra1 = SoBoxHighlightRenderAction()
 	viewer1.setGLRenderAction(boxhra1)
 	viewer1.redrawOnSelectionChange(topLevelSel)
 	viewer1.setTitle("Top Level Selection")
 
-	viewer2 = SoGtkExaminerViewer()
+	viewer2 = SoQtExaminerViewer()
 	viewer2.setSceneGraph(defaultSel)
 	boxhra2 = SoBoxHighlightRenderAction()
 	viewer2.setGLRenderAction(boxhra2)
@@ -100,8 +100,8 @@ def main():
 	viewer1.show()
 	viewer2.show()
    
-	SoGtk_show(mainWindow)
-	SoGtk_mainLoop()
+	SoQt_show(mainWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

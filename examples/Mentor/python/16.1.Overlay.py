@@ -61,8 +61,8 @@ Separator {
 }"""
 
 def main():
-	# Initialize Inventor and Gtk
-	myWindow = SoGtk_init(sys.argv[0])  
+	# Initialize Inventor and Qt
+	myWindow = SoQt_init(sys.argv[0])  
 	if myWindow == None: sys.exit(1)     
 
 	# read the scene graph in
@@ -76,7 +76,7 @@ def main():
 	# Allocate the viewer, set the overlay scene and
 	# load the overlay color map with the wanted color.
 	color = SbColor(.5, 1, .5)
-	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer = SoQtExaminerViewer(myWindow)
 	myViewer.setSceneGraph(SoCone())
 	myViewer.setOverlaySceneGraph(scene)
 	myViewer.setOverlayColorMap(1, 1, color)
@@ -84,8 +84,8 @@ def main():
    
 	# Show the viewer and loop forever
 	myViewer.show()
-	# GtkRealizeWidget(myWindow)
-	SoGtk_mainLoop()
+	# QtRealizeWidget(myWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

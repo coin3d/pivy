@@ -70,8 +70,8 @@ Separator {
 }"""
 
 def main():
-	# Initialize Inventor and Gtk
-	myWindow = SoGtk_init(sys.argv[0])
+	# Initialize Inventor and Qt
+	myWindow = SoQt_init(sys.argv[0])
    
 	# read the scene graph in
 	input = SoInput()
@@ -82,8 +82,8 @@ def main():
 		sys.exit(1)
 
 	# create the color index visual
-	vis = glXChooseVisual(GtkDisplay(myWindow), 
-						  XScreenNumberOfScreen(GtkScreen(myWindow)),
+	vis = glXChooseVisual(QtDisplay(myWindow), 
+						  XScreenNumberOfScreen(QtScreen(myWindow)),
 						  attribList)
 	if not vis:
 		print "Couldn't create visual"
@@ -95,7 +95,7 @@ def main():
 	# Color 0 will be used for the background (default) while
 	# color 1 and 2 are used by the objects.
 	#
-	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer = SoQtExaminerViewer(myWindow)
 	myViewer.setNormalVisual(vis)
 	myViewer.setColorMap(0, 3, cast(colors, "SbColor"))
 	myViewer.setSceneGraph(scene)
@@ -103,8 +103,8 @@ def main():
    
 	# Show the viewer and loop forever...
 	myViewer.show()
-	GtkRealizeWidget(myWindow)
-	SoGtk_mainLoop()
+	QtRealizeWidget(myWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

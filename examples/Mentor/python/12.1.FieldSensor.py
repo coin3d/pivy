@@ -54,7 +54,7 @@ def main():
 		print >> sys.stderr, "Usage: %s filename.iv" % (sys.argv[0])
 		sys.exit(1)
 
-	myWindow = SoGtk_init(sys.argv[0])
+	myWindow = SoQt_init(sys.argv[0])
 	if myWindow == None: sys.exit(1)
 
 	inputFile = SoInput()
@@ -65,7 +65,7 @@ def main():
 	root = SoDB_readAll(inputFile)
 	root.ref()
 
-	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer = SoQtExaminerViewer(myWindow)
 	myViewer.setSceneGraph(root)
 	myViewer.setTitle("Camera Sensor")
 	myViewer.show()
@@ -76,8 +76,8 @@ def main():
 	mySensor = SoFieldSensor(cameraChangedCB, camera)
 	mySensor.attach(camera.position)
 	
-	SoGtk_show(myWindow)
-	SoGtk_mainLoop()
+	SoQt_show(myWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

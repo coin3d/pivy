@@ -44,29 +44,29 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Gtk
-	myWindow = SoGtk_init(sys.argv[0])
+	# Initialize Inventor and Qt
+	myWindow = SoQt_init(sys.argv[0])
    
 	# Build the form to hold both components
-	myForm = GtkCreateWidget("Form", xmFormWidgetClass, myWindow, None, 0)
+	myForm = QtCreateWidget("Form", xmFormWidgetClass, myWindow, None, 0)
    
 	# Build the render area and Material Editor
-	myRenderArea = SoGtkRenderArea(myForm)
+	myRenderArea = SoQtRenderArea(myForm)
 	myRenderArea.setSize(SbVec2s(200, 200))
-	myEditor = SoGtkMaterialEditor(myForm)
+	myEditor = SoQtMaterialEditor(myForm)
    
 	# Layout the components within the form
 	args = []
-	GtkSetArg(args[0], XmNtopAttachment,    XmATTACH_FORM)
-	GtkSetArg(args[1], XmNbottomAttachment, XmATTACH_FORM)
-	GtkSetArg(args[2], XmNleftAttachment,   XmATTACH_FORM) 
-	GtkSetArg(args[3], XmNrightAttachment,  XmATTACH_POSITION)
-	GtkSetArg(args[4], XmNrightPosition,    40)
-	GtkSetValues(myRenderArea.getWidget(), args, 5)
-	GtkSetArg(args[2], XmNrightAttachment,  XmATTACH_FORM) 
-	GtkSetArg(args[3], XmNleftAttachment,   XmATTACH_POSITION)
-	GtkSetArg(args[4], XmNleftPosition,     41) 
-	GtkSetValues(myEditor.getWidget(), args, 5)
+	QtSetArg(args[0], XmNtopAttachment,    XmATTACH_FORM)
+	QtSetArg(args[1], XmNbottomAttachment, XmATTACH_FORM)
+	QtSetArg(args[2], XmNleftAttachment,   XmATTACH_FORM) 
+	QtSetArg(args[3], XmNrightAttachment,  XmATTACH_POSITION)
+	QtSetArg(args[4], XmNrightPosition,    40)
+	QtSetValues(myRenderArea.getWidget(), args, 5)
+	QtSetArg(args[2], XmNrightAttachment,  XmATTACH_FORM) 
+	QtSetArg(args[3], XmNleftAttachment,   XmATTACH_POSITION)
+	QtSetArg(args[4], XmNleftPosition,     41) 
+	QtSetValues(myEditor.getWidget(), args, 5)
 	
 	# Create a scene graph
 	root = SoSeparator()
@@ -98,11 +98,11 @@ def main():
 	# Show the main window
 	myRenderArea.show()
 	myEditor.show()
-	SoGtk_show(myForm)    # this calls GtkManageChild
-	SoGtk_show(myWindow)  # this calls GtkRealizeWidget
+	SoQt_show(myForm)    # this calls QtManageChild
+	SoQt_show(myWindow)  # this calls QtRealizeWidget
    
 	# Loop forever
-	SoGtk_mainLoop()
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

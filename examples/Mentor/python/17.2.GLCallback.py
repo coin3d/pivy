@@ -140,7 +140,7 @@ def myCallbackRoutine(void, action):
 
 def main():
 	# Initialize Inventor utilities
-	myWindow = SoGtk_init("Example 17.1")
+	myWindow = SoQt_init("Example 17.1")
 
 	buildFloor()
 
@@ -162,16 +162,16 @@ def main():
 
 	buildScene(root)
    
-	# Initialize an Inventor Gtk RenderArea and draw the scene.
-	myRenderArea = SoGtkRenderArea(myWindow)
+	# Initialize an Inventor Qt RenderArea and draw the scene.
+	myRenderArea = SoQtRenderArea(myWindow)
 	myRenderArea.setSceneGraph(root)
 	myRenderArea.setTitle("OpenGL Callback")
 	myRenderArea.setBackgroundColor(SbColor(.8, .8, .8))
 	myRenderArea.show()
 	drawFloor()
 	
-	SoGtk_show(myWindow)
-	SoGtk_mainLoop()
+	SoQt_show(myWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

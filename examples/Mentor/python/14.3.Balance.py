@@ -116,8 +116,8 @@ def tipTheBalance(userData, # The nodekit representing 'support', the
 		eventCB.setHandled()
 
 def main():
-	# Initialize Inventor and Gtk
-	myWindow = SoGtk_init(sys.argv[0])  
+	# Initialize Inventor and Qt
+	myWindow = SoQt_init(sys.argv[0])  
 	if myWindow == None: sys.exit(1)     
 
 	myScene = SoSceneKit()
@@ -195,7 +195,7 @@ def main():
 	myText.set("transform { translation 0 -2 0 }")
 	myScene.setPart("childList[1]", myText)
 
-	myRenderArea = SoGtkRenderArea(myWindow)
+	myRenderArea = SoQtRenderArea(myWindow)
 
 	# Get camera from scene and tell it to viewAll...
 	myCamera = cast(myScene.getPart("cameraList[0].camera", TRUE), "SoPerspectiveCamera")
@@ -205,8 +205,8 @@ def main():
 	myRenderArea.setTitle("Balance Scale Made of Nodekits")
 	myRenderArea.show()
 
-	SoGtk_show(myWindow)
-	SoGtk_mainLoop()
+	SoQt_show(myWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -77,7 +77,7 @@ def main():
 		print >> sys.stderr, "Usage: %s filename.iv" % (sys.argv[0])
 		sys.exit(1)
 
-	myWindow = SoGtk_init(sys.argv[0])
+	myWindow = SoQt_init(sys.argv[0])
 	if myWindow == None: sys.exit(1)
 
 	root = SoSeparator()
@@ -107,13 +107,13 @@ def main():
 		
 	root.addChild(SoDB_readAll(inputFile))
 
-	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer = SoQtExaminerViewer(myWindow)
 	myViewer.setSceneGraph(root)
 	myViewer.setTitle("Two Timers")
 	myViewer.show()
 
-	SoGtk_show(myWindow)  # Display main window
-	SoGtk_mainLoop()        # Main Inventor event loop
+	SoQt_show(myWindow)  # Display main window
+	SoQt_mainLoop()        # Main Inventor event loop
 
 if __name__ == "__main__":
     main()

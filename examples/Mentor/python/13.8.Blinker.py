@@ -42,8 +42,8 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Gtk
-	myWindow = SoGtk_init(sys.argv[0])  
+	# Initialize Inventor and Qt
+	myWindow = SoQt_init(sys.argv[0])  
 	if myWindow == None: sys.exit(1)     
 
 	# Set up camera and light
@@ -87,15 +87,15 @@ def main():
 #############################################################
 
 	# Set up and display render area 
-	myRenderArea = SoGtkRenderArea(myWindow)
+	myRenderArea = SoQtRenderArea(myWindow)
 	myRegion = SbViewportRegion(myRenderArea.getSize()) 
 	myCamera.viewAll(root, myRegion)
 
 	myRenderArea.setSceneGraph(root)
 	myRenderArea.setTitle("Neon")
 	myRenderArea.show()
-	SoGtk_show(myWindow)
-	SoGtk_mainLoop()
+	SoQt_show(myWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

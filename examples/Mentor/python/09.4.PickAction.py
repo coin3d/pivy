@@ -82,8 +82,8 @@ def myMousePressCB(userData, eventCB):
 def main():
 	myMouseEvent = SoMouseButtonEvent()
 
-	# Initialize Inventor and Gtk
-	myWindow = SoGtk_init(sys.argv[0])
+	# Initialize Inventor and Qt
+	myWindow = SoQt_init(sys.argv[0])
 	if myWindow == None:
 		sys.exit(1)
 	
@@ -120,7 +120,7 @@ def main():
 	root.addChild(starObject)  # second star object
 
 	# Create a render area in which to see our scene graph.
-	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer = SoQtExaminerViewer(myWindow)
 
 	# Turn off viewing to allow picking
 	myViewer.setViewing(0)
@@ -137,8 +137,8 @@ def main():
 									 myMousePressCB,
 									 myViewer.getSceneManager().getSceneGraph())
 
-	SoGtk_show(myWindow)
-	SoGtk_mainLoop()
+	SoQt_show(myWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
 	main()

@@ -162,8 +162,8 @@ def main():
 		sys.stderr.write("\t2 = PER_FACE_INDEXED\n")
 		sys.exit(1)
 
-	# Initialize Inventor and Gtk
-	myWindow = SoGtk_init(sys.argv[0])
+	# Initialize Inventor and Qt
+	myWindow = SoQt_init(sys.argv[0])
 	if myWindow == None: sys.exit(1)
 
 	root = makeStellatedDodecahedron()
@@ -233,14 +233,14 @@ def main():
 ## CODE FOR The Inventor Mentor ENDS HERE
 ##############################################################
 
-	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer = SoQtExaminerViewer(myWindow)
 	myViewer.setSceneGraph(root)
 	myViewer.setTitle("Material Bindings")
 	myViewer.show()
 	myViewer.viewAll()
 
-	SoGtk_show(myWindow)
-	SoGtk_mainLoop()
+	SoQt_show(myWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
 	main()

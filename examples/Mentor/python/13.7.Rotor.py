@@ -59,8 +59,8 @@ def readFile(filename):
 	return myGraph
 
 def main():
-	# Initialize Inventor and Gtk
-	myWindow = SoGtk_init(sys.argv[0])  
+	# Initialize Inventor and Qt
+	myWindow = SoQt_init(sys.argv[0])  
 	if myWindow == None: sys.exit(1)     
 
 	root = SoSeparator()
@@ -81,7 +81,7 @@ def main():
 	root.addChild(windmillVanes)
 
 	# Create a viewer
-	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer = SoQtExaminerViewer(myWindow)
 
 	# attach and show viewer
 	myViewer.setSceneGraph(root)
@@ -89,8 +89,8 @@ def main():
 	myViewer.show()
     
 	# Loop forever
-	SoGtk_show(myWindow)
-	SoGtk_mainLoop()
+	SoQt_show(myWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

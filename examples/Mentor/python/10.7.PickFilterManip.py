@@ -188,7 +188,7 @@ def buildScene():
 
 def main():
 	# Initialization
-	mainWindow = SoGtk_init(sys.argv[0])
+	mainWindow = SoQt_init(sys.argv[0])
     
 	# Create a scene graph. Use the toggle selection policy.
 	sel = SoSelection()
@@ -197,7 +197,7 @@ def main():
 	sel.addChild(buildScene())
 
 	# Create a viewer
-	viewer = SoGtkExaminerViewer(mainWindow)
+	viewer = SoQtExaminerViewer(mainWindow)
 	viewer.setSceneGraph(sel)
 	viewer.setTitle("Select Through Manips")
 	viewer.show()
@@ -207,8 +207,8 @@ def main():
 	sel.addPythonDeselectionCallback(deselCB)
 	sel.setPythonPickFilterCallback(pickFilterCB)
     
-	SoGtk_show(mainWindow)
-	SoGtk_mainLoop()
+	SoQt_show(mainWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -66,14 +66,14 @@ def readFile(filename):
 #############################################################
 
 def main():
-	# Initialize Inventor and Gtk
-	myWindow = SoGtk_init(sys.argv[0])
+	# Initialize Inventor and Qt
+	myWindow = SoQt_init(sys.argv[0])
 
 	# Read the file
 	scene = readFile("bookshelf.iv")
 
 	# Create a viewer
-	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer = SoQtExaminerViewer(myWindow)
 
 	# attach and show viewer
 	myViewer.setSceneGraph(scene)
@@ -81,8 +81,8 @@ def main():
 	myViewer.show()
     
 	# Loop forever
-	SoGtk_show(myWindow)
-	SoGtk_mainLoop()
+	SoQt_show(myWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

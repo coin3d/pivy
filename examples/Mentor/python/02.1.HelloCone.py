@@ -44,7 +44,7 @@ def main():
 	# Initialize Inventor. This returns a main window to use.
 	# If unsuccessful, exit.
 
-	myWindow = SoGtk_init(sys.argv[0])
+	myWindow = SoQt_init(sys.argv[0])
 	if myWindow == None: sys.exit(1)
 
 	# Make a scene containing a red cone
@@ -60,7 +60,7 @@ def main():
 
 	# Create a renderArea in which to see our scene graph.
 	# The render area will appear within the main window.
-	myRenderArea = SoGtkRenderArea(myWindow)
+	myRenderArea = SoQtRenderArea(myWindow)
 
 	# Make myCamera see everything.
 	myCamera.viewAll(root, myRenderArea.getViewportRegion())
@@ -70,8 +70,8 @@ def main():
 	myRenderArea.setTitle("Hello Cone")
 	myRenderArea.show()
 
-	SoGtk_show(myWindow)  # Display main window
-	SoGtk_mainLoop()    # Main Inventor event loop
+	SoQt_show(myWindow)  # Display main window
+	SoQt_mainLoop()    # Main Inventor event loop
 
 if __name__ == "__main__":
 	main()

@@ -43,8 +43,8 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Gtk
-	myWindow = SoGtk_init(sys.argv[0])  
+	# Initialize Inventor and Qt
+	myWindow = SoQt_init(sys.argv[0])  
 	if myWindow == None: sys.exit(1)     
 
 	root = SoSeparator()
@@ -63,14 +63,14 @@ def main():
 	root.addChild(myText)
 	myText.string.connectFrom(SoDB_getGlobalField("realTime"))
 
-	myRenderArea = SoGtkRenderArea(myWindow)
+	myRenderArea = SoQtRenderArea(myWindow)
 	myCamera.viewAll(root, myRenderArea.getViewportRegion())
 	myRenderArea.setSceneGraph(root)
 	myRenderArea.setTitle("Date & Time")
 	myRenderArea.show()
 
-	SoGtk_show(myWindow)
-	SoGtk_mainLoop()
+	SoQt_show(myWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -108,8 +108,8 @@ def main():
 	print "<shift>Left mouse button - selects multiple objects"
 	print "Up and Down arrows       - scale selected objects"
 
-	# Initialize Inventor and Gtk
-	myWindow = SoGtk_init(sys.argv[0])
+	# Initialize Inventor and Qt
+	myWindow = SoQt_init(sys.argv[0])
 	if myWindow == None:
 		sys.exit(1)
 
@@ -182,7 +182,7 @@ def main():
 	selectionRoot.addChild(cylRoot)
 
 	# Create a render area for viewing the scene
-	myRenderArea = SoGtkRenderArea(myWindow)
+	myRenderArea = SoQtRenderArea(myWindow)
 	myRenderArea.setSceneGraph(selectionRoot)
 	
 	# need to make a reference like this otherwise SoBoxHighlightRenderAction() gets
@@ -206,8 +206,8 @@ def main():
 
 	# Show our application window, and loop forever...
 	myRenderArea.show()
-	SoGtk_show(myWindow)
-	SoGtk_mainLoop()
+	SoQt_show(myWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

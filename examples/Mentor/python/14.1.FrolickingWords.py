@@ -45,8 +45,8 @@ from pivy import *
 import sys
 
 def main():
-	# Initialize Inventor and Gtk
-	myWindow = SoGtk_init(sys.argv[0])  
+	# Initialize Inventor and Qt
+	myWindow = SoQt_init(sys.argv[0])  
 	if myWindow == None: sys.exit(1)     
 
 	root = SoSeparator()
@@ -102,14 +102,14 @@ def main():
 	niceMtl = cast(niceKit.getPart("material",TRUE), "SoMaterial")
 	niceMtl.diffuseColor.connectFrom(niceCalc.oC)
 
-	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer = SoQtExaminerViewer(myWindow)
 	myViewer.setSceneGraph(root)
 	myViewer.setTitle("Frolicking Words")
 	myViewer.viewAll()
 	myViewer.show()
 
-	SoGtk_show(myWindow)
-	SoGtk_mainLoop()
+	SoQt_show(myWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
     main()

@@ -146,8 +146,8 @@ def makeRobot():
 
 
 def main():
-	# Initialize Inventor and Gtk
-	myWindow = SoGtk_init(sys.argv[0])
+	# Initialize Inventor and Qt
+	myWindow = SoQt_init(sys.argv[0])
 	if myWindow == None: sys.exit(1)
 
 	root = SoSeparator()
@@ -156,14 +156,14 @@ def main():
 	# This function contains our code fragment.
 	root.addChild(makeRobot())
 	
-	myViewer = SoGtkExaminerViewer(myWindow)
+	myViewer = SoQtExaminerViewer(myWindow)
 	myViewer.setSceneGraph(root)
 	myViewer.setTitle("Robot")
 	myViewer.show()
 	myViewer.viewAll()
 
-	SoGtk_show(myWindow)
-	SoGtk_mainLoop()
+	SoQt_show(myWindow)
+	SoQt_mainLoop()
 
 if __name__ == "__main__":
 	main()

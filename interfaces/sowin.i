@@ -59,6 +59,7 @@
 #include <Inventor/Win/SoWinRenderArea.h>
 
 #include <Inventor/nodes/SoNode.h>
+#include <Inventor/fields/SoField.h>
 
 #include <Inventor/SbDPMatrix.h>
 #include <Inventor/SbDPRotation.h>

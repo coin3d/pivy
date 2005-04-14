@@ -555,7 +555,6 @@
 #include <Inventor/fields/SoMFEnum.h>
 #include <Inventor/fields/SoSFUInt32.h>
 #include <Inventor/fields/SoMFRotation.h>
-#include <Inventor/fields/SoMFLong.h>
 #include <Inventor/fields/SoMFName.h>
 #include <Inventor/fields/SoMFEngine.h>
 #include <Inventor/fields/SoSFTrigger.h>
@@ -568,7 +567,6 @@
 #include <Inventor/fields/SoMFNode.h>
 #include <Inventor/fields/SoMFPath.h>
 #include <Inventor/fields/SoSField.h>
-#include <Inventor/fields/SoMFULong.h>
 #include <Inventor/fields/SoSFString.h>
 #include <Inventor/fields/SoSFRotation.h>
 #include <Inventor/fields/SoMFMatrix.h>
@@ -595,7 +593,6 @@
 #include <Inventor/fields/SoMFVec3f.h>
 #include <Inventor/fields/SoMFVec4f.h>
 #include <Inventor/fields/SoSFBool.h>
-#include <Inventor/fields/SoSFULong.h>
 #include <Inventor/events/SoSpaceballButtonEvent.h>
 #include <Inventor/events/SoButtonEvent.h>
 #include <Inventor/events/SoLocation2Event.h>
@@ -975,22 +972,6 @@ RefCount(SoShapeKit)
 RefCount(SoSeparatorKit)
 RefCount(SoInteractionKit)
 RefCount(SoSceneKit)
-
-/* a common iterator class for all MField nodes */
-%pythoncode %{   
-class MFieldIterator:
-  def __init__(self, field):
-     self.field = field
-     self.index = 0
-  def __iter__(self):
-     return self
-  def next(self):
-     if self.index < self.field.getNum():
-        val = self.field[self.index]
-        self.index += 1
-        return val
-     raise StopIteration
-%}
 
 /* include the typemaps common to all pivy modules */
 %include pivy_common_typemaps.i
@@ -1519,7 +1500,6 @@ class MFieldIterator:
 %include Inventor/fields/SoMFEnum.h
 %include Inventor/fields/SoSFUInt32.h
 %include Inventor/fields/SoMFRotation.h
-%include Inventor/fields/SoMFLong.h
 %include Inventor/fields/SoMFName.h
 %include Inventor/fields/SoMFEngine.h
 %include Inventor/fields/SoSFTrigger.h
@@ -1532,7 +1512,6 @@ class MFieldIterator:
 %include Inventor/fields/SoMFNode.h
 %include Inventor/fields/SoMFPath.h
 %include Inventor/fields/SoSField.h
-%include Inventor/fields/SoMFULong.h
 %include Inventor/fields/SoSFString.h
 %include Inventor/fields/SoSFRotation.h
 %include Inventor/fields/SoMFMatrix.h
@@ -1559,7 +1538,6 @@ class MFieldIterator:
 %include Inventor/fields/SoMFVec3f.h
 %include Inventor/fields/SoMFVec4f.h
 %include Inventor/fields/SoSFBool.h
-%include Inventor/fields/SoSFULong.h
 %include Inventor/events/SoSpaceballButtonEvent.h
 %include Inventor/events/SoButtonEvent.h
 %include Inventor/events/SoLocation2Event.h

@@ -1608,3 +1608,15 @@ RefCount(SoSceneKit)
 %include Inventor/bundles/SoNormalBundle.h
 %include Inventor/bundles/SoTextureCoordinateBundle.h
 %include Inventor/bundles/SoMaterialBundle.h
+
+/* Removes all the properties for fields in classes derived from SoFieldContainer.
+   This makes way for the dynamic access to fields as attributes.
+*/
+%pythoncode %{        
+for x in globals().values():
+    if isinstance(x,type):
+        if issubclass(x, SoFieldcontainer):
+            for name, thing in x.__dict__.items():
+                if isinstance(thing,property):
+                    delattr(x,name)
+%}

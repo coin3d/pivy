@@ -89,10 +89,4 @@ def setValues(*args):
         return _pivy.SoMFBool___getValuesHelper__(args[0], 0)
      return _pivy.SoMFBool___getValuesHelper__(*args)
 %}
-/* shadow __iter__ to return a new iterator object */
-%pythoncode %{
-   def __iter__(self):
-      iter = MFieldIterator(self)
-      return iter
-%}
 }

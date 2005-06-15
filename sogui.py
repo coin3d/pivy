@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ###
-# Copyright (C) 2002-2004, Tamer Fahmy <tamer@tammura.at>
+# Copyright (C) 2002-2005, Tamer Fahmy <tamer@tammura.at>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without

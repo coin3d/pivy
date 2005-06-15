@@ -1,8 +1,11 @@
-include AUTHORS ChangeLog LICENSE THANKS
+include AUTHORS ChangeLog LICENSE THANKS README.txt
+include SConstruct
 include sogui.py
 recursive-include Inventor *.i *.win32 *.fix
+recursive-include fake_headers *.h
+recursive-include interfaces *.i
 graft docs
 graft examples
 graft interfaces
 graft scons
-recursive-include fake_headers *.h
+graft SoPyScript

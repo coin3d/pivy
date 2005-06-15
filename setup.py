@@ -392,6 +392,13 @@ class pivy_build(build):
             libraries = ['pivy_runtime']
             if sys.platform != 'win32':
                 runtime_library_dirs = [sysconfig.get_python_lib()]
+                # link the extensions directly against the python shared lib
+                # to allow the SoPyScript node be dynamically loaded at runtime
+                # without having to link the actual app against the python shared
+                # lib in order to resolve the python share library resolv symbols
+                # FIXME: this is a crude workaround (aka hack). check if there is another
+                #        cleaner way of achieving the same. 20050615 tamer.
+                LDFLAGS_LIBS += ' ' + sysconfig.get_config_vars().get('BLDLIBRARY', '')
 
             self.ext_modules.append(Extension(module_name, [module.lower() + "_wrap.cpp"],
                                               library_dirs=library_dirs,

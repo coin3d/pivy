@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ###
-# Copyright (C) 2002-2004, Tamer Fahmy <tamer@tammura.at>
+# Copyright (C) 2002-2005, Tamer Fahmy <tamer@tammura.at>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ from distutils.command.clean import clean
 from distutils.command.install import install
 from distutils.core import setup
 from distutils.extension import Extension
-from distutils.sysconfig import get_python_lib
+from distutils import sysconfig
 
 # if we are on a Gentoo box salute the chap and output stuff in nice colors
 # Gentoo is Python friendly, so be especially friendly to them! ;)
@@ -76,6 +76,15 @@ if sys.version < '2.2.3':
     DistributionMetadata.classifiers = None
     DistributionMetadata.download_url = None
 
+# detect if we need a workaround for distutils (e.g. on Gentoo Linux)
+# where the compiler is called i686-pc-linux-gnu-gcc which breaks the
+# hackish UnixCCompiler.runtime_library_dir_option() method in
+# distutils.unixccompiler
+compiler = sysconfig.get_config_vars()['CC'].split()
+if len(compiler[0]) > 3 and compiler[0][-3:] == "gcc":
+    print blue("** Applying distutils CC compiler entry workaround!")
+    compiler[0] = "gcc"
+    sysconfig.get_config_vars()['CC'] = " ".join(compiler)
 
 PIVY_CLASSIFIERS = """\
 Development Status :: 4 - Beta
@@ -376,13 +385,13 @@ class pivy_build(build):
                     sys.exit(1)
             else:
                 print red("=== %s_wrap.cpp for %s already exists! ===" % (module.lower(),
-                                                                            module))
+                                                                          module))
 
             runtime_library_dirs = []
-            library_dirs = [os.getcwd(), get_python_lib()]
+            library_dirs = [os.getcwd(), sysconfig.get_python_lib()]
             libraries = ['pivy_runtime']
             if sys.platform != 'win32':
-                runtime_library_dirs = [get_python_lib()]
+                runtime_library_dirs = [sysconfig.get_python_lib()]
 
             self.ext_modules.append(Extension(module_name, [module.lower() + "_wrap.cpp"],
                                               library_dirs=library_dirs,

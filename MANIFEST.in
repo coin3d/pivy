@@ -1,4 +1,4 @@
-include AUTHORS ChangeLog LICENSE THANKS README.txt
+include AUTHORS ChangeLog LICENSE THANKS README
 include SConstruct
 include sogui.py
 recursive-include Inventor *.i *.win32 *.fix

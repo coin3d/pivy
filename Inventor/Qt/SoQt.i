@@ -1,5 +1,5 @@
 %extend SoQt {
-  static void mainLoop(void) {
+  static void mainLoop() {
     PyRun_SimpleString("import sys");
     PyObject *d = PyModule_GetDict(PyImport_AddModule("__main__"));
     PyObject *result = PyRun_String("sys.argv[0]", Py_eval_input, d, d);

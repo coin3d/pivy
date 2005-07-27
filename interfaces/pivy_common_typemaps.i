@@ -34,7 +34,7 @@
 #include <Inventor/SbTime.h>
 
 /* a casting helper function */
-SWIGEXPORT(PyObject *)
+SWIGEXPORT PyObject *
 cast(PyObject * self, PyObject * args)
 {
   swig_type_info * swig_type = 0;
@@ -67,8 +67,8 @@ cast(PyObject * self, PyObject * args)
   return SWIG_NewPointerObj((void*)cast_obj, swig_type, 0);
 }
 
-/* an autocasting helper function */
-SWIGEXPORT(PyObject *)
+/* autocasting helper function for SoBase */
+SWIGEXPORT PyObject *
 autocast_base(SoBase * base)
 {
   PyObject * result = NULL;
@@ -112,8 +112,8 @@ autocast_base(SoBase * base)
   return result;
 }
 
-/* an autocasting helper function */
-SWIGEXPORT(PyObject *)
+/* autocasting helper function for SoPath */
+SWIGEXPORT PyObject *
 autocast_path(SoPath * path)
 {
   PyObject * result = NULL;
@@ -150,7 +150,6 @@ autocast_path(SoPath * path)
       Py_DECREF(result_tuple);
 
       free(cast_name);
-      
     }
   }
 
@@ -162,8 +161,8 @@ autocast_path(SoPath * path)
   return result;
 }
 
-/* an autocasting helper function */
-SWIGEXPORT(PyObject *)
+/* autocasting helper function for SoField */
+SWIGEXPORT PyObject *
 autocast_field(SoField * field)
 {
   PyObject * result = NULL;
@@ -199,8 +198,7 @@ autocast_field(SoField * field)
       result = cast(NULL, result_tuple);
       Py_DECREF(result_tuple);
 
-      free(cast_name);
-      
+      free(cast_name);      
     }
   }
 
@@ -227,7 +225,7 @@ autocast_field(SoField * field)
 %pointer_class(double, doublep);
 
 /* if SWIG determines the class abstract it doesn't generate
- *  constructors of any kind. the following %feature
+ * constructors of any kind. the following %feature
  * declarations take care about this for the classes we still
  * want a constructor for.
  */
@@ -242,6 +240,9 @@ autocast_field(SoField * field)
 %rename(srcFrom) from;
 %rename(destTo) to;
 
+%include Inventor/SbString.h
+%include Inventor/fields/SoField.h
+
 /* generic typemaps to allow using python types instead of instances
  * within the python interpreter
  */
@@ -253,6 +254,14 @@ autocast_field(SoField * field)
   }
 }
 
+%typemap(typecheck) SbName & {
+  void *ptr = NULL;
+  $1 = 1;
+  if (!PyString_Check($input) && (SWIG_ConvertPtr($input, (void**)(&ptr), SWIGTYPE_p_SbName, 0) == -1)) {
+    $1 = 0;
+  }
+}
+
 %typemap(in) SbString & {
   if (PyString_Check($input)) {
     $1 = new SbString(PyString_AsString($input));
@@ -261,11 +270,27 @@ autocast_field(SoField * field)
   }
 }
 
+%typemap(typecheck) SbString & {
+  void *ptr = NULL;
+  $1 = 1;
+  if (!PyString_Check($input) && (SWIG_ConvertPtr($input, (void**)(&ptr), SWIGTYPE_p_SbString, 0) == -1)) {
+    $1 = 0;
+  }
+}
+
 %typemap(in) SbTime & {
   if (PyFloat_Check($input)) {
     $1 = new SbTime(PyFloat_AsDouble($input));
   } else {
     SWIG_ConvertPtr($input, (void**)&$1, SWIGTYPE_p_SbTime, 1);
+  }
+}
+
+%typemap(typecheck) SbTime & {
+  void *ptr = NULL;
+  $1 = 1;
+  if (!PyFloat_Check($input) && (SWIG_ConvertPtr($input, (void**)(&ptr), SWIGTYPE_p_SbTime, 0) == -1)) {
+    $1 = 0;
   }
 }
 

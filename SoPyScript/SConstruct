@@ -64,8 +64,6 @@ else:
 
 sopyscript_env.Append(CPPPATH = ['.', distutils.sysconfig.get_python_inc()])
 sopyscript_env.Append(LIBPATH = ['..', distutils.sysconfig.get_python_lib()])
-sopyscript_env.Append(RPATH = distutils.sysconfig.get_python_lib())
-sopyscript_env.Append(LIBS = 'pivy_runtime')
 
 sopyscript_env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars().get('LINKFORSHARED', '').split() +
                                   distutils.sysconfig.get_config_vars().get('BLDLIBRARY', '').split())

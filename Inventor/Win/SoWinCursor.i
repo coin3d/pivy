@@ -6,11 +6,11 @@ def __init__(self,*args):
    newobj = None
    if len(args) == 1:
       if isinstance(args[0], CustomCursor):
-         newobj = apply(_pivy.new_SoWinCursor_cc,args)
+         newobj = apply(_sowin.new_SoWinCursor_cc,args)
       else:
-         newobj = apply(_pivy.new_SoWinCursor_sha,args)
+         newobj = apply(_sowin.new_SoWinCursor_sha,args)
    else:
-      newobj = apply(_pivy.new_SoWinCursor,args)
+      newobj = apply(_sowin.new_SoWinCursor,args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1

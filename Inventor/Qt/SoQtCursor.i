@@ -6,11 +6,11 @@ def __init__(self,*args):
    newobj = None
    if len(args) == 1:
       if isinstance(args[0], CustomCursor):
-         newobj = apply(_qt.new_SoQtCursor_cc,args)
+         newobj = apply(_soqt.new_SoQtCursor_cc,args)
       else:
-         newobj = apply(_qt.new_SoQtCursor_sha,args)
+         newobj = apply(_soqt.new_SoQtCursor_sha,args)
    else:
-      newobj = apply(_qt.new_SoQtCursor,args)
+      newobj = apply(_soqt.new_SoQtCursor,args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1

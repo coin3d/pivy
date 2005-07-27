@@ -4,9 +4,9 @@
 def __init__(self,*args):
    newobj = None
    if isinstance(args[0], SoGLRenderAction):
-      newobj = apply(_pivy.new_SoOffscreenRenderer_gl,args)
+      newobj = apply(_coin.new_SoOffscreenRenderer_gl,args)
    else:
-      newobj = apply(_pivy.new_SoOffscreenRenderer,args)
+      newobj = apply(_coin.new_SoOffscreenRenderer,args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1
@@ -18,8 +18,8 @@ def __init__(self,*args):
 %feature("shadow") SoOffscreenRenderer::render(SoPath * scene) %{
 def render(*args):
    if isinstance(args[1], SoNode):
-      return apply(_pivy.SoOffscreenRenderer_render_nod,args)
-   return apply(_pivy.SoOffscreenRenderer_render,args)
+      return apply(_coin.SoOffscreenRenderer_render_nod,args)
+   return apply(_coin.SoOffscreenRenderer_render,args)
 %}
 
 %rename(writeToPostScript_fil_vec) SoOffscreenRenderer::writeToPostScript(FILE * fp, const SbVec2f & printsize) const;
@@ -30,12 +30,12 @@ def render(*args):
 def writeToPostScript(*args):
    if len(args) == 3:
       if isinstance(args[2], SbVec2f):
-         return apply(_pivy.SoOffscreenRenderer_writeToPostScript_fil_vec,args)
+         return apply(_coin.SoOffscreenRenderer_writeToPostScript_fil_vec,args)
       else:
-         return apply(_pivy.SoOffscreenRenderer_writeToPostScript_chr_vec,args)
+         return apply(_coin.SoOffscreenRenderer_writeToPostScript_chr_vec,args)
    elif type(args[1]) == type(""):
-         return apply(_pivy.SoOffscreenRenderer_writeToPostScript_chr,args)
-   return apply(_pivy.SoOffscreenRenderer_writeToPostScript,args)
+         return apply(_coin.SoOffscreenRenderer_writeToPostScript_chr,args)
+   return apply(_coin.SoOffscreenRenderer_writeToPostScript,args)
 %}
 
 %rename(writeToRGB_chr) SoOffscreenRenderer::writeToRGB(const char * filename) const;
@@ -43,8 +43,8 @@ def writeToPostScript(*args):
 %feature("shadow") SoOffscreenRenderer::writeToRGB(FILE * fp) const %{
 def writeToRGB(*args):
    if type(args[1]) == type(""):
-         return apply(_pivy.SoOffscreenRenderer_writeToRGB_chr,args)
-   return apply(_pivy.SoOffscreenRenderer_writeToRGB,args)
+         return apply(_coin.SoOffscreenRenderer_writeToRGB_chr,args)
+   return apply(_coin.SoOffscreenRenderer_writeToRGB,args)
 %}
 
 %extend SoOffscreenRenderer {

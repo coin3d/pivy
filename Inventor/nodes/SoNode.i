@@ -7,8 +7,8 @@
 %feature("shadow") * SoNode::getByName(const SbName & name) %{
 def getByName(*args):
    if len(args) == 3:
-  return apply(_pivy.SoNode_getByName_nl,SoNode()+args)
-   return apply(_pivy.SoNode_getByName,SoNode()+args)
+  return apply(_coin.SoNode_getByName_nl,SoNode()+args)
+   return apply(_coin.SoNode_getByName,SoNode()+args)
 %}
 */
 

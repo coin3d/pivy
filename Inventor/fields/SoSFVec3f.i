@@ -9,20 +9,14 @@
 %feature("shadow") SoSFVec3f::setValue(const float xyz[3]) %{
 def setValue(*args):
    if len(args) == 4:
-      return apply(_pivy.SoSFVec3f_setValue_fff,args)
+      return apply(_coin.SoSFVec3f_setValue_fff,args)
    elif isinstance(args[1],SbVec3f):
-      return apply(_pivy.SoSFVec3f_setValue_vec,args)
-   return apply(_pivy.SoSFVec3f_setValue,args)
+      return apply(_coin.SoSFVec3f_setValue_vec,args)
+   return apply(_coin.SoSFVec3f_setValue,args)
 %}
 
 %extend SoSFVec3f {
-  void __call__(SbVec3f & vec) {
-    self->setValue(vec);
-  }
-  void __call__(const float x, const float y, const float z) {
-    self->setValue(x,y,z);
-  }
-  void __call__(float xyz[3]) {
-    self->setValue(xyz);
-  }
+  void __call__(SbVec3f & vec) { self->setValue(vec); }
+  void __call__(const float x, const float y, const float z) { self->setValue(x,y,z); }
+  void __call__(float xyz[3]) { self->setValue(xyz); }
 }

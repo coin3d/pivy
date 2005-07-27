@@ -28,15 +28,15 @@ def __init__(self,*args):
    newobj = None
    if len(args) == 1:
       if isinstance(args[0], SbVec4f):
-         newobj = apply(_pivy.new_SbColor4f_vec,args)
+         newobj = apply(_coin.new_SbColor4f_vec,args)
       else:
-         newobj = apply(_pivy.new_SbColor4f_rgb,args)
+         newobj = apply(_coin.new_SbColor4f_rgb,args)
    elif len(args) == 2:
-      newobj = apply(_pivy.new_SbColor4f_col_f,args)
+      newobj = apply(_coin.new_SbColor4f_col_f,args)
    elif len(args) == 3:
-      newobj = apply(_pivy.new_SbColor4f_ffff,args)
+      newobj = apply(_coin.new_SbColor4f_ffff,args)
    else:
-      newobj = apply(_pivy.new_SbColor4f,args)
+      newobj = apply(_coin.new_SbColor4f,args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1
@@ -48,8 +48,8 @@ def __init__(self,*args):
 %feature("shadow") SbColor4f::setValue(const float col[4]) %{
 def setValue(*args):
    if len(args) == 5:
-      return apply(_pivy.SbColor4f_setValue_ffff,args)
-   return apply(_pivy.SbColor4f_setValue,args)
+      return apply(_coin.SbColor4f_setValue_ffff,args)
+   return apply(_coin.SbColor4f_setValue,args)
 %}
 
 %rename(setHSVValue_ffff) SbColor4f::setHSVValue(float h, float s, float v, float a=1.0f);
@@ -57,46 +57,21 @@ def setValue(*args):
 %feature("shadow") SbColor4f::setHSVValue(const float hsv[3], float alpha=1.0f) %{
 def setHSVValue(*args):
    if len(args) == 5:
-      return apply(_pivy.SbColor4f_setHSVValue_ffff,args)
-   return apply(_pivy.SbColor4f_setHSVValue,args)
+      return apply(_coin.SbColor4f_setHSVValue_ffff,args)
+   return apply(_coin.SbColor4f_setHSVValue,args)
 %}
 
 /* add operator overloading methods instead of the global functions */
 %extend SbColor4f {
-    SbColor4f __add__(const SbColor4f &u)
-    {
-        return *self + u;
-    };
-    
-    SbColor4f __sub__(const SbColor4f &u)
-    {
-       return *self - u;
-    };
-    
-    SbColor4f __mul__(const float d)
-    {
-       return *self * d;
-    };
-    
-    SbColor4f __rmul__(const float d)
-    {
-           return *self * d;
-    };
-    
-    SbColor4f __div__(const float d)
-    {
-        return *self / d;
-    };
-    
-    int __eq__( const SbColor4f &u )
-    {
-        return *self == u;
-    };
-    
-    int __nq__( const SbColor4f &u )
-    {
-        return *self != u;
-    };
+  SbColor4f __add__(const SbColor4f &u) { return *self + u; }
+  SbColor4f __sub__(const SbColor4f &u) { return *self - u; }
+  SbColor4f __mul__(const float d) { return *self * d; }
+  SbColor4f __rmul__(const float d) { return *self * d; }
+  SbColor4f __div__(const float d) { return *self / d; }
+  int __eq__( const SbColor4f &u ) { return *self == u; }
+  int __nq__( const SbColor4f &u ) { return *self != u; }
+  // add a method for wrapping c++ operator[] access
+  float __getitem__(int i) { return (self->getValue())[i]; }
 }
 
 %apply float *OUTPUT { float &r, float &g, float &b, float &a };
@@ -104,10 +79,3 @@ def setHSVValue(*args):
 
 %ignore SbColor4f::getValue() const;
 %ignore SbColor4f::getHSVValue(float hsv[3]) const;
-
-// add a method for wrapping c++ operator[] access
-%extend SbColor4f {
-  float __getitem__(int i) {
-          return (self->getValue())[i];
-  }
-}

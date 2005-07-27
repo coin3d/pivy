@@ -96,10 +96,10 @@ SoIntersectionPythonCB(void * closure,
 def apply(*args):
    if len(args) == 2:
       if isinstance(args[1], SoNode):
-         return apply(_pivy.SoIntersectionDetectionAction_apply_nod,args)
+         return apply(_coin.SoIntersectionDetectionAction_apply_nod,args)
       elif isinstance(args[1], SoPath):
-         return apply(_pivy.SoIntersectionDetectionAction_apply_pat,args)
-   return apply(_pivy.SoIntersectionDetectionAction_apply,args)
+         return apply(_coin.SoIntersectionDetectionAction_apply_pat,args)
+   return apply(_coin.SoIntersectionDetectionAction_apply,args)
 %}
 
 /* add python specific callback functions */

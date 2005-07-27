@@ -27,14 +27,14 @@ def __init__(self,*args):
    newobj = None
    if len(args) == 1:
       if isinstance(args[0], SbVec2f):
-         newobj = _pivy.new_SbVec2f()
+         newobj = _coin.new_SbVec2f()
          newobj.setValue(args[0])
       else:
-         newobj = apply(_pivy.new_SbVec2f_vec,args)
+         newobj = apply(_coin.new_SbVec2f_vec,args)
    elif len(args) == 2:
-      newobj = apply(_pivy.new_SbVec2f_ff,args)
+      newobj = apply(_coin.new_SbVec2f_ff,args)
    else:
-      newobj = apply(_pivy.new_SbVec2f,args)
+      newobj = apply(_coin.new_SbVec2f,args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1
@@ -47,60 +47,26 @@ def __init__(self,*args):
 def setValue(*args):
    if len(args) == 2:
       if isinstance(args[1], SbVec2f):
-         return _pivy.SbVec2f_setValue(args[0], args[1].getValue())
+         return _coin.SbVec2f_setValue(args[0], args[1].getValue())
    elif len(args) == 3:
-      return apply(_pivy.SbVec2f_setValue_ff,args)
-   return apply(_pivy.SbVec2f_setValue,args)
+      return apply(_coin.SbVec2f_setValue_ff,args)
+   return apply(_coin.SbVec2f_setValue,args)
 %}
 
 /* add operator overloading methods instead of the global functions */
 %extend SbVec2f {
-    SbVec2f __add__( const SbVec2f &u)
-    {
-        return *self + u;
-    };
-    
-    SbVec2f __sub__( const SbVec2f &u)    
-    {
-       return *self - u;
-    };
-        
-    SbVec2f __mul__( const float d)
-    {
-       return *self * d;
-    };
-    
-    SbVec2f __rmul__( const float d)
-    {
-           return *self * d;
-    };
-       
-    SbVec2f __div__( const float d)
-    {
-        return *self / d;
-    };
-    
-    int __eq__( const SbVec2f &u )
-    {
-        return *self == u;
-    };
-    
-    int __nq__( const SbVec2f &u )
-    {
-        return *self != u;
-    };
+  SbVec2f __add__(const SbVec2f &u) { return *self + u; }
+  SbVec2f __sub__(const SbVec2f &u) { return *self - u; }
+  SbVec2f __mul__(const float d) { return *self * d; }
+  SbVec2f __rmul__(const float d) { return *self * d; }
+  SbVec2f __div__(const float d) { return *self / d; }
+  int __eq__(const SbVec2f &u ) { return *self == u; }
+  int __nq__(const SbVec2f &u) { return *self != u; }
+  // add a method for wrapping c++ operator[] access
+  float __getitem__(int i) { return (self->getValue())[i]; }
+  void  __setitem__(int i, float value) { (*self)[i] = value; }
 }
 
 %apply float *OUTPUT { float & x, float & y };
 
 %ignore SbVec2f::getValue() const;
-
-// add a method for wrapping c++ operator[] access
-%extend SbVec2f {
-  float __getitem__(int i) {
-    return (self->getValue())[i];
-  }
-  void  __setitem__(int i, float value) {
-    (*self)[i] = value;
-  }
-}

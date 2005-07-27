@@ -4,9 +4,9 @@
 def __init__(self,*args):
    newobj = None
    if len(args) == 1:
-      newobj = apply(_pivy.new_SoWriteAction_out,args)
+      newobj = apply(_coin.new_SoWriteAction_out,args)
    else:
-      newobj = apply(_pivy.new_SoWriteAction,args)
+      newobj = apply(_coin.new_SoWriteAction,args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1
@@ -18,6 +18,6 @@ def __init__(self,*args):
 %feature("shadow") SoWriteAction::continueToApply(SoPath * path) %{
 def continueToApply(*args):
    if isinstance(args[1], SoNode):
-      return apply(_pivy.SoWriteAction_continueToApply_nod,args)
-   return apply(_pivy.SoWriteAction_continueToApply,args)
+      return apply(_coin.SoWriteAction_continueToApply_nod,args)
+   return apply(_coin.SoWriteAction_continueToApply,args)
 %}

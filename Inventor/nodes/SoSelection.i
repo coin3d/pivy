@@ -87,9 +87,9 @@ SoSelectionPickPythonCB(void * data, const SoPickedPoint * pick)
 def __init__(self,*args):
    newobj = None
    if len(args) == 1:
-      newobj = apply(_pivy.new_SoSelection_i,args)
+      newobj = apply(_coin.new_SoSelection_i,args)
    else:
-      newobj = apply(_pivy.new_SoSelection,args)
+      newobj = apply(_coin.new_SoSelection,args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1
@@ -101,8 +101,8 @@ def __init__(self,*args):
 %feature("shadow") SoSelection::select(const SoPath * path) %{
 def select(*args):
    if isinstance(args[1], SoNode):
-      return apply(_pivy.SoSelection_select_nod,args)
-   return apply(_pivy.SoSelection_select,args)
+      return apply(_coin.SoSelection_select_nod,args)
+   return apply(_coin.SoSelection_select,args)
 %}
 
 %rename(deselect_i) SoSelection::deselect(const int which);
@@ -111,10 +111,10 @@ def select(*args):
 %feature("shadow") SoSelection::deselect(const SoPath * path) %{
 def deselect(*args):
    if isinstance(args[1], SoNode):
-      return apply(_pivy.SoSelection_deselect_nod,args)
+      return apply(_coin.SoSelection_deselect_nod,args)
    elif type(args[1]) == type(1):
-      return apply(_pivy.SoSelection_deselect_i,args)
-   return apply(_pivy.SoSelection_select,args)
+      return apply(_coin.SoSelection_deselect_i,args)
+   return apply(_coin.SoSelection_select,args)
 %}
 
 %rename(toggle_nod) SoSelection::toggle(SoNode * node);
@@ -122,8 +122,8 @@ def deselect(*args):
 %feature("shadow") SoSelection::toggle(const SoPath * path) %{
 def toggle(*args):
    if isinstance(args[1], SoNode):
-      return apply(_pivy.SoSelection_toggle_nod,args)
-   return apply(_pivy.SoSelection_toggle,args)
+      return apply(_coin.SoSelection_toggle_nod,args)
+   return apply(_coin.SoSelection_toggle,args)
 %}
 
 %rename(isSelected_nod) SoSelection::isSelected(SoNode * node) const;
@@ -131,8 +131,8 @@ def toggle(*args):
 %feature("shadow") isSelected(const SoPath * path) const %{
 def isSelected(*args):
    if isinstance(args[1], SoNode):
-      return apply(_pivy.SoSelection_isSelected_nod,args)
-   return apply(_pivy.SoSelection_isSelected,args)
+      return apply(_coin.SoSelection_isSelected_nod,args)
+   return apply(_coin.SoSelection_isSelected,args)
 %}
 
 /* add python specific callback functions */

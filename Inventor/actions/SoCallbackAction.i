@@ -123,9 +123,9 @@ SoPointPythonCB(void * userdata, SoCallbackAction * action, const SoPrimitiveVer
 def __init__(self,*args):
    newobj = None
    if len(args) == 1:
-      newobj = apply(_pivy.new_SoCallbackAction_vpr,args)
+      newobj = apply(_coin.new_SoCallbackAction_vpr,args)
    else:
-      newobj = apply(_pivy.new_SoCallbackAction,args)
+      newobj = apply(_coin.new_SoCallbackAction,args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1

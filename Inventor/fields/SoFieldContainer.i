@@ -3,8 +3,8 @@
 %feature("shadow") SoFieldContainer::set(const char * const fielddata) %{
 def set(*args):
    if len(args) == 3:
-      return apply(_pivy.SoFieldContainer_set_str_in,args)
-   return apply(_pivy.SoFieldContainer_set,args)
+      return apply(_coin.SoFieldContainer_set_str_in,args)
+   return apply(_coin.SoFieldContainer_set,args)
 %}
 
 %rename(get_str_out) SoFieldContainer::get(SbString & fielddata, SoOutput * out);
@@ -12,8 +12,8 @@ def set(*args):
 %feature("shadow") SoFieldContainer::get(SbString & fielddata) %{
 def get(*args):
    if len(args) == 3:
-      return apply(_pivy.SoFieldContainer_get_str_out,args)
-   return apply(_pivy.SoFieldContainer_get,args)
+      return apply(_coin.SoFieldContainer_get_str_out,args)
+   return apply(_coin.SoFieldContainer_get,args)
 %}
 
 %extend SoFieldContainer {
@@ -34,7 +34,6 @@ def get(*args):
   
 /* add generic interface to access fields as attributes */
 %pythoncode %{
-        
     def __getattr__(self,name):
         try:
             return SoBase.__getattribute__(self, name)
@@ -53,6 +52,5 @@ def get(*args):
             return SoBase.__setattr__(self, name, value)
         field.setValue(value)
         return field
-        
 %}
 }

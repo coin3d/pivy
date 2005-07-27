@@ -17,13 +17,13 @@ def __init__(self,*args):
    newobj = None
    if len(args) == 1:
       if isinstance(args[0], SbVec3f):
-         newobj = apply(_pivy.new_SbColor_vec,args)
+         newobj = apply(_coin.new_SbColor_vec,args)
       else:
-         newobj = apply(_pivy.new_SbColor_rgb,args)
+         newobj = apply(_coin.new_SbColor_rgb,args)
    elif len(args) == 3:
-      newobj = apply(_pivy.new_SbColor_fff,args)
+      newobj = apply(_coin.new_SbColor_fff,args)
    else:
-      newobj = apply(_pivy.new_SbColor,args)
+      newobj = apply(_coin.new_SbColor,args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1
@@ -35,8 +35,8 @@ def __init__(self,*args):
 %feature("shadow") SbColor::setHSVValue(const float hsv[3]) %{
 def setHSVValue(*args):
    if len(args) == 4:
-      return apply(_pivy.SbColor_setHSVValue_fff,args)
-   return apply(_pivy.SbColor_setHSVValue,args)
+      return apply(_coin.SbColor_setHSVValue_fff,args)
+   return apply(_coin.SbColor_setHSVValue,args)
 %}
 
 %apply float *OUTPUT { float & h, float & s, float & v };
@@ -50,11 +50,3 @@ def setHSVValue(*args):
 %rename(SbColor_div) operator /(const SbColor & v, const float d);
 %rename(SbColor_eq) operator ==(const SbColor & v1, const SbColor & v2);
 %rename(SbColor_neq) operator !=(const SbColor & v1, const SbColor & v2);
-
-COIN_DLL_API SbColor operator *(const SbColor & v, const float d);
-COIN_DLL_API SbColor operator *(const float d, const SbColor & v);
-COIN_DLL_API SbColor operator /(const SbColor & v, const float d);
-COIN_DLL_API SbColor operator +(const SbColor & v1, const SbColor & v2);
-COIN_DLL_API SbColor operator -(const SbColor & v1, const SbColor & v2);
-COIN_DLL_API int operator ==(const SbColor & v1, const SbColor & v2);
-COIN_DLL_API int operator !=(const SbColor & v1, const SbColor & v2);

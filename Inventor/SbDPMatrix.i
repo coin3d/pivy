@@ -53,46 +53,11 @@ convert_SbDPMat_array(PyObject *input, SbDPMat temp)
 
 /* add operator overloading methods instead of the global functions */
 %extend SbDPMatrix {
-    SbDPMatrix __mul__( const SbDPMatrix & u)
-    {
-        return *self * u;
-    };
-
-    SbVec3d __mul__( const SbVec3d & u )
-    {
-        SbVec3d res;
-        self->multMatrixVec( u, res );
-        return res;
-    };
-    
-    SbVec3d __rmul__( const SbVec3d & u )
-    {
-        SbVec3d res;
-        self->multVecMatrix( u, res );
-        return res;
-    };
-    
-    int __eq__( const SbDPMatrix & u )
-    {
-        return *self == u;
-    };
-    
-    int __ne__( const SbDPMatrix & u )
-    {
-        return *self != u;
-    };       
+  SbDPMatrix __mul__(const SbDPMatrix & u) { return *self * u; }
+  SbVec3d __mul__(const SbVec3d & u) { SbVec3d res; self->multMatrixVec(u, res); return res; }
+  SbVec3d __rmul__(const SbVec3d & u) { SbVec3d res; self->multVecMatrix(u, res); return res; }
+  int __eq__(const SbDPMatrix & u) { return *self == u; }
+  int __ne__(const SbDPMatrix & u) { return *self != u; }
 }
 
 %ignore SbDPMatrix::SbDPMatrix(const SbDPMat & matrix);
-
-/**
- * workaround for swig generating an unnecessary cast
- * -> (SbDPMat const &)*arg);
- **/
-%extend SbDPMatrix {
-  void setValue(const SbDPMat * m) {
-    self->setValue(*m);
-  }
-}
-
-%ignore SbDPMatrix::setValue(const SbDPMat & m);

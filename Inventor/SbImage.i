@@ -88,11 +88,11 @@ def __init__(self,*args):
   newobj = None
   if len(args) == 3:
      if isinstance(args[1], SbVec2s):
-        newobj = apply(_pivy.new_SbImage_vec2s,args)
+        newobj = apply(_coin.new_SbImage_vec2s,args)
      elif isinstance(args[1], SbVec3s):
-        newobj = apply(_pivy.new_SbImage_vec3s,args)
+        newobj = apply(_coin.new_SbImage_vec3s,args)
   else:
-     newobj = apply(_pivy.new_SbImage,args)
+     newobj = apply(_coin.new_SbImage,args)
   if newobj:
      self.this = newobj.this
      self.thisown = 1
@@ -107,8 +107,8 @@ def __init__(self,*args):
                                      const unsigned char * bytes) %{
 def setValue(*args):
   if isinstance(args[1], SbVec2s):
-      return apply(_pivy.SbImage_setValue_vec2s,args)
-  return apply(_pivy.SbImage_setValue_vec2s,args)
+      return apply(_coin.SbImage_setValue_vec2s,args)
+  return apply(_coin.SbImage_setValue_vec2s,args)
 %}
 
 %extend SbImage {

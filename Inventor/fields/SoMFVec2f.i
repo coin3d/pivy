@@ -49,10 +49,10 @@ convert_SoMFVec2f_array(PyObject *input, int len, float temp[][2])
 %feature("shadow") SoMFVec2f::setValue(const float xy[2]) %{
 def setValue(*args):
    if isinstance(args[1], SbVec2f):
-      return apply(_pivy.SoMFVec2f_setValue_vec,args)
+      return apply(_coin.SoMFVec2f_setValue_vec,args)
    elif len(args) == 3:
-      return apply(_pivy.SoMFVec2f_setValue_ff,args)
-   return apply(_pivy.SoMFVec2f_setValue,args)
+      return apply(_coin.SoMFVec2f_setValue_ff,args)
+   return apply(_coin.SoMFVec2f_setValue,args)
 %}
 
 %rename(set1Value_i_vec) SoMFVec2f::set1Value(int const ,SbVec2f const &);
@@ -61,10 +61,10 @@ def setValue(*args):
 %feature("shadow") SoMFVec2f::set1Value(const int idx, const float xy[2]) %{
 def set1Value(*args):
    if isinstance(args[2], SbVec2f):
-      return apply(_pivy.SoMFVec2f_set1Value_i_vec,args)
+      return apply(_coin.SoMFVec2f_set1Value_i_vec,args)
    elif len(args) == 4:
-      return apply(_pivy.SoMFVec2f_set1Value_i_ff,args)
-   return apply(_pivy.SoMFVec2f_set1Value,args)
+      return apply(_coin.SoMFVec2f_set1Value_i_ff,args)
+   return apply(_coin.SoMFVec2f_set1Value,args)
 %}
 
 %rename(setValues_i_i_vec) SoMFVec2f::setValues(int const ,int const ,SbVec2f const *);
@@ -72,24 +72,14 @@ def set1Value(*args):
 %feature("shadow") SoMFVec2f::setValues(const int start, const int num, const float xyz[][2]) %{
 def setValues(*args):
    if isinstance(args[3], SbVec2f):
-      return apply(_pivy.SoMFVec2f_setValues_i_i_vec,args)
-   return apply(_pivy.SoMFVec2f_setValues,args)
+      return apply(_coin.SoMFVec2f_setValues_i_i_vec,args)
+   return apply(_coin.SoMFVec2f_setValues,args)
 %}
 
 %extend SoMFVec2f {
-  void __call__(const SbVec2f & vec) {
-    self->setValue(vec);
-  }
-  void __call__(const float x, const float y) {
-    self->setValue(x,y);
-  }
-  void __call__(float xy[2]) {
-    self->setValue(xy);
-  }
-  const SbVec2f & __getitem__(int i) {
-    return (*self)[i];
-  }
-  void  __setitem__(int i, const SbVec2f & value) {
-    self->set1Value(i, value);
-  }  
+  void __call__(const SbVec2f & vec) { self->setValue(vec); }
+  void __call__(const float x, const float y) { self->setValue(x,y); }
+  void __call__(float xy[2]) { self->setValue(xy); }
+  const SbVec2f & __getitem__(int i) { return (*self)[i]; }
+  void  __setitem__(int i, const SbVec2f & value) { self->set1Value(i, value); }  
 }

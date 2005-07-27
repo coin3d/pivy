@@ -35,10 +35,10 @@
 /* fake an input argument */
 %feature("shadow") SoSFImage::getValue(SbVec2s & size, int & nc) const %{
 def getValue(self):
-   return apply(_pivy.SoSFImage_getValue,(self,0))
+   return apply(_coin.SoSFImage_getValue,(self,0))
 %}
 
 %feature("shadow") SoSFImage::startEditing(SbVec2s & size, int & nc) %{
 def startEditing(self):
-   return apply(_pivy.SoSFImage_startEditing,(self,0))
+   return apply(_coin.SoSFImage_startEditing,(self,0))
 %}

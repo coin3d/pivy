@@ -7,9 +7,9 @@ def __init__(self,*args):
    newobj = None
    if len(args) == 2:
       args = (args[0], (args[0], args[1]))
-      newobj = apply(_pivy.new_SoDelayQueueSensor_scb_v,args)
+      newobj = apply(_coin.new_SoDelayQueueSensor_scb_v,args)
    else:
-      newobj = apply(_pivy.new_SoDelayQueueSensor,args)
+      newobj = apply(_coin.new_SoDelayQueueSensor,args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1

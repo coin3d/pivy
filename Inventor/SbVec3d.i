@@ -43,17 +43,17 @@ def __init__(self,*args):
    newobj = None
    if len(args) == 1:
       if isinstance(args[0], SbVec3d):
-         newobj = _pivy.new_SbVec3d()
+         newobj = _coin.new_SbVec3d()
          newobj.setValue(args[0])
       else:
-         newobj = apply(_pivy.new_SbVec3d_vec,args)
+         newobj = apply(_coin.new_SbVec3d_vec,args)
    elif len(args) == 3:
       if isinstance(args[0], SbPlane):
-         newobj = apply(_pivy.new_SbVec3d_pl_pl_pl,args)
+         newobj = apply(_coin.new_SbVec3d_pl_pl_pl,args)
       else:
-         newobj = apply(_pivy.new_SbVec3d_fff,args)
+         newobj = apply(_coin.new_SbVec3d_fff,args)
    else:
-      newobj = apply(_pivy.new_SbVec3d,args)
+      newobj = apply(_coin.new_SbVec3d,args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1
@@ -67,65 +67,31 @@ def __init__(self,*args):
 %feature("shadow") SbVec3d::setValue(const double vec[3]) %{
 def setValue(*args):
    if len(args) == 4:
-      return apply(_pivy.SbVec3d_setValue_fff,args)
+      return apply(_coin.SbVec3d_setValue_fff,args)
    elif len(args) == 5:
-      return apply(_pivy.SbVec3d_setValue_vec_vec_vec_vec,args)
+      return apply(_coin.SbVec3d_setValue_vec_vec_vec_vec,args)
    elif len(args) == 2:
       if isinstance(args[1], SbVec3f):
-         return apply(_pivy.SbVec3d_setValue_vec,args)
+         return apply(_coin.SbVec3d_setValue_vec,args)
       elif isinstance(args[1], SbVec3d):
-         return _pivy.SbVec3d_setValue(args[0],args[1].getValue())
-   return apply(_pivy.SbVec3d_setValue,args)
+         return _coin.SbVec3d_setValue(args[0],args[1].getValue())
+   return apply(_coin.SbVec3d_setValue,args)
 %}
 
 /* add operator overloading methods instead of the global functions */
 %extend SbVec3d {
-    SbVec3d __add__( const SbVec3d &u)
-    {
-        return *self + u;
-    };
-    
-    SbVec3d __sub__( const SbVec3d &u)    
-    {
-       return *self - u;
-    };
-    
-    SbVec3d __mul__( const double d)
-    {
-       return *self * d;
-    };
-    
-    SbVec3d __rmul__( const double d)
-    {
-           return *self * d;
-    };
-        
-    SbVec3d __div__( const double d)
-    {
-        return *self / d;
-    };
-    
-    int __eq__( const SbVec3d &u )
-    {
-        return *self == u;
-    };
-    
-    int __nq__( const SbVec3d &u )
-    {
-        return *self != u;
-    };    
+  SbVec3d __add__(const SbVec3d &u) { return *self + u; }
+  SbVec3d __sub__(const SbVec3d &u) { return *self - u; }
+  SbVec3d __mul__(const double d) { return *self * d; }
+  SbVec3d __rmul__(const double d) { return *self * d; }
+  SbVec3d __div__(const double d) { return *self / d; }
+  int __eq__(const SbVec3d &u) { return *self == u; }
+  int __nq__(const SbVec3d &u) { return *self != u; }
+  // add a method for wrapping c++ operator[] access
+  double __getitem__(int i) { return (self->getValue())[i]; }
+  void  __setitem__(int i, double value) { (*self)[i] = value; }
 }
 
 %apply double *OUTPUT { double & x, double & y, double & z };
 
 %ignore SbVec3d::getValue(double & x, double & y, double & z) const;
-
-// add a method for wrapping c++ operator[] access
-%extend SbVec3d {
-  double __getitem__(int i) {
-    return (self->getValue())[i];
-  }
-  void  __setitem__(int i, double value) {
-    (*self)[i] = value;
-  }
-}

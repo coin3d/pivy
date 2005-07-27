@@ -1,3 +1,7 @@
+/* FIXME: overloading should mostly work automagically by SWIG by
+ * now. write unit tests and verify this. 20050727 tamer.
+ */
+#if 0
 %rename(SoPath_nod) SoPath::SoPath(SoNode * const head);
 %rename(SoPath_pat) SoPath::SoPath(const SoPath & rhs);
 
@@ -5,11 +9,11 @@
 def __init__(self,*args):
    newobj = None
    if isinstance(args[0], SoNode):
-      newobj = apply(_pivy.new_SoPath_nod,args)
+      newobj = apply(_coin.new_SoPath_nod,args)
    elif isinstance(args[0], SoPath):
-      newobj = apply(_pivy.new_SoPath_pat,args)
+      newobj = apply(_coin.new_SoPath_pat,args)
    else:
-      newobj = apply(_pivy.new_SoPath,args)
+      newobj = apply(_coin.new_SoPath,args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1
@@ -22,10 +26,10 @@ def __init__(self,*args):
 %feature("shadow") SoPath::append(const int childindex) %{
 def append(*args):
    if isinstance(args[1], SoNode):
-      return apply(_pivy.SoPath_append_nod,args)
+      return apply(_coin.SoPath_append_nod,args)
    elif isinstance(args[1], SoPath):
-      return apply(_pivy.SoPath_append_pat,args)
-   return apply(_pivy.SoPath_append,args)
+      return apply(_coin.SoPath_append_pat,args)
+   return apply(_coin.SoPath_append,args)
 %}
 
 %rename(getByName_nam_pal) SoPath::getByName(const SbName name, SoPathList & l);
@@ -33,19 +37,13 @@ def append(*args):
 %feature("shadow") SoPath::getByName(const SbName name) %{
 def getByName(*args):
    if len(args) == 3:
-      return apply(_pivy.SoPath_getByName_nam_pal,args)
-   return apply(_pivy.SoPath_getByName,args)
+      return apply(_coin.SoPath_getByName_nam_pal,args)
+   return apply(_coin.SoPath_getByName,args)
 %}
+#endif
 
 /* add operator overloading methods instead of the global functions */
 %extend SoPath {      
-    int __eq__( const SoPath &u )
-    {
-        return *self == u;
-    };
-    
-    int __nq__( const SoPath &u )
-    {
-        return *self != u;
-    };
+  int __eq__(const SoPath &u) { return *self == u; }
+  int __nq__(const SoPath &u) { return *self != u; }
 }

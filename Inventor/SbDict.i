@@ -4,9 +4,9 @@
 def __init__(self,*args):
    newobj = None
    if type(args[0]) == type(1):
-      newobj = apply(_pivy.new_SbDict,args)
+      newobj = apply(_coin.new_SbDict,args)
    else:
-      newobj = apply(_pivy.new_SbDict_dict,args)
+      newobj = apply(_coin.new_SbDict_dict,args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1
@@ -19,6 +19,6 @@ def __init__(self,*args):
 %feature("shadow") SbDict::applyToAll(void (* rtn)(unsigned long key, void * value)) %{
 def applyToAll(*args):
    if len(args) == 3:
-      return apply(_pivy.SbDict_applyToAll_func_void,args)
-   return apply(_pivy.SbDict_applyToAll,args)
+      return apply(_coin.SbDict_applyToAll_func_void,args)
+   return apply(_coin.SbDict_applyToAll,args)
 %}

@@ -43,7 +43,7 @@ convert_SbMat_array(PyObject *input, SbMat temp)
       PyObject *oj = PyFloat_FromDouble((double)(*$1)[i][j]);
       PyList_SetItem(oi, j, oj);
     }
-    PyTuple_SetItem($result, i, oi);    
+    PyTuple_SetItem($result, i, oi);
   }
 }
 
@@ -58,13 +58,13 @@ def __init__(self,*args):
    newobj = None
    if len(args) == 1:
       if isinstance(args[0],SbMatrix):
-         newobj = _pivy.new_SbMatrix_SbMat(args[0].getValue())
+         newobj = _coin.new_SbMatrix_SbMat(args[0].getValue())
       else:
-         newobj = apply(_pivy.new_SbMatrix_SbMat,args)
+         newobj = apply(_coin.new_SbMatrix_SbMat,args)
    elif len(args) == 16:
-      newobj = apply(_pivy.new_SbMatrix_f16,args)
+      newobj = apply(_coin.new_SbMatrix_f16,args)
    else:
-      newobj = apply(_pivy.new_SbMatrix,args)
+      newobj = apply(_coin.new_SbMatrix,args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1
@@ -74,8 +74,8 @@ def __init__(self,*args):
 %feature("shadow") SbMatrix::setValue(const SbMat * m) %{
 def setValue(*args):
    if isinstance(args[1], SbMatrix):
-      return _pivy.SbMatrix_setValue(args[0], args[1].getValue())
-   return _pivy.SbMatrix_setValue(*args)
+      return _coin.SbMatrix_setValue(args[0], args[1].getValue())
+   return _coin.SbMatrix_setValue(*args)
 %}
 
 %rename(det3_i6) SbMatrix::det3(int r1, int r2, int r3,
@@ -84,8 +84,8 @@ def setValue(*args):
 %feature("shadow") SbMatrix::det3() %{
 def det3(*args):
    if len(args) == 7:
-      return apply(_pivy.SbMatrix_det3_i6,args)
-   return apply(_pivy.SbMatrix_det3,args)
+      return apply(_coin.SbMatrix_det3_i6,args)
+   return apply(_coin.SbMatrix_det3,args)
 %}
 
 %rename(setScale_vec3) SbMatrix::setScale(const SbVec3f & s);
@@ -93,8 +93,8 @@ def det3(*args):
 %feature("shadow") SbMatrix::setScale(const float s) %{
 def setScale(args):
   if type(args[1]) == type(0.0):
-    return apply(_pivy.SbMatrix_setScale,args)
-  return apply(_pivy.SbMatrix_setScale_vec3,args)
+    return apply(_coin.SbMatrix_setScale,args)
+  return apply(_coin.SbMatrix_setScale_vec3,args)
 %}
 
 %rename(setTransform_vec3_rot_vec3_rot) SbMatrix::setTransform(const SbVec3f & t, const SbRotation & r, const SbVec3f & s,
@@ -105,11 +105,11 @@ def setScale(args):
 
 %feature("shadow") SbMatrix::setTransform(const SbVec3f & t, const SbRotation & r, const SbVec3f & s) %{
 def setTransform(*args):
-   if len(args) == 5:
-      return apply(_pivy.SbMatrix_setTransform_vec3_rot_vec3_rot,args)
-   elif len(args) == 6:
-      return apply(_pivy.SbMatrix_setTransform_vec3_rot_vec3_rot_vec3,args)
-   return apply(_pivy.SbMatrix_setTransform,args)
+  if len(args) == 5:
+    return apply(_coin.SbMatrix_setTransform_vec3_rot_vec3_rot,args)
+  elif len(args) == 6:
+    return apply(_coin.SbMatrix_setTransform_vec3_rot_vec3_rot_vec3,args)
+  return apply(_coin.SbMatrix_setTransform,args)
 %}
 
 %ignore SbMatrix::getTransform(SbVec3f & translation, SbRotation & rotation,
@@ -122,9 +122,9 @@ def setTransform(*args):
 
 %feature("shadow") SbMatrix::multVecMatrix(const SbVec3f & src, SbVec3f & dst) %{
 def multVecMatrix(*args):
-   if isinstance(args[1], SbVec4f):
-      return apply(_pivy.SbMatrix_multVecMatrix_vec4,args)
-   return apply(_pivy.SbMatrix_multVecMatrix,args)
+  if isinstance(args[1], SbVec4f):
+    return apply(_coin.SbMatrix_multVecMatrix_vec4,args)
+  return apply(_coin.SbMatrix_multVecMatrix,args)
 %}
 
 /* the next 2 typemaps handle the return value for e.g. multMatrixVec() */
@@ -132,57 +132,16 @@ def multVecMatrix(*args):
   $result = SWIG_NewPointerObj((void *) $1, $1_descriptor, 1);
 }
 %typemap(in,numinputs=0) SbVec3f & dst, SbVec4f & dst {
-    $1 = new $1_basetype();
+  $1 = new $1_basetype();
 }
 
 %rename(SbMatrix_mul) operator *(const SbMatrix & m1, const SbMatrix & m2);
 %rename(SbMatrix_eq) operator ==(const SbMatrix & m1, const SbMatrix & m2);
 %rename(SbMatrix_neq) operator !=(const SbMatrix & m1, const SbMatrix & m2);
 
-/* add operator overloading methods instead of the global functions */
-%extend SbMatrix {
-    SbMatrix __mul__( const SbMatrix & u)
-    {
-        return *self * u;
-    };
-
-    SbVec3f __mul__( const SbVec3f & u )
-    {
-        SbVec3f res;
-        self->multMatrixVec( u, res );
-        return res;
-    };
-    
-    SbVec3f __rmul__( const SbVec3f & u )
-    {
-        SbVec3f res;
-        self->multVecMatrix( u, res );
-        return res;
-    };
-    
-    int __eq__( const SbMatrix & u )
-    {
-        return *self == u;
-    };
-    
-    int __ne__( const SbMatrix & u )
-    {
-        return *self != u;
-    };       
-}
-
 %ignore SbMatrix::SbMatrix(const SbMat & matrix);
-%ignore SbMatrix::setValue(const SbMat & m);
 
-/**
- * workaround for swig generating an unnecessary cast
- * -> (SbMat const &)*arg);
- **/
 %extend SbMatrix {
-  void setValue(const SbMat * m) {
-    self->setValue(*m);
-  }
-
   // add a method for wrapping c++ operator[] access
   const float *__getitem__(int i) {
     return (self->getValue())[i];
@@ -233,4 +192,11 @@ def multVecMatrix(*args):
 
     return result;
   }
+
+  /* add operator overloading methods instead of the global functions */
+  SbMatrix __mul__(const SbMatrix & u) { return *self * u; }
+  SbVec3f __mul__(const SbVec3f & u) { SbVec3f res; self->multMatrixVec(u, res); return res; }
+  SbVec3f __rmul__(const SbVec3f & u) { SbVec3f res; self->multVecMatrix(u, res); return res; }
+  int __eq__(const SbMatrix & u) { return *self == u; }
+  int __ne__(const SbMatrix & u) { return *self != u; }
 }

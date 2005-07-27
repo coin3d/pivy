@@ -7,13 +7,13 @@ def __init__(self,*args):
    newobj = None
    if len(args) == 1:
       if isinstance(args[0], SbName):
-         newobj = apply(_pivy.new_SbName_str,args)
+         newobj = apply(_coin.new_SbName_str,args)
       elif isinstance(args[0], SbName):
-         newobj = apply(_pivy.new_SbName_name,args)
+         newobj = apply(_coin.new_SbName_name,args)
       else:
-         newobj = apply(_pivy.new_SbName_char,args)
+         newobj = apply(_coin.new_SbName_char,args)
    else:
-      newobj = apply(_pivy.new_SbName,args)
+      newobj = apply(_coin.new_SbName,args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1

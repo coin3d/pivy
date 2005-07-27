@@ -23,20 +23,20 @@ def __init__(self,*args):
    newobj = None
    if len(args) == 1:
       if isinstance(args[0], SbMatrix):
-         newobj = apply(_pivy.new_SbRotation_mat,args)
+         newobj = apply(_coin.new_SbRotation_mat,args)
       elif isinstance(args[0], SbRotation):
-         newobj = _pivy.new_SbRotation_arr(args[0].getValue())
+         newobj = _coin.new_SbRotation_arr(args[0].getValue())
       else:
-         newobj = apply(_pivy.new_SbRotation_arr,args)
+         newobj = apply(_coin.new_SbRotation_arr,args)
    elif len(args) == 2:
       if isinstance(args[1], SbVec3f):
-         newobj = apply(_pivy.new_SbRotation_vec_vec,args)
+         newobj = apply(_coin.new_SbRotation_vec_vec,args)
       else:
-         newobj = apply(_pivy.new_SbRotation_vec_f,args)
+         newobj = apply(_coin.new_SbRotation_vec_f,args)
    elif len(args) == 4:
-      newobj = apply(_pivy.new_SbRotation_ffff,args)
+      newobj = apply(_coin.new_SbRotation_ffff,args)
    else:
-      newobj = apply(_pivy.new_SbRotation,args)
+      newobj = apply(_coin.new_SbRotation,args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1
@@ -52,50 +52,26 @@ def __init__(self,*args):
 def setValue(*args):
    if len(args) == 2:
       if isinstance(args[1], SbMatrix):
-         return apply(_pivy.SbRotation_setValue_mat,args)
+         return apply(_coin.SbRotation_setValue_mat,args)
       elif isinstance(args[1], SbRotation):
-         return _pivy.SbRotation_setValue_arr(args[0], args[1].getValue())
+         return _coin.SbRotation_setValue_arr(args[0], args[1].getValue())
       else:
-         return apply(_pivy.SbRotation_setValue_arr,args)
+         return apply(_coin.SbRotation_setValue_arr,args)
    elif len(args) == 3:
       if isinstance(args[2], SbVec3f):
-         return apply(_pivy.SbRotation_setValue_vec_vec,args)
+         return apply(_coin.SbRotation_setValue_vec_vec,args)
       else:
-         return apply(_pivy.SbRotation_setValue_vec_f,args)
-   return apply(_pivy.SbRotation_setValue,args)
+         return apply(_coin.SbRotation_setValue_vec_f,args)
+   return apply(_coin.SbRotation_setValue,args)
 %}
 
 /* add operator overloading methods instead of the global functions */
 %extend SbRotation {
-   
-    SbRotation __mul__( const SbRotation &u )
-    {
-       return *self * u;
-    };
-    
-    SbRotation __mul__( const double d )
-    {
-        SbRotation res(*self);
-        res *= d;
-        return res;
-    };        
-        
-    SbVec3f __mul__( const SbVec3f & v )
-    {
-        SbVec3f res;
-        self->multVec( v, res );
-        return res;
-    };
-    
-    int __eq__( const SbRotation &u )
-    {
-        return *self == u;
-    };
-    
-    int __nq__( const SbRotation &u )
-    {
-        return *self != u;
-    };
+  SbRotation __mul__(const SbRotation &u) { return *self * u; }
+  SbRotation __mul__(const double d) { SbRotation res(*self); return (res *= d); }
+  SbVec3f __mul__(const SbVec3f & v) { SbVec3f res; self->multVec(v, res); return res; }
+  int __eq__(const SbRotation &u) { return *self == u; }
+  int __nq__(const SbRotation &u) { return *self != u; }
 }
 
 %apply float * OUTPUT { float & q0, float & q1, float & q2, float & q3, float & radians};

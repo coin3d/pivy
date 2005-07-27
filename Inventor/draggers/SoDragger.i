@@ -35,8 +35,8 @@ SoDraggerPythonCB(void * data, SoDragger * dragger)
 %feature("shadow") SoDragger::setStartingPoint(const SoPickedPoint * newpoint) %{
 def setStartingPoint(*args):
    if isinstance(args[1], SbVec3f):
-      return apply(_pivy.SoDragger_setStartingPoint_vec,args)
-   return apply(_pivy.SoDragger_setStartingPoint,args)
+      return apply(_coin.SoDragger_setStartingPoint_vec,args)
+   return apply(_coin.SoDragger_setStartingPoint,args)
 %}
 
 %rename(getTransformFast_mat_vec_rot_vec_rot) SoDragger::getTransformFast(SbMatrix & mtx, SbVec3f & translation, SbRotation & rotation, SbVec3f & scalefactor, SbRotation & scaleorientation);
@@ -44,8 +44,8 @@ def setStartingPoint(*args):
 %feature("shadow") SoDragger::getTransformFast(SbMatrix & mtx, SbVec3f & translation, SbRotation & rotation, SbVec3f & scalefactor, SbRotation & scaleorientation, const SbVec3f & center) %{
 def getTransformFast(*args):
    if len(args) == 6:
-      return apply(_pivy.SoDragger_getTransformFast_mat_vec_rot_vec_rot,args)
-   return apply(_pivy.SoDragger_getTransformFast,args)
+      return apply(_coin.SoDragger_getTransformFast_mat_vec_rot_vec_rot,args)
+   return apply(_coin.SoDragger_getTransformFast,args)
 %}
 
 /* add python specific callback functions */

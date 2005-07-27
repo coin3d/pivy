@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  **/
-%module soqt
+%module(package="pivy.gui") soqt
 
 %{
 #if defined(_WIN32) || defined(__WIN32__)
@@ -41,31 +41,30 @@
 
 #include <Inventor/Qt/devices/SoQtDevice.h>
 #include <Inventor/Qt/devices/SoQtKeyboard.h>
-#include <Inventor/Qt/devices/SoQtSpaceball.h>
 #include <Inventor/Qt/devices/SoQtMouse.h>
-#include <Inventor/Qt/SoQtBasic.h>
-#include <Inventor/Qt/nodes/SoGuiColorEditor.h>
+#include <Inventor/Qt/devices/SoQtSpaceball.h>
 #include <Inventor/Qt/editors/SoQtColorEditor.h>
-#include <Inventor/Qt/SoQtObject.h>
-#include <Inventor/Qt/SoQt.h>
-#include <Inventor/Qt/SoQtGLWidget.h>
+#include <Inventor/Qt/editors/SoQtMaterialEditor.h>
+#include <Inventor/Qt/nodes/SoGuiColorEditor.h>
+#include <Inventor/Qt/nodes/SoGuiMaterialEditor.h>
+#include <Inventor/Qt/SoQtBasic.h>
 #include <Inventor/Qt/SoQtColorEditor.h>
-#include <Inventor/Qt/viewers/SoQtPlaneViewer.h>
-#include <Inventor/Qt/viewers/SoQtViewer.h>
-#include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
-#include <Inventor/Qt/viewers/SoQtFlyViewer.h>
-#include <Inventor/Qt/viewers/SoQtConstrainedViewer.h>
-#include <Inventor/Qt/viewers/SoQtFullViewer.h>
-#include <Inventor/Qt/widgets/SoQtThumbWheel.h>
-#include <Inventor/Qt/widgets/SoQtPopupMenu.h>
 #include <Inventor/Qt/SoQtComponent.h>
 #include <Inventor/Qt/SoQtCursor.h>
+#include <Inventor/Qt/SoQtGLWidget.h>
+#include <Inventor/Qt/SoQt.h>
+#include <Inventor/Qt/SoQtObject.h>
 #include <Inventor/Qt/SoQtRenderArea.h>
+#include <Inventor/Qt/viewers/SoQtConstrainedViewer.h>
+#include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
+#include <Inventor/Qt/viewers/SoQtFlyViewer.h>
+#include <Inventor/Qt/viewers/SoQtFullViewer.h>
+#include <Inventor/Qt/viewers/SoQtPlaneViewer.h>
+#include <Inventor/Qt/viewers/SoQtViewer.h>
+#include <Inventor/Qt/widgets/SoQtPopupMenu.h>
+#include <Inventor/Qt/widgets/SoQtThumbWheel.h>
 
-#include <Inventor/SbDPMatrix.h>
-#include <Inventor/SbDPRotation.h>
-#include <Inventor/SbVec2d.h>
-#include <Inventor/C/threads/thread.h>
+#include "coin_header_includes.h"
 
 /* make CustomCursor in SoQtCursor known to SWIG */
 typedef SoQtCursor::CustomCursor CustomCursor;
@@ -83,32 +82,32 @@ Pivy_PythonInteractiveLoop(void *data) {
 /* include the typemaps common to all pivy modules */
 %include pivy_common_typemaps.i
 
+/* import the pivy main interface file */
+%import coin.i
+
 /* typemaps to bridge against PyQt */
 %typemap(out) QEvent * {
   $result = NULL;
   {
     PyObject *sip, *qt;
 
-    /* try to create a PyQt QEvent instance over sip */
+    /* try to create a PyQt QEvent instance through sip */
     
     /* check if the sip module is available and import it */
-    if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")),
-                                     "sip"))) {
+    if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "sip"))) {
       sip = PyImport_ImportModule("sip");
     }
     
     if (sip && PyModule_Check(sip)) {
       /* check if the qt module is available and import it */
-      if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")),
-                                      "qt"))) {
+      if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "qt"))) {
         qt = PyImport_ImportModule("qt");
       }
       
       if (qt && PyModule_Check(qt)) {
         /* grab the wrapinstance(addr, type) function */
         PyObject *sip_wrapinst_func;
-        sip_wrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip),
-                                                 "wrapinstance");
+        sip_wrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip), "wrapinstance");
         
         if (PyCallable_Check(sip_wrapinst_func)) {
           PyObject *qevent_type, *arglist;
@@ -138,26 +137,23 @@ Pivy_PythonInteractiveLoop(void *data) {
   {
     PyObject *sip, *qt;
 
-    /* try to create a PyQt QWidget instance over sip */
+    /* try to create a PyQt QWidget instance through sip */
     
     /* check if the sip module is available and import it */
-    if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")),
-                                     "sip"))) {
+    if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "sip"))) {
       sip = PyImport_ImportModule("sip");
     }
     
     if (sip && PyModule_Check(sip)) {
       /* check if the qt module is available and import it */
-      if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")),
-                                      "qt"))) {
+      if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "qt"))) {
         qt = PyImport_ImportModule("qt");
       }
       
       if (qt && PyModule_Check(qt)) {
         /* grab the wrapinstance(addr, type) function */
         PyObject *sip_wrapinst_func;
-        sip_wrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip),
-                                                 "wrapinstance");
+        sip_wrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip), "wrapinstance");
         
         if (PyCallable_Check(sip_wrapinst_func)) {
           PyObject *qwidget_type, *arglist;
@@ -187,16 +183,14 @@ Pivy_PythonInteractiveLoop(void *data) {
     PyObject *sip;
     
     /* check if the sip module is available and import it */
-    if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")),
-                                     "sip"))) {
+    if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "sip"))) {
       sip = PyImport_ImportModule("sip");
     }
     
     if (sip && PyModule_Check(sip)) {
       /* grab the unwrapinstance(obj) function */
       PyObject *sip_unwrapinst_func;
-      sip_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip),
-                                                 "unwrapinstance");
+      sip_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip), "unwrapinstance");
         
       if (PyCallable_Check(sip_unwrapinst_func)) {
         PyObject *arglist, *address;
@@ -214,7 +208,7 @@ Pivy_PythonInteractiveLoop(void *data) {
 
   if (PyErr_ExceptionMatches(PyExc_ImportError) || !$1) {
     PyErr_Clear();
-    if ((SWIG_ConvertPtr($input, (void **)(&$1), SWIGTYPE_p_QEvent, SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+    if ((SWIG_ConvertPtr($input, (void **)(&$1), SWIGTYPE_p_QEvent, SWIG_POINTER_EXCEPTION | 0)) == -1) SWIG_fail;
   }
 }
 
@@ -226,16 +220,14 @@ Pivy_PythonInteractiveLoop(void *data) {
       PyObject *sip;
     
       /* check if the sip module is available and import it */
-      if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")),
-                                       "sip"))) {
+      if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "sip"))) {
         sip = PyImport_ImportModule("sip");
       }
     
       if (sip && PyModule_Check(sip)) {
         /* grab the unwrapinstance(obj) function */
         PyObject *sip_unwrapinst_func;
-        sip_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip),
-                                                   "unwrapinstance");
+        sip_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip), "unwrapinstance");
       
         if (PyCallable_Check(sip_unwrapinst_func)) {
           PyObject *arglist, *address;
@@ -253,9 +245,91 @@ Pivy_PythonInteractiveLoop(void *data) {
   
     if (PyErr_ExceptionMatches(PyExc_ImportError) || !$1) {
       PyErr_Clear();
-      if ((SWIG_ConvertPtr($input, (void **)(&$1), SWIGTYPE_p_QWidget, SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+      if ((SWIG_ConvertPtr($input, (void **)(&$1), SWIGTYPE_p_QWidget, SWIG_POINTER_EXCEPTION | 0)) == -1) SWIG_fail;
     }
   }  
+}
+
+class QEvent { QEvent(Type type); };
+class QWidget { QWidget(QWidget* parent=0, const char* name=0, WFlags f=0); };
+
+/* typemap typechecks for the overloaded constructors needed from SWIG 1.3.25 upwards */
+%typemap(typecheck) QEvent * {
+  void *ptr = NULL;
+  {
+    PyObject *sip;
+    
+    /* check if the sip module is available and import it */
+    if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "sip"))) {
+      sip = PyImport_ImportModule("sip");
+    }
+    
+    if (sip && PyModule_Check(sip)) {
+      /* grab the unwrapinstance(obj) function */
+      PyObject *sip_unwrapinst_func;
+      sip_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip), "unwrapinstance");
+        
+      if (PyCallable_Check(sip_unwrapinst_func)) {
+        PyObject *arglist, *address;
+        arglist = Py_BuildValue("(O)", $input);
+        if (!(address = PyEval_CallObject(sip_unwrapinst_func, arglist))) {
+          PyErr_Print();
+        } else if (PyNumber_Check(address)) {
+         ptr = (QEvent*)PyLong_AsLong(address);
+        }
+          
+        Py_DECREF(arglist);
+      }
+    }
+  }
+
+  $1 = 1;
+  if (PyErr_ExceptionMatches(PyExc_ImportError) || !ptr) {
+    $1 = 0;
+    PyErr_Clear();
+    if ((SWIG_ConvertPtr($input, (void **)(&ptr), SWIGTYPE_p_QEvent, 0)) != -1) {
+      $1 = 1;
+    }
+  }
+}
+
+%typemap(typecheck) QWidget * {
+  void *ptr = NULL;
+  {
+    PyObject *sip;
+    
+    /* check if the sip module is available and import it */
+    if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "sip"))) {
+      sip = PyImport_ImportModule("sip");
+    }
+    
+    if (sip && PyModule_Check(sip)) {
+      /* grab the unwrapinstance(obj) function */
+      PyObject *sip_unwrapinst_func;
+      sip_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip), "unwrapinstance");
+        
+      if (PyCallable_Check(sip_unwrapinst_func)) {
+        PyObject *arglist, *address;
+        arglist = Py_BuildValue("(O)", $input);
+        if (!(address = PyEval_CallObject(sip_unwrapinst_func, arglist))) {
+          PyErr_Print();
+        } else if (PyNumber_Check(address)) {
+         ptr = (QWidget*)PyLong_AsLong(address);
+        }
+          
+        Py_DECREF(arglist);
+      }
+    }
+  }
+
+  $1 = 1;
+  if (PyErr_ExceptionMatches(PyExc_ImportError) || !ptr) {
+    $1 = 0;
+    PyErr_Clear();
+    if ((SWIG_ConvertPtr($input, (void **)(&ptr), SWIGTYPE_p_QWidget, 0)) != -1) {
+      $1 = 1;
+    }
+  }
 }
 
 %include Inventor/Qt/devices/SoQtDevice.h

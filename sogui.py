@@ -68,19 +68,19 @@ class SoGui_Proxy:
         # one in a defined order SoQt -> SoWin -> SoXt -> SoGtk
         if not gui:
             try:
-                sogui = __import__('soqt')
+                sogui = __import__('pivy.gui.soqt').gui.soqt
                 gui = 'SoQt'
             except ImportError:
                 try:
-                    sogui = __import__('sowin')
+                    sogui = __import__('pivy.gui.sowin').gui.sowin
                     gui = 'SoWin'
                 except ImportError:
                     try:
-                        sogui = __import__('soxt')
+                        sogui = __import__('pivy.gui.soxt').gui.soxt
                         gui = 'SoXt'
                     except ImportError:
                         try:
-                            sogui = __import__('sogtk')
+                            sogui = __import__('pivy.gui.sogtk').gui.sogtk
                             gui = 'SoGtk'
                         except ImportError:
                             print "SoGui proxy error: None of the known Gui bindings were found! Please specify one!"

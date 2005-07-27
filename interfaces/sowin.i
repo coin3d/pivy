@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  **/
-%module sowin
+%module(package="pivy.gui") sowin
 
 %{
 #if defined(_WIN32) || defined(__WIN32__)
@@ -58,13 +58,7 @@
 #include <Inventor/Win/SoWinGLWidget.h>
 #include <Inventor/Win/SoWinRenderArea.h>
 
-#include <Inventor/nodes/SoNode.h>
-#include <Inventor/fields/SoField.h>
-
-#include <Inventor/SbDPMatrix.h>
-#include <Inventor/SbDPRotation.h>
-#include <Inventor/SbVec2d.h>
-#include <Inventor/C/threads/thread.h>
+#include "coin_header_includes.h"
 
 /* make CustomCursor in SoWinCursor known to SWIG */
 typedef SoWinCursor::CustomCursor CustomCursor;
@@ -80,6 +74,9 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
 
 /* include the typemaps common to all pivy modules */
 %include pivy_common_typemaps.i
+
+/* import the pivy main interface file */
+%import coin.i
 
 %include Inventor/Win/devices/SoWinDevice.h
 %include Inventor/Win/devices/SoWinKeyboard.h

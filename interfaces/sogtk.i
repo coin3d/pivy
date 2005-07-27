@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  **/
-%module sogtk
+%module(package="pivy.gui") sogtk
 
 #include <Inventor/Gtk/devices/SoGtkDevice.h>
 #include <Inventor/Gtk/devices/SoGtkKeyboard.h>
@@ -51,6 +51,7 @@
 #include <Inventor/Gtk/SoGtkGLWidget.h>
 #include <Inventor/Gtk/SoGtkRenderArea.h>
 
+#include "coin_header_includes.h"
 
 /* FIXME: there is a major pitfall reg. this solution, namely
  * thread safety! reconsider! 20030626 tamer.
@@ -64,6 +65,9 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
 
 /* include the typemaps common to all pivy modules */
 %include pivy_common_typemaps.i
+
+/* import the pivy main interface file */
+%import coin.i
 
 %include Inventor/Gtk/devices/SoGtkDevice.h
 %include Inventor/Gtk/devices/SoGtkKeyboard.h

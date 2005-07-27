@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  **/
-%module soxt
+%module(package="pivy.gui") soxt
 
 %{
 
@@ -59,10 +59,7 @@
 #include <Inventor/Xt/SoXtColorEditor.h>
 #include <Inventor/Xt/SoXtMaterialEditor.h>
 
-#include <Inventor/SbDPMatrix.h>
-#include <Inventor/SbDPRotation.h>
-#include <Inventor/SbVec2d.h>
-#include <Inventor/C/threads/thread.h>
+#include "coin_header_includes.h"
 
 /* make CustomCursor in SoXtCursor known to SWIG */
 typedef SoXtCursor::CustomCursor CustomCursor;
@@ -79,6 +76,9 @@ Pivy_PythonInteractiveLoop(void *data) {
 
 /* include the typemaps common to all pivy modules */
 %include pivy_common_typemaps.i
+
+/* import the pivy main interface file */
+%import coin.i
 
 %include Inventor/Xt/devices/SoXtLinuxJoystick.h
 %include Inventor/Xt/devices/SoXtDevice.h

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2002-2004, Tamer Fahmy <tamer@tammura.at>
+ * Copyright (C) 2002-2005, Tamer Fahmy <tamer@tammura.at>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,9 +50,10 @@
 #include <Inventor/lists/SbStringList.h>
 #include <Inventor/sensors/SoOneShotSensor.h>
 
+#include "../swigpyrun.h"
 #include "SoPyScript.h"
 
-/* Python code snippet to load in a URL through the urrlib module */ 
+// Python code snippet to load in a URL through the urrlib module
 #define PYTHON_URLLIB_URLOPEN "\
 import urllib\n\
 try:\n\
@@ -62,28 +63,6 @@ try:\n\
 except:\n\
   script = None\n\
 del url"
-
-/* SWIG runtime definitions */
-typedef void *(*swig_converter_func)(void *);
-typedef struct swig_type_info *(*swig_dycast_func)(void **);
-
-typedef struct swig_type_info {
-  const char * name;
-  swig_converter_func converter;
-  const char * str;
-  void * clientdata;
-  swig_dycast_func dcast;
-  struct swig_type_info * next;
-  struct swig_type_info * prev;
-} swig_type_info;
-
-#define SWIG_NewPointerObj SWIG_Python_NewPointerObj
-#define SWIG_TypeQuery SWIG_Python_TypeQuery
-
-extern "C" {
-  PyObject * SWIG_NewPointerObj(void *, swig_type_info *, int own);
-  swig_type_info * SWIG_TypeQuery(const char *);
-}
 
 class GlobalLock {
   public:
@@ -106,7 +85,7 @@ class SoPyScriptP {
         Py_Initialize();
         global_module_dict = PyModule_GetDict(PyImport_AddModule("__main__"));
         
-        if (PyRun_SimpleString("from pivy import *")) {
+        if (PyRun_SimpleString("from pivy.coin import *")) {
           SoDebugError::postWarning("SoPyScript::initClass",
                                     "\n*Yuk!* The box containing a fierce looking python snake to drive\n"
                                     "this node has arrived but was found to be empty! The Pivy module\n"
@@ -129,7 +108,7 @@ class SoPyScriptP {
       typeVal += " *";
       swig_type_info * swig_type;
       if (!(swig_type = SWIG_TypeQuery(typeVal.getString()))) {
-        /* try again by prefixing the typename with So */
+        // try again by prefixing the typename with So
         SbString soTypeVal("So");
         soTypeVal += typeVal;
         if (!(swig_type = SWIG_TypeQuery(soTypeVal.getString()))) {
@@ -229,7 +208,7 @@ SoPyScript::doAction(SoAction * action, const char * funcname)
                                "%s called!", action->getTypeId().getName().getString());
       }
       
-      /* convert the action instance to a Python object */
+      // convert the action instance to a Python object
       SbString typeVal(action->getTypeId().getName().getString());
       
       PyObject * pyAction;
@@ -417,8 +396,9 @@ SoPyScript::notify(SoNotList * list)
     }
     else if (f == &this->script) { this->executePyScript(); }
     else { 
-      if (PRIVATE(this)->changedFields.find(f) == -1)
+      if (PRIVATE(this)->changedFields.find(f) == -1) {
         PRIVATE(this)->changedFields.append(f);
+      }
       PRIVATE(this)->oneshotSensor->schedule();
     }
   }
@@ -429,7 +409,7 @@ SoPyScript::notify(SoNotList * list)
 void *
 SoPyScript::createInstance(void)
 {
-  return (void*) new SoPyScript;
+  return (void*)new SoPyScript;
 }
 
 SbBool
@@ -440,7 +420,7 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
 
   SbString name, typeVal;
 
-  /* read in the first string */
+  // read in the first string
   if (in->read(typeVal))
     if(typeVal == "fields") {
       if (in->read(typeVal) && typeVal == "[") {
@@ -459,7 +439,7 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
             const SbString fieldname = 
               (name[name.getLength()-1] == ',') ? name.getSubString(0, name.getLength()-2) : name;
 
-            /* skip the static fields */
+            // skip the static fields
             if (fieldname == "script" || fieldname == "mustEvaluate") { continue; }
 
             /* instantiate the field and conduct similar actions as the
@@ -472,7 +452,7 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
       }
     } else { in->putBack(typeVal.getString()); }
 
-  /* ...and let the regular readInstance() method parse the rest */
+  // and finally let the regular readInstance() method parse the rest
   SbBool ok = inherited::readInstance(in, flags);
 
   if (!ok) {
@@ -508,7 +488,7 @@ SoPyScript::getFieldData(void) const
 void
 SoPyScript::executePyScript(void)
 {
-  /* strip out possible \r's that could come from win32 line endings */
+  // strip out possible \r's that could come from win32 line endings
   SbString src = script.getValue();
   SbString pyString;
   for (int i=0; i < src.getLength(); i++) {
@@ -517,13 +497,14 @@ SoPyScript::executePyScript(void)
 
   GlobalLock lock;
 
-  /* setup the local dictionary */
-  /* create a local copy of the global dictionary to use for executing the script */
+  /* setup the local dictionary by creating a local copy of the global
+     dictionary to use for executing the script */
   PyDict_Clear(PRIVATE(this)->local_module_dict);
-  PyDict_Update(PRIVATE(this)->local_module_dict,PRIVATE(this)->global_module_dict);
+  PyDict_Update(PRIVATE(this)->local_module_dict, PRIVATE(this)->global_module_dict);
   PyDict_Clear(PRIVATE(this)->handler_registry_dict);
       
-  /* shovel the the node itself on to the Python interpreter as self instance */
+  /* shovel the the node itself on to the Python interpreter as self
+     instance */
   swig_type_info * swig_type = 0;
 
   if ((swig_type = SWIG_TypeQuery("SoNode *")) == 0) {
@@ -531,12 +512,12 @@ SoPyScript::executePyScript(void)
                        "SoNode type could not be found!");
   }
   
-  /* add the field to the global dict */
+  // add the field to the global dict
   PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
                        "self",
                        SWIG_NewPointerObj(this, swig_type, 0));
   
-  /* add the handler registry dict to the global dict */
+  // add the handler registry dict to the global dict
   PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
                        "handler_registry",
                        PRIVATE(this)->handler_registry_dict);
@@ -548,7 +529,7 @@ SoPyScript::executePyScript(void)
     SbString typeName(f->getTypeId().getName());
     SbString fieldName(fields->getFieldName(i));
     
-    /* shovel the field instance on to the Python interpreter */
+    // shovel the field instance on to the Python interpreter
     PyObject * pyField = NULL;
     if ((pyField = PRIVATE(this)->createPySwigType(typeName, f)) == NULL) {
       SoDebugError::post("SoPyScript::readInstance",
@@ -557,7 +538,7 @@ SoPyScript::executePyScript(void)
       continue;
     }
 
-    /* add the field to the global dict */
+    // add the field to the global dict
     PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
                          fieldName.getString(),
                          pyField);
@@ -565,13 +546,13 @@ SoPyScript::executePyScript(void)
     SbString funcname("handle_");
     funcname += fieldName;
 
-    /* add the field handler to the handler registry */
+    // add the field handler to the handler registry
     PyDict_SetItemString(PRIVATE(this)->handler_registry_dict, 
                          fieldName.getString(),
                          PyString_FromString(funcname.getString()));
   }
 
-  /* check if the script denotes an URL or path */
+  // check if the script denotes an URL or path
   /* FIXME: maybe, just maybe, we could do a little better error
      handling here??? throwing a Syntax Error at the user's face in
      case of a not resolving URL or non existent file for the reason
@@ -579,15 +560,14 @@ SoPyScript::executePyScript(void)
      pathetic!  reconsider the whole approach as it smells like a
      lousy hack! 20041021 tamer. */
   if (src.getLength()) {
-    /* try to find a file relative to the current input directory stack */
+    // try to find a file relative to the current input directory stack
     SbStringList subdirs;
     SbString fullName = SoInput::searchForFile(pyString, SoInput::getDirectories(), subdirs);
-    if(fullName != "")
-      pyString = fullName;
+    if (fullName != "") { pyString = fullName; }
     
     PyObject * url = PyString_FromString(pyString.getString());
 
-    /* add the url to the global dict */
+    // add the url to the global dict
     PyDict_SetItemString(PRIVATE(this)->local_module_dict, "url", url);
 
     PyObject * result = PyRun_String(PYTHON_URLLIB_URLOPEN,
@@ -637,14 +617,14 @@ SoPyScript::eval_cb(void * data, SoSensor *)
     if (self->getFieldName(f, fieldname)) {
       GlobalLock lock;
 
-      /* look up the function name in the handler registry */
+      // look up the function name in the handler registry
       PyObject * funcname = PyDict_GetItemString(PRIVATE(self)->handler_registry_dict,
                                                  fieldname.getString());
       if (!funcname) { continue; }
 
-      /* check if it is a string */
+      // check if it is a string
       if (PyString_Check(funcname)) {
-        /* get the function handle in the global module dictionary if available */
+        // get the function handle in the global module dictionary if available
         PyObject * func = PyDict_GetItemString(PRIVATE(self)->local_module_dict,
                                                PyString_AsString(funcname));
         if (!func) { continue; }

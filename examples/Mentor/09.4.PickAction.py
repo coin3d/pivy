@@ -41,9 +41,10 @@
 # pick path is printed to stdout.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 ###############################################################
 # CODE FOR The Inventor Mentor STARTS HERE

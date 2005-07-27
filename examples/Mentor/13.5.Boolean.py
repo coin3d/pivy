@@ -39,9 +39,10 @@
 # and starts moving as soon as the bigger duck stops.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 # This routine is called for every mouse button event.
 def myMousePressCB(gate, eventCB):

@@ -37,9 +37,10 @@
 # Use the trackball manipulator to edit/rotate a red cone
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 def main():
     # Initialize Inventor and Qt

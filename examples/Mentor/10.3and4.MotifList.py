@@ -50,22 +50,14 @@
 # item in the motif list.)
 #
 
-from sogui import *
-from pivy import *
 import sys
 
-# Function prototypes
-void mySelectionCB(void *, SoPath *)
-void myKeyPressCB(void *, SoEventCallback *)
-void myScaleSelection(SoSelection *, float)
-Widget createList(Display *, SoSelection *)
-void myListPickCB(Widget, char *, XmListCallbackStruct *)
+from pivy.coin import *
+from pivy.sogui import *
 
 # Global data
-SbViewportRegion viewportRegion
-Widget motifList
-SoTransform *cubeTransform, *sphereTransform,
-            *coneTransform, *cylTransform
+motifList = None
+cubeTransform, sphereTransform, coneTransform, cylTransform = None, None, None, None
 
 ###############################################################
 # CODE FOR The Inventor Mentor STARTS HERE  
@@ -85,100 +77,86 @@ objectNames= (
 
 
 # Create the object list widget
-Widget
-createList(Display *display, SoSelection *selection)
-{
-   Widget shell
-   Arg    args[4]
-   int    i, n
-
-   # Create a new shell window for the list
-   n = 0
-   XtSetArg(args[n], XmNtitle, "Selection")
-   n++
-   shell = XtAppCreateShell("example", "Inventor",
-      topLevelShellWidgetClass, display, args, n)
-
+def createList(display, selection):
+    global motifList
+    
+    args = [None, None, None, None]
+    
+    # Create a new shell window for the list
+    n = 0
+    XtSetArg(args[n], XmNtitle, "Selection")
+    n += 1
+    shell = XtAppCreateShell("example", "Inventor",
+                             topLevelShellWidgetClass, display, args, n)
+    
 ###############################################################
 # CODE FOR The Inventor Mentor STARTS HERE  (part 3)
 
-   # Create a table of object names
-   XmString *table = new XmString[NUM_OBJECTS]
-   for (i=0 i<NUM_OBJECTS i++) {
-       table[i] = XmStringCreate(objectNames[i], 
-                 XmSTRING_DEFAULT_CHARSET)
-   }
+    # Create a table of object names
+    table = XmString[NUM_OBJECTS]
+    for i in range(NUM_OBJECTS):
+        table[i] = XmStringCreate(objectNames[i], 
+                                  XmSTRING_DEFAULT_CHARSET)
 
-   # Create the list widget
-   n = 0
-   XtSetArg(args[n], XmNitems, table)
-   n++
-   XtSetArg(args[n], XmNitemCount, NUM_OBJECTS)
-   n++
-   XtSetArg(args[n], XmNselectionPolicy, XmEXTENDED_SELECT)
-   n++
+    # Create the list widget
+    n = 0
+    XtSetArg(args[n], XmNitems, table)
+    n += 1
+    XtSetArg(args[n], XmNitemCount, NUM_OBJECTS)
+    n += 1
+    XtSetArg(args[n], XmNselectionPolicy, XmEXTENDED_SELECT)
+    n += 1
 
-   motifList = XmCreateScrolledList(shell, "funcList", args, n)
-   XtAddCallback(motifList, XmNextendedSelectionCallback,
-      (XtCallbackProc) myListPickCB, (XtPointer) selection)
-
+    motifList = XmCreateScrolledList(shell, "funcList", args, n)
+    XtAddCallback(motifList, XmNextendedSelectionCallback,
+                  myListPickCB, selection)
+   
 # CODE FOR The Inventor Mentor ENDS HERE
 ###############################################################
 
-   # Free the name table
-   for (i = 0 i < NUM_OBJECTS i++)
-      XmStringFree(table[i])
-   free(table)
+    # Free the name table
+    for i in range(NUM_OBJECTS):
+        XmStringFree(table[i])
+    del table
 
-   # Manage the list and return the shell
-   XtManageChild(motifList)
-
-   return shell
-}
+    # Manage the list and return the shell
+    XtManageChild(motifList)
+    
+    return shell
 
 # This callback is invoked every time the user picks
 # an item in the Motif list.
-void
-myListPickCB(Widget, char *userData,
-            XmListCallbackStruct *listData)
-{
-   SoSelection *selection = (SoSelection *) userData
-   SoSearchAction mySearchAction
-
-   # Remove the selection callbacks so that we don't get
-   # called back while we are updating the selection list
-   selection.removeSelectionCallback(
-            mySelectionCB, (void *) TRUE)
-   selection.removeDeselectionCallback(
-            mySelectionCB, (void *) FALSE)
+def myListPickCB(Widget, userData, listData):
+    selection = cast(userData, "SoSelection")
+    mySearchAction = SoSearchAction()
+    
+    # Remove the selection callbacks so that we don't get
+    # called back while we are updating the selection list
+    selection.removeSelectionCallback(mySelectionCB, TRUE)
+    selection.removeDeselectionCallback(mySelectionCB, FALSE)
 
 ###############################################################
 # CODE FOR The Inventor Mentor STARTS HERE  (part 4)
 
-   # Clear the selection node, then loop through the list
-   # and reselect
-   selection.deselectAll()
+    # Clear the selection node, then loop through the list
+    # and reselect
+    selection.deselectAll()
 
-   # Update the SoSelection based on what is selected in
-   # the motif list.  We do this by extracting the string
-   # from the selected XmString, and searching for the 
-   # object of that name.
-   for (int i = 0 i < listData.selected_item_count i++) {
-      mySearchAction.setName(
-            SoXt::decodeString(listData.selected_items[i]))
-      mySearchAction.apply(selection)
-      selection.select(mySearchAction.getPath())
-   }
+    # Update the SoSelection based on what is selected in
+    # the motif list.  We do this by extracting the string
+    # from the selected XmString, and searching for the 
+    # object of that name.
+    for i in range(listData.selected_item_count):
+        mySearchAction.setName(SoGui.decodeString(listData.selected_items[i]))
+        mySearchAction.apply(selection)
+        selection.select(mySearchAction.getPath())
 
 # CODE FOR The Inventor Mentor ENDS HERE
 ###############################################################
 
-   # Add the selection callbacks again
-   selection.addSelectionCallback(
-            mySelectionCB, (void *) TRUE)
-   selection.addDeselectionCallback(
-            mySelectionCB, (void *) FALSE)
-}
+    # Add the selection callbacks again
+    selection.addSelectionCallback(mySelectionCB, TRUE)
+    selection.addDeselectionCallback(mySelectionCB, FALSE)
 
 
 # This is called whenever an object is selected or deselected.
@@ -186,33 +164,30 @@ myListPickCB(Widget, char *userData,
 # (we set this convention up when we registered this callback).
 # The function updates the Motif list to reflect the current
 # selection.
-void
-mySelectionCB(void *userData, SoPath *selectionPath)
-{
-   Arg args[1]
-   SbBool isSelection = (SbBool) userData
+def mySelectionCB(userData, selectionPath):
+    global motifList
 
-   # We have to temporarily change the selection policy to
-   # MULTIPLE so that we can select and deselect single items.
-   XtSetArg(args[0], XmNselectionPolicy, XmMULTIPLE_SELECT)
-   XtSetValues(motifList, args, 1)
+    args = [None]
+    isSelection = cast(userData, "SbBool") 
+    
+    # We have to temporarily change the selection policy to
+    # MULTIPLE so that we can select and deselect single items.
+    XtSetArg(args[0], XmNselectionPolicy, XmMULTIPLE_SELECT)
+    XtSetValues(motifList, args, 1)
+    
+    node = selectionPath.getTail()
+    
+    for i in range(NUM_OBJECTS):
+       if node.getName() == objectNames[i]:
+           if isSelection:
+               XmListSelectPos(motifList, i+1, False)
+           else: XmListDeselectPos(motifList, i+1)
+           XmUpdateDisplay(motifList)
+           break
 
-   SoNode *node = selectionPath.getTail()
-
-   for (int i = 0 i < NUM_OBJECTS i++) {
-      if (node.getName() == objectNames[i]) {
-         if (isSelection) {
-             XmListSelectPos(motifList, i+1, False)
-         } else XmListDeselectPos(motifList, i+1)
-         XmUpdateDisplay(motifList)
-         break
-      }
-   }
-
-   # Restore the selection policy to extended.
-   XtSetArg(args[0], XmNselectionPolicy, XmEXTENDED_SELECT)
-   XtSetValues(motifList, args, 1)
-}
+    # Restore the selection policy to extended.
+    XtSetArg(args[0], XmNselectionPolicy, XmEXTENDED_SELECT)
+    XtSetValues(motifList, args, 1)
 
 ###############################################################
 # CODE FOR The Inventor Mentor STARTS HERE  (Example 10-4)
@@ -265,6 +240,8 @@ def myKeyPressCB(selection, eventCB):
 ###############################################################
 
 def main():
+    global cubeTransform, sphereTransform, coneTransform, cylTransform
+
     # Print out usage message
     print "Left mouse button        - selects object"
     print "<shift>Left mouse button - selects multiple objects"
@@ -278,8 +255,8 @@ def main():
     selectionRoot = SoSelection()
     selectionRoot.ref()
     selectionRoot.policy(SoSelection.SHIFT)
-    selectionRoot.addSelectionCallback(mySelectionCB, (void *) TRUE)
-    selectionRoot.addDeselectionCallback(mySelectionCB, (void *) FALSE)
+    selectionRoot.addSelectionCallback(mySelectionCB, TRUE)
+    selectionRoot.addDeselectionCallback(mySelectionCB, FALSE)
    
     # Add a camera and some light
     myCamera = SoPerspectiveCamera()
@@ -365,7 +342,7 @@ def main():
     myCamera.viewAll(selectionRoot, viewportRegion, 2.0)
 
     # Create a Motif list for selecting objects without picking
-    Widget objectList = createList(XtDisplay(myWindow), selectionRoot)
+    objectList = createList(XtDisplay(myWindow), selectionRoot)
 
     # Show our application window, and loop forever...
     myRenderArea.show()
@@ -374,4 +351,6 @@ def main():
     SoGui.mainLoop()
 
 if __name__ == "__main__":
+    print "This example is not functional as it is GUI toolkit dependent!"
+    sys.exit(1)
     main()

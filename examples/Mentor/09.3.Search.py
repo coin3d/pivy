@@ -41,8 +41,9 @@
 # and print out the modified scene.
 #
 
-from pivy import *
 import sys
+
+from pivy.coin import *
 
 def main():
     # Initialize Inventor
@@ -64,7 +65,7 @@ def main():
     mySearchAction = SoSearchAction()
 
     # Look for first existing light derived from class SoLight
-    mySearchAction.setType(SoLight_getClassTypeId())
+    mySearchAction.setType(SoLight.getClassTypeId())
     mySearchAction.setInterest(SoSearchAction.FIRST)
     
     mySearchAction.apply(root)

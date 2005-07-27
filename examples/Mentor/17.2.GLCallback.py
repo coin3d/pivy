@@ -40,10 +40,12 @@
 # through a Callback node.
 #
 
-from sogui import *
-from pivy import *
-from OpenGL.GL import *
 import sys
+
+from OpenGL.GL import *
+
+from pivy.coin import *
+from pivy.sogui import *
 
 floorObj = []
 

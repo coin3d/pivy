@@ -38,9 +38,10 @@
 # texture coords).
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 def main():
     # Initialize Inventor and Qt

@@ -37,9 +37,10 @@
 # Hello Cone example program; draws a red cone in a window.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.sogui import *
+from pivy.coin import *
 
 def main():
     # Initialize Inventor. This returns a main window to use.
@@ -52,7 +53,6 @@ def main():
     root = SoSeparator()
     myCamera = SoPerspectiveCamera()
     myMaterial = SoMaterial()
-    root.ref()
     root.addChild(myCamera)
     root.addChild(SoDirectionalLight())
     myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)   # Red

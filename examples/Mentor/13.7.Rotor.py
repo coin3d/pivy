@@ -39,9 +39,10 @@
 # Use a rotor node to rotate the vanes.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 def readFile(filename):
     # Open the input file

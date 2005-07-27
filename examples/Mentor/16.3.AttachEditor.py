@@ -39,9 +39,10 @@
 # It attaches the editor to the material of an object.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 def main():
     # Initialize Inventor and Qt
@@ -52,7 +53,12 @@ def main():
     myRenderArea.setSize(SbVec2s(200, 200))
    
     # Build the material editor in its own window
-    myEditor = SoGuiMaterialEditor()
+    try:
+        myEditor = SoGuiMaterialEditor()
+    except:
+        print "The SoGuiMaterialEditor node has not been implemented in the " + \
+              "SoGui bindings of Coin!"
+        sys.exit(1)
    
     # Create a scene graph
     root =SoSeparator()

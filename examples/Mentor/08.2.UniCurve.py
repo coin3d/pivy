@@ -41,9 +41,10 @@
 # 4 to illustrate the curve passing through the endpoints.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 floorData = """#Inventor V2.0 ascii\n
 Separator {\n

@@ -37,9 +37,10 @@
 # Use an engine to make the cone spin.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 def main():
     # Initialize Inventor and Qt

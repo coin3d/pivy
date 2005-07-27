@@ -40,8 +40,9 @@
 # form the sphere in the scene.
 #
 
-from pivy import *
 import sys
+
+from pivy.coin import *
 
 ##############################################################
 # CODE FOR The Inventor Mentor STARTS HERE

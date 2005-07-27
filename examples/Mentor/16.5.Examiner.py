@@ -39,9 +39,10 @@
 # light in the scene are automatically created by the viewer.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 def main():
     # Initialize Inventor and Qt

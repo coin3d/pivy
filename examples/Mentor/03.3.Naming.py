@@ -38,8 +38,9 @@
 # get back nodes by name.
 #
 
-from pivy import *
 import sys
+
+from pivy.coin import *
 
 def RemoveCube():
    # Remove the cube named 'MyCube' from the separator named

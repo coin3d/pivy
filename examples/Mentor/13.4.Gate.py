@@ -40,9 +40,10 @@
 # controls the motion of the duck.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 #############################################################
 # CODE FOR The Inventor Mentor STARTS HERE  (part 2)

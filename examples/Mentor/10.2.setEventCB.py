@@ -46,10 +46,13 @@
 #       of the point set.
 #
 
-from soqt import *
-from pivy import *
-from qt import *
 import sys
+
+from pivy.coin import *
+from pivy.gui.soqt import *
+
+# PyQt module has to be imported as last one if used in the same namespace
+from qt import *
 
 # Timer sensor 
 # Rotate 90 degrees every second, update 30 times a second

@@ -41,9 +41,10 @@
 # shape that was picked.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 # Pick the topmost node beneath the selection node
 def pickFilterCB(void, pick):

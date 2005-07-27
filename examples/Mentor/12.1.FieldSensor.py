@@ -37,9 +37,10 @@
 # Sense changes to a viewer's camera's position.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 # Callback that reports whenever the viewer's position changes.
 def cameraChangedCB(viewerCamera, sensor):

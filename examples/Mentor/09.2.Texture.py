@@ -39,9 +39,10 @@
 # a texture map.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 def generateTextureMap(root, texture, textureWidth, textureHeight):
     myViewport = SbViewportRegion(textureWidth, textureHeight)

@@ -39,9 +39,10 @@
 # using two instances of the same subgraph.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 def makeRobot():
 ##############################################################

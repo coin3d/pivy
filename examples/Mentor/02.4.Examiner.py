@@ -37,9 +37,10 @@
 # Use the Examiner Viewer to look at a red cone
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 def main():
     myWindow = SoGui.init(sys.argv[0])

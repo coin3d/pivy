@@ -42,9 +42,10 @@
 # The 3D text and the box are made with SoShapeKits
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 def main():
     # Initialize Inventor and Qt

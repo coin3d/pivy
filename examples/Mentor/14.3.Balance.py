@@ -48,9 +48,10 @@
 #     of the scene.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 # Callback Function for Animating the Balance Scale.
 # -- used to make the balance tip back and forth

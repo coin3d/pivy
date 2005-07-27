@@ -38,9 +38,10 @@
 # the first stellation of the dodecahedron.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 ##############################################################
 ## CODE FOR The Inventor Mentor STARTS HERE

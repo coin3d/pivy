@@ -47,9 +47,10 @@
 # is attached to the light's 'directionalLight' part.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 def main():
     # Initialize Inventor and Qt
@@ -88,7 +89,12 @@ def main():
 
     # MATERIAL EDITOR!!  Attach it to myDesk's material node.
     # Use the SO_GET_PART macro to get this part from myDesk.
-    mtlEditor = SoGuiMaterialEditor()
+    try:
+        mtlEditor = SoGuiMaterialEditor()
+    except:
+        print "The SoGuiMaterialEditor node has not been implemented in the " + \
+              "SoGui bindings of Coin!"
+        sys.exit(1)
     mtl = SO_GET_PART(myDesk,"material",SoMaterial())
     mtlEditor.attach(mtl)
     mtlEditor.setTitle("Material of Desk")
@@ -96,7 +102,12 @@ def main():
 
     # DIRECTIONAL LIGHT EDITOR!! Attach it to the 
     # SoDirectionalLight node within the SoLightKit we made.
-    ltEditor = SoGuiDirectionalLightEditor()
+    try:
+        ltEditor = SoGuiDirectionalLightEditor()
+    except:
+        print "The SoGuiDirectionalLightEditor node has not been implemented in the " + \
+              "SoGui bindings of Coin!"
+        sys.exit(1)        
     ltPath = myScene.createPathToPart("lightList[0].light", TRUE)
     ltEditor.attach(ltPath)
     ltEditor.setTitle("Lighting of Desk")

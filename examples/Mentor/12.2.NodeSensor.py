@@ -38,8 +38,9 @@
 # sensor.
 #
 
-from pivy import *
 import sys
+
+from pivy.coin import *
 
 # Sensor callback function:
 def rootChangedCB(void, s):

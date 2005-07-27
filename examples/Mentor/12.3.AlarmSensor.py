@@ -37,9 +37,10 @@
 # Alarm sensor that raises a flag after 10 minutes
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 ###########################################################
 # CODE FOR The Inventor Mentor STARTS HERE

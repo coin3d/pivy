@@ -38,9 +38,10 @@
 # a Face Set.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 # set this variable to 0 if you want to use the other method
 IV_STRICT = 1

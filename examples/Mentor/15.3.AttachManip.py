@@ -56,9 +56,10 @@
 # transform node that affects the picked object.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 # global data
 myHandleBox      = None
@@ -107,7 +108,7 @@ def createTransformPath(inputPath):
     # transform if necessary.
     if tail.isOfType(SoBaseKit.getClassTypeId()):
         kit = tail
-        return kit.createPathToPart("transform",TRUE,inputPath)
+        return kit.createPathToPart("transform", TRUE, inputPath)
 
     editXf = None
     parent = None
@@ -157,7 +158,7 @@ def createTransformPath(inputPath):
             existedBefore = FALSE
             editXf = SoTransform()
             parent.insertChild(editXf, i)
-        else :
+        else:
             existedBefore = TRUE
 
     # Create 'pathToXform.' Copy inputPath, then make last
@@ -172,7 +173,7 @@ def createTransformPath(inputPath):
     pathToXform.append(xfIndex)
     pathToXform.unrefNoDelete()
     
-    return(pathToXform)
+    return pathToXform
 
 # This routine is called when an object
 # gets selected. We determine which object
@@ -188,7 +189,7 @@ def selectionCallback(void, # user data is not used
     # Use the convenience routine to get a path to
     # the transform that effects the selected object.
     xformPath = createTransformPath(selectionPath)
-    if xformPath == None: return
+    if not xformPath: return
     xformPath.ref()
 
     # Attach the handle box to the sphere,

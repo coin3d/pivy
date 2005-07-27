@@ -39,9 +39,10 @@
 # It uses callbacks for the component to report new values.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 #  This is called by the Material Editor when a value changes
 def myMaterialEditorCB(userData, newMtl):
@@ -61,7 +62,12 @@ def main():
     myRenderArea.setSize(SbVec2s(200, 200))
    
     # Build the Material Editor in its own window
-    myEditor = SoGuiMaterialEditor()
+    try:
+        myEditor = SoGuiMaterialEditor()
+    except:
+        print "The SoGuiMaterialEditor node has not been implemented in the " + \
+              "SoGui bindings of Coin!"
+        sys.exit(1)
    
     # Create a scene graph
     root = SoSeparator()

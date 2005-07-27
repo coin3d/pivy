@@ -37,9 +37,10 @@
 # This example creates the St. Louis Arch using a QuadMesh.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 ##############################################################
 ## CODE FOR The Inventor Mentor STARTS HERE

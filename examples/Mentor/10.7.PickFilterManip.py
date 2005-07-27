@@ -44,9 +44,10 @@
 # object rather than select the manipulator.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 # Returns path to xform left of the input path tail.
 # Inserts the xform if none found. In this example,

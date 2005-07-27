@@ -42,9 +42,10 @@
 # dodecahedron from an earlier example in this chapter.  
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 # Positions of all of the vertices:
 vertexPositions = (

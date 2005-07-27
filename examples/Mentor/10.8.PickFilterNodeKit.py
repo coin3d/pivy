@@ -40,9 +40,10 @@
 # care of the part creation details.
 #
 
-from sogui import *
-from pivy import *
 import math, sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 class UserData:
     sel = None
@@ -135,7 +136,12 @@ def main():
     viewer.show()
 
     # Create a material editor
-    ed = SoGuiMaterialEditor()
+    try:
+        ed = SoGuiMaterialEditor()
+    except:
+        print "The SoGuiMaterialEditor node has not been implemented in the " + \
+              "SoGui bindings of Coin!"
+        sys.exit(1)
     ed.show()
 
     # User data for our callbacks

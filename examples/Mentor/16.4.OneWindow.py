@@ -40,9 +40,10 @@
 # It attaches the editor to the material of an object.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 def main():
     # Initialize Inventor and Qt
@@ -106,4 +107,6 @@ def main():
     SoGui.mainLoop()
 
 if __name__ == "__main__":
+    print "This example is not functional as it is GUI toolkit dependent!"
+    sys.exit(1)
     main()

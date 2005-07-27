@@ -37,9 +37,10 @@
 # This example builds an obelisk using the Face Set node.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 ##############################################################
 ## CODE FOR The Inventor Mentor STARTS HERE

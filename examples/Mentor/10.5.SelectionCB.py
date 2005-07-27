@@ -40,9 +40,10 @@
 # to change the material color of that object.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 # global data
 textMaterial, sphereMaterial = [None]*2

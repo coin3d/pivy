@@ -40,9 +40,10 @@
 # file for printing.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 class callbackData:
     vwr = None

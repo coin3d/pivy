@@ -41,9 +41,10 @@
 # load the overlay color map with the wanted color.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 overlayScene = """
 #Inventor V2.0 ascii

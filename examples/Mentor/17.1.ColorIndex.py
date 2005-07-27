@@ -41,19 +41,24 @@
 # colors.
 #
 
-from sogui import *
-from pivy import *
+import sys
+
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLX import *
-import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 # window attribute list to create a color index visual.
 # This will create a double buffered color index window
 # with the maximum number of bits and a zbuffer.
-attribList = (GL_DOUBLEBUFFER, 
-              GL_BUFFER_SIZE, 1, 
-              GLUT_DEPTH_SIZE, 1, 
+GLX_DOUBLEBUFFER=5
+GLX_BUFFER_SIZE=2
+GLX_DEPTH_SIZE=12
+attribList = (GLX_DOUBLEBUFFER, 
+              GLX_BUFFER_SIZE, 1, 
+              GLX_DEPTH_SIZE, 1, 
               None)
 
 # list of colors to load in the color map
@@ -105,8 +110,10 @@ def main():
    
     # Show the viewer and loop forever...
     myViewer.show()
-    QtRealizeWidget(myWindow)
+    XtRealizeWidget(myWindow)
     SoGui.mainLoop()
 
 if __name__ == "__main__":
+    print "This example is not functional as it is GLX dependent!"
+    sys.exit(1)
     main()

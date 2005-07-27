@@ -38,10 +38,12 @@
 # but using a GLX window.
 #
 
-from sogui import *
-from pivy import *
-from OpenGL.GL import *
 import sys, time
+
+from OpenGL.GL import *
+
+from pivy.coin import *
+from pivy.sogui import *
 
 WINWIDTH  = 400 
 WINHEIGHT = 400 
@@ -239,4 +241,6 @@ def main():
     return 0
 
 if __name__ == "__main__":
+    print "This example is not functional as it is GLX dependent!"
+    sys.exit(1)
     main()

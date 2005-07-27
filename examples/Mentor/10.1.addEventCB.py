@@ -44,9 +44,10 @@
 # the size of each selected object.
 #
 
-from sogui import *
-from pivy import *
 import sys
+
+from pivy.coin import *
+from pivy.sogui import *
 
 # Global data
 cubeTransform, sphereTransform, coneTransform, cylTransform = [None] * 4

@@ -41,7 +41,7 @@
 # Invoke this script with '--help' for usage information.
 #
 
-from pivy import *
+from pivy.coin import *
 import unittest
 
 class Autocasting(unittest.TestCase):

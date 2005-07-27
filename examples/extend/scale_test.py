@@ -5,12 +5,13 @@
 #
 # Python translation: Tamer Fahmy <tamer@tammura.at>, 2004 Vienna, Austria
 
-from shapescale import *
-from sogui import *
-from pivy import *
-
-from random import random
 import sys
+from random import random
+
+from pivy.sogui import *
+from pivy.coin import *
+
+from shapescale import *
 
 def construct_new_marker(v):
     markerroot = SoSeparator()
@@ -125,7 +126,8 @@ if __name__ == "__main__":
     SoGui.show(window)
 
     SoGui.mainLoop()
-    del ex1
 
+    del ex1
     newroot.unref()
+    
     sys.exit(0)

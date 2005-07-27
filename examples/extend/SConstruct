@@ -65,15 +65,13 @@ else:
 
 PIVY_ROOT = '../..'
 
-env.Append(CPPPATH = ['.', distutils.sysconfig.get_python_inc()])
+env.Append(CPPPATH = ['.', PIVY_ROOT + '/interfaces', distutils.sysconfig.get_python_inc()])
 env.Append(LIBPATH = [PIVY_ROOT, distutils.sysconfig.get_python_lib()])
-env.Append(RPATH = distutils.sysconfig.get_python_lib())
-env.Append(LIBS = 'pivy_runtime')
 env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars().get('LINKFORSHARED', '').split())
 
-SWIG_SUPPRESS_WARNINGS = '-w302,306,307,312,389,361,362,503,509,510'
-env.Append(SWIGFLAGS = '-noruntime -c++ -python -includeall -D__PIVY__ ' +
-           '-I. -I%s -I%s/fake_headers -I/usr/local/include -I%s %s' %
+SWIG_SUPPRESS_WARNINGS = '-w302,306,307,312,389,361,362,467,503,509,510'
+env.Append(SWIGFLAGS = '-c++ -python -includeall -modern -D__PIVY__ ' +
+           '-I. -I%s/interfaces -I%s/fake_headers -I/usr/local/include -I%s %s' %
            (PIVY_ROOT, PIVY_ROOT, INCLUDE_DIR, SWIG_SUPPRESS_WARNINGS))
 
 if str(Platform()) == 'win32':

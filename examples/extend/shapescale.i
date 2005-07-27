@@ -32,9 +32,11 @@
 
 %{
 #include "ShapeScale.h"
+#include "coin_header_includes.h"
 %}
 
 /* include the typemaps common to all pivy modules */
-%include interfaces/pivy_common_typemaps.i
+%include pivy_common_typemaps.i
+%import coin.i
 
 %include ShapeScale.h

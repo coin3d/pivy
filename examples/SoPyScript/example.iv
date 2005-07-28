@@ -29,7 +29,7 @@ def doAction(action):
     global transpValue
 
     if not brightness.isIgnored() and not SoOverrideElement.getEmissiveColorOverride(action.getState()):
-        emissiveColor = SbColor_mul(color.getValue(), brightness.getValue())
+        emissiveColor = color.getValue() * brightness.getValue()
         # print 'doAction():', color.getValue().getValue()
 
         # Use the Lazy element to set emissive color. 

@@ -43,10 +43,14 @@ def setHSVValue(*args):
 
 %ignore SbColor::getHSVValue(float hsv[3]) const;
 
-%rename(SbColor_mul) operator *(const SbColor & v, const float d);
-%rename(SbColor_d_mul) operator *(const float d, const SbColor & v);
-%rename(SbColor_add) operator+(const SbColor & v1, const SbColor & v2);
-%rename(SbColor_sub) operator-(const SbColor & v1, const SbColor & v2);
-%rename(SbColor_div) operator /(const SbColor & v, const float d);
-%rename(SbColor_eq) operator ==(const SbColor & v1, const SbColor & v2);
-%rename(SbColor_neq) operator !=(const SbColor & v1, const SbColor & v2);
+%extend SbColor {
+  SbColor __add__(const SbColor &u) { return *self + u; }
+  SbColor __sub__(const SbColor &u) { return *self - u; }
+  SbColor __mul__(const float d) { return *self * d; }
+  SbColor __rmul__(const float d) { return *self * d; }
+  SbColor __div__( const float d) { return *self / d; }
+  int __eq__(const SbColor &u ) { return *self == u; }
+  int __nq__(const SbColor &u) { return *self != u; }
+  float __getitem__(int i) { return (self->getValue())[i]; }
+  void  __setitem__(int i, float value) { (*self)[i] = value; }
+}

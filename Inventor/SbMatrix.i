@@ -135,18 +135,9 @@ def multVecMatrix(*args):
   $1 = new $1_basetype();
 }
 
-%rename(SbMatrix_mul) operator *(const SbMatrix & m1, const SbMatrix & m2);
-%rename(SbMatrix_eq) operator ==(const SbMatrix & m1, const SbMatrix & m2);
-%rename(SbMatrix_neq) operator !=(const SbMatrix & m1, const SbMatrix & m2);
-
 %ignore SbMatrix::SbMatrix(const SbMat & matrix);
 
 %extend SbMatrix {
-  // add a method for wrapping c++ operator[] access
-  const float *__getitem__(int i) {
-    return (self->getValue())[i];
-  }
-
   PyObject * getTransform() {
     SbVec3f * t = new SbVec3f;
     SbVec3f * s = new SbVec3f;
@@ -199,4 +190,5 @@ def multVecMatrix(*args):
   SbVec3f __rmul__(const SbVec3f & u) { SbVec3f res; self->multVecMatrix(u, res); return res; }
   int __eq__(const SbMatrix & u) { return *self == u; }
   int __ne__(const SbMatrix & u) { return *self != u; }
+  const float *__getitem__(int i) { return (self->getValue())[i]; }
 }

@@ -318,4 +318,16 @@ RefCount(SoSceneKit)
 /* include the typemaps common to all pivy modules */
 %include pivy_common_typemaps.i
 
+/* removes all the properties for fields in classes derived from
+   SoFieldContainer. this makes way for the dynamic access to fields
+   as attributes. */
+%pythoncode %{        
+for x in globals().values():
+  if isinstance(x, type):
+    if issubclass(x, SoFieldContainer):
+      for name, thing in x.__dict__.items():
+        if isinstance(thing, property):
+          delattr(x, name)
+%}
+
 %include coin_header_includes.h

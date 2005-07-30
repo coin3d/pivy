@@ -1,10 +1,12 @@
 // add a method for wrapping c++ operator[] access
 %extend SoBaseList {
-  PyObject * get(int index) {
-    return autocast_base((SoBase*)self->get(index));
+  void __setitem__(const int i, SoBase * value) {
+    self->set(i,value);
   }
-
-  PyObject * __getitem__(int i) {
-    return SoBaseList_get(self, i);
+  SoBase * __getitem__(const int i) {
+    return (*self)[i];
+  }
+  SoBase * get(const int i) {
+    return (*self)[i];
   }
 }

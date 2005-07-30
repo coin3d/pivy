@@ -1,24 +1,14 @@
-%rename(SbName_char) SbName::SbName(const char * nameString);
-%rename(SbName_str) SbName::SbName(const SbString & str);
-%rename(SbName_name) SbName::SbName(const SbName & name);
-
-%feature("shadow") SbName::SbName %{
-def __init__(self,*args):
-   newobj = None
-   if len(args) == 1:
-      if isinstance(args[0], SbName):
-         newobj = apply(_coin.new_SbName_str,args)
-      elif isinstance(args[0], SbName):
-         newobj = apply(_coin.new_SbName_name,args)
-      else:
-         newobj = apply(_coin.new_SbName_char,args)
-   else:
-      newobj = apply(_coin.new_SbName,args)
-   if newobj:
-      self.this = newobj.this
-      self.thisown = 1
-      del newobj.thisown
+%extend SbName {     
+  /* add operator overloading methods instead of the global functions */
+  int __eq__( const SbName &u ) { return *self == u; }
+  int __nq__( const SbName &u ) { return *self != u; }
+  // add a method for wrapping c++ operator[] access
+  char __getitem__(int i) { return self->getString()[i]; }
+  // iterator for SbName
+%pythoncode %{
+  def __iter__(self):
+    return getString().__iter__()
 %}
+  const char * __repr__(void) { return self->getString(); }
+}
 
-%rename(SbName_eq) operator ==(const SbName & lhs, const SbName & rhs);
-%rename(SbName_neq) operator !=(const SbName & lhs, const SbName & rhs);

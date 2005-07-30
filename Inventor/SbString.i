@@ -1,25 +1,3 @@
-%rename(SbString_str) SbString::SbString(const char * str);
-%rename(SbString_str_i_i) SbString::SbString(const char * str, int start, int end);
-%rename(SbString_i) SbString::SbString(const int digits);
-
-%feature("shadow") SbString::SbString %{
-def __init__(self,*args):
-   newobj = None
-   if len(args) == 1:
-      if type(args[0]) == type(1):
-         newobj = apply(_coin.new_SbString_i,args)
-      else:
-         newobj = apply(_coin.new_SbString_str,args)
-   elif len(args) == 3:
-      newobj = apply(_coin.new_SbString_str_i_i,args)
-   else:
-      newobj = apply(_coin.new_SbString,args)
-   if newobj:
-      self.this = newobj.this
-      self.thisown = 1
-      del newobj.thisown
-%}
-
 %rename(hash_str) SbString::hash(const char * s);
 
 %feature("shadow") SbString::hash(void) %{
@@ -34,5 +12,10 @@ def hash(*args):
   int __eq__(const SbString &u) { return *self == u; }
   int __nq__(const SbString &u) { return *self != u; }
   // add a method for wrapping c++ operator[] access
-  float __getitem__(int i) { return (self->getString())[i]; }
+  char __getitem__(int i) { return (*self)[i]; }
+ // iterator for string
+%pythoncode %{
+  def __iter__(self):
+    return getString().__iter__()
+%} 
 }

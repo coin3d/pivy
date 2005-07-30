@@ -532,6 +532,22 @@ class SoBaseListMethods(unittest.TestCase):
         l.append(c)
         self.assert_(isinstance(l[0], SoCone))
         
+    def testSetItem(self):
+        """SoBaseList supports [0] = value"""
+        l = SoBaseList()
+        f = SoCone()
+        l.append(None) # note, that the set method underlying access does not expand!
+        l[0] = f
+        self.assert_(l[0].this == f.this)
+        
+    def testIteration(self):
+        """iteration is supported by all lists derived from SbPList"""
+        l = SoBaseList()
+        c = SoCone()
+        l.append(c)
+        for x in l:
+            self.assert_(x.this == c.this)
+        
 class SoNodeListMethods(unittest.TestCase):
     """tests various methods of SoNodeList"""
     def testGet(self):
@@ -547,6 +563,14 @@ class SoNodeListMethods(unittest.TestCase):
         c = SoCone()
         l.append(c)
         self.assert_(isinstance(l[0], SoCone))
+        
+    def testSetItem(self):
+        """SoNodeList supports [0] = value"""
+        l = SoNodeList()
+        c = SoCone()
+        l.append(None) # note, that the set method underlying access does not expand!
+        l[0] = c
+        self.assert_(l[0].this == c.this)
 
 class SoFieldListMethods(unittest.TestCase):
     """tests various methods of SoFieldList"""
@@ -563,6 +587,13 @@ class SoFieldListMethods(unittest.TestCase):
         f = SoSFBool()
         l.append(f)
         self.assert_(isinstance(l[0], SoSFBool))
+        
+    def testSetItem(self):
+        """SoFieldList supports [0] = value"""
+        l = SoFieldList()
+        f = SoSFBool()
+        l[0] = f
+        self.assert_(l[0] == f)
         
 if __name__ == "__main__":
     SoDB.init()

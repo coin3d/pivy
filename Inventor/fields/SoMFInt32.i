@@ -34,19 +34,17 @@ convert_SoMFInt32_array(PyObject *input, int len, int32_t *temp)
 
 %ignore SoMFInt32::getValues(const int start) const;
 
-%typemap(in,numinputs=1) (int32_t & len, int32_t i) {
-   $1 = new int32_t;
+%typemap(in,numinputs=0) int32_t & len (int32_t temp) {
+   $1 = &temp;
    *$1 = 0;
-   $2 = PyInt_AsLong($input);
 }
 
-%typemap(argout) (int32_t & len, int32_t i) {
+%typemap(argout) int32_t & len {
   Py_XDECREF($result);   /* Blow away any previous result */
   $result = PyList_New(*$1);
   if(result) {
     for(int i = 0; i < *$1; i++){ PyList_SetItem($result, i, PyInt_FromLong((long)result[i])); }
   }
-  delete $1;
 }
 
 %feature("shadow") SoMFInt32::setValues %{
@@ -66,20 +64,15 @@ def setValues(*args):
    return _coin.SoMFInt32_setValues(*args)
 %}
 
+%rename(getValues) SoMFInt32::__getValuesHelper__;
+
 %extend SoMFInt32 {
-  void __call__(int i) { self->setValue(i); }
   const int32_t __getitem__(int i) { return (*self)[i]; }
   void  __setitem__(int i, int32_t value) { self->set1Value(i, value); }
-  const int32_t * __getValuesHelper__(int32_t & len, int32_t i) {
-    if (i < 0 || i > self->getNum()) { return 0; }
+  void setValue( const SoMFInt32 * other) { *self = *other; }  
+  const int32_t * __getValuesHelper__(int32_t & len, int32_t i = 0) {
+    if (i < 0 || i > self->getNum()) { return NULL; }
     len = self->getNum() - i;
     return self->getValues(i);
   }
-/* implement getValues to have default argument etc. */
-%pythoncode %{
-   def getValues(*args):
-     if len(args) == 1:
-        return _coin.SoMFInt32___getValuesHelper__(args[0], 0)
-     return _coin.SoMFInt32___getValuesHelper__(*args)
-%}
 }

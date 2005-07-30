@@ -1,3 +1,5 @@
 %extend SoSFShort {
-  void __call__(short i) { self->setValue(i); }
+  void setValue(const SoSFShort * other){
+      *self = *other;
+  }
 }

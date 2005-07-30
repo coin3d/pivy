@@ -1,3 +1,3 @@
 %extend SoSFBool {
-  void __call__(int i) { self->setValue(i); }
+  void setValue(const SoSFBool * other){ *self = *other; }
 }

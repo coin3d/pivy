@@ -23,7 +23,7 @@ convert_SoMFVec2f_array(PyObject *input, int len, float temp[][2])
 }
 %}
 
-%typemap(in) float xy[][2] (float (*temp)[2]) {
+%typemap(in) const float xy[][2] (float (*temp)[2]) {
   int len;
 
   if (PySequence_Check($input)) {
@@ -35,51 +35,120 @@ convert_SoMFVec2f_array(PyObject *input, int len, float temp[][2])
     $1 = temp;
   } else {
     PyErr_SetString(PyExc_TypeError, "expected a sequence.");
+    $1 = NULL;
   }
 }
 
-%typemap(in) float xy[2] (float temp[2]) {
+// Free the list 
+%typemap(freearg) const float xy[][2] {
+  if($1) delete[] $1;
+}
+
+%typemap(in) const float xy[2] (float temp[2]) {
   convert_SbVec2f_array($input, temp);
   $1 = temp;
 }
 
-%rename(setValue_vec) SoMFVec2f::setValue(SbVec2f const &);
-%rename(setValue_ff) SoMFVec2f::setValue(const float x, const float y);
+%typemap(typecheck,precedence=SWIG_TYPECHECK_POINTER) const float xy[2] {
+  void *ptr;
+  $1 = (PySequence_Check($input) && SWIG_ConvertPtr($input, &ptr, $descriptor(SoMFVec2f *), 0) == -1) ? 1 : 0;
+}
 
-%feature("shadow") SoMFVec2f::setValue(const float xy[2]) %{
-def setValue(*args):
-   if isinstance(args[1], SbVec2f):
-      return apply(_coin.SoMFVec2f_setValue_vec,args)
-   elif len(args) == 3:
-      return apply(_coin.SoMFVec2f_setValue_ff,args)
-   return apply(_coin.SoMFVec2f_setValue,args)
-%}
+%typemap(typecheck,precedence=SWIG_TYPECHECK_POINTER) const float xy[][2] {
+  if(PySequence_Check($input) && PySequence_Size($input) > 0 ){
+    PyObject * obj = PySequence_GetItem($input,0);
+    void *ptr;
+    if( SWIG_ConvertPtr(obj, &ptr, $descriptor(SbVec2f *), 0) == -1)
+      $1 = 1;
+    else
+      $1 = 0;
+  }
+  else
+    $1 = 0;
+}
 
-%rename(set1Value_i_vec) SoMFVec2f::set1Value(int const ,SbVec2f const &);
-%rename(set1Value_i_ff) SoMFVec2f::set1Value(const int idx, const float x, const float y);
+%typemap(in) const SbVec2f *newvals {
+  int len;
 
-%feature("shadow") SoMFVec2f::set1Value(const int idx, const float xy[2]) %{
-def set1Value(*args):
-   if isinstance(args[2], SbVec2f):
-      return apply(_coin.SoMFVec2f_set1Value_i_vec,args)
-   elif len(args) == 4:
-      return apply(_coin.SoMFVec2f_set1Value_i_ff,args)
-   return apply(_coin.SoMFVec2f_set1Value,args)
-%}
+  if (PySequence_Check($input)) {
+    len = PySequence_Length($input);
+    if( len > 0 ) {
+      $1 = new SbVec2f[len];
+      for( int i = 0; i < len; i++ ) {
+          SbVec2f * VecPtr = NULL;
+          PyObject * item = PyList_GetItem($input,i);
+          SWIG_ConvertPtr(item, (void **) &VecPtr, $1_descriptor, 1);
+          if( VecPtr != NULL )
+            $1[i] = *VecPtr;
+      }
+    }
+    else 
+      $1 = NULL;
+  } else {
+    PyErr_SetString(PyExc_TypeError, "expected a sequence.");
+  }
+}
 
-%rename(setValues_i_i_vec) SoMFVec2f::setValues(int const ,int const ,SbVec2f const *);
+// Free the list 
+%typemap(freearg) const SbVec2f *newvals {
+  if($1) delete[] $1;
+}
 
-%feature("shadow") SoMFVec2f::setValues(const int start, const int num, const float xyz[][2]) %{
+%typemap(typecheck,precedence=SWIG_TYPECHECK_POINTER) const SbVec2f *newvals {
+  if(PySequence_Check($input)) {
+    if(PySequence_Size($input) == 0)
+      $1 = 1;
+    else {
+      PyObject * obj = PySequence_GetItem($input,0);
+      void *ptr;
+      if( SWIG_ConvertPtr(obj, &ptr, $descriptor(SbVec2f *), 0) != -1)
+        $1 = 1;
+      else
+        $1 = 0;
+    }
+  }
+  else
+    $1 = 0;
+}
+
+%feature("shadow") SoMFVec2f::setValues %{
 def setValues(*args):
-   if isinstance(args[3], SbVec2f):
-      return apply(_coin.SoMFVec2f_setValues_i_i_vec,args)
-   return apply(_coin.SoMFVec2f_setValues,args)
+   if len(args) == 2:
+      return _coin.SoMFVec2f_setValues(args[0],0,len(args[1]),args[1])
+   elif len(args) == 3:
+      return _coin.SoMFVec2f_setValues(args[0],args[1],len(args[2]),args[2])
+   return _coin.SoMFVec2f_setValues(*args)
 %}
+
+%ignore SoMFVec2f::getValues(const int start) const;
+
+%typemap(in,numinputs=0) int & len (int temp) {
+   $1 = &temp;
+   *$1 = 0;
+}
+
+%typemap(argout) (int & len) {
+  Py_XDECREF($result);   /* Blow away any previous result */
+  $result = PyList_New(*$1);
+  if(result) {
+    for(int i = 0; i < *$1; i++){
+      SbVec2f * Vec2fPtr = new SbVec2f( result[i] );
+      PyObject * obj = SWIG_NewPointerObj(Vec2fPtr, $descriptor(SbVec2f *), 1);
+      PyList_SetItem($result, i, obj);
+    }
+  }
+}
+
+%rename(getValues) SoMFVec2f::__getValuesHelper__;
 
 %extend SoMFVec2f {
-  void __call__(const SbVec2f & vec) { self->setValue(vec); }
-  void __call__(const float x, const float y) { self->setValue(x,y); }
-  void __call__(float xy[2]) { self->setValue(xy); }
   const SbVec2f & __getitem__(int i) { return (*self)[i]; }
   void  __setitem__(int i, const SbVec2f & value) { self->set1Value(i, value); }  
+  void setValue( const SoMFVec2f * other ){ *self = *other; }
+  const SbVec2f * __getValuesHelper__(int & len, int i = 0) {
+    if( i < 0 || i >= self->getNum())
+      return NULL;
+    len = self->getNum() - i;
+    return self->getValues(i);
+  }
 }

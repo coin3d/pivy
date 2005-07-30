@@ -1,3 +1,7 @@
+// types like SbVecXf, SbRotation define this typename for fixed size arrays 
+// which breaks here. Have to clear it before use
+%typemap(out) float *;
+
 %{
 static void
 convert_SoMFFloat_array(PyObject *input, int len, float *temp)
@@ -34,19 +38,17 @@ convert_SoMFFloat_array(PyObject *input, int len, float *temp)
 
 %ignore SoMFFloat::getValues(const int start) const;
 
-%typemap(in,numinputs=1) (int & len, int i) {
-   $1 = new int;
+%typemap(in,numinputs=0) int & len (int temp) {
+   $1 = &temp;
    *$1 = 0;
-   $2 = PyInt_AsLong($input);
 }
 
-%typemap(argout) (int & len, int i) {
+%typemap(argout) int & len {
   Py_XDECREF($result);   /* Blow away any previous result */
   $result = PyList_New(*$1);
   if(result) {
     for(int i = 0; i < *$1; i++){ PyList_SetItem($result, i, PyFloat_FromDouble((double)result[i])); }
   }
-  delete $1;
 }
 
 %feature("shadow") SoMFFloat::setValues %{
@@ -66,20 +68,15 @@ def setValues(*args):
    return _coin.SoMFFloat_setValues(*args)
 %}
 
+%rename(getValues) SoMFFloat::__getValuesHelper__;
+
 %extend SoMFFloat {
-  void __call__(float i) { self->setValue(i); }
   const float __getitem__(int i) { return (*self)[i]; }
   void  __setitem__(int i, float value) { self->set1Value(i, value); }
-  const float * __getValuesHelper__(int & len, int i) {
+  void setValue(const SoMFFloat * other){ *self = *other; }  
+  const float * __getValuesHelper__(int & len, int i = 0) {
     if (i < 0 || i > self->getNum()) { return 0; }
     len = self->getNum() - i;
     return self->getValues(i);
   }
-/* implement getValues to have default argument etc. */
-%pythoncode %{
-   def getValues(*args):
-     if len(args) == 1:
-        return _coin.SoMFFloat___getValuesHelper__(args[0], 0)
-     return _coin.SoMFFloat___getValuesHelper__(*args)
-%}
 }

@@ -1,3 +1,5 @@
 %extend SoSFFloat {
-  void __call__(float f) { self->setValue(f); }
+  void setValue(const SoSFFloat * other){
+    *self = *other;
+  }
 }

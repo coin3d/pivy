@@ -65,6 +65,21 @@ class Autocasting(unittest.TestCase):
         self.failUnless(isinstance(nl.get(0), SoCube),
                         'not autocasted to an SoCube instance')
 
+    def testTypeAutocast(self):
+        """check if type objects return casted instances"""
+        tCube = SoType.fromName(SbName("SoCube"))
+        cube = tCube.createInstance()
+        self.failUnless(isinstance(cube, SoCube),
+                        'SoType.createInstance not casted to SoCube')
+        tSFBool = SoType.fromName(SbName("SoSFBool"))
+        field = tSFBool.createInstance()
+        self.failUnless(isinstance(field, SoSFBool),
+                        'SoType.createInstance not casted to SoSFBool')
+        tPath = SoType.fromName(SbName("SoPath"))
+        path = tPath.createInstance()
+        self.failUnless(isinstance(path, SoPath),
+                        'SoType.createInstance not casted to SoPath') 
+
 class FieldSetValue(unittest.TestCase):
     """checks various setValue(s) calls for fields"""
     def testSFBool(self):

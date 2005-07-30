@@ -19,7 +19,7 @@ static const SoType SoType::overrideType(const SoType originalType,
   PyObject * createInstance() {
     if (self->isDerivedFrom(SoField::getClassTypeId())) {
       return autocast_field((SoField*)self->createInstance());
-    } else if (self->isDerivedFrom(SoField::getClassTypeId())) {
+    } else if (self->isDerivedFrom(SoPath::getClassTypeId())) {
       return autocast_path((SoPath*)self->createInstance());
     }
     return autocast_base((SoBase*)self->createInstance());

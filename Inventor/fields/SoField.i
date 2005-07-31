@@ -34,3 +34,13 @@ def disconnect(*args):
       return apply(_coin.SoField_disconnect_vrm,args)
    return apply(_coin.SoField_disconnect,args)
 %}
+
+%ignore SoField::get(SbString & valuestring);
+
+%extend SoField {
+  SbString get() {
+    SbString valuestring;
+    self->get(valuestring);
+    return valuestring;
+  }
+}

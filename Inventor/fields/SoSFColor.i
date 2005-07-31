@@ -8,7 +8,7 @@
   $1 = temp;
 }
 
-%typemap(typecheck,precedence=SWIG_TYPECHECK_POINTER) float [3] {
+%typemap(typecheck) float [3] {
     $1 = PySequence_Check($input) ? 1 : 0;
 }
 

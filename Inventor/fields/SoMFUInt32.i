@@ -69,6 +69,7 @@ def setValues(*args):
 %extend SoMFUInt32 {
   const uint32_t __getitem__(int i) { return (*self)[i]; }
   void  __setitem__(int i, uint32_t value) { self->set1Value(i, value); }
+  void setValue( const SoMFUInt32 * other) { *self = *other; }
   const uint32_t * __getValuesHelper__(int & len, int i = 0 ) {
     if (i < 0 || i > self->getNum()) { return 0; }
     len = self->getNum() - i;

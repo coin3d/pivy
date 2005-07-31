@@ -1,6 +1,15 @@
-%typemap(in) (SbVec2s & size, int & nc) {
-  $1 = new SbVec2s();
-  $2 = (int *)malloc(sizeof(int));
+%typemap(in,numinputs=0) (SbVec2s & size, int & nc) (int temp) {
+   $1 = new SbVec2s();
+   $2 = &temp;
+}
+
+%typemap(argout) (SbVec2s & size, int & nc) {
+  Py_XDECREF($result);   /* Blow away any previous result */
+  $result = PyTuple_New(3);
+  PyTuple_SetItem($result, 0, PyString_FromStringAndSize((const char *)result, (*$1)[0] * (*$1)[1] * (*$2)));
+  PyTuple_SetItem($result, 1, SWIG_NewPointerObj((void *)$1, SWIGTYPE_p_SbVec2s, 1));
+  PyTuple_SetItem($result, 2, PyInt_FromLong(*$2));
+  Py_INCREF($result);
 }
 
 %extend SoSFImage {
@@ -14,31 +23,5 @@
     self->setValue(size, nc, image);
   }
 
-  PyObject * getValue() {
-    PyObject *result;
-    int nc;
-    SbVec2s * size = new SbVec2s;
-    const unsigned char * image = self->getValue(*size, nc);
-
-    PyString_FromStringAndSize((const char*)image, (*size)[0] * (*size)[1] * nc);
-    
-    result = PyTuple_New(3);
-    PyTuple_SetItem(result, 0, PyString_FromStringAndSize((const char*)image, (*size)[0] * (*size)[1] * nc));
-    PyTuple_SetItem(result, 1, SWIG_NewPointerObj((void *)size, SWIGTYPE_p_SbVec2s, 1));
-    PyTuple_SetItem(result, 2, PyInt_FromLong(nc));
-    Py_INCREF(result);
-
-    return result;
-  }
+  void setValue(const SoSFImage * other){ *self = *other; }
 }
-
-/* fake an input argument */
-%feature("shadow") SoSFImage::getValue(SbVec2s & size, int & nc) const %{
-def getValue(self):
-   return apply(_coin.SoSFImage_getValue,(self,0))
-%}
-
-%feature("shadow") SoSFImage::startEditing(SbVec2s & size, int & nc) %{
-def startEditing(self):
-   return apply(_coin.SoSFImage_startEditing,(self,0))
-%}

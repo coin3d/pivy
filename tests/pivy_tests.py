@@ -80,6 +80,12 @@ class Autocasting(unittest.TestCase):
         self.failUnless(isinstance(path, SoPath),
                         'SoType.createInstance not casted to SoPath') 
 
+    def testFieldContainerAutocast(self):
+        """check if a returned FieldContainer is casted"""
+        m = SoMaterial()
+        self.failUnless(isinstance(m.diffuseColor.getContainer(), SoMaterial),
+                        'SoField.getContainer is not casted correctly')
+                        
 class FieldSetValue(unittest.TestCase):
     """checks various setValue(s) calls for fields"""
     def testSFBool(self):
@@ -820,7 +826,7 @@ class SbNameMethods(unittest.TestCase):
         self.assertEqual(s.getString(), t.getString())
 
     def testFromName(self):
-        """tests passing strings instead of SbName to SoType.fromName()"""
+        """check passing strings instead of SbName to SoType.fromName()"""
         t = SoType.fromName("SoCone")
 
 class SbRotationMethods(unittest.TestCase):

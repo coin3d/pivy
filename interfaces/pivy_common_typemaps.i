@@ -211,6 +211,33 @@ autocast_field(SoField * field)
 }
 %}
 
+/* typemaps for autocasting types through the Inventor type system */
+%typemap(out) SoBase * {
+  return autocast_base($1);
+}
+
+%typemap(out) SoFieldContainer * {
+  return autocast_base($1);
+}
+
+%typemap(out) SoNode * {
+  return autocast_base($1);
+}
+
+%typemap(out) SoPath * {
+  return autocast_path($1);
+}
+
+%typemap(out) SoEngine * {
+  return autocast_base($1);
+}
+
+%typemap(out) SoField * {
+  return autocast_field($1);
+}
+
+%native(cast) PyObject * cast(PyObject * self, PyObject * args);
+
 /**
  * SWIG - interface includes and general typemap definitions
  **/
@@ -240,12 +267,11 @@ autocast_field(SoField * field)
 %rename(srcFrom) from;
 %rename(destTo) to;
 
-%include Inventor/SbString.h
-%include Inventor/fields/SoField.h
 
 /* generic typemaps to allow using python types instead of instances
  * within the python interpreter
  */
+
 %typemap(in) SbName & {
   if (PyString_Check($input)) {
     $1 = new SbName(PyString_AsString($input));
@@ -255,6 +281,24 @@ autocast_field(SoField * field)
 }
 
 %typemap(typecheck) SbName & {
+  void *ptr = NULL;
+  $1 = 1;
+  if (!PyString_Check($input) && (SWIG_ConvertPtr($input, (void**)(&ptr), SWIGTYPE_p_SbName, 0) == -1)) {
+    $1 = 0;
+  }
+}
+
+%typemap(in) SbName {
+  if (PyString_Check($input)) {
+    $1 = SbName(PyString_AsString($input));
+  } else {
+    SbName * namePtr;
+    SWIG_ConvertPtr($input, (void**)&namePtr, SWIGTYPE_p_SbName, 1);
+    $1 = *namePtr;
+  }
+}
+
+%typemap(typecheck) SbName {
   void *ptr = NULL;
   $1 = 1;
   if (!PyString_Check($input) && (SWIG_ConvertPtr($input, (void**)(&ptr), SWIGTYPE_p_SbName, 0) == -1)) {
@@ -302,28 +346,7 @@ autocast_field(SoField * field)
   }
 }
 
-/* typemaps for autocasting types through the Inventor type system */
-%typemap(out) SoBase * {
-  return autocast_base($1);
-}
-
-%typemap(out) SoNode * {
-  return autocast_base($1);
-}
-
-%typemap(out) SoPath * {
-  return autocast_path($1);
-}
-
-%typemap(out) SoEngine * {
-  return autocast_base($1);
-}
-
-%typemap(out) SoField * {
-  return autocast_field($1);
-}
-
-%native(cast) PyObject * cast(PyObject * self, PyObject * args);
+%include Inventor/fields/SoField.h
 
 #ifdef PIVY_WIN32
 /* some ignores for missing COIN_DLL_API specifications */

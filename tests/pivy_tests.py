@@ -1018,6 +1018,16 @@ class SbTimeMethods(unittest.TestCase):
         t2.setValue(12, 5000)
         self.assertEqual(t1, t2)
 
+class OperatorTests(unittest.TestCase):
+    """checks various operator overloaded methods"""
+    def testEqNone(self):
+        """check __eq__ operator None comparison"""
+        self.failUnless(not (SoSeparator() == None))
+        
+    def testNqNone(self):
+        """check __nq__ operator None comparison"""
+        self.failUnless((SoSeparator() != None))
+        
 if __name__ == "__main__":
     SoDB.init()
     unittest.main()

@@ -329,9 +329,8 @@ RefCount(SoSceneKit)
 */
 %pythoncode %{        
 for x in locals().values():
-  if isinstance(x, type):
-    if issubclass(x, SoFieldContainer):
-      for name, thing in x.__dict__.items():
-        if isinstance(thing, property):
-          delattr(x, name)
+  if isinstance(x, type) and issubclass(x, SoFieldContainer):
+    for name, thing in x.__dict__.items():
+      if isinstance(thing, property):
+        delattr(x, name)
 %}

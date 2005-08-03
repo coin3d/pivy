@@ -17,25 +17,25 @@ def construct_new_marker(v):
     markerroot = SoSeparator()
 
     t = SoTranslation()
-    t.translation.setValue(v)
+    t.translation = v
     markerroot.addChild(t)
-  
+    
     kit = ShapeScale()
-    kit.active(TRUE)
-    kit.projectedSize(5.0)
+    kit.active = TRUE
+    kit.projectedSize = 5.0
   
     # create the marker
     markersep = SoSeparator()
   
     mat = SoBaseColor()
-    mat.rgb.setValue(random(), random(), random())
+    mat.rgb = (random(), random(), random())
     markersep.addChild(mat)
   
     # marker shape should be unit size, with center in (0.0f, 0.0f, 0.0f)
     cube = SoCube()
-    cube.width(1.0)
-    cube.height(1.0)
-    cube.depth(1.0)
+    cube.width = 1.0
+    cube.height = 1.0
+    cube.depth = 1.0
   
     markersep.addChild(cube)
     kit.setPart("shape", markersep)

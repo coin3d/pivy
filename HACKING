@@ -1,7 +1,8 @@
 Pivy follows the same source code guidelines as Coin[1] for C/C++.
 
-Although not as a problem as with C/C++ code, still Python code should
-follow PEP8[2]. Python docstrings should adhere to PEP257[3].
+Although it's not that a big deal as with C/C++ code, Python code
+should still follow PEP8[2]. Python docstrings should adhere to
+PEP257[3].
 
 Please, read these documents thoroughly; esp. the section "Coin Code
 Standards" in the Coin HACKING manifesto! Try to adhere to those

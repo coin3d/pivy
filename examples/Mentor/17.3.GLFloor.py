@@ -58,22 +58,22 @@ def buildScene(root):
 
     # A red cube translated to the left and down
     myTrans = SoTransform()
-    myTrans.translation.setValue(-2.0, -2.0, 0.0)
+    myTrans.translation = (-2.0, -2.0, 0.0)
     root.addChild(myTrans)
 
     myMtl = SoMaterial()
-    myMtl.diffuseColor.setValue(1.0, 0.0, 0.0)
+    myMtl.diffuseColor = (1.0, 0.0, 0.0)
     root.addChild(myMtl)
    
     root.addChild(SoCube())
 
     # A blue sphere translated right
     myTrans = SoTransform()
-    myTrans.translation.setValue(4.0, 0.0, 0.0)
+    myTrans.translation = (4.0, 0.0, 0.0)
     root.addChild(myTrans)
 
     myMtl = SoMaterial()
-    myMtl.diffuseColor.setValue(0.0, 0.0, 1.0)
+    myMtl.diffuseColor = (0.0, 0.0, 1.0)
     root.addChild(myMtl)
    
     root.addChild(SoSphere())

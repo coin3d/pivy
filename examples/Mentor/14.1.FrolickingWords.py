@@ -75,20 +75,20 @@ def main():
     happyCalc = SoCalculator()
     happyCalc.ref()
     happyCalc.a.connectFrom(myTimer.timeOut)
-    happyCalc.expression("ta=cos(2*a); tb=sin(2*a);"
-                         "oA = vec3f(3*pow(ta,3),3*pow(tb,3),1);"
-                         "oB = vec3f(fabs(ta)+.1,fabs(.5*fabs(tb))+.1,1);"
-                         "oC = vec3f(fabs(ta),fabs(tb),.5)")
+    happyCalc.expression = """ta=cos(2*a); tb=sin(2*a);
+                              oA = vec3f(3*pow(ta,3),3*pow(tb,3),1);
+                              oB = vec3f(fabs(ta)+.1,fabs(.5*fabs(tb))+.1,1);
+                              oC = vec3f(fabs(ta),fabs(tb),.5)"""
 
     # The second calculator uses different arguments to
     # sin() and cos(), so it moves out of phase.
     niceCalc = SoCalculator()
     niceCalc.ref()
     niceCalc.a.connectFrom(myTimer.timeOut)
-    niceCalc.expression("ta=cos(2*a+2); tb=sin(2*a+2);"
-                        "oA = vec3f(3*pow(ta,3),3*pow(tb,3),1);"
-                        "oB = vec3f(fabs(ta)+.1,fabs(.5*fabs(tb))+.1,1);"
-                        "oC = vec3f(fabs(ta),fabs(tb),.5)")
+    niceCalc.expression = """ta=cos(2*a+2); tb=sin(2*a+2);
+                             oA = vec3f(3*pow(ta,3),3*pow(tb,3),1);
+                             oB = vec3f(fabs(ta)+.1,fabs(.5*fabs(tb))+.1,1);
+                             oC = vec3f(fabs(ta),fabs(tb),.5)"""
 
     # Connect the transforms from the calculators...
     happyXf = happyKit.getPart("transform",TRUE)

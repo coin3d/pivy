@@ -75,8 +75,8 @@ def main():
     myMaterial = SoMaterial()
    
     root.ref()
-    myCamera.position.setValue(0.212482, -0.881014, 2.5)
-    myCamera.heightAngle(M_PI/4)
+    myCamera.position = (0.212482, -0.881014, 2.5)
+    myCamera.heightAngle = M_PI/4
     root.addChild(myCamera)
     root.addChild(SoDirectionalLight())
     root.addChild(myMaterial)

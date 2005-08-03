@@ -138,7 +138,7 @@ def makeCurve():
     
     # Set the draw style of the curve.
     drawStyle = SoDrawStyle()
-    drawStyle.lineWidth(4)
+    drawStyle.lineWidth = 4
     curveSep.addChild(drawStyle)
     
     # Define the NURBS curve including the control points
@@ -146,9 +146,9 @@ def makeCurve():
     complexity = SoComplexity()
     controlPts = SoCoordinate3()
     curve      = SoNurbsCurve()
-    complexity.value(0.8)
+    complexity.value = 0.8
     controlPts.point.setValues(0, 7, pts)
-    curve.numControlPoints(7)
+    curve.numControlPoints = 7
     curve.knotVector.setValues(0, 10, knots)
     curveSep.addChild(complexity)
     curveSep.addChild(controlPts)
@@ -175,8 +175,8 @@ def main():
     lmodel   = SoLightModel()
     clr      = SoBaseColor()
     
-    lmodel.model(SoLightModel.BASE_COLOR)
-    clr.rgb.setValue(SbColor(1.0, 0.0, 0.1))
+    lmodel.model = SoLightModel.BASE_COLOR
+    clr.rgb = (1.0, 0.0, 0.1)
     heart.addChild(lmodel)
     heart.addChild(clr)
     heart.addChild(curveSep)
@@ -191,8 +191,8 @@ def main():
     
     input.setBuffer(floorData)
     result = SoDB.readAll(input)
-    xlate.translation.setValue(SbVec3f(-12.0, -5.0, -5.0))
-    scale.scaleFactor.setValue(SbVec3f(2.0, 1.0, 2.0))
+    xlate.translation = (-12.0, -5.0, -5.0)
+    scale.scaleFactor = (2.0, 1.0, 2.0)
     rot.rotation.setValue(SbRotation(SbVec3f(0.0, 1.0, 0.0), M_PI/2.0))
     floor.addChild(rot)
     floor.addChild(xlate)
@@ -208,11 +208,11 @@ def main():
     shxl   = SoTranslation()
     shscl  = SoScale()
     
-    shmdl.model(SoLightModel.BASE_COLOR)
-    shclr.rgb.setValue(SbColor(0.21, 0.15, 0.09))
-    shmtl.transparency(0.5)
-    shxl.translation.setValue(SbVec3f(0.0, -4.9, 0.0))
-    shscl.scaleFactor.setValue(SbVec3f(1.0, 0.0, 1.0))
+    shmdl.model = SoLightModel.BASE_COLOR
+    shclr.rgb = (0.21, 0.15, 0.09)
+    shmtl.transparency = 0.5
+    shxl.translation = (0.0, -4.9, 0.0)
+    shscl.scaleFactor = (1.0, 0.0, 1.0)
     shadow.addChild(shmtl)
     shadow.addChild(shmdl)
     shadow.addChild(shclr)
@@ -226,7 +226,7 @@ def main():
     viewer.setSceneGraph(root)
     viewer.setTitle("B-Spline Curve")
     cam = viewer.getCamera()
-    cam.position.setValue(SbVec3f(-6.0, 8.0, 20.0))
+    cam.position = (-6.0, 8.0, 20.0)
     cam.pointAt(SbVec3f(0.0, -2.0, -4.0))
     viewer.show()
     

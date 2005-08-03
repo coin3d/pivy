@@ -155,11 +155,11 @@ def myText(str, i, color):
     xf   = SoTransform()
     text = SoText3()
    
-    col.rgb.setValue(color)
-    xf.translation.setValue(6.0 * i, 0.0, 0.0)
-    text.string(str)
-    text.parts(SoText3.FRONT | SoText3.SIDES)
-    text.justification(SoText3.CENTER)
+    col.rgb = color
+    xf.translation = (6.0 * i, 0.0, 0.0)
+    text.string = str
+    text.parts = SoText3.FRONT | SoText3.SIDES
+    text.justification = SoText3.CENTER
     sep.addChild(col)
     sep.addChild(xf)
     sep.addChild(text)
@@ -170,7 +170,7 @@ def buildScene():
     scene = SoSeparator()
     font  = SoFont()
    
-    font.size(10)
+    font.size = 10
     scene.addChild(font)
     scene.addChild(myText("O",  0, SbColor(0, 0, 1)))
     scene.addChild(myText("p",  1, SbColor(0, 1, 0)))
@@ -195,7 +195,7 @@ def main():
     # Create a scene graph. Use the toggle selection policy.
     sel = SoSelection()
     sel.ref()
-    sel.policy.setValue(SoSelection.TOGGLE)
+    sel.policy = SoSelection.TOGGLE
     sel.addChild(buildScene())
 
     # Create a viewer

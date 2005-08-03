@@ -85,10 +85,10 @@ def makeObeliskFaceSet():
 
        # Define the normals used:
        myVertexProperty.normal.setValues(0, 8, norms)
-       myVertexProperty.normalBinding(SoNormalBinding.PER_FACE)
+       myVertexProperty.normalBinding = SoNormalBinding.PER_FACE
 
        # Define material for obelisk
-       myVertexProperty.orderedRGBA.setValue(SbColor(.4,.4,.4).getPackedValue())
+       myVertexProperty.orderedRGBA = SbColor(.4,.4,.4).getPackedValue()
 
        # Define coordinates for vertices
        myVertexProperty.vertex.setValues(0, 28, vertices)
@@ -97,7 +97,7 @@ def makeObeliskFaceSet():
        myFaceSet = SoFaceSet()
        myFaceSet.numVertices.setValues(0, 8, numvertices)
  
-       myFaceSet.vertexProperty.setValue(myVertexProperty)
+       myFaceSet.vertexProperty = myVertexProperty
        obelisk.addChild(myFaceSet)
 
    else:
@@ -106,12 +106,12 @@ def makeObeliskFaceSet():
        myNormals.vector.setValues(0, 8, norms)
        obelisk.addChild(myNormals)
        myNormalBinding = SoNormalBinding()
-       myNormalBinding.value(SoNormalBinding.PER_FACE)
+       myNormalBinding.value = SoNormalBinding.PER_FACE
        obelisk.addChild(myNormalBinding)
 
        # Define material for obelisk
        myMaterial = SoMaterial()
-       myMaterial.diffuseColor.setValue(.4, .4, .4)
+       myMaterial.diffuseColor = (.4, .4, .4)
        obelisk.addChild(myMaterial)
 
        # Define coordinates for vertices

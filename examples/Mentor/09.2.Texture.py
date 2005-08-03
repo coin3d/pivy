@@ -77,10 +77,10 @@ def main():
 
     myCamera = SoPerspectiveCamera()
     rot = SoRotationXYZ()
-    rot.axis(SoRotationXYZ.X)
-    rot.angle(M_PI_2)
-    myCamera.position.setValue(SbVec3f(-0.2, -0.2, 2.0))
-    myCamera.scaleHeight(0.4) 
+    rot.axis = SoRotationXYZ.X
+    rot.angle = M_PI_2
+    myCamera.position = (-0.2, -0.2, 2.0)
+    myCamera.scaleHeight(0.4)
     texRoot.addChild(myCamera)
     texRoot.addChild(SoDirectionalLight())
     texRoot.addChild(rot)
@@ -108,7 +108,7 @@ def main():
 
     # In Inventor 2.1, if the machine does not have hardware texture
     # mapping, we must override the default drawStyle to display textures.
-    viewer.setDrawStyle(SoGuiViewer.STILL, SoGuiViewer.VIEW_AS_IS)
+    # viewer.setDrawStyle(SoGuiViewer.STILL, SoGuiViewer.VIEW_AS_IS)
 
     viewer.show()
 

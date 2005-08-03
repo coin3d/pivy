@@ -87,7 +87,7 @@ def main():
     root.addChild(textKit)
     myText3 = SoText3()
     textKit.setPart("shape", myText3)
-    myText3.justification(SoText3.CENTER)
+    myText3.justification = SoText3.CENTER
     myText3.string.set1Value(0,"Slide Arrows")
     myText3.string.set1Value(1,"To")
     myText3.string.set1Value(2,"Move Me")
@@ -114,7 +114,7 @@ def main():
     myCalc.A.connectFrom(xDragger.translation)
     myCalc.B.connectFrom(yDragger.translation)
     myCalc.C.connectFrom(zDragger.translation)
-    myCalc.expression("oA = vec3f(A[0],B[0],C[0])")
+    myCalc.expression = "oA = vec3f(A[0],B[0],C[0])"
 
     # Connect the the translation in textKit from myCalc
     textXf = textKit.getPart("transform",TRUE)

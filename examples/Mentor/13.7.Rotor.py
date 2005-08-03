@@ -75,7 +75,7 @@ def main():
     # Add a rotor node to spin the vanes
     myRotor = SoRotor()
     myRotor.rotation.setValue(SbVec3f(0, 0, 1), 0) # z axis
-    myRotor.speed(0.2)
+    myRotor.speed = 0.2
     root.addChild(myRotor)
 
     # Read in the data for the windmill vanes

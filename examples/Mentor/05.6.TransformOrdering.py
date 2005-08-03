@@ -67,11 +67,11 @@ def main():
     myScale = SoScale()
 
     # Fill in the values
-    leftTranslation.translation.setValue(-1.0, 0.0, 0.0)
-    rightTranslation.translation.setValue(1.0, 0.0, 0.0)
-    myRotation.angle(M_PI/2)   # 90 degrees
-    myRotation.axis(SoRotationXYZ.X)
-    myScale.scaleFactor.setValue(2., 1., 3.)
+    leftTranslation.translation = (-1.0, 0.0, 0.0)
+    rightTranslation.translation = (1.0, 0.0, 0.0)
+    myRotation.angle = M_PI/2   # 90 degrees
+    myRotation.axis = SoRotationXYZ.X
+    myScale.scaleFactor = (2., 1., 3.)
 
     # Add transforms to the scene.
     leftSep.addChild(leftTranslation)   # left graph

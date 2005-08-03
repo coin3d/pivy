@@ -57,14 +57,14 @@ def main():
     # Create myDragger with an initial translation of (1,0,0)
     myDragger = SoTranslate1Dragger()
     root.addChild(myDragger)
-    myDragger.translation.setValue(1,0,0)
+    myDragger.translation = (1,0,0)
 
     # Place an SoCone above myDragger
     myTransform = SoTransform()
     myCone = SoCone()
     root.addChild(myTransform)
     root.addChild(myCone)
-    myTransform.translation.setValue(0,3,0)
+    myTransform.translation = (0,3,0)
 
     # SoDecomposeVec3f engine extracts myDragger's x-component
     # The result is connected to myCone's bottomRadius.

@@ -220,7 +220,7 @@ def myScaleSelection(selection, sf):
         # Apply the scale
         scaleFactor = xform.scaleFactor.getValue()
         scaleFactor *= sf
-        xform.scaleFactor.setValue(scaleFactor)
+        xform.scaleFactor = scaleFactor
 
 # If the event is down arrow, then scale down every object 
 # in the selection list if the event is up arrow, scale up.
@@ -254,7 +254,7 @@ def main():
     # Create and set up the selection node
     selectionRoot = SoSelection()
     selectionRoot.ref()
-    selectionRoot.policy(SoSelection.SHIFT)
+    selectionRoot.policy = SoSelection.SHIFT
     selectionRoot.addSelectionCallback(mySelectionCB, TRUE)
     selectionRoot.addDeselectionCallback(mySelectionCB, FALSE)
    
@@ -278,8 +278,8 @@ def main():
     cubeRoot.addChild(cubeTransform)
     cubeRoot.addChild(cubeMaterial)
     cubeRoot.addChild(cube)
-    cubeTransform.translation.setValue(-2, 2, 0)
-    cubeMaterial.diffuseColor.setValue(.8, 0, 0)
+    cubeTransform.translation = (-2, 2, 0)
+    cubeMaterial.diffuseColor = (.8, 0, 0)
     selectionRoot.addChild(cubeRoot)
 
     # a blue sphere
@@ -290,8 +290,8 @@ def main():
     sphereRoot.addChild(sphereTransform)
     sphereRoot.addChild(sphereMaterial)
     sphereRoot.addChild(sphere)
-    sphereTransform.translation.setValue(2, 2, 0)
-    sphereMaterial.diffuseColor.setValue(0, 0, .8)
+    sphereTransform.translation = (2, 2, 0)
+    sphereMaterial.diffuseColor = (0, 0, .8)
     selectionRoot.addChild(sphereRoot)
 
     # a green cone
@@ -302,8 +302,8 @@ def main():
     coneRoot.addChild(coneTransform)
     coneRoot.addChild(coneMaterial)
     coneRoot.addChild(cone)
-    coneTransform.translation.setValue(2, -2, 0)
-    coneMaterial.diffuseColor.setValue(0, .8, 0)
+    coneTransform.translation = (2, -2, 0)
+    coneMaterial.diffuseColor = (0, .8, 0)
     selectionRoot.addChild(coneRoot)
 
     # a magenta cylinder
@@ -314,8 +314,8 @@ def main():
     cylRoot.addChild(cylTransform)
     cylRoot.addChild(cylMaterial)
     cylRoot.addChild(cyl)
-    cylTransform.translation.setValue(-2, -2, 0)
-    cylMaterial.diffuseColor.setValue(.8, 0, .8)
+    cylTransform.translation = (-2, -2, 0)
+    cylMaterial.diffuseColor = (.8, 0, .8)
     selectionRoot.addChild(cylRoot)
 
 ###############################################################

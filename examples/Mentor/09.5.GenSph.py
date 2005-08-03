@@ -63,8 +63,7 @@ def printHeaderCallback(void, callbackAction, node):
 
     return SoCallbackAction.CONTINUE
 
-def printTriangleCallback(void, callbackAction,
-                          vertex1, vertex2, vertex3):
+def printTriangleCallback(void, callbackAction, vertex1, vertex2, vertex3):
     print "Triangle:"
     printVertex(vertex1)
     printVertex(vertex2)
@@ -73,10 +72,8 @@ def printTriangleCallback(void, callbackAction,
 def printSpheres(root):
     myAction = SoCallbackAction()
     
-    myAction.addPreCallback(SoSphere.getClassTypeId(),
-                            printHeaderCallback, None)
-    myAction.addTriangleCallback(SoSphere.getClassTypeId(), 
-                                 printTriangleCallback, None)
+    myAction.addPreCallback(SoSphere.getClassTypeId(), printHeaderCallback, None)
+    myAction.addTriangleCallback(SoSphere.getClassTypeId(), printTriangleCallback, None)
 
     myAction.apply(root)
     
@@ -94,7 +91,7 @@ def main():
     root.ref()
     root.addChild(myCamera)
     root.addChild(SoDirectionalLight())
-    myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)   # Red
+    myMaterial.diffuseColor = (1.0, 0.0, 0.0)   # Red
     root.addChild(myMaterial)
     root.addChild(SoSphere())
     root.ref()

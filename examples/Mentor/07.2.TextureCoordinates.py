@@ -57,7 +57,7 @@ def main():
     # Choose a texture
     brick = SoTexture2()
     root.addChild(brick)
-    brick.filename.setValue("brick.1.rgb")
+    brick.filename = "brick.1.rgb"
 
     if IV_STRICT:
         # This is the preferred code for Inventor 2.1 
@@ -89,7 +89,7 @@ def main():
         # tBind.value(SoTextureCoordinateBinding.PER_VERTEX)
         #
         # Define normal binding
-        myVertexProperty.normalBinding(SoNormalBinding.OVERALL)
+        myVertexProperty.normalBinding = SoNormalBinding.OVERALL
 
         # Define a FaceSet
         myFaceSet = SoFaceSet()
@@ -123,7 +123,7 @@ def main():
         # Define normal binding
         nBind = SoNormalBinding()
         root.addChild(nBind)
-        nBind.value.setValue(SoNormalBinding.OVERALL)
+        nBind.value = SoNormalBinding.OVERALL
 
         # SoTextureCoordinateBinding node is now obsolete--in Inventor 2.1,
         # texture coordinates will always be generated if none are 
@@ -145,7 +145,7 @@ def main():
 
     # In Inventor 2.1, if the machine does not have hardware texture
     # mapping, we must override the default drawStyle to display textures.
-    myViewer.setDrawStyle(SoGuiViewer.STILL, SoGuiViewer.VIEW_AS_IS)
+    # myViewer.setDrawStyle(SoGuiViewer.STILL, SoGuiViewer.VIEW_AS_IS)
 
     myViewer.show()
 
@@ -154,4 +154,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

@@ -84,9 +84,9 @@ def main():
     # Now, make a few changes to the scene graph the sensor's
     # callback function will be called immediately after each
     # change.
-    myCube.width(1.0)
-    myCube.height(2.0)
-    mySphere.radius(3.0)
+    myCube.width = 1.0
+    myCube.height = 2.0
+    mySphere.radius = 3.0
     root.removeChild(mySphere)
 
 if __name__ == "__main__":

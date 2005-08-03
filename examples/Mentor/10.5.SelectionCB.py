@@ -64,9 +64,9 @@ def mySelectionCB(void, selectionPath):
 # that objects material color.
 def myDeselectionCB(void, deselectionPath):
     if deselectionPath.getTail().isOfType(SoText3.getClassTypeId()):
-        textMaterial.diffuseColor.setValue(white)
+        textMaterial.diffuseColor = white
     elif deselectionPath.getTail().isOfType(SoSphere.getClassTypeId()):
-        sphereMaterial.diffuseColor.setValue(white)
+        sphereMaterial.diffuseColor = white
 
 def main():
     global textMaterial, sphereMaterial
@@ -78,7 +78,7 @@ def main():
     # Create and set up the selection node
     selectionRoot = SoSelection()
     selectionRoot.ref()
-    selectionRoot.policy(SoSelection.SINGLE)
+    selectionRoot.policy = SoSelection.SINGLE
     selectionRoot.addSelectionCallback(mySelectionCB)
     selectionRoot.addDeselectionCallback(myDeselectionCB)
 
@@ -93,12 +93,12 @@ def main():
     # Add a sphere node
     sphereRoot = SoSeparator()
     sphereTransform = SoTransform()
-    sphereTransform.translation.setValue(17., 17., 0.)
-    sphereTransform.scaleFactor.setValue(8., 8., 8.)
+    sphereTransform.translation = (17., 17., 0.)
+    sphereTransform.scaleFactor = (8., 8., 8.)
     sphereRoot.addChild(sphereTransform)
 
     sphereMaterial = SoMaterial()
-    sphereMaterial.diffuseColor.setValue(.8, .8, .8)
+    sphereMaterial.diffuseColor = (.8, .8, .8)
     sphereRoot.addChild(sphereMaterial)
     sphereRoot.addChild(SoSphere())
     root.addChild(sphereRoot)
@@ -106,17 +106,17 @@ def main():
     # Add a text node
     textRoot = SoSeparator()
     textTransform = SoTransform()
-    textTransform.translation.setValue(0., -1., 0.)
+    textTransform.translation = (0., -1., 0.)
     textRoot.addChild(textTransform)
 
     textMaterial = SoMaterial()
-    textMaterial.diffuseColor.setValue(.8, .8, .8)
+    textMaterial.diffuseColor = (.8, .8, .8)
     textRoot.addChild(textMaterial)
     textPickStyle = SoPickStyle()
-    textPickStyle.style.setValue(SoPickStyle.BOUNDING_BOX)
+    textPickStyle.style = SoPickStyle.BOUNDING_BOX
     textRoot.addChild(textPickStyle)
     myText = SoText3()
-    myText.string("rhubarb")
+    myText.string = "rhubarb"
     textRoot.addChild(myText)
     root.addChild(textRoot)
 

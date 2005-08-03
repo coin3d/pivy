@@ -51,25 +51,21 @@ def makeRobot():
 
     # Construct parts for legs (thigh, calf and foot)
     thigh = SoCube()
-    thigh.width(1.2)
-    thigh.height(2.2)
-    thigh.depth(1.1)
+    thigh.width = 1.2
+    thigh.height = 2.2
+    thigh.depth = 1.1
     
     calfTransform = SoTransform()
     calfTransform.translation.setValue(0, -2.25, 0.0)
     
     calf = SoCube()
-    calf.width(1)
-    calf.height(2.2)
-    calf.depth(1)
+    calf.width, calf.height, calf.depth = 1, 2.2, 1
 
     footTransform = SoTransform()
-    footTransform.translation.setValue(0, -1.5, .5)
+    footTransform.translation = (0, -1.5, .5)
 
     foot = SoCube()
-    foot.width(0.8)
-    foot.height(0.8)
-    foot.depth(2)
+    foot.width, foot.height, foot.depth = 0.8, 0.8, 2
 
     # Put leg parts together
     leg = SoGroup()
@@ -80,7 +76,7 @@ def makeRobot():
     leg.addChild(foot)
     
     leftTransform = SoTransform()
-    leftTransform.translation.setValue(1, -4.25, 0)
+    leftTransform.translation = (1, -4.25, 0)
     
     # Left leg
     leftLeg = SoSeparator()
@@ -88,7 +84,7 @@ def makeRobot():
     leftLeg.addChild(leg)
     
     rightTransform = SoTransform()
-    rightTransform.translation.setValue(-1, -4.25, 0)
+    rightTransform.translation = (-1, -4.25, 0)
     
     # Right leg
     rightLeg = SoSeparator()
@@ -97,17 +93,17 @@ def makeRobot():
     
     # Parts for body
     bodyTransform = SoTransform()
-    bodyTransform.translation.setValue(0.0, 3.0, 0.0)
+    bodyTransform.translation = (0.0, 3.0, 0.0)
     
     bronze = SoMaterial()
-    bronze.ambientColor.setValue(.33, .22, .27)
-    bronze.diffuseColor.setValue(.78, .57, .11)
-    bronze.specularColor.setValue(.99, .94, .81)
-    bronze.shininess(.28)
+    bronze.ambientColor = (.33, .22, .27)
+    bronze.diffuseColor = (.78, .57, .11)
+    bronze.specularColor = (.99, .94, .81)
+    bronze.shininess = .28
     
     bodyCylinder = SoCylinder()
-    bodyCylinder.radius(2.5)
-    bodyCylinder.height(6)
+    bodyCylinder.radius = 2.5
+    bodyCylinder.height = 6
     
     # Construct body out of parts 
     body = SoSeparator()
@@ -119,14 +115,14 @@ def makeRobot():
     
     # Head parts
     headTransform = SoTransform()
-    headTransform.translation.setValue(0, 7.5, 0)
-    headTransform.scaleFactor.setValue(1.5, 1.5, 1.5)
+    headTransform.translation = (0, 7.5, 0)
+    headTransform.scaleFactor = (1.5, 1.5, 1.5)
     
     silver = SoMaterial()
-    silver.ambientColor.setValue(.2, .2, .2)
-    silver.diffuseColor.setValue(.6, .6, .6)
-    silver.specularColor.setValue(.5, .5, .5)
-    silver.shininess(.5)
+    silver.ambientColor = (.2, .2, .2)
+    silver.diffuseColor = (.6, .6, .6)
+    silver.specularColor = (.5, .5, .5)
+    silver.shininess = .5
     
     headSphere = SoSphere()
     
@@ -169,6 +165,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-

@@ -59,9 +59,9 @@ def myMousePressCB(userData, eventCB):
 
         # Toggle the gate that controls the duck motion
         if gate.enable.getValue():
-            gate.enable.setValue(FALSE)
+            gate.enable = FALSE
         else:
-            gate.enable.setValue(TRUE)
+            gate.enable = TRUE
 
         eventCB.setHandled()
 
@@ -82,31 +82,31 @@ def main():
 
     # Add a camera and light
     myCamera = SoPerspectiveCamera()
-    myCamera.position.setValue(0., -4., 8.0)
-    myCamera.heightAngle(M_PI/2.5)
-    myCamera.nearDistance(1.0)
-    myCamera.farDistance(15.0)
+    myCamera.position = (0., -4., 8.0)
+    myCamera.heightAngle = M_PI/2.5
+    myCamera.nearDistance = 1.0
+    myCamera.farDistance = 15.0
     root.addChild(myCamera)
     root.addChild(SoDirectionalLight())
 
     # Rotate scene slightly to get better view
     globalRotXYZ = SoRotationXYZ()
-    globalRotXYZ.axis(SoRotationXYZ.X)
-    globalRotXYZ.angle(M_PI/9)
+    globalRotXYZ.axis = SoRotationXYZ.X
+    globalRotXYZ.angle = M_PI/9
     root.addChild(globalRotXYZ)
 
     # Pond group
     pond = SoSeparator()
     root.addChild(pond)
     cylMaterial = SoMaterial()
-    cylMaterial.diffuseColor.setValue(0., 0.3, 0.8)
+    cylMaterial.diffuseColor = (0., 0.3, 0.8)
     pond.addChild(cylMaterial)
     cylTranslation = SoTranslation()
-    cylTranslation.translation.setValue(0., -6.725, 0.)
+    cylTranslation.translation = (0., -6.725, 0.)
     pond.addChild(cylTranslation)
     myCylinder = SoCylinder()
-    myCylinder.radius.setValue(4.0)
-    myCylinder.height.setValue(0.5)
+    myCylinder.radius = 4.0
+    myCylinder.height = 0.5
     pond.addChild(myCylinder)
 
 #############################################################
@@ -128,8 +128,8 @@ def main():
     duckRotXYZ = SoRotationXYZ()
     duck.addChild(duckRotXYZ)
     initialTransform = SoTransform()
-    initialTransform.translation.setValue(0., 0., 3.)
-    initialTransform.scaleFactor.setValue(6., 6., 6.)
+    initialTransform.translation = (0., 0., 3.)
+    initialTransform.scaleFactor = (6., 6., 6.)
     duck.addChild(initialTransform)
 
     duck.addChild(duckObject)
@@ -138,7 +138,7 @@ def main():
     myGate = SoGate(SoMFFloat.getClassTypeId())
     myCounter = SoElapsedTime()
     myGate.input.connectFrom(myCounter.timeOut) 
-    duckRotXYZ.axis(SoRotationXYZ.Y)  # rotate about Y axis
+    duckRotXYZ.axis = SoRotationXYZ.Y  # rotate about Y axis
     duckRotXYZ.angle.connectFrom(myGate.output)
 
     # Add an event callback to catch mouse button presses.

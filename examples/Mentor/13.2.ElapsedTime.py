@@ -55,10 +55,10 @@ def main():
 
     # Add a camera and light
     myCamera = SoPerspectiveCamera()
-    myCamera.position.setValue(-2.0, -2.0, 5.0)
-    myCamera.heightAngle(M_PI/2.5)
-    myCamera.nearDistance(2.0)
-    myCamera.farDistance(7.0)
+    myCamera.position = (-2.0, -2.0, 5.0)
+    myCamera.heightAngle = M_PI/2.5
+    myCamera.nearDistance = 2.0
+    myCamera.farDistance = 7.0
     root.addChild(myCamera)
     root.addChild(SoDirectionalLight())
 
@@ -66,8 +66,8 @@ def main():
     slideTranslation = SoTranslation()
     root.addChild(slideTranslation)
     initialTransform = SoTransform()
-    initialTransform.translation.setValue(-5., 0., 0.)
-    initialTransform.scaleFactor.setValue(10., 10., 10.)
+    initialTransform.translation = (-5., 0., 0.)
+    initialTransform.scaleFactor = (10., 10., 10.)
     initialTransform.rotation.setValue(SbVec3f(1,0,0), M_PI/2.)
     root.addChild(initialTransform)
 

@@ -114,7 +114,7 @@ def makeStellatedDodecahedron():
         # Define colors for the faces
         for i in range(12):
             myVertexProperty.orderedRGBA.set1Value(i, SbColor(colors[i]).getPackedValue())
-            myVertexProperty.materialBinding(SoMaterialBinding.PER_FACE)
+            myVertexProperty.materialBinding = SoMaterialBinding.PER_FACE
 
         # Define coordinates for vertices
         myVertexProperty.vertex.setValues(0, 12, vertexPositions)
@@ -124,7 +124,7 @@ def makeStellatedDodecahedron():
         myFaceSet = SoIndexedFaceSet()
         myFaceSet.coordIndex.setValues(0, 72, indices)
 
-        myFaceSet.vertexProperty.setValue(myVertexProperty)
+        myFaceSet.vertexProperty = myVertexProperty
         result.addChild(myFaceSet)
 
     else:
@@ -133,7 +133,7 @@ def makeStellatedDodecahedron():
         myMaterials.diffuseColor.setValues(0, 12, colors)
         result.addChild(myMaterials)
         myMaterialBinding = SoMaterialBinding()
-        myMaterialBinding.value(SoMaterialBinding.PER_FACE)
+        myMaterialBinding.value = SoMaterialBinding.PER_FACE
         result.addChild(myMaterialBinding)
 
         # Define coordinates for vertices

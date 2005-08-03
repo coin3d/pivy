@@ -79,7 +79,7 @@ def buildScene():
         k = SoShapeKit()
         k.setPart("shape", SoCube())
         xf = k.getPart("transform", TRUE)
-        xf.translation.setValue(8*math.sin(i*M_PI/6), 8*math.cos(i*M_PI/6), 0.0)
+        xf.translation = (8*math.sin(i*M_PI/6), 8*math.cos(i*M_PI/6), 0.0)
         g.addChild(k)
 
     return g

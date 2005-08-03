@@ -55,7 +55,7 @@ def main():
     myMaterial = SoMaterial()
     root.addChild(myCamera)
     root.addChild(SoDirectionalLight())
-    myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)   # Red
+    myMaterial.diffuseColor = (1.0, 0.0, 0.0)   # Red
     root.addChild(myMaterial)
     root.addChild(SoCone())
 

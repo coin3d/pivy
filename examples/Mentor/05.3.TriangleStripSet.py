@@ -97,7 +97,7 @@ def makePennant():
     # A shape hints tells the ordering of polygons. 
     # This insures double sided lighting.
     myHints = SoShapeHints()
-    myHints.vertexOrdering(SoShapeHints.COUNTERCLOCKWISE)
+    myHints.vertexOrdering = SoShapeHints.COUNTERCLOCKWISE
     result.addChild(myHints)
 
     if IV_STRICT:
@@ -109,7 +109,7 @@ def makePennant():
         # Define colors for the strips
         for i in range(2):
             myVertexProperty.orderedRGBA.set1Value(i, SbColor(colors[i]).getPackedValue())
-            myVertexProperty.materialBinding(SoMaterialBinding.PER_PART)
+            myVertexProperty.materialBinding = SoMaterialBinding.PER_PART
 
         # Define coordinates for vertices
         myVertexProperty.vertex.setValues(0, 40, vertexPositions)
@@ -118,7 +118,7 @@ def makePennant():
         myStrips = SoTriangleStripSet()
         myStrips.numVertices.setValues(0, 2, numVertices)
  
-        myStrips.vertexProperty.setValue(myVertexProperty)
+        myStrips.vertexProperty = myVertexProperty
         result.addChild(myStrips)
 
     else:
@@ -127,7 +127,7 @@ def makePennant():
         myMaterials.diffuseColor.setValues(0, 2, colors)
         result.addChild(myMaterials)
         myMaterialBinding = SoMaterialBinding()
-        myMaterialBinding.value(SoMaterialBinding.PER_PART)
+        myMaterialBinding.value = SoMaterialBinding.PER_PART
         result.addChild(myMaterialBinding)
 
         # Define coordinates for vertices

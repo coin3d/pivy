@@ -49,7 +49,7 @@ def main():
     root = SoSeparator()
     root.ref()
     myMaterial = SoMaterial()
-    myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)
+    myMaterial.diffuseColor = (1.0, 0.0, 0.0)
     root.addChild(myMaterial)
     root.addChild(SoCone())
 

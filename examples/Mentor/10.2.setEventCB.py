@@ -87,7 +87,7 @@ def myAddPoint(myRenderArea, point):
     myPointSet = root.getChild(3)
    
     coord.point.set1Value(coord.point.getNum(), point)
-    myPointSet.numPoints.setValue(coord.point.getNum())
+    myPointSet.numPoints = coord.point.getNum()
 
 def myClearPoints(myRenderArea):
     root = myRenderArea.getSceneGraph()
@@ -96,7 +96,7 @@ def myClearPoints(myRenderArea):
    
     # Delete all values starting from 0
     coord.point.deleteValues(0) 
-    myPointSet.numPoints.setValue(0)
+    myPointSet.numPoints = 0
 
 def tickerCallback(myCamera, sensor):
     mtx = SbMatrix()
@@ -106,7 +106,7 @@ def tickerCallback(myCamera, sensor):
     rot = SbRotation(SbVec3f(0,1,0), ROTATION_ANGLE)
     mtx.setRotate(rot)
     pos = mtx.multVecMatrix(pos)
-    myCamera.position.setValue(pos)
+    myCamera.position = pos
 
     # Adjust the orientation
     myCamera.orientation.setValue(myCamera.orientation.getValue() * rot)
@@ -168,14 +168,14 @@ def main():
     # Use the base color light model so we don't need to 
     # specify normals
     myLightModel = SoLightModel()
-    myLightModel.model(SoLightModel.BASE_COLOR)
+    myLightModel.model = SoLightModel.BASE_COLOR
     root.addChild(myLightModel)             # child 1
    
     # Set up the camera view volume
-    myCamera.position.setValue(0, 0, 4)
-    myCamera.nearDistance.setValue(1.0)
-    myCamera.farDistance.setValue(7.0)
-    myCamera.heightAngle.setValue(M_PI/3.0)   
+    myCamera.position = (0, 0, 4)
+    myCamera.nearDistance = 1.0
+    myCamera.farDistance = 7.0
+    myCamera.heightAngle = M_PI/3.0
    
     # Add a coordinate and point set
     myCoord = SoCoordinate3()

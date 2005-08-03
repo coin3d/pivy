@@ -71,10 +71,10 @@ transformBoxPath = None
 
 # Is this node of a type that is influenced by transforms?
 def isTransformable(myNode):
-    if myNode.isOfType(SoGroup.getClassTypeId()) or \
-       myNode.isOfType(SoShape.getClassTypeId()) or \
-       myNode.isOfType(SoCamera.getClassTypeId()) or \
-       myNode.isOfType(SoLight.getClassTypeId()):
+    if (myNode.isOfType(SoGroup.getClassTypeId()) or
+        myNode.isOfType(SoShape.getClassTypeId()) or
+        myNode.isOfType(SoCamera.getClassTypeId()) or
+        myNode.isOfType(SoLight.getClassTypeId())):
         return TRUE
     else: 
         return FALSE
@@ -146,7 +146,7 @@ def createTransformPath(inputPath):
         # and insert a transform before it.
         parent = tail
         for i in range(parent.getNumChildren()):
-            if editXf != NULL:
+            if editXf != None:
                 break
             myNode = parent.getChild(i)
             if myNode.isOfType(SoTransform.getClassTypeId()):
@@ -228,13 +228,13 @@ def deselectionCallback(void, # user data is not used
 # about to begin manipulation.
 def dragStartCallback(myMaterial, # user data
                       dragger):   # callback data not used
-    myMaterial.diffuseColor.setValue(1,.2,.2)
+    myMaterial.diffuseColor = (1,.2,.2)
 
 # This is called when a manipulator is
 # done manipulating.
 def dragFinishCallback(myMaterial, # user data
                        dragger):   # callback data not used
-    myMaterial.diffuseColor.setValue(.8,.8,.8)
+    myMaterial.diffuseColor = (.8,.8,.8)
 
 def main():
     global myHandleBox, myTrackball, myTransformBox
@@ -266,17 +266,17 @@ def main():
     myWrapperKit.setPart("contents",objectFromFile)
     myWrapperKit.set("transform { translation 3 -1 0 }")
     wrapperMat = myWrapperKit.getPart("material",TRUE)
-    wrapperMat.diffuseColor.setValue(.8, .8, .8)
+    wrapperMat.diffuseColor = (.8, .8, .8)
 
     # Create a cube with its own transform.
     cubeRoot  = SoSeparator()
     cubeXform = SoTransform()
-    cubeXform.translation.setValue(-4, 0, 0)
+    cubeXform.translation = (-4, 0, 0)
     root.addChild(cubeRoot)
     cubeRoot.addChild(cubeXform)
 
     cubeMat = SoMaterial()
-    cubeMat.diffuseColor.setValue(.8, .8, .8)
+    cubeMat.diffuseColor = (.8, .8, .8)
     cubeRoot.addChild(cubeMat)
     cubeRoot.addChild(SoCube())
 
@@ -287,7 +287,7 @@ def main():
     root.addChild(sphereRoot)
     sphereRoot.addChild(sphereMat)
     sphereRoot.addChild(SoSphere())
-    sphereMat.diffuseColor.setValue(.8, .8, .8)
+    sphereMat.diffuseColor = (.8, .8, .8)
 
     # create the manipulators
     myHandleBox = SoHandleBoxManip()

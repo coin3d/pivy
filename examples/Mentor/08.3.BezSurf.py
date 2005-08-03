@@ -150,10 +150,10 @@ def makeSurface():
     complexity = SoComplexity()
     controlPts = SoCoordinate3()
     surface    = SoNurbsSurface()
-    complexity.value(0.7)
+    complexity.value = 0.7
     controlPts.point.setValues(0, 16, pts)
-    surface.numUControlPoints(4)
-    surface.numVControlPoints(4)
+    surface.numUControlPoints = 4
+    surface.numVControlPoints = 4
     surface.uKnotVector.setValues(0, 8, knots)
     surface.vKnotVector.setValues(0, 8, knots)
     surfSep.addChild(complexity)
@@ -185,7 +185,7 @@ def main():
     tex    = SoTexture2()
 
     tex.ref()
-    tex.filename.setValue("diamondRug.rgb")
+    tex.filename = "diamondRug.rgb"
     carpet.addChild(tex)
     carpet.addChild(surf)
     root.addChild(carpet)
@@ -198,8 +198,8 @@ def main():
 
     input.setBuffer(floorData)
     result = SoDB.readAll(input)
-    xlate.translation.setValue(SbVec3f(-12.0, -5.0, -5.0))
-    scale.scaleFactor.setValue(SbVec3f(2.0, 1.0, 2.0))
+    xlate.translation = (-12.0, -5.0, -5.0)
+    scale.scaleFactor = (2.0, 1.0, 2.0)
     floor.addChild(xlate)
     floor.addChild(scale)
     floor.addChild(result)
@@ -213,11 +213,11 @@ def main():
     shxl   = SoTranslation()
     shscl  = SoScale()
    
-    shmdl.model(SoLightModel.BASE_COLOR)
-    shclr.rgb.setValue(SbColor(0.21, 0.15, 0.09))
-    shmtl.transparency(0.3)
-    shxl.translation.setValue(SbVec3f(0.0, -4.9, 0.0))
-    shscl.scaleFactor.setValue(SbVec3f(1.0, 0.0, 1.0))
+    shmdl.model = SoLightModel.BASE_COLOR
+    shclr.rgb = (0.21, 0.15, 0.09)
+    shmtl.transparency = 0.3
+    shxl.translation = (0.0, -4.9, 0.0)
+    shscl.scaleFactor = (1.0, 0.0, 1.0)
     shadow.addChild(shmtl)
     shadow.addChild(shmdl)
     shadow.addChild(shclr)
@@ -231,7 +231,7 @@ def main():
     viewer.setSceneGraph(root)
     viewer.setTitle("Bezier Surface")
     cam = viewer.getCamera()
-    cam.position.setValue(SbVec3f(-8.5, 13.0, 23.0))
+    cam.position = (-8.5, 13.0, 23.0)
     cam.pointAt(SbVec3f(-2.0, -2.0, -4.0))
     viewer.show()
 

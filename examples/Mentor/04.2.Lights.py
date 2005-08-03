@@ -56,8 +56,8 @@ def main():
 
     # Add a directional light
     myDirLight = SoDirectionalLight()
-    myDirLight.direction.setValue(0, -1, -1)
-    myDirLight.color.setValue(1, 0, 0)
+    myDirLight.direction = (0, -1, -1)
+    myDirLight.color = (1, 0, 0)
     root.addChild(myDirLight)
 
     # Put the shuttle and the light below a transform separator.
@@ -74,13 +74,13 @@ def main():
     # This moves the light.
     myShuttle = SoShuttle()
     myTransformSeparator.addChild(myShuttle)
-    myShuttle.translation0.setValue(-2, -1, 3)
-    myShuttle.translation1.setValue( 1,  2, -3)
+    myShuttle.translation0 = (-2, -1, 3)
+    myShuttle.translation1 = ( 1,  2, -3)
 
     # Add the point light below the transformSeparator
     myPointLight = SoPointLight()
     myTransformSeparator.addChild(myPointLight)
-    myPointLight.color.setValue(0, 1, 0)
+    myPointLight.color = (0, 1, 0)
 
     root.addChild(SoCone())
 
@@ -95,4 +95,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

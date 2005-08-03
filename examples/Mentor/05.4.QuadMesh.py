@@ -89,7 +89,7 @@ def makeArch():
        myVertexProperty = SoVertexProperty()
 
        # Define the material
-       myVertexProperty.orderedRGBA.setValue(SbColor(.78, .57, .11).getPackedValue())
+       myVertexProperty.orderedRGBA = SbColor(.78, .57, .11).getPackedValue()
 
        # Define coordinates for vertices
        myVertexProperty.vertex.setValues(0, 60, vertexPositions)
@@ -100,13 +100,13 @@ def makeArch():
 
        myQuadMesh.verticesPerColumn(5)
 
-       myQuadMesh.vertexProperty.setValue(myVertexProperty)
+       myQuadMesh.vertexProperty = myVertexProperty
        result.addChild(myQuadMesh)
 
    else:
        # Define the material
        myMaterial = SoMaterial()
-       myMaterial.diffuseColor.setValue(.78, .57, .11)
+       myMaterial.diffuseColor = (.78, .57, .11)
        result.addChild(myMaterial)
 
        # Define coordinates for vertices
@@ -116,9 +116,9 @@ def makeArch():
 
        # Define the QuadMesh.
        myQuadMesh = SoQuadMesh()
-       myQuadMesh.verticesPerRow(12)
+       myQuadMesh.verticesPerRow = 12
 
-       myQuadMesh.verticesPerColumn(5)
+       myQuadMesh.verticesPerColumn = 5
        result.addChild(myQuadMesh)
 
    result.unrefNoDelete()

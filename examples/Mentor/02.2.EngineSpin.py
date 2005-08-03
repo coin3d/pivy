@@ -58,14 +58,14 @@ def main():
     root.addChild(myRotXYZ)
 
     myMaterial = SoMaterial()
-    myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)   # Red
+    myMaterial.diffuseColor = (1.0, 0.0, 0.0)   # Red
     root.addChild(myMaterial)
     root.addChild(SoCone())
 
     # An engine rotates the object. The output of myCounter 
     # is the time in seconds since the program started.
     # Connect this output to the angle field of myRotXYZ
-    myRotXYZ.axis(SoRotationXYZ.X)     # rotate about X axis
+    myRotXYZ.axis = SoRotationXYZ.X     # rotate about X axis
     myCounter = SoElapsedTime()
     myRotXYZ.angle.connectFrom(myCounter.timeOut)
 

@@ -54,7 +54,7 @@ def main():
     # Choose a texture 
     rock = SoTexture2()
     root.addChild(rock)
-    rock.filename.setValue("brick.1.rgb")
+    rock.filename = "brick.1.rgb"
 
     # Make a cube
     root.addChild(SoCube())
@@ -65,7 +65,7 @@ def main():
 
     # In Inventor 2.1, if the machine does not have hardware texture
     # mapping, we must override the default drawStyle to display textures.
-    myViewer.setDrawStyle(SoGuiViewer.STILL, SoGuiViewer.VIEW_AS_IS)
+    # myViewer.setDrawStyle(SoGuiViewer.STILL, SoGuiViewer.VIEW_AS_IS)
     
     myViewer.show()
     myViewer.viewAll()

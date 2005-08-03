@@ -53,9 +53,9 @@ def main():
 
     # Set up camera 
     myCamera = SoPerspectiveCamera()
-    myCamera.position.setValue(0, -(len(sys.argv) - 1) / 2, 10)
-    myCamera.nearDistance.setValue(5.0)
-    myCamera.farDistance.setValue(15.0)
+    myCamera.position = (0, -(len(sys.argv) - 1) / 2, 10)
+    myCamera.nearDistance = 5.0
+    myCamera.farDistance = 15.0
     root.addChild(myCamera)
 
     # Let's make the front of the text white, 
@@ -71,18 +71,16 @@ def main():
     # specular
     colors[0].setValue(1, 1, 1)
     # Note: Inventor 2.1 doesn't support multiple specular colors.
-    # 
-    # colors[1].setValue(1, 1, 0)
-    # colors[2].setValue(1, 1, 0)
-    # myMaterial.specularColor.setValues(0, 3, colors)
-    #
-    myMaterial.specularColor.setValue(colors[0])
+    # myMaterial.specularColor = colors[0]
+    colors[1].setValue(1, 1, 0)
+    colors[2].setValue(1, 1, 0)
+    myMaterial.specularColor.setValues(0, 3, colors)
     myMaterial.shininess.setValue(.1)
     root.addChild(myMaterial)
 
     # Choose a font likely to exist.
     myFont = SoFont()
-    myFont.name("Times-Roman")
+    myFont.name = "Times-Roman"
     root.addChild(myFont)
 
     # Specify a beveled cross-section for the text
@@ -102,14 +100,14 @@ def main():
 
     # Set the material binding to PER_PART
     myMaterialBinding = SoMaterialBinding()
-    myMaterialBinding.value.setValue(SoMaterialBinding.PER_PART)
+    myMaterialBinding.value = SoMaterialBinding.PER_PART
     root.addChild(myMaterialBinding)
 
     # Add the text
     myText3 = SoText3()
-    myText3.string.setValue("Beveled Text")
-    myText3.justification.setValue(SoText3.CENTER)
-    myText3.parts.setValue(SoText3.ALL)
+    myText3.string = "Beveled Text"
+    myText3.justification = SoText3.CENTER
+    myText3.parts = SoText3.ALL
    
     root.addChild(myText3)
 

@@ -77,7 +77,7 @@ def main():
     root.ref()
     root.addChild(flagXform)
     myCone = SoCone()
-    myCone.bottomRadius(0.1)
+    myCone.bottomRadius = 0.1
     root.addChild(myCone)
 
     myViewer = SoGuiExaminerViewer(myWindow)

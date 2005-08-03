@@ -76,13 +76,13 @@ def main():
     # Add the fast-blinking part to a blinker node
     fastBlinker = SoBlinker()
     root.addChild(fastBlinker)
-    fastBlinker.speed(2)  # blinks 2 times a second
+    fastBlinker.speed = 2  # blinks 2 times a second
     fastBlinker.addChild(josie)
 
     # Add the slow-blinking part to another blinker node
     slowBlinker = SoBlinker()
     root.addChild(slowBlinker)
-    slowBlinker.speed(0.5)  # 2 secs per cycle 1 on, 1 off
+    slowBlinker.speed = 0.5  # 2 secs per cycle 1 on, 1 off
     slowBlinker.addChild(frame)
 
 # CODE FOR The Inventor Mentor ENDS HERE

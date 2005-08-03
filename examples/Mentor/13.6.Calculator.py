@@ -55,16 +55,16 @@ def main():
 
     # Add a camera and light
     myCamera = SoPerspectiveCamera()
-    myCamera.position.setValue(-0.5, -3.0, 19.0)
-    myCamera.nearDistance(10.0)
-    myCamera.farDistance(26.0)
+    myCamera.position = (-0.5, -3.0, 19.0)
+    myCamera.nearDistance = 10.0
+    myCamera.farDistance = 26.0
     root.addChild(myCamera)
     root.addChild(SoDirectionalLight())
 
     # Rotate scene slightly to get better view
     globalRotXYZ = SoRotationXYZ()
-    globalRotXYZ.axis(SoRotationXYZ.X)
-    globalRotXYZ.angle(M_PI/7)
+    globalRotXYZ.axis = SoRotationXYZ.X
+    globalRotXYZ.angle = M_PI/7
     root.addChild(globalRotXYZ)
 
     # Read the background path from a file and add to the group
@@ -85,15 +85,15 @@ def main():
     # Read the flower object from a file and add to the group
     if not myInput.openFile("flower.iv"):
         sys.exit(1)
-    flower= SoDB.readAll(myInput)
+    flower = SoDB.readAll(myInput)
     if flower == None: sys.exit(1)
 
     # Set up the flower transformations
     danceTranslation = SoTranslation()
     initialTransform = SoTransform()
     flowerGroup.addChild(danceTranslation)
-    initialTransform.scaleFactor.setValue(10., 10., 10.)
-    initialTransform.translation.setValue(0., 0., 5.)
+    initialTransform.scaleFactor = (10., 10., 10.)
+    initialTransform.translation = (0., 0., 5.)
     flowerGroup.addChild(initialTransform)
     flowerGroup.addChild(flower)
 
@@ -105,9 +105,9 @@ def main():
     calcXZ = SoCalculator()
     thetaCounter = SoTimeCounter()
 
-    thetaCounter.max(360)
-    thetaCounter.step(4)
-    thetaCounter.frequency(0.075)
+    thetaCounter.max = 360
+    thetaCounter.step = 4
+    thetaCounter.frequency = 0.075
 
     calcXZ.a.connectFrom(thetaCounter.output)    
     calcXZ.expression.set1Value(0, "ta=a*M_PI/180") # theta

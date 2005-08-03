@@ -127,7 +127,7 @@ def main():
     print "To print the scene: press the 'p' key while in picking mode"
 
     # Make a scene containing an event callback node
-    root    = SoSeparator()
+    root = SoSeparator()
     eventCB = SoEventCallback()
     root.ref()
     root.addChild(eventCB)

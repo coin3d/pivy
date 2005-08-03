@@ -57,7 +57,7 @@ def main():
     root.addChild(myCamera)
     root.addChild(SoDirectionalLight())
     myMaterial = SoMaterial()
-    myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)   
+    myMaterial.diffuseColor = (1.0, 0.0, 0.0)   
     root.addChild(myMaterial)
 
     # Create a Text3 object, and connect to the realTime field

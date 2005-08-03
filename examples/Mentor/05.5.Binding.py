@@ -109,7 +109,7 @@ def makeStellatedDodecahedron():
         myVertexProperty = SoVertexProperty()
 
         # The material binding.
-        myVertexProperty.materialBinding(SoMaterialBinding.PER_FACE)
+        myVertexProperty.materialBinding = SoMaterialBinding.PER_FACE
 
         # Define colors for the faces
         for i in range(12):
@@ -123,7 +123,7 @@ def makeStellatedDodecahedron():
         myFaceSet = SoIndexedFaceSet()
         myFaceSet.coordIndex.setValues(0, 72, indices)
 
-        myFaceSet.vertexProperty.setValue(myVertexProperty)
+        myFaceSet.vertexProperty = myVertexProperty
         result.addChild(myFaceSet)
 
     else:
@@ -158,7 +158,7 @@ def main():
     if len(sys.argv) > 1: whichBinding = int(sys.argv[1])
 
     if whichBinding > 2 or whichBinding < 0 or len(sys.argv) == 1:
-        sys.stderr.write("Argument must be 0, 1, or 2\n")
+        sys.stderr.write("Argument must be 0, 1 or 2\n")
         sys.stderr.write("\t0 = PER_FACE\n")
         sys.stderr.write("\t1 = PER_VERTEX_INDEXED\n")
         sys.stderr.write("\t2 = PER_FACE_INDEXED\n")
@@ -190,14 +190,14 @@ def main():
 
         if whichBinding == 0:
             # Set up binding to use a different color for each face 
-            myVertexProperty.materialBinding(SoMaterialBinding.PER_FACE)
+            myVertexProperty.materialBinding = SoMaterialBinding.PER_FACE
         elif whichBinding == 1:
             # Set up binding to use a different color at each 
             # vertex, BUT, vertices shared between faces will 
             # have the same color.
-            myVertexProperty.materialBinding(SoMaterialBinding.PER_VERTEX_INDEXED)
+            myVertexProperty.materialBinding = SoMaterialBinding.PER_VERTEX_INDEXED
         elif whichBinding == 2:
-            myVertexProperty.materialBinding(SoMaterialBinding.PER_FACE_INDEXED)
+            myVertexProperty.materialBinding = SoMaterialBinding.PER_FACE_INDEXED
             myIndexedFaceSet.materialIndex.setValues(0, 12, materialIndices)
 
 ## CODE FOR The Inventor Mentor ENDS HERE
@@ -222,14 +222,14 @@ def main():
 
         if whichBinding == 0:
             # Set up binding to use a different color for each face 
-            myBinding.value(SoMaterialBinding.PER_FACE)
+            myBinding.value = SoMaterialBinding.PER_FACE
         elif whichBinding == 1:
             # Set up binding to use a different color at each 
             # vertex, BUT, vertices shared between faces will 
             # have the same color.
-            myBinding.value(SoMaterialBinding.PER_VERTEX_INDEXED)
+            myBinding.value = SoMaterialBinding.PER_VERTEX_INDEXED
         elif whichBinding == 2:
-            myBinding.value(SoMaterialBinding.PER_FACE_INDEXED)
+            myBinding.value = SoMaterialBinding.PER_FACE_INDEXED
             myIndexedFaceSet.materialIndex.setValues(0, 12, materialIndices)
 
 ## CODE FOR The Inventor Mentor ENDS HERE

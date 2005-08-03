@@ -107,17 +107,17 @@ def main():
 
     # Add two copies of the star object, one white and one red
     myRotation = SoRotationXYZ()
-    myRotation.axis.setValue(SoRotationXYZ.X)
-    myRotation.angle.setValue(M_PI/2.2)  # almost 90 degrees
+    myRotation.axis = SoRotationXYZ.X
+    myRotation.angle = M_PI/2.2  # almost 90 degrees
     root.addChild(myRotation)
 
     root.addChild(starObject)  # first star object
 
     myMaterial = SoMaterial()
-    myMaterial.diffuseColor.setValue(1.0, 0.0, 0.0)   # red
+    myMaterial.diffuseColor = (1.0, 0.0, 0.0)   # red
     root.addChild(myMaterial)
     myTranslation = SoTranslation()
-    myTranslation.translation.setValue(1., 0., 1.)
+    myTranslation.translation = (1.0, 0.0, 1.0)
     root.addChild(myTranslation)
     root.addChild(starObject)  # second star object
 

@@ -65,19 +65,19 @@ def makeWaterMolecule():
     sphere3 = SoSphere()
     
     # Set all field values for the oxygen atom
-    redPlastic.ambientColor.setValue(1.0, 0.0, 0.0)
-    redPlastic.diffuseColor.setValue(1.0, 0.0, 0.0) 
-    redPlastic.specularColor.setValue(0.5, 0.5, 0.5)
-    redPlastic.shininess(0.5)
+    redPlastic.ambientColor = (1.0, 0.0, 0.0)
+    redPlastic.diffuseColor = (1.0, 0.0, 0.0) 
+    redPlastic.specularColor = (0.5, 0.5, 0.5)
+    redPlastic.shininess = 0.5
     
     # Set all field values for the hydrogen atoms
-    hydrogenXform1.scaleFactor.setValue(0.75, 0.75, 0.75)  
-    hydrogenXform1.translation.setValue(0.0, -1.2, 0.0)  
-    hydrogenXform2.translation.setValue(1.1852, 1.3877, 0.0)
-    whitePlastic.ambientColor.setValue(1.0, 1.0, 1.0)  
-    whitePlastic.diffuseColor.setValue(1.0, 1.0, 1.0) 
-    whitePlastic.specularColor.setValue(0.5, 0.5, 0.5)
-    whitePlastic.shininess(0.5)
+    hydrogenXform1.scaleFactor = (0.75, 0.75, 0.75)  
+    hydrogenXform1.translation = (0.0, -1.2, 0.0)  
+    hydrogenXform2.translation = (1.1852, 1.3877, 0.0)
+    whitePlastic.ambientColor = (1.0, 1.0, 1.0)  
+    whitePlastic.diffuseColor = (1.0, 1.0, 1.0) 
+    whitePlastic.specularColor = (0.5, 0.5, 0.5)
+    whitePlastic.shininess = 0.5
     
     # Create a hierarchy
     waterMolecule.addChild(oxygen)   

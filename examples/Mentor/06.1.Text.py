@@ -53,8 +53,8 @@ def main():
 
     # Choose a font
     myFont = SoFont()
-    myFont.name("Times-Roman")
-    myFont.size.setValue(24.0)
+    myFont.name = "Times-Roman"
+    myFont.size = 24.0
     root.addChild(myFont)
 
     # Add the globe, a sphere with a texture map.
@@ -62,19 +62,19 @@ def main():
     sphereSep = SoSeparator()
     myTexture2 = SoTexture2()
     sphereComplexity = SoComplexity()
-    sphereComplexity.value(0.55)
+    sphereComplexity.value = 0.55
     root.addChild(sphereSep)
     sphereSep.addChild(myTexture2)
     sphereSep.addChild(sphereComplexity)
     sphereSep.addChild(SoSphere())
-    myTexture2.filename("globe.rgb")
+    myTexture2.filename = "globe.rgb"
 
     # Add Text2 for AFRICA, translated to proper location.
     africaSep = SoSeparator()
     africaTranslate = SoTranslation()
     africaText = SoText2()
-    africaTranslate.translation.setValue(.25,.0,1.25)
-    africaText.string("AFRICA")
+    africaTranslate.translation = (.25,.0,1.25)
+    africaText.string = "AFRICA"
     root.addChild(africaSep)
     africaSep.addChild(africaTranslate)
     africaSep.addChild(africaText)
@@ -83,8 +83,8 @@ def main():
     asiaSep = SoSeparator()
     asiaTranslate = SoTranslation()
     asiaText = SoText2()
-    asiaTranslate.translation.setValue(.8,.8,0)
-    asiaText.string("ASIA")
+    asiaTranslate.translation = (.8,.8,0)
+    asiaText.string = "ASIA"
     root.addChild(asiaSep)
     asiaSep.addChild(asiaTranslate)
     asiaSep.addChild(asiaText)
@@ -105,4 +105,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

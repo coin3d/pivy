@@ -56,10 +56,10 @@ def main():
     
     # Add a camera and light
     myCamera = SoPerspectiveCamera()
-    myCamera.position.setValue(-8.0, -7.0, 20.0)
-    myCamera.heightAngle(M_PI/2.5)
-    myCamera.nearDistance(15.0)
-    myCamera.farDistance(25.0)
+    myCamera.position = (-8.0, -7.0, 20.0)
+    myCamera.heightAngle = M_PI/2.5
+    myCamera.nearDistance = 15.0
+    myCamera.farDistance = 25.0
     root.addChild(myCamera)
     root.addChild(SoDirectionalLight())
 
@@ -70,8 +70,8 @@ def main():
     jumpTranslation = SoTranslation()
     root.addChild(jumpTranslation)
     initialTransform = SoTransform()
-    initialTransform.translation.setValue(-20., 0., 0.)
-    initialTransform.scaleFactor.setValue(40., 40., 40.)
+    initialTransform.translation = (-20., 0., 0.)
+    initialTransform.scaleFactor = (40., 40., 40.)
     initialTransform.rotation.setValue(SbVec3f(1,0,0), M_PI/2.)
     root.addChild(initialTransform)
 
@@ -93,10 +93,10 @@ def main():
     jumpWidthCounter = SoTimeCounter()
     jump = SoComposeVec3f()
 
-    jumpHeightCounter.max(4)
-    jumpHeightCounter.frequency(1.5)
-    jumpWidthCounter.max(40)
-    jumpWidthCounter.frequency(0.15)
+    jumpHeightCounter.max = 4
+    jumpHeightCounter.frequency = 1.5
+    jumpWidthCounter.max = 40
+    jumpWidthCounter.frequency = 0.15
 
     jump.x.connectFrom(jumpWidthCounter.output)
     jump.y.connectFrom(jumpHeightCounter.output)

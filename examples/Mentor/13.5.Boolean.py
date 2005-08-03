@@ -53,9 +53,9 @@ def myMousePressCB(gate, eventCB):
 
         # Toggle the gate that controls the duck motion
         if gate.enable.getValue():
-            gate.enable.setValue(FALSE)
+            gate.enable = FALSE
         else:
-            gate.enable.setValue(TRUE)
+            gate.enable = TRUE
 
         eventCB.setHandled()
 
@@ -74,39 +74,39 @@ def main():
 
     # Add a camera and light
     myCamera = SoPerspectiveCamera()
-    myCamera.position.setValue(0., -4., 8.0)
-    myCamera.heightAngle(M_PI/2.5)
-    myCamera.nearDistance(1.0)
-    myCamera.farDistance(15.0)
+    myCamera.position = (0., -4., 8.0)
+    myCamera.heightAngle = M_PI/2.5
+    myCamera.nearDistance = 1.0
+    myCamera.farDistance = 15.0
     root.addChild(myCamera)
     root.addChild(SoDirectionalLight())
 
     # Rotate scene slightly to get better view
     globalRotXYZ = SoRotationXYZ()
-    globalRotXYZ.axis(SoRotationXYZ.X)
-    globalRotXYZ.angle(M_PI/9)
+    globalRotXYZ.axis = SoRotationXYZ.X
+    globalRotXYZ.angle = M_PI/9
     root.addChild(globalRotXYZ)
 
     # Pond group
     pond = SoSeparator()
     root.addChild(pond)
     pondTranslation = SoTranslation()
-    pondTranslation.translation.setValue(0., -6.725, 0.)
+    pondTranslation.translation = (0., -6.725, 0.)
     pond.addChild(pondTranslation)
     # water
     waterMaterial = SoMaterial()
-    waterMaterial.diffuseColor.setValue(0., 0.3, 0.8)
+    waterMaterial.diffuseColor = (0., 0.3, 0.8)
     pond.addChild(waterMaterial)
     waterCylinder = SoCylinder()
-    waterCylinder.radius.setValue(4.0)
-    waterCylinder.height.setValue(0.5)
+    waterCylinder.radius = 4.0
+    waterCylinder.height = 0.5
     pond.addChild(waterCylinder)
     # rock
     rockMaterial = SoMaterial()
-    rockMaterial.diffuseColor.setValue(0.8, 0.23, 0.03)
+    rockMaterial.diffuseColor = (0.8, 0.23, 0.03)
     pond.addChild(rockMaterial)
     rockSphere = SoSphere()
-    rockSphere.radius.setValue(0.9)
+    rockSphere.radius = 0.9
     pond.addChild(rockSphere)
 
     # Read the duck object from a file and add to the group
@@ -126,8 +126,8 @@ def main():
     bigDuckRotXYZ = SoRotationXYZ()
     bigDuck.addChild(bigDuckRotXYZ)
     bigInitialTransform = SoTransform()
-    bigInitialTransform.translation.setValue(0., 0., 3.5)
-    bigInitialTransform.scaleFactor.setValue(6., 6., 6.)
+    bigInitialTransform.translation = (0., 0., 3.5)
+    bigInitialTransform.scaleFactor = (6., 6., 6.)
     bigDuck.addChild(bigInitialTransform)
     bigDuck.addChild(duckObject)
 
@@ -137,8 +137,8 @@ def main():
     smallDuckRotXYZ = SoRotationXYZ()
     smallDuck.addChild(smallDuckRotXYZ)
     smallInitialTransform = SoTransform()
-    smallInitialTransform.translation.setValue(0., -2.24, 1.5)
-    smallInitialTransform.scaleFactor.setValue(4., 4., 4.)
+    smallInitialTransform.translation = (0., -2.24, 1.5)
+    smallInitialTransform.scaleFactor = (4., 4., 4.)
     smallDuck.addChild(smallInitialTransform)
     smallDuck.addChild(duckObject)
 
@@ -147,7 +147,7 @@ def main():
     bigDuckGate = SoGate(SoMFFloat.getClassTypeId())
     bigDuckTime = SoElapsedTime()
     bigDuckGate.input.connectFrom(bigDuckTime.timeOut) 
-    bigDuckRotXYZ.axis(SoRotationXYZ.Y)  # Y axis
+    bigDuckRotXYZ.axis = SoRotationXYZ.Y  # Y axis
     bigDuckRotXYZ.angle.connectFrom(bigDuckGate.output)
 
     # Each mouse button press will enable/disable the gate 
@@ -162,13 +162,13 @@ def main():
     # only when the bigger duck is still.
     myBoolean = SoBoolOperation()
     myBoolean.a.connectFrom(bigDuckGate.enable)
-    myBoolean.operation.setValue(SoBoolOperation.NOT_A)
+    myBoolean.operation = SoBoolOperation.NOT_A
 
     smallDuckGate = SoGate(SoMFFloat.getClassTypeId())
     smallDuckTime = SoElapsedTime()
     smallDuckGate.input.connectFrom(smallDuckTime.timeOut) 
     smallDuckGate.enable.connectFrom(myBoolean.output) 
-    smallDuckRotXYZ.axis(SoRotationXYZ.Y)  # Y axis
+    smallDuckRotXYZ.axis = SoRotationXYZ.Y  # Y axis
     smallDuckRotXYZ.angle.connectFrom(smallDuckGate.output)
 
 # CODE FOR The Inventor Mentor ENDS HERE

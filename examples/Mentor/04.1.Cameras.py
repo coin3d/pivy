@@ -81,7 +81,7 @@ def main():
         sys.exit(1)
 
     myMaterial = SoMaterial()
-    myMaterial.diffuseColor.setValue(0.8, 0.23, 0.03) 
+    myMaterial.diffuseColor = (0.8, 0.23, 0.03) 
     root.addChild(myMaterial)
     root.addChild(fileContents)
 
@@ -96,7 +96,7 @@ def main():
     perspOffCenter.viewAll(root, myRegion)
     initialPos = perspOffCenter.position.getValue()
     x,y,z = initialPos.getValue()
-    perspOffCenter.position.setValue(x+x/2., y+y/2., z+z/4.)
+    perspOffCenter.position = (x+x/2., y+y/2., z+z/4.)
 
     myRenderArea.setSceneGraph(root)
     myRenderArea.setTitle("Cameras")

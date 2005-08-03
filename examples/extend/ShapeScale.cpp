@@ -1,4 +1,4 @@
-// Copyright (C) 1998-2004 by Systems in Motion. All rights reserved.
+// Copyright (C) 1998-2005 by Systems in Motion. All rights reserved.
 
 //  The ShapeScale class is used for scaling a shape based on
 //  projected size.

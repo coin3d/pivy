@@ -271,6 +271,13 @@ autocast_field(SoField * field)
 /* generic typemaps to allow using python types instead of instances
  * within the python interpreter
  */
+%typemap(in) int32_t = int;
+%typemap(out) int32_t = int;
+%typemap(typecheck) int32_t = int;
+
+%typemap(in) uint32_t = unsigned int;
+%typemap(out) uint32_t = unsigned int;
+%typemap(typecheck) uint32_t = unsigned int;
 
 %typemap(in) SbName & {
   if (PyString_Check($input)) {

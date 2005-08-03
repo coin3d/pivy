@@ -13,7 +13,5 @@
 }
 
 %extend SoSFColor {
-  void setValue(const SoSFColor * other){
-    *self = *other;
-  }
+  void setValue(const SoSFColor * other) { *self = *other; }
 }

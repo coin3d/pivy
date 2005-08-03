@@ -7,6 +7,6 @@
          yield self[i]
          i += 1
 %}
-// TODO: write a get1 method that returns a string as a result
+  // FIXME: write a get1 method that returns a string as a result. 20050731 gerhard.
   int __len__(void) { return self->getNum(); }
 }

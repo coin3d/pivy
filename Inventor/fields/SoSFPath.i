@@ -1,5 +1,3 @@
 %extend SoSFPath {
-  void setValue(const SoSFPath * other){
-    *self = *other;
-  }
+  void setValue(const SoSFPath * other) { *self = *other; }
 }

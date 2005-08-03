@@ -4,7 +4,5 @@
 }
 
 %extend SoSFVec3f {
-  void setValue(const SoSFVec3f * other){
-    *self = *other;
-  }
+  void setValue(const SoSFVec3f * other){ *self = *other; }
 }

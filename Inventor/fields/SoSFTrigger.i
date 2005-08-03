@@ -1,5 +1,3 @@
 %extend SoSFTrigger {
-  void setValue(const SoSFTrigger * other){
-    *self = *other;
-  }
+  void setValue(const SoSFTrigger * other) { *self = *other; }
 }

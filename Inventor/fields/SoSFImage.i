@@ -13,8 +13,7 @@
 }
 
 %extend SoSFImage {
-  void setValue(const SbVec2s & size, const int nc,
-                PyObject * pixels)
+  void setValue(const SbVec2s & size, const int nc, PyObject * pixels)
   {
     int len = size[0] * size[1] * nc;
     unsigned char * image;
@@ -23,5 +22,5 @@
     self->setValue(size, nc, image);
   }
 
-  void setValue(const SoSFImage * other){ *self = *other; }
+  void setValue(const SoSFImage * other) { *self = *other; }
 }

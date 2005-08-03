@@ -19,7 +19,6 @@ def connectFrom(*args):
    return apply(_coin.SoField_connectFrom,args)
 %}
 
-
 %rename(disconnect_eng) SoField::disconnect(SoEngineOutput *engineoutput);
 %rename(disconnect_fie) SoField::disconnect(SoField *field);
 %rename(disconnect_vrm) SoField::disconnect(SoVRMLInterpOutput *interpoutput);

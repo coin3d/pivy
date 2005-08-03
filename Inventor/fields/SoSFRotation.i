@@ -8,7 +8,5 @@
 }
 
 %extend SoSFRotation {
-  void setValue(const SoSFRotation * other){
-    *self = *other;
-  }
+  void setValue(const SoSFRotation * other) { *self = *other; }
 }

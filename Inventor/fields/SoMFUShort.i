@@ -35,15 +35,17 @@ convert_SoMFUShort_array(PyObject *input, int len, unsigned short *temp)
 %ignore SoMFUShort::getValues(const int start) const;
 
 %typemap(in,numinputs=0) int & len (int temp) {
-   $1 = &temp;
-   *$1 = 0;
+  $1 = &temp;
+  *$1 = 0;
 }
 
 %typemap(argout) int & len {
   Py_XDECREF($result);   /* Blow away any previous result */
   $result = PyList_New(*$1);
-  if(result) {
-    for(int i = 0; i < *$1; i++){ PyList_SetItem($result, i, PyInt_FromLong((long)result[i])); }
+  if (result) {
+    for (int i = 0; i < *$1; i++){
+      PyList_SetItem($result, i, PyInt_FromLong((long)result[i]));
+    }
   }
 }
 
@@ -63,7 +65,7 @@ def setValues(*args):
   void  __setitem__(int i, short value) { self->set1Value(i, value); }
   void setValue( const SoMFUShort * other ) { *self = *other; }
   const unsigned short * __getValuesHelper__(int & len, int i = 0) {
-    if (i < 0 || i > self->getNum()) { return 0; }
+    if (i < 0 || i > self->getNum()) { return NULL; }
     len = self->getNum() - i;
     return self->getValues(i);
   }

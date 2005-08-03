@@ -1,6 +1,6 @@
 %typemap(in,numinputs=0) (SbVec3s & size, int & nc) (int temp) {
-   $1 = new SbVec3s();
-   $2 = &temp;
+  $1 = new SbVec3s();
+  $2 = &temp;
 }
 
 %typemap(argout) (SbVec3s & size, int & nc) {
@@ -13,8 +13,7 @@
 }
 
 %extend SoSFImage3 {
-  void setValue(const SbVec3s & size, const int nc,
-                PyObject * pixels)
+  void setValue(const SbVec3s & size, const int nc, PyObject * pixels)
   {
     int len = size[0] * size[1] * size[2] * nc;
     unsigned char * image;
@@ -22,5 +21,5 @@
     PyString_AsStringAndSize(pixels, (char **)&image, &len);
     self->setValue(size, nc, image);
   }
-  void setValue(const SoSFImage3 * other){ *self = *other; }
+  void setValue(const SoSFImage3 * other) { *self = *other; }
 }

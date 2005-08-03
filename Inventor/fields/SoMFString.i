@@ -7,11 +7,6 @@
       $1 = (char **)malloc(len * sizeof(char *));
       for(int i = 0; i < len; i++ ) {
         PyObject *item = PyObject_Str(PySequence_GetItem($input,i));
-        /*if (!PyString_Check(item)) {
-        free($1);
-        PyErr_SetString(PyExc_ValueError, "list items must be strings");
-        return NULL;
-        }*/
         $1[i] = PyString_AsString(item);
         Py_DECREF(item);
       }
@@ -26,7 +21,7 @@
 
 // Free the list 
 %typemap(freearg) const char * [] {
-  if($1) free($1);
+  if ($1) { free($1); }
 }
 
 %typemap(typecheck,precedence=SWIG_TYPECHECK_POINTER) const char * [] {
@@ -67,7 +62,7 @@ def setValues(*args):
   void  __setitem__(int i, const SbString & value) { self->set1Value(i, value); }
   void setValue( const SoMFString * other ){ *self = *other; }
   const SbString * __getValuesHelper__(int & len, int i = 0) {
-    if (i < 0 || i > self->getNum()) { return 0; }
+    if (i < 0 || i > self->getNum()) { return NULL; }
     len = self->getNum() - i;
     return self->getValues(i);
   }

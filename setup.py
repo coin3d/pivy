@@ -420,7 +420,7 @@ class pivy_clean(clean):
 
 setup(name = "Pivy",
       version = PIVY_VERSION,
-      description = "A Python binding for Coin/Open Inventor",
+      description = "A Python binding for Coin",
       long_description = __doc__,
       author = "Tamer Fahmy",
       author_email = "tamer@tammura.at",

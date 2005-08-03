@@ -8,8 +8,8 @@
 import sys
 from random import random
 
-from pivy.sogui import *
 from pivy.coin import *
+from pivy.sogui import *
 
 from shapescale import *
 
@@ -21,6 +21,7 @@ def construct_new_marker(v):
     markerroot.addChild(t)
     
     kit = ShapeScale()
+    kit.ref()
     kit.active = TRUE
     kit.projectedSize = 5.0
   
@@ -36,19 +37,19 @@ def construct_new_marker(v):
     cube.width = 1.0
     cube.height = 1.0
     cube.depth = 1.0
-  
+    
     markersep.addChild(cube)
     kit.setPart("shape", markersep)
     markerroot.addChild(kit)
-  
+
     return markerroot
 
 
 def event_cb(viewer, n):
     mbe = cast(n.getEvent(), "SoMouseButtonEvent")
 
-    if mbe.getButton() == SoMouseButtonEvent.BUTTON1 and \
-           mbe.getState() == SoButtonEvent.DOWN:
+    if (mbe.getButton() == SoMouseButtonEvent.BUTTON1 and
+        mbe.getState() == SoButtonEvent.DOWN):
 
         rp = SoRayPickAction(viewer.getViewportRegion())
         rp.setPoint(mbe.getPosition())

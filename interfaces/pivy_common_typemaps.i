@@ -354,6 +354,7 @@ autocast_field(SoField * field)
 }
 
 %include Inventor/fields/SoField.h
+%include Inventor/SbString.h
 
 #ifdef PIVY_WIN32
 /* some ignores for missing COIN_DLL_API specifications */

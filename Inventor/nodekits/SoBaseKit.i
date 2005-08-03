@@ -3,7 +3,7 @@
 %pythoncode %{
     def __getattr__(self,name):
         try:
-            return SoNode.__getattribute__(self, name)
+            return SoNode.__getattr__(self, name)
         except AttributeError, e:
             c = _coin.SoBaseKit_getNodekitCatalog(self)
             if c.getPartNumber(name) >= 0:

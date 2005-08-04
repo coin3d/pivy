@@ -90,7 +90,7 @@ Operating System :: MacOS :: MacOS X
 Operating System :: Microsoft :: Windows
 """
 
-PIVY_VERSION = "0.2.0"
+PIVY_VERSION = "0.3.0"
 
 class pivy_build(build):
     PIVY_SNAKES = r"""
@@ -147,11 +147,12 @@ class pivy_build(build):
                   "interfaces" + os.sep + "%s.i"
 
     SOGUI = ['soqt', 'soxt', 'sogtk', 'sowin']
-    MODULES = {'coin'  : ('_coin',      'coin-config',  'pivy.'),
-               'soqt'  : ('gui._soqt',  'soqt-config',  'pivy.gui.'),
-               'soxt'  : ('gui._soxt',  'soxt-config',  'pivy.gui.'),
-               'sogtk' : ('gui._sogtk', 'sogtk-config', 'pivy.gui.'),
-               'sowin' : ('gui._sowin', 'sowin-config', 'pivy.gui.')}
+    MODULES = {'coin'      : ('_coin',      'coin-config',      'pivy.'),
+               'simvoleon' : ('_simvoleon', 'simvoleon-config', 'pivy.'),
+               'soqt'      : ('gui._soqt',  'soqt-config',      'pivy.gui.'),
+               'soxt'      : ('gui._soxt',  'soxt-config',      'pivy.gui.'),
+               'sogtk'     : ('gui._sogtk', 'sogtk-config',     'pivy.gui.'),
+               'sowin'     : ('gui._sowin', 'sowin-config',     'pivy.gui.')}
 
     SUPPORTED_SWIG_VERSIONS = ['1.3.25']
     SWIG_VERSION = ""
@@ -202,6 +203,19 @@ class pivy_build(build):
         if not version.startswith('2.4'):
             print yellow("** Warning: Pivy has only been tested with Coin "
                          "versions 2.4.x.")
+
+    def check_simvoleon_version(self):
+        "check the SIMVoleon version"
+        if sys.platform == "win32": return
+        if not self.check_cmd_exists("simvoleon-config"):
+            del self.MODULES['simvoleon']
+        else:
+            print blue("SIMVoleon version..."),
+            version = self.do_os_popen("simvoleon-config --version")
+            print blue("%s" % version)
+            if not version.startswith('2.0'):
+                print yellow("** Warning: Pivy has only been tested with SIMVoleon "
+                             "versions 2.0.x.")
 
     def check_gui_bindings(self):
         "check for availability of SoGui bindings and removes the not available ones"
@@ -321,10 +335,11 @@ class pivy_build(build):
         print turquoise(self.PIVY_SNAKES)
         print blue("Platform...%s" % sys.platform)
         self.check_python_version()
-        self.check_coin_version()
-        if self.SOGUI: self.check_gui_bindings()
-        self.get_coin_features()
         self.check_swig_version(self.SWIG)
+        self.check_coin_version()
+        self.get_coin_features()
+        if self.SOGUI: self.check_gui_bindings()
+        self.check_simvoleon_version()        
 
         if sys.platform == "win32":
             INCLUDE_DIR = os.getenv("COIN3DDIR") + "\\include"
@@ -393,6 +408,7 @@ class pivy_clean(clean):
     gui_path = 'pivy' + os.sep + 'gui' + os.sep
     REMOVE_FILES = (pivy_path + '__init__.pyc', gui_path + '__init__.pyc',
                     pivy_path + 'coin_wrap.cpp',  pivy_path + 'coin.py',  pivy_path + 'coin.pyc',
+                    pivy_path + 'simvoleon_wrap.cpp',  pivy_path + 'simvoleon.py',  pivy_path + 'simvoleon.pyc',
                     gui_path + 'soqt_wrap.cpp',  gui_path + 'soqt.py',  gui_path + 'soqt.pyc',
                     gui_path + 'sogtk_wrap.cpp', gui_path + 'sogtk.py', gui_path + 'sogtk.py',
                     gui_path + 'soxt_wrap.cpp',  gui_path + 'soxt.py',  gui_path + 'soxt.pyc',

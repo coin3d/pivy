@@ -45,9 +45,9 @@ def main():
     # voxeldata = utility.generate8bitVoxelSet(dim)
 
     # Add SoVolumeData to scene graph
-    # volumedata = SoVolumeData()
+    volumedata = SoVolumeData()
     # volumedata.setVolumeData(dim, ["foobar"], SoVolumeData.UNSIGNED_BYTE)
-    # root.addChild(volumedata)
+    root.addChild(volumedata)
 
     # Add TransferFunction (color map) to scene graph
     transfunc = SoTransferFunction()

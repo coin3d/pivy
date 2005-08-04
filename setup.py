@@ -425,7 +425,7 @@ class pivy_clean(clean):
                     gui_path + 'sowin_wrap.cpp', gui_path + 'sowin.py', gui_path + 'sowin.pyc',
                     pivy_path + 'sogui.pyc')
 
-    def remove_coin_headers(self, arg, dirname, files):
+    def remove_headers(self, arg, dirname, files):
         "remove the coin headers from the pivy Inventor directory"
         for file in files:
             if not os.path.isfile(os.path.join(dirname, file)) or file[-2:] != ".h":
@@ -435,7 +435,8 @@ class pivy_clean(clean):
 
     def run(self):
         "the entry point for the distutils clean class"
-        os.path.walk("Inventor", self.remove_coin_headers, None)
+        os.path.walk("Inventor", self.remove_headers, None)
+        os.path.walk("VolumeViz", self.remove_headers, None)
         # remove the SWIG generated wrappers
         for wrapper_file in self.REMOVE_FILES:
             if os.path.isfile(wrapper_file):

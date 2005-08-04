@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ##
-# Copyright (C) 1998-2004 by Systems in Motion. All rights reserved.
+# Copyright (C) 1998-2005 by Systems in Motion. All rights reserved.
 #
 # Python translation: Tamer Fahmy <tamer@tammura.at>, 2004 Vienna, Austria
 

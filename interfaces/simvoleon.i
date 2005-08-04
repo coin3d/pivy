@@ -62,6 +62,27 @@
 #include "coin_header_includes.h"
 %}
 
+/* define needed for ref counting */
+%define RefCount(...)
+  %typemap(newfree) __VA_ARGS__ * { $1->ref(); }
+  %extend __VA_ARGS__ { ~__VA_ARGS__() { self->unref(); } }
+  %ignore __VA_ARGS__::~__VA_ARGS__();
+%enddef
+
+/* RefCount has to be declared for all classes it should apply to. In
+   our case all classes derived from SoBase */
+RefCount(SoObliqueSlice)
+RefCount(SoOrthoSlice)
+RefCount(SoVolumeFaceSet)
+RefCount(SoVolumeIndexedFaceSet)
+RefCount(SoVolumeIndexedTriangleStripSet)
+RefCount(SoVolumeRender)
+RefCount(SoVolumeRendering)
+RefCount(SoTransferFunction)
+RefCount(SoVolumeData)
+RefCount(SoVolumeSkin)
+RefCount(SoVolumeTriangleStripSet)
+
 /* include the typemaps common to all pivy modules */
 %include pivy_common_typemaps.i
 

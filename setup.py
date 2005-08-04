@@ -209,13 +209,15 @@ class pivy_build(build):
         if sys.platform == "win32": return
         if not self.check_cmd_exists("simvoleon-config"):
             del self.MODULES['simvoleon']
-        else:
-            print blue("SIMVoleon version..."),
-            version = self.do_os_popen("simvoleon-config --version")
-            print blue("%s" % version)
-            if not version.startswith('2.0'):
-                print yellow("** Warning: Pivy has only been tested with SIMVoleon "
-                             "versions 2.0.x.")
+            return False
+
+        print blue("SIMVoleon version..."),
+        version = self.do_os_popen("simvoleon-config --version")
+        print blue("%s" % version)
+        if not version.startswith('2.0'):
+            print yellow("** Warning: Pivy has only been tested with SIMVoleon "
+                         "versions 2.0.x.")
+        return True
 
     def check_gui_bindings(self):
         "check for availability of SoGui bindings and removes the not available ones"
@@ -279,7 +281,7 @@ class pivy_build(build):
             print yellow("Warning: Pivy has only been tested with the following " + \
                          "SWIG versions: %s." % " ".join(self.SUPPORTED_SWIG_VERSIONS))
 
-    def copy_and_swigify_coin_headers(self, coin_includedir, dirname, files):
+    def copy_and_swigify_headers(self, includedir, dirname, files):
         "there are times where a function simply has to do what a function" + \
         "has to do. indeed, tralala..."
 
@@ -292,10 +294,10 @@ class pivy_build(build):
                 file_h = os.path.join(dirname, file)[:-2] + ".h"
 
                 if not os.path.exists(file_h) and \
-                   os.path.exists(os.path.join(coin_includedir, file_h)):
-                    print blue("Copying ") + turquoise(os.path.join(coin_includedir, file_h)),
+                   os.path.exists(os.path.join(includedir, file_h)):
+                    print blue("Copying ") + turquoise(os.path.join(includedir, file_h)),
                     print blue("to ") + turquoise(file_h)
-                    shutil.copyfile(os.path.join(coin_includedir, file_h), file_h)
+                    shutil.copyfile(os.path.join(includedir, file_h), file_h)
                     print blue("Pivyizing ") + turquoise(file_h),
                     fd = open(file_h, 'r+')
                     contents = fd.readlines()
@@ -339,14 +341,22 @@ class pivy_build(build):
         self.check_coin_version()
         self.get_coin_features()
         if self.SOGUI: self.check_gui_bindings()
-        self.check_simvoleon_version()        
+        
+        if self.check_simvoleon_version():
+            if sys.platform == "win32":
+                INCLUDE_DIR = os.getenv("SIMVOLEONDIR") + "\\include"
+            else:
+                INCLUDE_DIR = self.do_os_popen("simvoleon-config --includedir")
+                
+            os.path.walk("VolumeViz", self.copy_and_swigify_headers,
+                         INCLUDE_DIR)
 
         if sys.platform == "win32":
             INCLUDE_DIR = os.getenv("COIN3DDIR") + "\\include"
         else:
             INCLUDE_DIR = self.do_os_popen("coin-config --includedir")
 
-        os.path.walk("Inventor", self.copy_and_swigify_coin_headers,
+        os.path.walk("Inventor", self.copy_and_swigify_headers,
                      INCLUDE_DIR)
 
     def swig_generate(self):

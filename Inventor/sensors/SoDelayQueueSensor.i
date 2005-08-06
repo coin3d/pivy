@@ -1,5 +1,3 @@
-typedef int uint32_t;
-
 %rename(SoDelayQueueSensor_scb_v) SoDelayQueueSensor::SoDelayQueueSensor(SoSensorCB * func, void * data);
 
 %feature("shadow") SoDelayQueueSensor::SoDelayQueueSensor %{

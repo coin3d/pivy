@@ -43,12 +43,7 @@
 #include <Inventor/Qt/devices/SoQtKeyboard.h>
 #include <Inventor/Qt/devices/SoQtMouse.h>
 #include <Inventor/Qt/devices/SoQtSpaceball.h>
-#include <Inventor/Qt/editors/SoQtColorEditor.h>
-#include <Inventor/Qt/editors/SoQtMaterialEditor.h>
-#include <Inventor/Qt/nodes/SoGuiColorEditor.h>
-#include <Inventor/Qt/nodes/SoGuiMaterialEditor.h>
 #include <Inventor/Qt/SoQtBasic.h>
-#include <Inventor/Qt/SoQtColorEditor.h>
 #include <Inventor/Qt/SoQtComponent.h>
 #include <Inventor/Qt/SoQtCursor.h>
 #include <Inventor/Qt/SoQtGLWidget.h>
@@ -337,12 +332,9 @@ class QWidget { QWidget(QWidget* parent=0, const char* name=0, WFlags f=0); };
 %include Inventor/Qt/devices/SoQtSpaceball.h
 %include Inventor/Qt/devices/SoQtMouse.h
 %include Inventor/Qt/SoQtBasic.h
-%include Inventor/Qt/nodes/SoGuiColorEditor.h
-%include Inventor/Qt/editors/SoQtColorEditor.h
 %include Inventor/Qt/SoQtObject.h
 %include Inventor/Qt/SoQt.h
 %include Inventor/Qt/SoQtGLWidget.h
-%include Inventor/Qt/SoQtColorEditor.h
 %include Inventor/Qt/viewers/SoQtPlaneViewer.h
 %include Inventor/Qt/viewers/SoQtViewer.h
 %include Inventor/Qt/viewers/SoQtExaminerViewer.h

@@ -209,6 +209,56 @@ autocast_field(SoField * field)
 
   return result;
 }
+
+/* autocasting helper function for SoEvent */
+/* autocasting helper function for SoField */
+SWIGEXPORT PyObject *
+autocast_event(SoEvent * event)
+{
+  PyObject * result = NULL;
+  
+  /* autocast the result to the corresponding type */
+  if (event) {
+    const char * name = event->getTypeId().getName().getString();
+    PyObject * result_tuple = NULL;
+
+    result_tuple = PyTuple_New(2);
+    PyTuple_SetItem(result_tuple, 0, SWIG_NewPointerObj((void*)event, SWIGTYPE_p_SoEvent, 1));
+    PyTuple_SetItem(result_tuple, 1, PyString_FromString((const char*)name));
+    Py_INCREF(result_tuple);
+    
+    result = cast(NULL, result_tuple);
+
+    Py_DECREF(result_tuple);
+
+    if (!result) {
+      /* try again by adding an So prefix to the name in case it is a builtin type */
+      size_t name_len = strlen(name);
+      char * cast_name = (char*)malloc(name_len + 3);
+
+      memset(cast_name, 0, name_len + 3);
+      cast_name[0] = 'S'; cast_name[1] = 'o';
+      strncpy(cast_name + 2, name, name_len);
+
+      result_tuple = PyTuple_New(2);
+      PyTuple_SetItem(result_tuple, 0, SWIG_NewPointerObj((void*)event, SWIGTYPE_p_SoEvent, 1));
+      PyTuple_SetItem(result_tuple, 1, PyString_FromString((const char*)cast_name));
+      Py_INCREF(result_tuple);
+
+      result = cast(NULL, result_tuple);
+      Py_DECREF(result_tuple);
+
+      free(cast_name);      
+    }
+  }
+
+  if (!result) {
+    Py_INCREF(Py_None);
+    result = Py_None;
+  }
+
+  return result;
+}
 %}
 
 /* typemaps for autocasting types through the Inventor type system */
@@ -234,6 +284,10 @@ autocast_field(SoField * field)
 
 %typemap(out) SoField * {
   return autocast_field($1);
+}
+
+%typemap(out) SoEvent * {
+  return autocast_event($1);
 }
 
 %native(cast) PyObject * cast(PyObject * self, PyObject * args);
@@ -352,7 +406,7 @@ autocast_field(SoField * field)
     PyErr_SetString(PyExc_TypeError, "expected a file object.");
   }
 }
-
+%include Inventor/events/SoEvent.h
 %include Inventor/fields/SoField.h
 %include Inventor/SbString.h
 

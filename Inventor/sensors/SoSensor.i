@@ -29,7 +29,7 @@ SoSensorPythonCB(void * data, SoSensor * sensor)
   $1 = SoSensorPythonCB;
 }
 
-%typemap(typecheck) PyObject *pyfunc {
+%typemap(typecheck) SoSensorCB * func {
   $1 = PyCallable_Check($input) ? 1 : 0;
 }
 

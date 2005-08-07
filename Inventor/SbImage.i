@@ -78,27 +78,6 @@
   }
 }
 
-%rename(SbImage_vec2s) SbImage::SbImage(const unsigned char * bytes,
-                                        const SbVec2s & size, const int bytesperpixel);
-%rename(SbImage_vec3s) SbImage::SbImage(const unsigned char * bytes,
-                                        const SbVec3s & size, const int bytesperpixel);
-
-%feature("shadow") SbImage::SbImage %{
-def __init__(self,*args):
-  newobj = None
-  if len(args) == 3:
-     if isinstance(args[1], SbVec2s):
-        newobj = apply(_coin.new_SbImage_vec2s,args)
-     elif isinstance(args[1], SbVec3s):
-        newobj = apply(_coin.new_SbImage_vec3s,args)
-  else:
-     newobj = apply(_coin.new_SbImage,args)
-  if newobj:
-     self.this = newobj.this
-     self.thisown = 1
-     del newobj.thisown
-%}
-
 %extend SbImage {
   PyObject * getValue() {
     PyObject *result;

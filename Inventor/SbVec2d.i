@@ -23,28 +23,6 @@ convert_SbVec2d_array(PyObject *input, double temp[2])
   $1 = PySequence_Check($input) ? 1 : 0;
 }
 
-%rename(SbVec2d_vec) SbVec2d::SbVec2d(const double v[2]);
-%rename(SbVec2d_dd) SbVec2d::SbVec2d(const double x, const double y);
-
-%feature("shadow") SbVec2d::SbVec2d %{
-def __init__(self,*args):
-   newobj = None
-   if len(args) == 1:
-      if isinstance(args[0], SbVec2d):
-         newobj = _coin.new_SbVec2d()
-         newobj.setValue(args[0])
-      else:
-         newobj = apply(_coin.new_SbVec2d_vec,args)
-   elif len(args) == 2:
-      newobj = apply(_coin.new_SbVec2d_dd,args)
-   else:
-      newobj = apply(_coin.new_SbVec2d,args)
-   if newobj:
-      self.this = newobj.this
-      self.thisown = 1
-      del newobj.thisown
-%}
-
 /* add operator overloading methods instead of the global functions */
 %extend SbVec2d {
   SbVec2d __add__(const SbVec2d &u) { return *self + u; }

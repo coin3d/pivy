@@ -121,21 +121,6 @@ SoPointPythonCB(void * userdata, SoCallbackAction * action, const SoPrimitiveVer
   $1 = PyCallable_Check($input) ? 1 : 0;
 }
 
-%rename(SoCallbackAction_vpr) SoCallbackAction::SoCallbackAction(const SbViewportRegion & vp);
-
-%feature("shadow") SoCallbackAction::SoCallbackAction %{
-def __init__(self,*args):
-   newobj = None
-   if len(args) == 1:
-      newobj = apply(_coin.new_SoCallbackAction_vpr,args)
-   else:
-      newobj = apply(_coin.new_SoCallbackAction,args)
-   if newobj:
-      self.this = newobj.this
-      self.thisown = 1
-      del newobj.thisown
-%}
-
 /* add python specific callback functions */
 %extend SoCallbackAction {
   void addPreCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {

@@ -14,28 +14,6 @@
 
 %typemap(typecheck) float *rgb = float hsv[3];
 
-%rename(SbColor_vec) SbColor::SbColor(const SbVec3f &v);
-%rename(SbColor_rgb) SbColor::SbColor(const float *const rgb);
-%rename(SbColor_fff) SbColor::SbColor(const float r, const float g, const float b);
-
-%feature("shadow") SbColor::SbColor %{
-def __init__(self,*args):
-   newobj = None
-   if len(args) == 1:
-      if isinstance(args[0], SbVec3f):
-         newobj = apply(_coin.new_SbColor_vec,args)
-      else:
-         newobj = apply(_coin.new_SbColor_rgb,args)
-   elif len(args) == 3:
-      newobj = apply(_coin.new_SbColor_fff,args)
-   else:
-      newobj = apply(_coin.new_SbColor,args)
-   if newobj:
-      self.this = newobj.this
-      self.thisown = 1
-      del newobj.thisown
-%}
-
 %apply float *OUTPUT { float & h, float & s, float & v };
 
 %ignore SbColor::getHSVValue(float hsv[3]) const;

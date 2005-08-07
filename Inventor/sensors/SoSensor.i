@@ -46,19 +46,3 @@ SoSensorPythonCB(void * data, SoSensor * sensor)
 %typemap(typecheck) void * data {
   $1 = PyTuple_Check($input) ? 1 : 0;
 }
-
-%rename(SoSensor_scb_v) SoSensor::SoSensor(SoSensorCB * func, void * data);
-
-%feature("shadow") SoSensor::SoSensor %{
-def __init__(self,*args):
-   newobj = None
-   if len(args) == 2:
-      args = (args[0], (args[0], args[1]))
-      newobj = apply(_coin.new_SoSensor_scb_v,args)
-   else:
-      newobj = apply(_coin.new_SoSensor,args)
-   if newobj:
-      self.this = newobj.this
-      self.thisown = 1
-      del newobj.thisown
-%}

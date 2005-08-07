@@ -16,37 +16,6 @@
   }
 }
 
-%rename(SbDPRotation_vec_d) SbDPRotation::SbDPRotation(const SbVec3d & axis, const double radians);
-%rename(SbDPRotation_arr) SbDPRotation::SbDPRotation(const double q[4]);
-%rename(SbDPRotation_dddd) SbDPRotation::SbDPRotation(const double q0, const double q1, const double q2, const double q3);
-%rename(SbDPRotation_mat) SbDPRotation::SbDPRotation(const SbMatrix & m);
-%rename(SbDPRotation_vec_vec) SbDPRotation::SbDPRotation(const SbVec3d & rotateFrom, const SbVec3d & rotateTo);
-
-%feature("shadow") SbDPRotation::SbDPRotation %{
-def __init__(self,*args):
-   newobj = None
-   if len(args) == 1:
-      if isinstance(args[0], SbMatrix):
-         newobj = apply(_coin.new_SbDPRotation_mat,args)
-      elif isinstance(args[0], SbDPRotation):
-         newobj = _coin.new_SbDPRotation_arr(args[0].getValue())
-      else:
-         newobj = apply(_coin.new_SbDPRotation_arr,args)
-   elif len(args) == 2:
-      if isinstance(args[1], SbVec3f):
-         newobj = apply(_coin.new_SbDPRotation_vec_vec,args)
-      else:
-         newobj = apply(_coin.new_SbDPRotation_vec_d,args)
-   elif len(args) == 4:
-      newobj = apply(_coin.new_SbDPRotation_dddd,args)
-   else:
-      newobj = apply(_coin.new_SbDPRotation,args)
-   if newobj:
-      self.this = newobj.this
-      self.thisown = 1
-      del newobj.thisown
-%}
-
 /* add operator overloading methods instead of the global functions */
 %extend SbDPRotation {
   SbDPRotation __mul__(const SbDPRotation &u) { return *self * u; }

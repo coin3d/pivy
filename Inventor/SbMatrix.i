@@ -65,32 +65,6 @@ convert_SbMat_array(PyObject *input, SbMat temp)
   $1 = new $1_basetype();
 }
 
-%ignore SbMatrix::SbMatrix(const SbMat & matrix);
-
-%rename(SbMatrix_f16) SbMatrix::SbMatrix(const float a11, const float a12, const float a13, const float a14,
-                                         const float a21, const float a22, const float a23, const float a24,
-                                         const float a31, const float a32, const float a33, const float a34,
-                                         const float a41, const float a42, const float a43, const float a44);
-%rename(SbMatrix_SbMat) SbMatrix::SbMatrix(const SbMat * matrix);
-
-%feature("shadow") SbMatrix::SbMatrix %{
-def __init__(self,*args):
-   newobj = None
-   if len(args) == 1:
-      if isinstance(args[0],SbMatrix):
-         newobj = _coin.new_SbMatrix_SbMat(args[0].getValue())
-      else:
-         newobj = apply(_coin.new_SbMatrix_SbMat,args)
-   elif len(args) == 16:
-      newobj = apply(_coin.new_SbMatrix_f16,args)
-   else:
-      newobj = apply(_coin.new_SbMatrix,args)
-   if newobj:
-      self.this = newobj.this
-      self.thisown = 1
-      del newobj.thisown
-%}
-
 %extend SbMatrix {
   PyObject * getTransform() {
     SbVec3f * t = new SbVec3f;

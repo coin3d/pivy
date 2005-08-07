@@ -85,21 +85,6 @@ SoSelectionPickPythonCB(void * data, const SoPickedPoint * pick)
   $1 = PyCallable_Check($input) ? 1 : 0;
 }
 
-%rename(SoSelection_i) SoSelection::SoSelection(const int nChildren);
-
-%feature("shadow") SoSelection::SoSelection %{
-def __init__(self,*args):
-   newobj = None
-   if len(args) == 1:
-      newobj = apply(_coin.new_SoSelection_i,args)
-   else:
-      newobj = apply(_coin.new_SoSelection,args)
-   if newobj:
-      self.this = newobj.this
-      self.thisown = 1
-      del newobj.thisown
-%}
-
 /* add python specific callback functions */
 %extend SoSelection {
   void addSelectionCallback(PyObject *pyfunc, PyObject *userdata = NULL) {

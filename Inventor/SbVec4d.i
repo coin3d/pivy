@@ -40,28 +40,6 @@ convert_SbVec4d_array(PyObject *input, double temp[4])
   }
 }
 
-%rename(SbVec4d_vec) SbVec4d::SbVec4d(const double v[4]);
-%rename(SbVec4d_ffff) SbVec4d::SbVec4d(const double x, const double y, const double z, const double w);
-
-%feature("shadow") SbVec4d::SbVec4d %{
-def __init__(self,*args):
-   newobj = None
-   if len(args) == 1:
-      if isinstance(args[0], SbVec4d):
-         newobj = _coin.new_SbVec4d()
-         newobj.setValue(args[0])
-      else:
-         newobj = apply(_coin.new_SbVec4d_vec,args)
-   elif len(args) == 4:
-      newobj = apply(_coin.new_SbVec4d_ffff,args)
-   else:
-      newobj = apply(_coin.new_SbVec4d,args)
-   if newobj:
-      self.this = newobj.this
-      self.thisown = 1
-      del newobj.thisown
-%}
-
 /* add operator overloading methods instead of the global functions */
 %extend SbVec4d {
   SbVec4d __add__(const SbVec4d &u) { return *self + u; }

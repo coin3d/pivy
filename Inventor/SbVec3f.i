@@ -38,32 +38,6 @@ convert_SbVec3f_array(PyObject *input, float temp[3])
   }
 }
 
-%rename(SbVec3f_vec) SbVec3f::SbVec3f(const float v[3]);
-%rename(SbVec3f_fff) SbVec3f::SbVec3f(const float x, const float y, const float z);
-%rename(SbVec3f_pl_pl_pl) SbVec3f::SbVec3f(const SbPlane & p0, const SbPlane & p1, const SbPlane & p2);
-
-%feature("shadow") SbVec3f::SbVec3f %{
-def __init__(self,*args):
-   newobj = None
-   if len(args) == 1:
-      if isinstance(args[0], SbVec3f):
-         newobj = _coin.new_SbVec3f()
-         newobj.setValue(args[0])
-      else:
-         newobj = apply(_coin.new_SbVec3f_vec,args)
-   elif len(args) == 3:
-      if isinstance(args[0], SbPlane):
-         newobj = apply(_coin.new_SbVec3f_pl_pl_pl,args)
-      else:
-         newobj = apply(_coin.new_SbVec3f_fff,args)
-   else:
-      newobj = apply(_coin.new_SbVec3f,args)
-   if newobj:
-      self.this = newobj.this
-      self.thisown = 1
-      del newobj.thisown
-%}
-
 /* add operator overloading methods instead of the global functions */
 %extend SbVec3f {
   SbVec3f __add__(const SbVec3f &u) { return *self + u; }

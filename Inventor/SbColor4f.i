@@ -30,31 +30,6 @@
 
 %typemap(typecheck) float * rgb = float hsv[3];
 
-%rename(SbColor4f_col_f) SbColor4f::SbColor4f(const SbColor &rgb, const float alpha);
-%rename(SbColor4f_vec) SbColor4f::SbColor4f(const SbVec4f &v);
-%rename(SbColor4f_rgb) SbColor4f::SbColor4f(const float *const rgba);
-%rename(SbColor4f_ffff) SbColor4f::SbColor4f(const float r, const float g, const float b, const float a=1.0f);
-
-%feature("shadow") SbColor4f::SbColor4f %{
-def __init__(self,*args):
-   newobj = None
-   if len(args) == 1:
-      if isinstance(args[0], SbVec4f):
-         newobj = apply(_coin.new_SbColor4f_vec,args)
-      else:
-         newobj = apply(_coin.new_SbColor4f_rgb,args)
-   elif len(args) == 2:
-      newobj = apply(_coin.new_SbColor4f_col_f,args)
-   elif len(args) == 3:
-      newobj = apply(_coin.new_SbColor4f_ffff,args)
-   else:
-      newobj = apply(_coin.new_SbColor4f,args)
-   if newobj:
-      self.this = newobj.this
-      self.thisown = 1
-      del newobj.thisown
-%}
-
 /* add operator overloading methods instead of the global functions */
 %extend SbColor4f {
   SbColor4f __add__(const SbColor4f &u) { return *self + u; }

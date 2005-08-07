@@ -13,8 +13,6 @@ def __init__(self,*args):
       del newobj.thisown
 %}
 
-%ignore SoOffscreenRenderer::getBuffer();
-
 %extend SoOffscreenRenderer {
   PyObject * getBuffer() {
     SbVec2s size = self->getViewportRegion().getWindowSize();

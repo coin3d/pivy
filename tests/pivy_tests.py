@@ -89,7 +89,7 @@ class Autocasting(unittest.TestCase):
 class FieldSetValue(unittest.TestCase):
     """checks various setValue(s) calls for fields"""
     def testSFBool(self):
-        """check setValue for SFBool"""
+        """check setValue for SoSFBool"""
         t = SoSFBool()
         s = SoSFBool()
         t.setValue(True)
@@ -98,54 +98,54 @@ class FieldSetValue(unittest.TestCase):
                         'setValue on SoSFBool failed')
 
     def testSFColor(self):
-        """check setValue for SFColor"""
+        """check setValue for SoSFColor"""
         t = SoSFColor()
         s = SoSFColor()
         t.setValue(0,1,1)
         self.failUnless(t.getValue() == SbColor(0,1,1), 
-                        'setValue 3 floats on SFColor failed')
+                        'setValue 3 floats on SoSFColor failed')
         t.setValue([0,1,0])
         self.failUnless(t.getValue() == SbColor(0,1,0), 
-                        'setValue float sequence on SFColor failed')
+                        'setValue float sequence on SoSFColor failed')
         t.setValue(SbColor(1,0,0))
         self.failUnless(t.getValue() == SbColor(1,0,0), 
-                        'setValue SbColor on SFColor failed')
+                        'setValue SbColor on SoSFColor failed')
         t.setValue(SbVec3f(1,0,1))
         self.failUnless(t.getValue() == SbColor(1,0,1), 
-                        'setValue SbVec3f on SFColor failed') 
+                        'setValue SbVec3f on SoSFColor failed') 
         s.setValue(t)
         self.failUnless(t.getValue() == s.getValue(),
-                        'setValue othe SFcolor on SFColor failed')
+                        'setValue othe SoSFcolor on SoSFColor failed')
         
     def testSFEngine(self):
-        """check setValue for SFEngine"""
+        """check setValue for SoSFEngine"""
         t = SoSFEngine()
         s = SoSFEngine()
         c = SoCounter()
         t.setValue(c)
         self.failUnless(t.getValue() == c, 
-                        'setValue engine on SFEngine failed')
+                        'setValue engine on SoSFEngine failed')
         s.setValue(t)
         self.failUnless(t.getValue() == s.getValue(), 
-                        'setValue other SFEngine on SFEngine failed')
+                        'setValue other SoSFEngine on SoSFEngine failed')
 
     def testSFString(self):
-        """check setValue for SFString"""
+        """check setValue for SoSFString"""
         t = SoSFString()
         s = SoSFString()
         c = SbString('bla')
         t.setValue(c)
         self.failUnless(t.getValue() == c, 
-                        'setValue SbString on SFString failed')
+                        'setValue SbString on SoSFString failed')
         t.setValue('hello')
         self.failUnless(t.getValue() == 'hello', 
-                        'setValue string on SFString failed')        
+                        'setValue string on SoSFString failed')        
         s.setValue(t)
         self.failUnless(t.getValue() == s.getValue(), 
-                        'setValue other SFString on SFString failed')
+                        'setValue other SoSFString on SoSFString failed')
         
     def testSFInt32(self):
-        """check setValue for SFInt32"""
+        """check setValue for SoSFInt32"""
         t = SoSFInt32()
         s = SoSFInt32()
         t.setValue(10)
@@ -154,7 +154,7 @@ class FieldSetValue(unittest.TestCase):
                         'setValue on SoSFInt32 failed')
 
     def testSFFloat(self):
-        """check setValue for SFFloat"""
+        """check setValue for SoSFFloat"""
         t = SoSFFloat()
         s = SoSFFloat()
         t.setValue(10.5)
@@ -163,7 +163,7 @@ class FieldSetValue(unittest.TestCase):
                         'setValue on SoSFFloat failed')
 
     def testSFShort(self):
-        """check setValue for SFShort"""
+        """check setValue for SoSFShort"""
         t = SoSFShort()
         s = SoSFShort()
         t.setValue(10)
@@ -172,7 +172,7 @@ class FieldSetValue(unittest.TestCase):
                         'setValue on SoSFShort failed')
 
     def testSFMatrix(self):
-        """check setValue for SFMatrix"""
+        """check setValue for SoSFMatrix"""
         t = SoSFMatrix()
         s = SoSFMatrix()
         # m = SbMatrix([[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0]])
@@ -183,22 +183,22 @@ class FieldSetValue(unittest.TestCase):
                         'setValue on SoSFMatrix failed')                       
 
     def testSFName(self):
-        """check setValue for SFName"""
+        """check setValue for SoSFName"""
         t = SoSFName()
         s = SoSFName()
         c = SbName('bla')
         t.setValue(c)
         self.failUnless(t.getValue() == c, 
-                        'setValue SbName on SFName failed')
+                        'setValue SbName on SoSFName failed')
         t.setValue('hello')
         self.failUnless(t.getValue() == 'hello', 
-                        'setValue string on SFName failed')        
+                        'setValue string on SoSFName failed')        
         s.setValue(t)
         self.failUnless(t.getValue() == s.getValue(), 
-                        'setValue other SFName on SFName failed')
+                        'setValue other SoSFName on SoSFName failed')
 
     def testSFNode(self):
-        """check setValue for SFNode"""
+        """check setValue for SoSFNode"""
         t = SoSFNode()
         s = SoSFNode()
         c = SoCone()
@@ -210,7 +210,7 @@ class FieldSetValue(unittest.TestCase):
                         'autocast on SoSFNode.getValue failed')
         
     def testSFRotation(self):
-        """check setValue for SFRotation"""
+        """check setValue for SoSFRotation"""
         t = SoSFRotation()
         s = SoSFRotation()
         m = SbRotation(1,0,0,0)
@@ -226,58 +226,58 @@ class FieldSetValue(unittest.TestCase):
                         'setValue on SoSFRotation from 4 values failed')        
 
     def testSFVec3f(self):
-        """check setValue for SFVec3f"""
+        """check setValue for SoSFVec3f"""
         t = SoSFVec3f()
         s = SoSFVec3f()
         t.setValue(0,1,1)
         self.failUnless(t.getValue() == SbVec3f(0,1,1), 
-                        'setValue 3 floats on SFVec3f failed')
+                        'setValue 3 floats on SoSFVec3f failed')
         t.setValue([0,1,0])
         self.failUnless(t.getValue() == SbVec3f(0,1,0), 
-                        'setValue float sequence on SFVec3f failed')
+                        'setValue float sequence on SoSFVec3f failed')
         t.setValue(SbVec3f(1,0,0))
         self.failUnless(t.getValue() == SbVec3f(1,0,0), 
-                        'setValue SbVec3f on SFVec3f failed')
+                        'setValue SbVec3f on SoSFVec3f failed')
         s.setValue(t)
         self.failUnless(t.getValue() == s.getValue(),
-                        'setValue other SFVec3f on SFVec3f failed')
+                        'setValue other SoSFVec3f on SoSFVec3f failed')
 
     def testSFVec2f(self):
-        """check setValue for SFVec2f"""
+        """check setValue for SoSFVec2f"""
         t = SoSFVec2f()
         s = SoSFVec2f()
         t.setValue(0,1)
         self.failUnless(t.getValue() == SbVec2f(0,1), 
-                        'setValue 2 floats on SFVec2f failed')
+                        'setValue 2 floats on SoSFVec2f failed')
         t.setValue([1,0])
         self.failUnless(t.getValue() == SbVec2f(1,0), 
-                        'setValue float sequence on SFVec2f failed')
+                        'setValue float sequence on SoSFVec2f failed')
         t.setValue(SbVec2f(1,1))
         self.failUnless(t.getValue() == SbVec2f(1,1), 
-                        'setValue SbVec2f on SFVec2f failed')
+                        'setValue SbVec2f on SoSFVec2f failed')
         s.setValue(t)
         self.failUnless(t.getValue() == s.getValue(),
-                        'setValue other SFVec2f on SFVec2f failed')
+                        'setValue other SoSFVec2f on SoSFVec2f failed')
 
     def testSFVec4f(self):
-        """check setValue for SFVec4f"""
+        """check setValue for SoSFVec4f"""
         t = SoSFVec4f()
         s = SoSFVec4f()
         t.setValue(0,1,1,0)
         self.failUnless(t.getValue() == SbVec4f(0,1,1,0), 
-                        'setValue 4 floats on SFVec4f failed')
+                        'setValue 4 floats on SoSFVec4f failed')
         t.setValue([0,1,0,1])
         self.failUnless(t.getValue() == SbVec4f(0,1,0,1), 
-                        'setValue float sequence on SFVec4f failed')
+                        'setValue float sequence on SoSFVec4f failed')
         t.setValue(SbVec4f(1,0,0,1))
         self.failUnless(t.getValue() == SbVec4f(1,0,0,1), 
-                        'setValue SbVec4f on SFVec4f failed')
+                        'setValue SbVec4f on SoSFVec4f failed')
         s.setValue(t)
         self.failUnless(t.getValue() == s.getValue(),
-                        'setValue other SFVec4f on SFVec4f failed')
+                        'setValue other SoSFVec4f on SoSFVec4f failed')
 
     def testSFImage(self):
-        """check setValue for SFImage"""
+        """check setValue for SoSFImage"""
         t = SoSFImage()
         s = SoSFImage()        
         t.setValue(SbVec2s(2,2), 1, "abcd")
@@ -286,7 +286,7 @@ class FieldSetValue(unittest.TestCase):
                         'setValue on SoSFImage failed')
 
     def testSFImage3(self):
-        """check setValue for SFImage3"""
+        """check setValue for SoSFImage3"""
         t = SoSFImage3()
         s = SoSFImage3()        
         t.setValue(SbVec3s(2,2,2), 1, "abcdefgh")
@@ -295,7 +295,7 @@ class FieldSetValue(unittest.TestCase):
                         'setValue on SoSFImage3 failed')
 
     def testSFPath(self):
-        """check setValue for SFPath"""
+        """check setValue for SoSFPath"""
         t = SoSFPath()
         s = SoSFPath()
         c = SoPath()
@@ -308,7 +308,7 @@ class FieldSetValue(unittest.TestCase):
                         'autocast on SoSFPath.getValue failed')
 
     def testSFPlane(self):
-        """check setValue for SFPlane"""
+        """check setValue for SoSFPlane"""
         t = SoSFPlane()
         s = SoSFPlane()
         c = SbPlane()
@@ -318,7 +318,7 @@ class FieldSetValue(unittest.TestCase):
                         'setValue on SoSFPlane failed')
 
     def testSFUInt32(self):
-        """check setValue for SFUInt32"""
+        """check setValue for SoSFUInt32"""
         t = SoSFUInt32()
         s = SoSFUInt32()
         t.setValue(10)
@@ -327,7 +327,7 @@ class FieldSetValue(unittest.TestCase):
                         'setValue on SoSFUInt32 failed')
 
     def testSFUShort(self):
-        """check setValue for SFUShort"""
+        """check setValue for SoSFUShort"""
         t = SoSFUShort()
         s = SoSFUShort()
         t.setValue(10)
@@ -336,7 +336,7 @@ class FieldSetValue(unittest.TestCase):
                         'setValue on SoSFUShort failed')
 
     def testSFTime(self):
-        """check setValue for SFTime"""
+        """check setValue for SoSFTime"""
         t = SoSFTime()
         s = SoSFTime()
         t.setValue(150.5)
@@ -345,48 +345,48 @@ class FieldSetValue(unittest.TestCase):
                         'setValue on SoSFTime failed')
 
     def testMFBool(self):
-        """check setValue(s) for MFBool"""
+        """check setValue(s) for SoMFBool"""
         t = SoMFBool()
         s = SoMFBool()
         t.setValues([0,1])
         self.failUnless(t.getValues() == [0,1],
-                        'setValues with sequence on MFBool failed')
+                        'setValues with sequence on SoMFBool failed')
         t.setValues(2,[0,1])
         self.failUnless(t.getValues() == [0,1,0,1],
-                        'setValues with start and sequence on MFBool failed')
+                        'setValues with start and sequence on SoMFBool failed')
         t.setValues(0,1,[1,0])
         self.failUnless(t.getValues() == [1,1,0,1],
-                        'setValues with start, length and sequence on MFBool failed')
+                        'setValues with start, length and sequence on SoMFBool failed')
         t.setValue(s)
         self.failUnless(t.getValues() == s.getValues(),
-                        'setValue with other MFBool on MFBool failed')
+                        'setValue with other SoMFBool on SoMFBool failed')
         t.setValue(0)
         self.failUnless(t.getValues() == [0],
-                        'setValue with bool on MFBool failed')
+                        'setValue with bool on SoMFBool failed')
 
     def testMFColor(self):
-        """check setValue(s) for MFColor"""
+        """check setValue(s) for SoMFColor"""
         t = SoMFColor()
         s = SoMFColor()
         t.setValues([[0,0,1]])
         t.setValues(1,[[0,0,1]])
         t.setValues(2,1,[[0,0,1],[1,0,1]])
         self.failUnless(t.getValues() == [SbColor(0,0,1),SbColor(0,0,1),SbColor(0,0,1)],
-                        'setValues with sequence of float triples on MFColor failed')                    
+                        'setValues with sequence of float triples on SoMFColor failed')                    
         t.setValue(s)
         self.failUnless(t.getValues() == s.getValues(),
-                        'setValue with another MFColor failed' )
+                        'setValue with another SoMFColor failed' )
         t.setValues([SbColor(0,0,1)])
         t.setValues(1,[SbColor(0,0,1)])
         t.setValues(2,1,[SbColor(0,0,1), SbColor(1,0,1)])
         self.failUnless(t.getValues() == [SbColor(0,0,1),SbColor(0,0,1),SbColor(0,0,1)],
-                        'setValues with sequence of SbColors on MFColor failed')                    
+                        'setValues with sequence of SbColors on SoMFColor failed')                    
         t.setValues([])
         self.failUnless(t.getValues() == [SbColor(0,0,1),SbColor(0,0,1),SbColor(0,0,1)],
                         'setValue with empty sequence of SbColors failed' )
 
     def testMFEngine(self):
-        """check setValue(s) for MFEngine"""
+        """check setValue(s) for SoMFEngine"""
         t = SoMFEngine()
         s = SoMFEngine()
         c = SoCounter()
@@ -395,173 +395,173 @@ class FieldSetValue(unittest.TestCase):
         c2.ref()
         t.setValue(c)
         self.failUnless(t.getValues() == [c], 
-                        'setValue engine on MFEngine failed')
+                        'setValue engine on SoMFEngine failed')
         t.setValues([c,c2])
         self.failUnless(t.getValues() == [c,c2], 
-                        'setValues on MFEngine failed')
+                        'setValues on SoMFEngine failed')
         t.setValue(s)
         self.failUnless(t.getValues() == s.getValues(),
-                        'setValue with other MFEngine on MFEngine failed')
+                        'setValue with other SoMFEngine on SoMFEngine failed')
         t.setValues(2,1,[c,c2])
         self.failUnless(t.getValues() == [None,None,c],
-                        'setValues with start, length and sequence on MFEngine failed')
+                        'setValues with start, length and sequence on SoMFEngine failed')
 
     def testMFEnum(self):
-        """check setValue(s) for MFEnum"""
+        """check setValue(s) for SoMFEnum"""
         t = SoMFEnum()
         s = SoMFEnum()
         t.setValues([0,2])
         self.failUnless(t.getValues() == [0,2],
-                        'setValues with sequence on MFEnum failed')
+                        'setValues with sequence on SoMFEnum failed')
         t.setValues(2,[0,1])
         self.failUnless(t.getValues() == [0,2,0,1],
-                        'setValues with start and sequence on MFEnum failed')
+                        'setValues with start and sequence on SoMFEnum failed')
         t.setValues(0,1,[-1,0])
         self.failUnless(t.getValues() == [-1,2,0,1],
-                        'setValues with start, length and sequence on MFEnum failed')
+                        'setValues with start, length and sequence on SoMFEnum failed')
         t.setValue(s)
         self.failUnless(t.getValues() == s.getValues(),
-                        'setValue with other MFEnum on MFEnum failed')
+                        'setValue with other SoMFEnum on SoMFEnum failed')
         t.setValue(0)
         self.failUnless(t.getValues() == [0],
-                        'setValue with single int on MFEnum failed')
+                        'setValue with single int on SoMFEnum failed')
         t.setValues([])
         self.failUnless(t.getValues() == [0],
-                        'setValues with empty list on MFEnum failed')
+                        'setValues with empty list on SoMFEnum failed')
 
     def testMFString(self):
-        """check setValue(s) for MFString"""
+        """check setValue(s) for SoMFString"""
         t = SoMFString()
         s = SoMFString()
         t.setValues(['1','2'])
         t.setValues(1,['3'])
         t.setValues(2,1,['4','5'])
         self.failUnless(t.getValues() == ['1','3','4'],
-                        'setValues with sequence of strings on MFString failed')                    
+                        'setValues with sequence of strings on SoMFString failed')                    
         t.setValue(s)
         self.failUnless(t.getValues() == s.getValues(),
-                        'setValue with another MFString failed' )
+                        'setValue with another SoMFString failed' )
         t.setValues([SbString('1')])
         t.setValues(1,[SbString('2')])
         t.setValues(2,1,[SbString('3'), SbString('4')])
         self.failUnless(t.getValues() == ['1','2','3'],
-                        'setValues with sequence of SbStrings on MFString failed')                    
+                        'setValues with sequence of SbStrings on SoMFString failed')                    
 
 
     def testMFInt32(self):
-        """check setValue(s) for MFInt32"""
+        """check setValue(s) for SoMFInt32"""
         t = SoMFInt32()
         s = SoMFInt32()
         t.setValues([0,2])
         self.failUnless(t.getValues() == [0,2],
-                        'setValues with sequence on MFInt32 failed')
+                        'setValues with sequence on SoMFInt32 failed')
         t.setValues(2,[0,1])
         self.failUnless(t.getValues() == [0,2,0,1],
-                        'setValues with start and sequence on MFInt32 failed')
+                        'setValues with start and sequence on SoMFInt32 failed')
         t.setValues(0,1,[-1,0])
         self.failUnless(t.getValues() == [-1,2,0,1],
-                        'setValues with start, length and sequence on MFInt32 failed')
+                        'setValues with start, length and sequence on SoMFInt32 failed')
         t.setValue(s)
         self.failUnless(t.getValues() == s.getValues(),
-                        'setValue with other MFInt32 on MFInt32 failed')
+                        'setValue with other SoMFInt32 on SoMFInt32 failed')
         t.setValue(0)
         self.failUnless(t.getValues() == [0],
-                        'setValue with single int on MFInt32 failed')
+                        'setValue with single int on SoMFInt32 failed')
         t.setValues([])
         self.failUnless(t.getValues() == [0],
-                        'setValues with empty list on MFInt32 failed')
+                        'setValues with empty list on SoMFInt32 failed')
 
     def testMFFloat(self):
-        """check setValue(s) for MFFloat"""
+        """check setValue(s) for SoMFFloat"""
         t = SoMFFloat()
         s = SoMFFloat()
         t.setValues([0.5,2])
         self.failUnless(t.getValues() == [0.5,2],
-                        'setValues with sequence on MFFloat failed')
+                        'setValues with sequence on SoMFFloat failed')
         t.setValues(2,[0,1])
         self.failUnless(t.getValues() == [0.5,2,0,1],
-                        'setValues with start and sequence on MFFloat failed')
+                        'setValues with start and sequence on SoMFFloat failed')
         t.setValues(0,1,[1.5,0])
         self.failUnless(t.getValues() == [1.5,2,0,1],
-                        'setValues with start, length and sequence on MFFloat failed')
+                        'setValues with start, length and sequence on SoMFFloat failed')
         t.setValue(s)
         self.failUnless(t.getValues() == s.getValues(),
-                        'setValue with other MFFloat on MFFloat failed')
+                        'setValue with other SoMFFloat on SoMFFloat failed')
         t.setValue(-0.5)
         self.failUnless(t.getValues() == [-0.5],
-                        'setValue with single int on MFFloat failed')
+                        'setValue with single int on SoMFFloat failed')
         t.setValues([])
         self.failUnless(t.getValues() == [-0.5],
-                        'setValues with empty list on MFFloat failed')     
+                        'setValues with empty list on SoMFFloat failed')     
 
     def testMFShort(self):
-        """check setValue(s) for MFShort"""
+        """check setValue(s) for SoMFShort"""
         t = SoMFShort()
         s = SoMFShort()
         t.setValues([0,2])
         self.failUnless(t.getValues() == [0,2],
-                        'setValues with sequence on MFShort failed')
+                        'setValues with sequence on SoMFShort failed')
         t.setValues(2,[0,1])
         self.failUnless(t.getValues() == [0,2,0,1],
-                        'setValues with start and sequence on MFShort failed')
+                        'setValues with start and sequence on SoMFShort failed')
         t.setValues(0,1,[-1,0])
         self.failUnless(t.getValues() == [-1,2,0,1],
-                        'setValues with start, length and sequence on MFShort failed')
+                        'setValues with start, length and sequence on SoMFShort failed')
         t.setValue(s)
         self.failUnless(t.getValues() == s.getValues(),
-                        'setValue with other MFShort on MFShort failed')
+                        'setValue with other SoMFShort on SoMFShort failed')
         t.setValue(0)
         self.failUnless(t.getValues() == [0],
-                        'setValue with single int on MFShort failed')
+                        'setValue with single int on SoMFShort failed')
         t.setValues([])
         self.failUnless(t.getValues() == [0],
-                        'setValues with empty list on MFShort failed')
+                        'setValues with empty list on SoMFShort failed')
         
     def testMFMatrix(self):
-        """check setValue(s) for MFMatrix"""
+        """check setValue(s) for SoMFMatrix"""
         t = SoMFMatrix()
         s = SoMFMatrix()
         m = SbMatrix([[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0]])
         m2 = SbMatrix([[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]])
         t.setValues([m])
         self.failUnless(t.getValues() == [m],
-                        'setValues with sequence on MFMatrix failed')
+                        'setValues with sequence on SoMFMatrix failed')
         t.setValues(2,[m2,m2])
         self.failUnless(t.getValues()[2:4] == [m2,m2],
-                        'setValues with start and sequence on MFMatrix failed')
+                        'setValues with start and sequence on SoMFMatrix failed')
         t.setValues(1,1,[m2,m])
         self.failUnless(t.getValues() == [m,m2,m2,m2],
-                        'setValues with start, length and sequence on MFMatrix failed')
+                        'setValues with start, length and sequence on SoMFMatrix failed')
         t.setValue(s)
         self.failUnless(t.getValues() == s.getValues(),
-                        'setValue with other MFMatrix on MFMatrix failed')
+                        'setValue with other SoMFMatrix on SoMFMatrix failed')
         t.setValue(m2)
         self.failUnless(t.getValues() == [m2],
-                        'setValue with single int on MFMatrix failed')
+                        'setValue with single int on SoMFMatrix failed')
         t.setValues([])
         self.failUnless(t.getValues() == [m2],
-                        'setValues with empty list on MFMatrix failed')                     
+                        'setValues with empty list on SoMFMatrix failed')                     
 
     def testMFName(self):
-        """check setValue(s) for MFName"""
+        """check setValue(s) for SoMFName"""
         t = SoMFName()
         s = SoMFName()
         t.setValues(['1','2'])
         t.setValues(1,['3'])
         t.setValues(2,1,['4','5'])
         self.failUnless(t.getValues() == ['1','3','4'],
-                        'setValues with sequence of Names on MFName failed')                    
+                        'setValues with sequence of Names on SoMFName failed')                    
         t.setValue(s)
         self.failUnless(t.getValues() == s.getValues(),
-                        'setValue with another MFName failed' )
+                        'setValue with another SoMFName failed' )
         t.setValues([SbName('1')])
         t.setValues(1,[SbName('2')])
         t.setValues(2,1,[SbName('3'), SbName('4')])
         self.failUnless(t.getValues() == ['1','2','3'],
-                        'setValues with sequence of SbNames on MFName failed')                    
+                        'setValues with sequence of SbNames on SoMFName failed')                    
 
     def testMFNode(self):
-        """check setValue(s) for MFNode"""
+        """check setValue(s) for SoMFNode"""
         t = SoMFNode()
         s = SoMFNode()
         c = SoMaterial()
@@ -570,19 +570,19 @@ class FieldSetValue(unittest.TestCase):
         c2.ref()
         t.setValue(c)
         self.failUnless(t.getValues() == [c], 
-                        'setValue Node on MFNode failed')
+                        'setValue Node on SoMFNode failed')
         t.setValues([c,c2])
         self.failUnless(t.getValues() == [c,c2], 
-                        'setValues on MFNode failed')
+                        'setValues on SoMFNode failed')
         t.setValue(s)
         self.failUnless(t.getValues() == s.getValues(),
-                        'setValue with other MFNode on MFNode failed')
+                        'setValue with other SoMFNode on SoMFNode failed')
         t.setValues(2,1,[c,c2])
         self.failUnless(t.getValues() == [None,None,c],
-                        'setValues with start, length and sequence on MFNode failed')         
+                        'setValues with start, length and sequence on SoMFNode failed')         
 
     def testMFPath(self):
-        """check setValue(s) for MFPath"""
+        """check setValue(s) for SoMFPath"""
         t = SoMFPath()
         s = SoMFPath()
         p = SoPath()
@@ -591,19 +591,19 @@ class FieldSetValue(unittest.TestCase):
         p2.ref()
         t.setValue(p)
         self.failUnless(t.getValues() == [p], 
-                        'setValue Path on MFPath failed')
+                        'setValue Path on SoMFPath failed')
         t.setValues([p,p2])
         self.failUnless(t.getValues() == [p,p2], 
-                        'setValues on MFPath failed')
+                        'setValues on SoMFPath failed')
         t.setValue(s)
         self.failUnless(t.getValues() == s.getValues(),
-                        'setValue with other MFPath on MFPath failed')
+                        'setValue with other SoMFPath on SoMFPath failed')
         t.setValues(2,1,[p,p2])
         self.failUnless(t.getValues() == [None,None,p],
-                        'setValues with start, length and sequence on MFPath failed')         
+                        'setValues with start, length and sequence on SoMFPath failed')         
 
     def testMFPlane(self):
-        """check setValue(s) for MFPlane"""
+        """check setValue(s) for SoMFPlane"""
         t = SoMFPlane()
         s = SoMFPlane()
         m = SbPlane(SbVec3f(1,0,0),0)
@@ -622,7 +622,7 @@ class FieldSetValue(unittest.TestCase):
         self.assertEqual(t.getValues(), [m2]) # appears to be the correct behaviour as in Coin :/
 
     def testMFRotation(self):
-        """check setValue(s) for MFRotation"""
+        """check setValue(s) for SoMFRotation"""
         t = SoMFRotation()
         s = SoMFRotation()
         m = SbRotation(1,0,0,0)
@@ -645,76 +645,76 @@ class FieldSetValue(unittest.TestCase):
         self.assertEqual(t.getValues(), [m2]) # appears to be the correct behaviour as in Coin :/
 
     def testMFTime(self):
-        """check setValue(s) for MFTime"""
+        """check setValue(s) for SoMFTime"""
         t = SoMFTime()
         s = SoMFTime()
         t.setValues([SbTime(0.5),SbTime(2)])
         self.failUnless(t.getValues() == [SbTime(0.5),SbTime(2)],
-                        'setValues with sequence on MFTime failed')
+                        'setValues with sequence on SoMFTime failed')
         t.setValues(2,[SbTime(0),SbTime(1)])
         self.failUnless(t.getValues() == [SbTime(0.5),SbTime(2),SbTime(0),SbTime(1)],
-                        'setValues with start and sequence on MFTime failed')
+                        'setValues with start and sequence on SoMFTime failed')
         t.setValues(0,1,[SbTime(1.5),SbTime(0)])
         self.failUnless(t.getValues() == [SbTime(1.5),SbTime(2),SbTime(0),SbTime(1)],
-                        'setValues with start, length and sequence on MFTime failed')
+                        'setValues with start, length and sequence on SoMFTime failed')
         t.setValue(s)
         self.failUnless(t.getValues() == s.getValues(),
-                        'setValue with other MFTime on MFTime failed')
+                        'setValue with other SoMFTime on SoMFTime failed')
         t.setValue(SbTime(-0.5))
         self.failUnless(t.getValues() == [SbTime(-0.5)],
-                        'setValue with single int on MFTime failed')
+                        'setValue with single int on SoMFTime failed')
         t.setValues([])
         self.failUnless(t.getValues() == [SbTime(-0.5)],
-                        'setValues with empty list on MFTime failed') 
+                        'setValues with empty list on SoMFTime failed') 
 
     def testMFUInt32(self):
-        """check setValue(s) for MFUInt32"""
+        """check setValue(s) for SoMFUInt32"""
         t = SoMFUInt32()
         s = SoMFUInt32()
         t.setValues([0,2])
         self.failUnless(t.getValues() == [0,2],
-                        'setValues with sequence on MFUInt32 failed')
+                        'setValues with sequence on SoMFUInt32 failed')
         t.setValues(2,[0,1])
         self.failUnless(t.getValues() == [0,2,0,1],
-                        'setValues with start and sequence on MFUInt32 failed')
+                        'setValues with start and sequence on SoMFUInt32 failed')
         t.setValues(0,1,[1,0])
         self.failUnless(t.getValues() == [1,2,0,1],
-                        'setValues with start, length and sequence on MFUInt32 failed')
+                        'setValues with start, length and sequence on SoMFUInt32 failed')
         t.setValue(s)
         self.failUnless(t.getValues() == s.getValues(),
-                        'setValue with other MFUInt32 on MFUInt32 failed')
+                        'setValue with other SoMFUInt32 on SoMFUInt32 failed')
         t.setValue(0)
         self.failUnless(t.getValues() == [0],
-                        'setValue with single int on MFUInt32 failed')
+                        'setValue with single int on SoMFUInt32 failed')
         t.setValues([])
         self.failUnless(t.getValues() == [0],
-                        'setValues with empty list on MFUInt32 failed')
+                        'setValues with empty list on SoMFUInt32 failed')
 
     def testMFUShort(self):
-        """check setValue(s) for MFUShort"""
+        """check setValue(s) for SoMFUShort"""
         t = SoMFUShort()
         s = SoMFUShort()
         t.setValues([0,2])
         self.failUnless(t.getValues() == [0,2],
-                        'setValues with sequence on MFUShort failed')
+                        'setValues with sequence on SoMFUShort failed')
         t.setValues(2,[0,1])
         self.failUnless(t.getValues() == [0,2,0,1],
-                        'setValues with start and sequence on MFUShort failed')
+                        'setValues with start and sequence on SoMFUShort failed')
         t.setValues(0,1,[1,0])
         self.failUnless(t.getValues() == [1,2,0,1],
-                        'setValues with start, length and sequence on MFUShort failed')
+                        'setValues with start, length and sequence on SoMFUShort failed')
         t.setValue(s)
         self.failUnless(t.getValues() == s.getValues(),
-                        'setValue with other MFUShort on MFUShort failed')
+                        'setValue with other SoMFUShort on SoMFUShort failed')
         t.setValue(0)
         self.failUnless(t.getValues() == [0],
-                        'setValue with single int on MFUShort failed')
+                        'setValue with single int on SoMFUShort failed')
         t.setValues([])
         self.failUnless(t.getValues() == [0],
-                        'setValues with empty list on MFUShort failed')
+                        'setValues with empty list on SoMFUShort failed')
 
     def testMFVec2f(self):
-        """check setValue(s) for MFVec2f"""
+        """check setValue(s) for SoMFVec2f"""
         t = SoMFVec2f()
         s = SoMFVec2f()
         m = SbVec2f(1,0)
@@ -737,7 +737,7 @@ class FieldSetValue(unittest.TestCase):
         self.assertEqual(t.getValues(), [m2])
 
     def testMFVec3f(self):
-        """check setValue(s) for MFVec3f"""
+        """check setValue(s) for SoMFVec3f"""
         t = SoMFVec3f()
         s = SoMFVec3f()
         m = SbVec3f(1,0,0)
@@ -760,7 +760,7 @@ class FieldSetValue(unittest.TestCase):
         self.assertEqual(t.getValues(), [m2])       
 
     def testMFVec4f(self):
-        """check setValue(s) for MFVec4f"""
+        """check setValue(s) for SoMFVec4f"""
         t = SoMFVec4f()
         s = SoMFVec4f()
         m = SbVec4f(1,0,0,0)
@@ -992,7 +992,7 @@ class SoFieldMethods(unittest.TestCase):
                         'SoField.get() failed')
                         
     def testLen(self):
-        """check len() for MFields"""
+        """check len() for SoMFields"""
         s = SoMFInt32()
         self.failUnless(len(s) == 0 == s.getNum(),
                         'len(s) on empty field failed')

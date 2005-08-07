@@ -3,14 +3,16 @@
   $1 = temp;
 }
 
+%typemap(typecheck) float hsv[3] {
+  $1 = PySequence_Check($input) ? 1 : 0;
+}
+
 %typemap(in) float *rgb (float temp[3]) {
   convert_SbVec3f_array($input, temp);
   $1 = temp;
 }
 
-%typemap(typecheck) float *rgb {
-  $1 = PySequence_Check($input) ? 1 : 0;
-}
+%typemap(typecheck) float *rgb = float hsv[3];
 
 %rename(SbColor_vec) SbColor::SbColor(const SbVec3f &v);
 %rename(SbColor_rgb) SbColor::SbColor(const float *const rgb);

@@ -12,13 +12,3 @@ def __init__(self,*args):
       self.thisown = 1
       del newobj.thisown
 %}
-
-%rename(applyToAll_func_void) SbDict::applyToAll(void (* rtn)(unsigned long key, void * value, void * data),
-                                                 void * data) const;
-
-%feature("shadow") SbDict::applyToAll(void (* rtn)(unsigned long key, void * value)) %{
-def applyToAll(*args):
-   if len(args) == 3:
-      return apply(_coin.SbDict_applyToAll_func_void,args)
-   return apply(_coin.SbDict_applyToAll,args)
-%}

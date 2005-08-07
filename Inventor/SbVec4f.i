@@ -23,6 +23,10 @@ convert_SbVec4f_array(PyObject *input, float temp[4])
   $1 = temp;
 }
 
+%typemap(typecheck) float v[4] {
+  $1 = PySequence_Check($input) ? 1 : 0;
+}
+
 /* for some strange reason the %apply directive below doesn't work 
  * for this class on getValue(f,f,f,f)...
  * created this typemap for getValue(void) instead as a workaround.
@@ -56,18 +60,6 @@ def __init__(self,*args):
       self.this = newobj.this
       self.thisown = 1
       del newobj.thisown
-%}
-
-%rename(setValue_ffff) SbVec4f::setValue(const float x, const float y, const float z, const float w);
-
-%feature("shadow") SbVec4f::setValue(const float vec[4]) %{
-def setValue(*args):
-   if len(args) == 5:
-      return apply(_coin.SbVec4f_setValue_ffff,args)
-   if len(args) == 2:
-      if isinstance(args[1], SbVec4f):
-         return _coin.SbVec4f_setValue(args[0],args[1].getValue())
-   return apply(_coin.SbVec4f_setValue,args)
 %}
 
 /* add operator overloading methods instead of the global functions */

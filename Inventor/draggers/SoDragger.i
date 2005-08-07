@@ -22,31 +22,17 @@ SoDraggerPythonCB(void * data, SoDragger * dragger)
 }
 %}
 
-%typemap(in) PyObject *pyfunc %{
+%typemap(in) PyObject *pyfunc {
   if (!PyCallable_Check($input)) {
     PyErr_SetString(PyExc_TypeError, "need a callable object!");
     return NULL;
   }
   $1 = $input;
-%}
+}
 
-%rename(setStartingPoint_vec) SoDragger::setStartingPoint(const SbVec3f & newpoint);
-
-%feature("shadow") SoDragger::setStartingPoint(const SoPickedPoint * newpoint) %{
-def setStartingPoint(*args):
-   if isinstance(args[1], SbVec3f):
-      return apply(_coin.SoDragger_setStartingPoint_vec,args)
-   return apply(_coin.SoDragger_setStartingPoint,args)
-%}
-
-%rename(getTransformFast_mat_vec_rot_vec_rot) SoDragger::getTransformFast(SbMatrix & mtx, SbVec3f & translation, SbRotation & rotation, SbVec3f & scalefactor, SbRotation & scaleorientation);
-
-%feature("shadow") SoDragger::getTransformFast(SbMatrix & mtx, SbVec3f & translation, SbRotation & rotation, SbVec3f & scalefactor, SbRotation & scaleorientation, const SbVec3f & center) %{
-def getTransformFast(*args):
-   if len(args) == 6:
-      return apply(_coin.SoDragger_getTransformFast_mat_vec_rot_vec_rot,args)
-   return apply(_coin.SoDragger_getTransformFast,args)
-%}
+%typemap(typecheck) PyObject *pyfunc {
+  $1 = PyCallable_Check($input) ? 1 : 0;
+}
 
 /* add python specific callback functions */
 %extend SoDragger {

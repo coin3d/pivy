@@ -13,39 +13,7 @@ def __init__(self,*args):
       del newobj.thisown
 %}
 
-%rename(render_nod) SoOffscreenRenderer::render(SoNode * scene);
-
-%feature("shadow") SoOffscreenRenderer::render(SoPath * scene) %{
-def render(*args):
-   if isinstance(args[1], SoNode):
-      return apply(_coin.SoOffscreenRenderer_render_nod,args)
-   return apply(_coin.SoOffscreenRenderer_render,args)
-%}
-
-%rename(writeToPostScript_fil_vec) SoOffscreenRenderer::writeToPostScript(FILE * fp, const SbVec2f & printsize) const;
-%rename(writeToPostScript_chr) SoOffscreenRenderer::writeToPostScript(const char * filename) const;
-%rename(writeToPostScript_chr_vec) SoOffscreenRenderer::writeToPostScript(const char * filename, const SbVec2f & printsize) const;
-
-%feature("shadow") SoOffscreenRenderer::writeToPostScript(FILE * fp) const %{
-def writeToPostScript(*args):
-   if len(args) == 3:
-      if isinstance(args[2], SbVec2f):
-         return apply(_coin.SoOffscreenRenderer_writeToPostScript_fil_vec,args)
-      else:
-         return apply(_coin.SoOffscreenRenderer_writeToPostScript_chr_vec,args)
-   elif type(args[1]) == type(""):
-         return apply(_coin.SoOffscreenRenderer_writeToPostScript_chr,args)
-   return apply(_coin.SoOffscreenRenderer_writeToPostScript,args)
-%}
-
-%rename(writeToRGB_chr) SoOffscreenRenderer::writeToRGB(const char * filename) const;
-
-%feature("shadow") SoOffscreenRenderer::writeToRGB(FILE * fp) const %{
-def writeToRGB(*args):
-   if type(args[1]) == type(""):
-         return apply(_coin.SoOffscreenRenderer_writeToRGB_chr,args)
-   return apply(_coin.SoOffscreenRenderer_writeToRGB,args)
-%}
+%ignore SoOffscreenRenderer::getBuffer();
 
 %extend SoOffscreenRenderer {
   PyObject * getBuffer() {

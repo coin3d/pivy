@@ -3,6 +3,10 @@
   $1 = temp;
 }
 
+%typemap(typecheck) float xyzw[4] {
+  $1 = PySequence_Check($input) ? 1 : 0;
+}
+
 %extend SoSFVec4f {
   void setValue(const SoSFVec4f * other){ *self = *other; }
 }

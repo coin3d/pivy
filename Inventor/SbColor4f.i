@@ -3,20 +3,32 @@
   $1 = temp;
 }
 
+%typemap(typecheck) float col[4] {
+  $1 = PySequence_Check($input) ? 1 : 0;
+}
+
 %typemap(in) float * rgba (float temp[4]) {
   convert_SbVec4f_array($input, temp);
   $1 = temp;
 }
+
+%typemap(typecheck) float * rgba = float col[4];
 
 %typemap(in) float hsv[3] (float temp[3]) {
   convert_SbVec3f_array($input, temp);
   $1 = temp;
 }
 
+%typemap(typecheck) float hsv[3] {
+  $1 = PySequence_Check($input) ? 1 : 0;
+}
+
 %typemap(in) float *rgb (float temp[3]) {
   convert_SbVec3f_array($input, temp);
   $1 = temp;
 }
+
+%typemap(typecheck) float * rgb = float hsv[3];
 
 %rename(SbColor4f_col_f) SbColor4f::SbColor4f(const SbColor &rgb, const float alpha);
 %rename(SbColor4f_vec) SbColor4f::SbColor4f(const SbVec4f &v);
@@ -41,24 +53,6 @@ def __init__(self,*args):
       self.this = newobj.this
       self.thisown = 1
       del newobj.thisown
-%}
-
-%rename(setValue_ffff) SbColor4f::setValue(const float r, const float g, const float b, const float a=1.0f);
-
-%feature("shadow") SbColor4f::setValue(const float col[4]) %{
-def setValue(*args):
-   if len(args) == 5:
-      return apply(_coin.SbColor4f_setValue_ffff,args)
-   return apply(_coin.SbColor4f_setValue,args)
-%}
-
-%rename(setHSVValue_ffff) SbColor4f::setHSVValue(float h, float s, float v, float a=1.0f);
-
-%feature("shadow") SbColor4f::setHSVValue(const float hsv[3], float alpha=1.0f) %{
-def setHSVValue(*args):
-   if len(args) == 5:
-      return apply(_coin.SbColor4f_setHSVValue_ffff,args)
-   return apply(_coin.SbColor4f_setHSVValue,args)
 %}
 
 /* add operator overloading methods instead of the global functions */

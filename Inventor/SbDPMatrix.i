@@ -33,6 +33,10 @@ convert_SbDPMat_array(PyObject *input, SbDPMat temp)
   $1 = &temp;
 }
 
+%typemap(typecheck) SbDPMat * {
+  $1 = PySequence_Check($input) ? 1 : 0;
+}
+
 %typemap(out) SbDPMat & {
   int i,j;
   $result = PyTuple_New(4);

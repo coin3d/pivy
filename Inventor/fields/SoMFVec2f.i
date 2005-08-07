@@ -39,7 +39,7 @@ convert_SoMFVec2f_array(PyObject *input, int len, float temp[][2])
   }
 }
 
-// Free the list 
+/* free the list */
 %typemap(freearg) const float xy[][2] {
   if($1) delete[] $1;
 }
@@ -83,7 +83,7 @@ convert_SoMFVec2f_array(PyObject *input, int len, float temp[][2])
   }
 }
 
-// Free the list 
+/* free the list */
 %typemap(freearg) const SbVec2f *newvals {
   if ($1) { delete[] $1; }
 }

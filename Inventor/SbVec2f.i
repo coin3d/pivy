@@ -19,6 +19,10 @@ convert_SbVec2f_array(PyObject *input, float temp[2])
   $1 = temp;
 }
 
+%typemap(typecheck) float v[2] {
+  $1 = PySequence_Check($input) ? 1 : 0;
+}
+
 %rename(SbVec2f_vec) SbVec2f::SbVec2f(const float v[2]);
 %rename(SbVec2f_ff) SbVec2f::SbVec2f(const float x, const float y);
 
@@ -39,18 +43,6 @@ def __init__(self,*args):
       self.this = newobj.this
       self.thisown = 1
       del newobj.thisown
-%}
-
-%rename(setValue_ff) SbVec2f::setValue(const float x, const float y);
-
-%feature("shadow") SbVec2f::setValue(const float vec[2]) %{
-def setValue(*args):
-   if len(args) == 2:
-      if isinstance(args[1], SbVec2f):
-         return _coin.SbVec2f_setValue(args[0], args[1].getValue())
-   elif len(args) == 3:
-      return apply(_coin.SbVec2f_setValue_ff,args)
-   return apply(_coin.SbVec2f_setValue,args)
 %}
 
 /* add operator overloading methods instead of the global functions */

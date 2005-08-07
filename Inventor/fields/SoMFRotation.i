@@ -18,7 +18,7 @@
   }
 }
 
-// Free the list 
+/* free the list */
 %typemap(freearg) const SbRotation *newvals {
   if ($1) { delete[] $1; }
 }

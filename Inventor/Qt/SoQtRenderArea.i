@@ -64,13 +64,17 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
 }
 %}
 
-%typemap(in) PyObject *pyfunc %{
+%typemap(in) PyObject *pyfunc {
   if (!PyCallable_Check($input)) {
     PyErr_SetString(PyExc_TypeError, "need a callable object!");
     return NULL;
   }
   $1 = $input;
-%}
+}
+
+%typemap(typecheck) PyObject *pyfunc {
+  $1 = PyCallable_Check($input) ? 1 : 0;
+}
 
 /* add python specific callback functions */
 %extend SoQtRenderArea {

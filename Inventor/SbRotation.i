@@ -3,6 +3,10 @@
   $1 = temp;
 }
 
+%typemap(typecheck) float q[4] {
+  $1 = PySequence_Check($input) ? 1 : 0;
+}
+
 %typemap(out) float * {
   int i;
   $result = PyTuple_New(4);
@@ -41,28 +45,6 @@ def __init__(self,*args):
       self.this = newobj.this
       self.thisown = 1
       del newobj.thisown
-%}
-
-%rename(setValue_arr) SbRotation::setValue(const float q[4]);
-%rename(setValue_mat) SbRotation::setValue(const SbMatrix & m);
-%rename(setValue_vec_f) SbRotation::setValue(const SbVec3f & axis, const float radians);
-%rename(setValue_vec_vec) SbRotation::setValue(const SbVec3f & rotateFrom, const SbVec3f & rotateTo);
-
-%feature("shadow") SbRotation::setValue(const float q0, const float q1, const float q2, const float q3) %{
-def setValue(*args):
-   if len(args) == 2:
-      if isinstance(args[1], SbMatrix):
-         return apply(_coin.SbRotation_setValue_mat,args)
-      elif isinstance(args[1], SbRotation):
-         return _coin.SbRotation_setValue_arr(args[0], args[1].getValue())
-      else:
-         return apply(_coin.SbRotation_setValue_arr,args)
-   elif len(args) == 3:
-      if isinstance(args[2], SbVec3f):
-         return apply(_coin.SbRotation_setValue_vec_vec,args)
-      else:
-         return apply(_coin.SbRotation_setValue_vec_f,args)
-   return apply(_coin.SbRotation_setValue,args)
 %}
 
 /* add operator overloading methods instead of the global functions */

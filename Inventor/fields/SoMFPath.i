@@ -15,7 +15,7 @@
   }
 }
 
-// Free the list 
+/* free the list */
 %typemap(freearg) const SoPath ** newvals{
   if ($1) { free($1); }
 }

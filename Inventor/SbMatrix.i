@@ -33,6 +33,10 @@ convert_SbMat_array(PyObject *input, SbMat temp)
   $1 = &temp;
 }
 
+%typemap(typecheck) SbMat * {
+  $1 = PySequence_Check($input) ? 1 : 0;
+}
+
 %typemap(out) SbMat & {
   int i,j;
   $result = PyTuple_New(4);
@@ -46,6 +50,22 @@ convert_SbMat_array(PyObject *input, SbMat temp)
     PyTuple_SetItem($result, i, oi);
   }
 }
+
+%ignore SbMatrix::getTransform(SbVec3f & translation, SbRotation & rotation,
+                               SbVec3f & scaleFactor, SbRotation & scaleOrientation,
+                               const SbVec3f & center) const;
+
+%ignore SbMatrix::getTransform(SbVec3f & t, SbRotation & r, SbVec3f & s, SbRotation & so);
+
+/* the next 2 typemaps handle the return value for e.g. multMatrixVec() */
+%typemap(argout) SbVec3f & dst, SbVec4f & dst {
+  $result = SWIG_NewPointerObj((void *) $1, $1_descriptor, 1);
+}
+%typemap(in,numinputs=0) SbVec3f & dst, SbVec4f & dst {
+  $1 = new $1_basetype();
+}
+
+%ignore SbMatrix::SbMatrix(const SbMat & matrix);
 
 %rename(SbMatrix_f16) SbMatrix::SbMatrix(const float a11, const float a12, const float a13, const float a14,
                                          const float a21, const float a22, const float a23, const float a24,
@@ -70,72 +90,6 @@ def __init__(self,*args):
       self.thisown = 1
       del newobj.thisown
 %}
-
-%feature("shadow") SbMatrix::setValue(const SbMat * m) %{
-def setValue(*args):
-   if isinstance(args[1], SbMatrix):
-      return _coin.SbMatrix_setValue(args[0], args[1].getValue())
-   return _coin.SbMatrix_setValue(*args)
-%}
-
-%rename(det3_i6) SbMatrix::det3(int r1, int r2, int r3,
-                                int c1, int c2, int c3) const;
-
-%feature("shadow") SbMatrix::det3() %{
-def det3(*args):
-   if len(args) == 7:
-      return apply(_coin.SbMatrix_det3_i6,args)
-   return apply(_coin.SbMatrix_det3,args)
-%}
-
-%rename(setScale_vec3) SbMatrix::setScale(const SbVec3f & s);
-
-%feature("shadow") SbMatrix::setScale(const float s) %{
-def setScale(args):
-  if type(args[1]) == type(0.0):
-    return apply(_coin.SbMatrix_setScale,args)
-  return apply(_coin.SbMatrix_setScale_vec3,args)
-%}
-
-%rename(setTransform_vec3_rot_vec3_rot) SbMatrix::setTransform(const SbVec3f & t, const SbRotation & r, const SbVec3f & s,
-                                                               const SbRotation & so);
-%rename(setTransform_vec3_rot_vec3_rot_vec3) SbMatrix::setTransform(const SbVec3f & translation,
-                                                                    const SbRotation & rotation, const SbVec3f & scaleFactor,
-                                                                    const SbRotation & scaleOrientation, const SbVec3f & center);
-
-%feature("shadow") SbMatrix::setTransform(const SbVec3f & t, const SbRotation & r, const SbVec3f & s) %{
-def setTransform(*args):
-  if len(args) == 5:
-    return apply(_coin.SbMatrix_setTransform_vec3_rot_vec3_rot,args)
-  elif len(args) == 6:
-    return apply(_coin.SbMatrix_setTransform_vec3_rot_vec3_rot_vec3,args)
-  return apply(_coin.SbMatrix_setTransform,args)
-%}
-
-%ignore SbMatrix::getTransform(SbVec3f & translation, SbRotation & rotation,
-                                                  SbVec3f & scaleFactor, SbRotation & scaleOrientation,
-                                                  const SbVec3f & center) const;
-
-%ignore SbMatrix::getTransform(SbVec3f & t, SbRotation & r, SbVec3f & s, SbRotation & so);
-
-%rename(multVecMatrix_vec4) SbMatrix::multVecMatrix(const SbVec4f & src, SbVec4f & dst) const;
-
-%feature("shadow") SbMatrix::multVecMatrix(const SbVec3f & src, SbVec3f & dst) %{
-def multVecMatrix(*args):
-  if isinstance(args[1], SbVec4f):
-    return apply(_coin.SbMatrix_multVecMatrix_vec4,args)
-  return apply(_coin.SbMatrix_multVecMatrix,args)
-%}
-
-/* the next 2 typemaps handle the return value for e.g. multMatrixVec() */
-%typemap(argout) SbVec3f & dst, SbVec4f & dst {
-  $result = SWIG_NewPointerObj((void *) $1, $1_descriptor, 1);
-}
-%typemap(in,numinputs=0) SbVec3f & dst, SbVec4f & dst {
-  $1 = new $1_basetype();
-}
-
-%ignore SbMatrix::SbMatrix(const SbMat & matrix);
 
 %extend SbMatrix {
   PyObject * getTransform() {

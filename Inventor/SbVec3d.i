@@ -21,6 +21,10 @@ convert_SbVec3d_array(PyObject *input, double temp[3])
   $1 = temp;
 }
 
+%typemap(typecheck) double v[3] {
+  $1 = PySequence_Check($input) ? 1 : 0;
+}
+
 /* for some strange reason the %apply directive below doesn't work 
  * for this class on getValue(f,f,f)...
  * created this typemap for getValue(void) instead as a workaround.
@@ -58,24 +62,6 @@ def __init__(self,*args):
       self.this = newobj.this
       self.thisown = 1
       del newobj.thisown
-%}
-
-%rename(setValue_fff) SbVec3d::setValue(const double x, const double y, const double z);
-%rename(setValue_vec_vec_vec_vec) SbVec3d::setValue(const SbVec3d & barycentric, const SbVec3d & v0, const SbVec3d & v1, const SbVec3d & v2);
-%rename(setValue_vec) SbVec3d::setValue(const SbVec3f & v);
-
-%feature("shadow") SbVec3d::setValue(const double vec[3]) %{
-def setValue(*args):
-   if len(args) == 4:
-      return apply(_coin.SbVec3d_setValue_fff,args)
-   elif len(args) == 5:
-      return apply(_coin.SbVec3d_setValue_vec_vec_vec_vec,args)
-   elif len(args) == 2:
-      if isinstance(args[1], SbVec3f):
-         return apply(_coin.SbVec3d_setValue_vec,args)
-      elif isinstance(args[1], SbVec3d):
-         return _coin.SbVec3d_setValue(args[0],args[1].getValue())
-   return apply(_coin.SbVec3d_setValue,args)
 %}
 
 /* add operator overloading methods instead of the global functions */

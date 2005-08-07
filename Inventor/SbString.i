@@ -1,12 +1,3 @@
-%rename(hash_str) SbString::hash(const char * s);
-
-%feature("shadow") SbString::hash(void) %{
-def hash(*args):
-   if len(args) == 2:
-      return apply(_coin.SbString_hash_str,args)
-   return apply(_coin.SbString_hash,args)
-%}
-
 /* add operator overloading methods instead of the global functions */
 %extend SbString {      
   int __eq__(const SbString &u) { return *self == u; }

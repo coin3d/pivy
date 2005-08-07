@@ -73,13 +73,17 @@ SoSelectionPickPythonCB(void * data, const SoPickedPoint * pick)
 }
 %}
 
-%typemap(in) PyObject *pyfunc %{
+%typemap(in) PyObject *pyfunc {
   if (!PyCallable_Check($input)) {
     PyErr_SetString(PyExc_TypeError, "need a callable object!");
     return NULL;
   }
   $1 = $input;
-%}
+}
+
+%typemap(typecheck) PyObject *pyfunc {
+  $1 = PyCallable_Check($input) ? 1 : 0;
+}
 
 %rename(SoSelection_i) SoSelection::SoSelection(const int nChildren);
 
@@ -94,45 +98,6 @@ def __init__(self,*args):
       self.this = newobj.this
       self.thisown = 1
       del newobj.thisown
-%}
-
-%rename(select_nod) SoSelection::select(SoNode *node);
-
-%feature("shadow") SoSelection::select(const SoPath * path) %{
-def select(*args):
-   if isinstance(args[1], SoNode):
-      return apply(_coin.SoSelection_select_nod,args)
-   return apply(_coin.SoSelection_select,args)
-%}
-
-%rename(deselect_i) SoSelection::deselect(const int which);
-%rename(deselect_nod) SoSelection::deselect(SoNode *node);
-
-%feature("shadow") SoSelection::deselect(const SoPath * path) %{
-def deselect(*args):
-   if isinstance(args[1], SoNode):
-      return apply(_coin.SoSelection_deselect_nod,args)
-   elif type(args[1]) == type(1):
-      return apply(_coin.SoSelection_deselect_i,args)
-   return apply(_coin.SoSelection_select,args)
-%}
-
-%rename(toggle_nod) SoSelection::toggle(SoNode * node);
-
-%feature("shadow") SoSelection::toggle(const SoPath * path) %{
-def toggle(*args):
-   if isinstance(args[1], SoNode):
-      return apply(_coin.SoSelection_toggle_nod,args)
-   return apply(_coin.SoSelection_toggle,args)
-%}
-
-%rename(isSelected_nod) SoSelection::isSelected(SoNode * node) const;
-
-%feature("shadow") isSelected(const SoPath * path) const %{
-def isSelected(*args):
-   if isinstance(args[1], SoNode):
-      return apply(_coin.SoSelection_isSelected_nod,args)
-   return apply(_coin.SoSelection_isSelected,args)
 %}
 
 /* add python specific callback functions */

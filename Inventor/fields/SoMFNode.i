@@ -14,7 +14,7 @@
   }
 }
 
-// Free the list 
+/* free the list */
 %typemap(freearg) const SoNode ** newvals{
   if ($1) { free($1); }
 }

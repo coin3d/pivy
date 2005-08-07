@@ -8,6 +8,10 @@
   $1 = temp;
 }
 
+%typemap(typecheck) float *rgb {
+  $1 = PySequence_Check($input) ? 1 : 0;
+}
+
 %rename(SbColor_vec) SbColor::SbColor(const SbVec3f &v);
 %rename(SbColor_rgb) SbColor::SbColor(const float *const rgb);
 %rename(SbColor_fff) SbColor::SbColor(const float r, const float g, const float b);
@@ -28,15 +32,6 @@ def __init__(self,*args):
       self.this = newobj.this
       self.thisown = 1
       del newobj.thisown
-%}
-
-%rename(setHSVValue_fff) SbColor::setHSVValue(float h, float s, float v);
-
-%feature("shadow") SbColor::setHSVValue(const float hsv[3]) %{
-def setHSVValue(*args):
-   if len(args) == 4:
-      return apply(_coin.SbColor_setHSVValue_fff,args)
-   return apply(_coin.SbColor_setHSVValue,args)
 %}
 
 %apply float *OUTPUT { float & h, float & s, float & v };

@@ -17,7 +17,7 @@
   }
 }
 
-// Free the list 
+/* free the list */
 %typemap(freearg) const SbTime *newvals {
   if ($1) { delete[] $1; }
 }

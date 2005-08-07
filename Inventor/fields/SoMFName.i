@@ -17,7 +17,7 @@
   }
 }
 
-// Free the list 
+/* free the list */
 %typemap(freearg) const char * strings[] {
   if ($1) { free($1); }
 }

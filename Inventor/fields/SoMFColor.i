@@ -1,5 +1,5 @@
-// note that the following works for both SbColor sequences and float sequences
-// because SbColor supports item access derived from SbVec3f
+/* note that the following works for both SbColor sequences and float
+   sequences because SbColor supports item access derived from SbVec3f */
 %typemap(in) float [][3] (float (*temp)[3]) {
   int len;
 
@@ -15,8 +15,8 @@
   }
 }
 
-// Free the list 
-// actually freeing is not save, if the typemap is used with setValuesPointer
+/* free the list; actually freeing is not save, if the typemap is used
+   with setValuesPointer */
 %typemap(freearg) float [][3] {
   if ($1) { free($1); }
 }
@@ -28,6 +28,10 @@
 %typemap(in) float hsv[3] (float temp[3]) {
   convert_SbVec3f_array($input, temp);
   $1 = temp;
+}
+
+%typemap(typecheck) float hsv[3] {
+  $1 = PySequence_Check($input) ? 1 : 0;
 }
 
 %typemap(in) float rgb[3] (float temp[3]) {

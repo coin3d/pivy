@@ -27,7 +27,6 @@ SoIntersectionVisitationPythonCB(void * closure,
   return (SoCallbackAction::Response)iresult;
 }
 
-
 static SbBool
 SoIntersectionFilterPythonCB(void * closure,
                              const SoPath * p1,
@@ -87,19 +86,6 @@ SoIntersectionPythonCB(void * closure,
 
   return (SoIntersectionDetectionAction::Resp)iresult;
 }
-%}
-
-%rename(apply_nod) SoIntersectionDetectionAction::apply(SoNode *root);
-%rename(apply_pat) SoIntersectionDetectionAction::apply(SoPath *path);
-
-%feature("shadow") SoIntersectionDetectionAction::apply(const SoPathList & paths, SbBool obeysRules = FALSE) %{
-def apply(*args):
-   if len(args) == 2:
-      if isinstance(args[1], SoNode):
-         return apply(_coin.SoIntersectionDetectionAction_apply_nod,args)
-      elif isinstance(args[1], SoPath):
-         return apply(_coin.SoIntersectionDetectionAction_apply_pat,args)
-   return apply(_coin.SoIntersectionDetectionAction_apply,args)
 %}
 
 /* add python specific callback functions */

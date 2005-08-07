@@ -82,7 +82,7 @@
                                         const SbVec2s & size, const int bytesperpixel);
 %rename(SbImage_vec3s) SbImage::SbImage(const unsigned char * bytes,
                                         const SbVec3s & size, const int bytesperpixel);
- 
+
 %feature("shadow") SbImage::SbImage %{
 def __init__(self,*args):
   newobj = None
@@ -97,18 +97,6 @@ def __init__(self,*args):
      self.this = newobj.this
      self.thisown = 1
      del newobj.thisown
-%}
-
-
-%rename(setValue_vec2s) SbImage::setValue(const SbVec2s & size, const int bytesperpixel,
-                                          const unsigned char * bytes);
-
-%feature("shadow") SbImage::setValue(const SbVec3s & size, const int bytesperpixel,
-                                     const unsigned char * bytes) %{
-def setValue(*args):
-  if isinstance(args[1], SbVec2s):
-      return apply(_coin.SbImage_setValue_vec2s,args)
-  return apply(_coin.SbImage_setValue_vec2s,args)
 %}
 
 %extend SbImage {

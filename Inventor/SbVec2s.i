@@ -19,6 +19,10 @@ convert_SbVec2s_array(PyObject *input, short temp[2])
   $1 = temp;
 }
 
+%typemap(typecheck) short v[2] {
+  $1 = PySequence_Check($input) ? 1 : 0;
+}
+
 %rename(SbVec2s_vec) SbVec2s::SbVec2s(const short v[2]);
 %rename(SbVec2s_ss) SbVec2s::SbVec2s(const short x, const short y);
 
@@ -39,18 +43,6 @@ def __init__(self,*args):
       self.this = newobj.this
       self.thisown = 1
       del newobj.thisown
-%}
-
-%rename(setValue_ss) SbVec2s::setValue(short x, short y);
-
-%feature("shadow") SbVec2s::setValue(const short v[2]) %{
-def setValue(*args):
-   if len(args) == 2:
-      if isinstance(args[1], SbVec2s):
-         return _coin.SbVec2s_setValue(args[0], args[1].getValue())
-   elif len(args) == 3:
-      return apply(_coin.SbVec2s_setValue_ss,args)
-   return apply(_coin.SbVec2s_setValue,args)
 %}
 
 /* add operator overloading methods instead of the global functions */

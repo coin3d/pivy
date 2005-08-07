@@ -12,21 +12,3 @@ def __init__(self,*args):
       self.thisown = 1
       del newobj.thisown
 %}
-
-%rename(removeChild_nod) SoGroup::removeChild(SoNode * const child);
-
-%feature("shadow") SoGroup::removeChild(const int childindex) %{
-def removeChild(*args):
-   if isinstance(args[1], SoNode):
-      return apply(_coin.SoGroup_removeChild_nod,args)
-   return apply(_coin.SoGroup_removeChild,args)
-%}
-
-%rename(replaceChild_nod_nod) SoGroup::replaceChild(SoNode * const oldchild, SoNode * const newchild);
-
-%feature("shadow") SoGroup::replaceChild(const int index, SoNode * const newchild) %{
-def replaceChild(*args):
-   if isinstance(args[1], SoNode):
-      return apply(_coin.SoGroup_replaceChild_nod_nod,args)
-   return apply(_coin.SoGroup_replaceChild,args)
-%}

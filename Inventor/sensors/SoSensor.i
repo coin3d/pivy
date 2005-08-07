@@ -18,10 +18,34 @@ SoSensorPythonCB(void * data, SoSensor * sensor)
 
   Py_DECREF(arglist);
   Py_XDECREF(result);
-
-  return /*void*/;
 }
 %}
+
+%typemap(in) SoSensorCB * func {
+  if (!PyCallable_Check($input)) {
+    PyErr_SetString(PyExc_TypeError, "need a callable object!");
+    return NULL;
+  }
+  $1 = SoSensorPythonCB;
+}
+
+%typemap(typecheck) PyObject *pyfunc {
+  $1 = PyCallable_Check($input) ? 1 : 0;
+}
+
+%typemap(in) void * data {
+  if (!PyTuple_Check($input)) {
+    PyErr_SetString(PyExc_TypeError, "tuple expected!");
+    return NULL;
+  }
+
+  Py_INCREF($input);
+  $1 = (void *)$input;
+}
+
+%typemap(typecheck) void * data {
+  $1 = PyTuple_Check($input) ? 1 : 0;
+}
 
 %rename(SoSensor_scb_v) SoSensor::SoSensor(SoSensorCB * func, void * data);
 
@@ -37,22 +61,4 @@ def __init__(self,*args):
       self.this = newobj.this
       self.thisown = 1
       del newobj.thisown
-%}
-
-%typemap(in) SoSensorCB * func %{
-  if (!PyCallable_Check($input)) {
-    PyErr_SetString(PyExc_TypeError, "need a callable object!");
-    return NULL;
-  }
-  $1 = SoSensorPythonCB;
-%}
-
-%typemap(in) void * data %{
-  if (!PyTuple_Check($input)) {
-    PyErr_SetString(PyExc_TypeError, "tuple expected!");
-    return NULL;
-  }
-
-  Py_INCREF($input);
-  $1 = (void *)$input;
 %}

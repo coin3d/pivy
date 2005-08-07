@@ -109,13 +109,17 @@ SoPointPythonCB(void * userdata, SoCallbackAction * action, const SoPrimitiveVer
 }
 %}
 
-%typemap(in) PyObject *pyfunc %{
+%typemap(in) PyObject *pyfunc {
   if (!PyCallable_Check($input)) {
     PyErr_SetString(PyExc_TypeError, "need a callable object!");
     return NULL;
   }
   $1 = $input;
-%}
+}
+
+%typemap(typecheck) PyObject *pyfunc {
+  $1 = PyCallable_Check($input) ? 1 : 0;
+}
 
 %rename(SoCallbackAction_vpr) SoCallbackAction::SoCallbackAction(const SbViewportRegion & vp);
 
@@ -132,7 +136,7 @@ def __init__(self,*args):
       del newobj.thisown
 %}
 
-  /* add python specific callback functions */
+/* add python specific callback functions */
 %extend SoCallbackAction {
   void addPreCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {
     PyObject *t = PyTuple_New(2);

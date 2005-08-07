@@ -32,6 +32,15 @@ convert_SoMFShort_array(PyObject *input, int len, short *temp)
   }
 }
 
+%feature("shadow") SoMFShort::setValues %{
+def setValues(*args):
+   if len(args) == 2:
+      return _coin.SoMFShort_setValues(args[0],0,len(args[1]),args[1])
+   elif len(args) == 3:
+      return _coin.SoMFShort_setValues(args[0],args[1],len(args[2]),args[2])
+   return _coin.SoMFShort_setValues(*args)
+%}
+
 %ignore SoMFShort::getValues(const int start) const;
 
 %typemap(in,numinputs=0) int & len (int temp) {
@@ -48,15 +57,6 @@ convert_SoMFShort_array(PyObject *input, int len, short *temp)
     }
   }
 }
-
-%feature("shadow") SoMFShort::setValues %{
-def setValues(*args):
-   if len(args) == 2:
-      return _coin.SoMFShort_setValues(args[0],0,len(args[1]),args[1])
-   elif len(args) == 3:
-      return _coin.SoMFShort_setValues(args[0],args[1],len(args[2]),args[2])
-   return _coin.SoMFShort_setValues(*args)
-%}
 
 %rename(getValues) SoMFShort::__getValuesHelper__;
 

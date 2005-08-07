@@ -406,6 +406,7 @@ autocast_event(SoEvent * event)
     PyErr_SetString(PyExc_TypeError, "expected a file object.");
   }
 }
+
 %include Inventor/events/SoEvent.h
 %include Inventor/fields/SoField.h
 %include Inventor/SbString.h

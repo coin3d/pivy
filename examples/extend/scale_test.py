@@ -48,7 +48,7 @@ def construct_new_marker(v):
 
 
 def event_cb(viewer, n):
-    mbe = cast(n.getEvent(), "SoMouseButtonEvent")
+    mbe = n.getEvent()
 
     if (mbe.getButton() == SoMouseButtonEvent.BUTTON1 and
         mbe.getState() == SoButtonEvent.DOWN):

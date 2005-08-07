@@ -5,7 +5,7 @@ SoSensorPythonCB(void * data, SoSensor * sensor)
   PyObject *func, *arglist;
   PyObject *result, *sensCB;
 
-  sensCB = SWIG_NewPointerObj((void *) sensor, SWIGTYPE_p_SoSensor, 1);
+  sensCB = SWIG_NewPointerObj((void *)sensor, SWIGTYPE_p_SoSensor, 1);
 
   /* the first item in the data sequence is the python callback
    * function; the second is the supplied data python object */

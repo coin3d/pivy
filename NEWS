@@ -1,0 +1,17 @@
+New in Pivy v0.3.0 (so far):
+* features:
+  - SWIG 1.3.25 support
+  - pivy installs now as Python package    
+  - SoPyScript node
+  - SIMVoleon support
+  - numerous new test cases
+  - improved basic type support
+  - proper operator overloading handling
+  - field = assignment operator support
+* bugfixes:
+  - SoField::get() didn't return a string
+  - no working embedded SoQtExaminerViewer example
+  - import order of modules should not be significant
+  - Mentor examples needs cleanup
+  - removal of obsolete wrapping code
+  - general code cleanup

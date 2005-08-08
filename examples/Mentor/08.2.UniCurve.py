@@ -46,74 +46,74 @@ import sys
 from pivy.coin import *
 from pivy.sogui import *
 
-floorData = """#Inventor V2.0 ascii\n
-Separator {\n
-   SpotLight {\n
-      cutOffAngle 0.9\n
-      dropOffRate 0.2\n 
-      location 6 12 2\n 
-      direction 0 -1 0\n
-   }\n
-   ShapeHints {\n
-      faceType UNKNOWN_FACE_TYPE\n
-   }\n
-   Texture2Transform {\n
-      #rotation 1.57\n
-      scaleFactor 8 8\n
-   }\n
-   Texture2 {\n
-      filename oak.rgb\n
-   }\n
-   NormalBinding {\n
-        value  PER_PART\n
-   }\n
-   Material { diffuseColor 1 1 1 specularColor 1 1 1 shininess 0.4 }\n
-   DEF FloorPanel Separator {\n
-      DEF FloorStrip Separator {\n
-         DEF FloorBoard Separator {\n
-            Normal { vector 0 1 0 }\n
-            TextureCoordinate2 {\n
-               point [ 0 0, 0.5 0, 0.5 2, 0.5 4, 0.5 6,\n
-                       0.5 8, 0 8, 0 6, 0 4, 0 2 ] }\n
-            Coordinate3 {\n
-               point [ 0 0 0, .5 0 0, .5 0 -2, .5 0 -4, .5 0 -6,\n
-                       .5 0 -8, 0 0 -8, 0 0 -6, 0 0 -4, 0 0 -2, ]\n
-            }\n
-            FaceSet { numVertices 10 }\n
-            BaseColor { rgb 0.3 0.1 0.0 }\n
-            Translation { translation 0.125 0 -0.333 }\n
-            Cylinder { parts TOP radius 0.04167 height 0.002 }\n
-            Translation { translation 0.25 0 0 }\n
-            Cylinder { parts TOP radius 0.04167 height 0.002 }\n
-            Translation { translation 0 0 -7.333 }\n
-            Cylinder { parts TOP radius 0.04167 height 0.002 }\n
-            Translation { translation -0.25 0 0 }\n
-            Cylinder { parts TOP radius 0.04167 height 0.002 }\n
-         }\n
-         Translation { translation 0 0 8.03 }\n
-         USE FloorBoard\n
-         Translation { translation 0 0 8.04 }\n
-         USE FloorBoard\n
-      }\n
-      Translation { translation 0.53 0 -0.87 }\n
-      USE FloorStrip\n
-      Translation { translation 0.53 0 -2.3 }\n
-      USE FloorStrip\n
-      Translation { translation 0.53 0 1.3 }\n
-      USE FloorStrip\n
-      Translation { translation 0.53 0 1.1 }\n
-      USE FloorStrip\n
-      Translation { translation 0.53 0 -0.87 }\n
-      USE FloorStrip\n
-      Translation { translation 0.53 0 1.7 }\n
-      USE FloorStrip\n
-      Translation { translation 0.53 0 -0.5 }\n
-      USE FloorStrip\n
-   }\n
-   Translation { translation 4.24 0 0 }\n
-   USE FloorPanel\n
-   Translation { translation 4.24 0 0 }\n
-   USE FloorPanel\n
+floorData = """#Inventor V2.0 ascii
+Separator {
+   SpotLight {
+      cutOffAngle 0.9
+      dropOffRate 0.2 
+      location 6 12 2 
+      direction 0 -1 0
+   }
+   ShapeHints {
+      faceType UNKNOWN_FACE_TYPE
+   }
+   Texture2Transform {
+      #rotation 1.57
+      scaleFactor 8 8
+   }
+   Texture2 {
+      filename oak.rgb
+   }
+   NormalBinding {
+        value  PER_PART
+   }
+   Material { diffuseColor 1 1 1 specularColor 1 1 1 shininess 0.4 }
+   DEF FloorPanel Separator {
+      DEF FloorStrip Separator {
+         DEF FloorBoard Separator {
+            Normal { vector 0 1 0 }
+            TextureCoordinate2 {
+               point [ 0 0, 0.5 0, 0.5 2, 0.5 4, 0.5 6,
+                       0.5 8, 0 8, 0 6, 0 4, 0 2 ] }
+            Coordinate3 {
+               point [ 0 0 0, .5 0 0, .5 0 -2, .5 0 -4, .5 0 -6,
+                       .5 0 -8, 0 0 -8, 0 0 -6, 0 0 -4, 0 0 -2, ]
+            }
+            FaceSet { numVertices 10 }
+            BaseColor { rgb 0.3 0.1 0.0 }
+            Translation { translation 0.125 0 -0.333 }
+            Cylinder { parts TOP radius 0.04167 height 0.002 }
+            Translation { translation 0.25 0 0 }
+            Cylinder { parts TOP radius 0.04167 height 0.002 }
+            Translation { translation 0 0 -7.333 }
+            Cylinder { parts TOP radius 0.04167 height 0.002 }
+            Translation { translation -0.25 0 0 }
+            Cylinder { parts TOP radius 0.04167 height 0.002 }
+         }
+         Translation { translation 0 0 8.03 }
+         USE FloorBoard
+         Translation { translation 0 0 8.04 }
+         USE FloorBoard
+      }
+      Translation { translation 0.53 0 -0.87 }
+      USE FloorStrip
+      Translation { translation 0.53 0 -2.3 }
+      USE FloorStrip
+      Translation { translation 0.53 0 1.3 }
+      USE FloorStrip
+      Translation { translation 0.53 0 1.1 }
+      USE FloorStrip
+      Translation { translation 0.53 0 -0.87 }
+      USE FloorStrip
+      Translation { translation 0.53 0 1.7 }
+      USE FloorStrip
+      Translation { translation 0.53 0 -0.5 }
+      USE FloorStrip
+   }
+   Translation { translation 4.24 0 0 }
+   USE FloorPanel
+   Translation { translation 4.24 0 0 }
+   USE FloorPanel
 }"""
 
 ##############################################################

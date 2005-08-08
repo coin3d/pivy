@@ -282,8 +282,8 @@ class pivy_build(build):
                          "SWIG versions: %s." % " ".join(self.SUPPORTED_SWIG_VERSIONS))
 
     def copy_and_swigify_headers(self, includedir, dirname, files):
-        "there are times where a function simply has to do what a function" + \
-        "has to do. indeed, tralala..."
+        """Copy the header files to the local include directories. Add an
+        #include line at the beginning for the SWIG interface files..."""
 
         for file in files:
             if not os.path.isfile(os.path.join(dirname, file)):
@@ -293,12 +293,10 @@ class pivy_build(build):
                 file_i = os.path.join(dirname, file)
                 file_h = os.path.join(dirname, file)[:-2] + ".h"
 
-                if not os.path.exists(file_h) and \
-                   os.path.exists(os.path.join(includedir, file_h)):
-                    print blue("Copying ") + turquoise(os.path.join(includedir, file_h)),
-                    print blue("to ") + turquoise(file_h)
+                if (not os.path.exists(file_h) and
+                    os.path.exists(os.path.join(includedir, file_h))):
                     shutil.copyfile(os.path.join(includedir, file_h), file_h)
-                    print blue("Pivyizing ") + turquoise(file_h),
+                    sys.stdout.write(' ' + turquoise(file_h))
                     fd = open(file_h, 'r+')
                     contents = fd.readlines()
 
@@ -312,23 +310,21 @@ class pivy_build(build):
                         contents.insert(ins_line_nr, self.pivy_header_include % (file_i))
                         fd.seek(0)
                         fd.writelines(contents)
-                        print blue("[") + green("done") + blue("]")
                     else:
                         print blue("[") + red("failed") + blue("]")
+                        sys.exit(1)
                     fd.close
             # fixes for SWIG 1.3.21 and upwards
             # (mostly workarounding swig's preprocessor "function like macros"
             # preprocessor bug when no parameters are provided which then results
             # in no constructors being created in the wrapper)
             elif file[-4:] == ".fix":
-                print red("Fixing ") + turquoise(os.path.join(dirname, file)),
-                print blue("to ") + turquoise(os.path.join(dirname, file)[:-4])
+                sys.stdout.write(' ' + red(os.path.join(dirname, file)[:-4]))
                 shutil.copyfile(os.path.join(dirname, file),
                                 os.path.join(dirname, file)[:-4])
             # had to introduce this because windows is a piece of crap
             elif sys.platform == "win32" and file[-6:] == ".win32":
-                print red("Fixing ") + turquoise(os.path.join(dirname, file)),
-                print blue("to ") + turquoise(os.path.join(dirname, file)[:-6])
+                sys.stdout.write(' ' + red(os.path.join(dirname, file)[:-6]))
                 shutil.copyfile(os.path.join(dirname, file),
                                 os.path.join(dirname, file)[:-6])
 
@@ -347,17 +343,21 @@ class pivy_build(build):
                 INCLUDE_DIR = os.getenv("SIMVOLEONDIR") + "\\include"
             else:
                 INCLUDE_DIR = self.do_os_popen("simvoleon-config --includedir")
-                
+
+            sys.stdout.write(blue("Preparing") + green(" SIMVoleon ") + blue("headers:"))
             os.path.walk("VolumeViz", self.copy_and_swigify_headers,
                          INCLUDE_DIR)
+            print green(".")
 
         if sys.platform == "win32":
             INCLUDE_DIR = os.getenv("COIN3DDIR") + "\\include"
         else:
             INCLUDE_DIR = self.do_os_popen("coin-config --includedir")
 
+        sys.stdout.write(blue("Preparing") + green(" Inventor ") + blue("headers:"))
         os.path.walk("Inventor", self.copy_and_swigify_headers,
                      INCLUDE_DIR)
+        print green(".")
 
     def swig_generate(self):
         "build all available modules"
@@ -430,18 +430,20 @@ class pivy_clean(clean):
         for file in files:
             if not os.path.isfile(os.path.join(dirname, file)) or file[-2:] != ".h":
                 continue
-            print blue("removing %s" % os.path.join(dirname, file))
+            sys.stdout.write(' ' + turquoise(os.path.join(dirname, file)))
             os.remove(os.path.join(dirname, file))
 
     def run(self):
         "the entry point for the distutils clean class"
+        sys.stdout.write(blue("Cleaning headers:"))
         os.path.walk("Inventor", self.remove_headers, None)
         os.path.walk("VolumeViz", self.remove_headers, None)
         # remove the SWIG generated wrappers
         for wrapper_file in self.REMOVE_FILES:
             if os.path.isfile(wrapper_file):
-                print blue("removing %s" % wrapper_file)
+                sys.stdout.write(' ' + turquoise(wrapper_file))
                 os.remove(wrapper_file)
+        print green(".")
 
         clean.run(self)
 

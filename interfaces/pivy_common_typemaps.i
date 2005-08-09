@@ -80,8 +80,7 @@ autocast_base(SoBase * base)
     char * cast_name = NULL;
     PyObject * result_tuple = NULL;
 
-    /* in case it is not a builtin type search up the Parents until a
-       builtin node is found */
+    /* in case of a non built-in type get the closest built-in parent */
     if (!(base->isOfType(SoFieldContainer::getClassTypeId()) && 
           ((SoFieldContainer*)base)->getIsBuiltIn())) {
       SbBool match = FALSE;

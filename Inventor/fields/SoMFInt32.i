@@ -40,7 +40,7 @@ convert_SoMFInt32_array(PyObject *input, int len, int32_t *temp)
 }
 
 %typemap(argout) int32_t & len {
-  Py_XDECREF($result);   /* Blow away any previous result */
+  Py_XDECREF($result); /* free up any previous result */
   $result = PyList_New(*$1);
   if (result) {
     for (int i = 0; i < *$1; i++) {

@@ -4,7 +4,7 @@
 }
 
 %typemap(argout) (SbVec3s & size, int & nc) {
-  Py_XDECREF($result);   /* Blow away any previous result */
+  Py_XDECREF($result); /* free up any previous result */
   $result = PyTuple_New(3);
   PyTuple_SetItem($result, 0, PyString_FromStringAndSize((const char *)result, (*$1)[0] * (*$1)[1] * (*$1)[2] * (*$2)));
   PyTuple_SetItem($result, 1, SWIG_NewPointerObj((void *)$1, SWIGTYPE_p_SbVec3s, 1));

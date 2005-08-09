@@ -40,7 +40,7 @@ convert_SoMFEnum_array(PyObject *input, int len, int *temp)
 }
 
 %typemap(argout) int & len {
-  Py_XDECREF($result);   /* Blow away any previous result */
+  Py_XDECREF($result); /* free up any previous result */
   $result = PyList_New(*$1);
   if (result) {
     for (int i = 0; i < *$1; i++){

@@ -40,11 +40,11 @@ cast(PyObject * self, PyObject * args)
   swig_type_info * swig_type = 0;
   void * cast_obj = 0;
   size_t type_len;
-  char * type, * ptr_type;
+  char * type_name, * ptr_type;
   PyObject * obj;
 
-  if (!PyArg_ParseTuple(args, "Os", &obj, &type)) return NULL;
-  type_len = strlen(type);
+  if (!PyArg_ParseTuple(args, "Os", &obj, &type_name)) return NULL;
+  type_len = strlen(type_name);
 
   /*
    * add a pointer sign to the string coming from the interpreter
@@ -55,10 +55,23 @@ cast(PyObject * self, PyObject * args)
   if (ptr_type == NULL) return NULL;
 
   memset(ptr_type, 0, type_len+3);
-  strncpy(ptr_type, type, type_len);
+  strncpy(ptr_type, type_name, type_len);
   strcat(ptr_type, " *");
 
-  if ((swig_type = SWIG_TypeQuery(ptr_type)) == 0) { free(ptr_type); return NULL; }
+  if ((swig_type = SWIG_TypeQuery(ptr_type)) == 0) {
+    /* the britney maneuver: "baby one more time" by prefixing 'So' */
+    char * cast_name = (char*)malloc(type_len + 5);
+    memset(cast_name, 0, type_len + 5);
+    cast_name[0] = 'S'; cast_name[1] = 'o';
+    strncpy(cast_name+2, ptr_type, type_len+2);
+
+    if ((swig_type = SWIG_TypeQuery(cast_name)) == 0) {
+      free(cast_name); free(ptr_type);
+      return NULL;
+    }
+
+    free(cast_name);
+  }
 
   free(ptr_type);
 
@@ -75,44 +88,22 @@ autocast_base(SoBase * base)
 
   /* autocast the result to the corresponding type */
   if (base && base->isOfType(SoFieldContainer::getClassTypeId())) {
+    PyObject * result_tuple = NULL;  
     SoType type = base->getTypeId();
-    size_t name_len = 0;
-    char * cast_name = NULL;
-    PyObject * result_tuple = NULL;
 
     /* in case of a non built-in type get the closest built-in parent */
-    if (!((SoFieldContainer*)base)->getIsBuiltIn()) {
-      SbBool match = FALSE;
-      while (!(type.isBad() || match)) {
-        type = type.getParent();
-        if (type.canCreateInstance()) {
-          SoFieldContainer * instance = (SoFieldContainer *)type.createInstance();
-          if (instance) {
-            if (instance->getIsBuiltIn()) { match = TRUE; }
-            instance->ref(); instance->unref(); /* free up instance */
-          }
-        }
-      }
-    }
-
-    if (!type.isBad()) {
-      name_len = strlen(type.getName().getString());
-      cast_name = (char*)malloc(name_len + 3);
-      memset(cast_name, 0, name_len + 3);
-      cast_name[0] = 'S'; cast_name[1] = 'o';
-      strncpy(cast_name + 2, type.getName().getString(), name_len);
-
+    while (!(type.isBad() || result)) {
       result_tuple = PyTuple_New(2);
       PyTuple_SetItem(result_tuple, 0, SWIG_NewPointerObj((void*)base, SWIGTYPE_p_SoBase, 1));
-      PyTuple_SetItem(result_tuple, 1, PyString_FromString((const char*)cast_name));
+      PyTuple_SetItem(result_tuple, 1, PyString_FromString(type.getName().getString()));
       Py_INCREF(result_tuple);
-      
+
       result = cast(NULL, result_tuple);
-      
+
       Py_DECREF(result_tuple);
-      free(cast_name);
+      if (!result) { type = type.getParent(); }
     }
-  }
+  }      
 
   if (!result) {
     Py_INCREF(Py_None);
@@ -130,36 +121,20 @@ autocast_path(SoPath * path)
   
   /* autocast the result to the corresponding type */
   if (path) {
-    const char * name = path->getTypeId().getName().getString();
-    PyObject * result_tuple = NULL;
+    PyObject * result_tuple = NULL;  
+    SoType type = path->getTypeId();
 
-    result_tuple = PyTuple_New(2);
-    PyTuple_SetItem(result_tuple, 0, SWIG_NewPointerObj((void*)path, SWIGTYPE_p_SoPath, 1));
-    PyTuple_SetItem(result_tuple, 1, PyString_FromString((const char*)name));
-    Py_INCREF(result_tuple);
-    
-    result = cast(NULL, result_tuple);
-
-    Py_DECREF(result_tuple);
-
-    if (!result) {
-      /* try again by adding an So prefix to the name in case it is a builtin type */
-      size_t name_len = strlen(name);
-      char * cast_name = (char*)malloc(name_len + 3);
-
-      memset(cast_name, 0, name_len + 3);
-      cast_name[0] = 'S'; cast_name[1] = 'o';
-      strncpy(cast_name + 2, name, name_len);
-
+    /* in case of a non built-in type get the closest built-in parent */
+    while (!(type.isBad() || result)) {
       result_tuple = PyTuple_New(2);
       PyTuple_SetItem(result_tuple, 0, SWIG_NewPointerObj((void*)path, SWIGTYPE_p_SoPath, 1));
-      PyTuple_SetItem(result_tuple, 1, PyString_FromString((const char*)cast_name));
+      PyTuple_SetItem(result_tuple, 1, PyString_FromString(type.getName().getString()));
       Py_INCREF(result_tuple);
-
+    
       result = cast(NULL, result_tuple);
-      Py_DECREF(result_tuple);
 
-      free(cast_name);
+      Py_DECREF(result_tuple);
+      if (!result) { type = type.getParent(); }
     }
   }
 
@@ -179,36 +154,20 @@ autocast_field(SoField * field)
   
   /* autocast the result to the corresponding type */
   if (field) {
-    const char * name = field->getTypeId().getName().getString();
-    PyObject * result_tuple = NULL;
+    PyObject * result_tuple = NULL;  
+    SoType type = field->getTypeId();
 
-    result_tuple = PyTuple_New(2);
-    PyTuple_SetItem(result_tuple, 0, SWIG_NewPointerObj((void*)field, SWIGTYPE_p_SoField, 1));
-    PyTuple_SetItem(result_tuple, 1, PyString_FromString((const char*)name));
-    Py_INCREF(result_tuple);
-    
-    result = cast(NULL, result_tuple);
-
-    Py_DECREF(result_tuple);
-
-    if (!result) {
-      /* try again by adding an So prefix to the name in case it is a builtin type */
-      size_t name_len = strlen(name);
-      char * cast_name = (char*)malloc(name_len + 3);
-
-      memset(cast_name, 0, name_len + 3);
-      cast_name[0] = 'S'; cast_name[1] = 'o';
-      strncpy(cast_name + 2, name, name_len);
-
+    /* in case of a non built-in type get the closest built-in parent */
+    while (!(type.isBad() || result)) {
       result_tuple = PyTuple_New(2);
       PyTuple_SetItem(result_tuple, 0, SWIG_NewPointerObj((void*)field, SWIGTYPE_p_SoField, 1));
-      PyTuple_SetItem(result_tuple, 1, PyString_FromString((const char*)cast_name));
+      PyTuple_SetItem(result_tuple, 1, PyString_FromString(type.getName().getString()));
       Py_INCREF(result_tuple);
-
+      
       result = cast(NULL, result_tuple);
+      
       Py_DECREF(result_tuple);
-
-      free(cast_name);      
+      if (!result) { type = type.getParent(); }
     }
   }
 
@@ -228,36 +187,20 @@ autocast_event(SoEvent * event)
   
   /* autocast the result to the corresponding type */
   if (event) {
-    const char * name = event->getTypeId().getName().getString();
-    PyObject * result_tuple = NULL;
+    PyObject * result_tuple = NULL;  
+    SoType type = event->getTypeId();
 
-    result_tuple = PyTuple_New(2);
-    PyTuple_SetItem(result_tuple, 0, SWIG_NewPointerObj((void*)event, SWIGTYPE_p_SoEvent, 1));
-    PyTuple_SetItem(result_tuple, 1, PyString_FromString((const char*)name));
-    Py_INCREF(result_tuple);
-    
-    result = cast(NULL, result_tuple);
-
-    Py_DECREF(result_tuple);
-
-    if (!result) {
-      /* try again by adding an So prefix to the name in case it is a builtin type */
-      size_t name_len = strlen(name);
-      char * cast_name = (char*)malloc(name_len + 3);
-
-      memset(cast_name, 0, name_len + 3);
-      cast_name[0] = 'S'; cast_name[1] = 'o';
-      strncpy(cast_name + 2, name, name_len);
-
+    /* in case of a non built-in type get the closest built-in parent */
+    while (!(type.isBad() || result)) {
       result_tuple = PyTuple_New(2);
       PyTuple_SetItem(result_tuple, 0, SWIG_NewPointerObj((void*)event, SWIGTYPE_p_SoEvent, 1));
-      PyTuple_SetItem(result_tuple, 1, PyString_FromString((const char*)cast_name));
+      PyTuple_SetItem(result_tuple, 1, PyString_FromString(type.getName().getString()));
       Py_INCREF(result_tuple);
-
+    
       result = cast(NULL, result_tuple);
-      Py_DECREF(result_tuple);
 
-      free(cast_name);      
+      Py_DECREF(result_tuple);
+      if (!result) { type = type.getParent(); }
     }
   }
 

@@ -74,19 +74,24 @@ autocast_base(SoBase * base)
   PyObject * result = NULL;
 
   /* autocast the result to the corresponding type */
-  if (base) {
+  if (base && base->isOfType(SoFieldContainer::getClassTypeId())) {
     SoType type = base->getTypeId();
     size_t name_len = 0;
     char * cast_name = NULL;
     PyObject * result_tuple = NULL;
 
     /* in case of a non built-in type get the closest built-in parent */
-    if (!(base->isOfType(SoFieldContainer::getClassTypeId()) && 
-          ((SoFieldContainer*)base)->getIsBuiltIn())) {
+    if (!((SoFieldContainer*)base)->getIsBuiltIn()) {
       SbBool match = FALSE;
       while (!(type.isBad() || match)) {
         type = type.getParent();
-        if (type.canCreateInstance() && type.createInstance()) { match = TRUE; }
+        if (type.canCreateInstance()) {
+          SoFieldContainer * instance = (SoFieldContainer *)type.createInstance();
+          if (instance) {
+            if (instance->getIsBuiltIn()) { match = TRUE; }
+            instance->ref(); instance->unref(); /* free up instance */
+          }
+        }
       }
     }
 

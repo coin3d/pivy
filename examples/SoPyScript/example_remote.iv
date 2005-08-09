@@ -13,7 +13,7 @@ DEF root Separator {
       color 1 0 0 = USE shuttle.translation
       brightness 0.5
       transparency 0.3
-      script "http://pivy.tammura.at/examples/glow.py"
+      script "http://pivy.tammura.at/examples/glow_web.py"
    }
    Cone {}
    Material { diffuseColor 0 0 1 }
@@ -25,7 +25,7 @@ DEF root Separator {
    }
    DEF TextScroller SoPyScript {
       fields [ SoSFString string, SoSFColor color ]
-      script "https://pivy.tammura.at/examples/textscroll.py"
+      script "https://pivy.tammura.at/examples/textscroll_web.py"
    }
    Material { diffuseColor = USE TextScroller.color }
    SoText2 {

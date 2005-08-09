@@ -77,17 +77,17 @@ if sys.version < '2.2.3':
     DistributionMetadata.download_url = None
 
 PIVY_CLASSIFIERS = """\
-Development Status :: 4 - Beta
+Development Status :: 5 - Production/Stable
 Intended Audience :: Developers
 License :: OSI Approved :: BSD License
+Operating System :: MacOS :: MacOS X
+Operating System :: Microsoft :: Windows
+Operating System :: Unix
 Programming Language :: Python
-Topic :: Software Development :: Libraries :: Python Modules
 Topic :: Multimedia :: Graphics
 Topic :: Multimedia :: Graphics :: 3D Modeling
 Topic :: Multimedia :: Graphics :: 3D Rendering
-Operating System :: Unix
-Operating System :: MacOS :: MacOS X
-Operating System :: Microsoft :: Windows
+Topic :: Software Development :: Libraries :: Python Modules
 """
 
 PIVY_VERSION = "0.3.0"

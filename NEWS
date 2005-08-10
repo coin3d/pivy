@@ -1,9 +1,13 @@
-New in Pivy v0.3.0 (so far):
+New in Pivy v0.4.0 (so far):
+* features:
+  - SIMVoleon support
+* bugfixes:
+
+New in Pivy v0.3.0:
 * features:
   - SWIG 1.3.25 support
   - pivy installs now as Python package    
   - SoPyScript node
-  - SIMVoleon support
   - numerous new test cases
   - improved basic type support
   - proper operator overloading handling
@@ -15,3 +19,4 @@ New in Pivy v0.3.0 (so far):
   - Mentor examples needs cleanup
   - removal of obsolete wrapping code
   - general code cleanup
+  - autocasting of extension nodes to the first available parent node

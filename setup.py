@@ -34,15 +34,11 @@
 # Pivy distutils setup script.
 #
 
-"""Pivy is an Open Inventor binding for Python. Open Inventor is an object
-oriented 3D toolkit which presents a programming model based on a 3D scene
-database. It was developed by Silicon Graphics.
-
-The binding has been interfaced to Coin - a 3D graphics library with an C++
-Application Programming Interface based on the Open Inventor 2.1 API.
-
-Pivy has been developed by Tamer Fahmy and is made available under a
-BSD-style license.
+"""Pivy is a Coin binding for Python. Coin is a high-level 3D graphics
+library with a C++ Application Programming Interface. Coin uses
+scene-graph data structures to render real-time graphics suitable for
+mostly all kinds of scientific and engineering visualization
+applications.
 """
 
 ###
@@ -69,13 +65,6 @@ except:
     def turquoise(text): return text
     def yellow(text): return text
 
-# patch distutils if it can't cope with the "classifiers" or
-# "download_url" keywords
-if sys.version < '2.2.3':
-    from distutils.dist import DistributionMetadata
-    DistributionMetadata.classifiers = None
-    DistributionMetadata.download_url = None
-
 PIVY_CLASSIFIERS = """\
 Development Status :: 5 - Production/Stable
 Intended Audience :: Developers
@@ -90,7 +79,7 @@ Topic :: Multimedia :: Graphics :: 3D Rendering
 Topic :: Software Development :: Libraries :: Python Modules
 """
 
-PIVY_VERSION = "0.3.0"
+PIVY_VERSION = "0.4.0"
 
 class pivy_build(build):
     PIVY_SNAKES = r"""
@@ -453,7 +442,7 @@ setup(name = "Pivy",
       long_description = __doc__,
       author = "Tamer Fahmy",
       author_email = "tamer@tammura.at",
-      download_url="http://www.tammura.at/subversion",
+      download_url="http://www.tammura.at/download/",
       url = "http://pivy.tammura.at/",
       cmdclass = {'build'   : pivy_build,
                   'clean'   : pivy_clean},

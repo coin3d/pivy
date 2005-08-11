@@ -431,7 +431,8 @@ SoPyScript::readInstance(SoInput * in, unsigned short flags)
         /* if it denotes a valid type and is derived from SoField then
            read in the next string representing the name of the
            field */
-        if (type.isBad() && type.isDerivedFrom(SoField::getClassTypeId()) &&
+        if (type != SoType::badType() &&
+            type.isDerivedFrom(SoField::getClassTypeId()) &&
             in->read(name)) {
           // check for a comma at the end and strip it off
           const SbString fieldname = 

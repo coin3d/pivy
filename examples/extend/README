@@ -21,16 +21,7 @@ parse, hence the "%include ShapeScale.h" directive at the end.
 
 Look at the SConstruct file for information in how to build the module.
 
-Note: You will have to specify the -noruntime option to swig so that it
-      just generates the raw wrapper code in order to allow the Swig Type
-      Runtime system to get all the type handling sorted out through the
-      pivy runtime library. So therefore you should also link against
-      libpivy_runtime as shown in the Makefile.
-
 If everything is build just import the freshly generated module like
 e.g. so:
 
 >>> from shapescale import *
-
-Note: Make sure it is imported _before_ the sogui or pivy module otherwise
-      the type system gets confused.

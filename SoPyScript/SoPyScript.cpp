@@ -50,7 +50,7 @@
 #include <Inventor/lists/SbStringList.h>
 #include <Inventor/sensors/SoOneShotSensor.h>
 
-#include "../swigpyrun.h"
+#include "swigpyrun.h"
 #include "SoPyScript.h"
 
 // Python code snippet to load in a URL through the urrlib module

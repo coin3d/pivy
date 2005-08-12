@@ -362,7 +362,6 @@ autocast_event(SoEvent * event)
 %include Inventor/fields/SoField.h
 %include Inventor/SbString.h
 
-#ifdef PIVY_WIN32
 /* some ignores for missing COIN_DLL_API specifications */
 %ignore cc_rbptree_init;
 %ignore cc_rbptree_clean;
@@ -399,4 +398,3 @@ autocast_event(SoEvent * event)
 %ignore SoNormalBundle::set;
 %ignore SoNormalBundle::get;
 %ignore SoNormalBundle::send;
-#endif

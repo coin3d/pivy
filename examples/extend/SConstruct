@@ -75,9 +75,6 @@ env.Append(SWIGFLAGS = '-c++ -python -includeall -modern -D__PIVY__ ' +
            '-I. -I%s/interfaces -I%s/fake_headers -I/usr/local/include -I%s %s' %
            (PIVY_ROOT, PIVY_ROOT, INCLUDE_DIR, SWIG_SUPPRESS_WARNINGS))
 
-if str(Platform()) == 'win32':
-    env.Append(SWIGFLAGS = '-DPIVY_WIN32')
-
 lib = env.SharedLibrary('_shapescale', Split('shapescale.i ShapeScale.cpp'),
                         SHLIBPREFIX = '',
                         SHLIBSUFFIX = distutils.sysconfig.get_config_vars()['SO'],

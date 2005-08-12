@@ -148,8 +148,6 @@ class pivy_build(build):
     SWIG_COND_SYMBOLS = []
     CXX_INCS = "-Iinterfaces "
     CXX_LIBS = ""
-    if sys.platform == "win32":
-        CXX_INCS += "-DPIVY_WIN32 "
 
     ext_modules = []
     py_modules = ['pivy.sogui']

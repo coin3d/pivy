@@ -7,8 +7,8 @@ SoCallbackActionPythonCB(void * userdata,
   PyObject *result, *acCB, *pynode;
   int iresult = 0;
 
-  acCB = SWIG_NewPointerObj((void *) action, SWIGTYPE_p_SoCallbackAction, 1);
-  pynode = SWIG_NewPointerObj((void *) node, SWIGTYPE_p_SoNode, 1);
+  acCB = SWIG_NewPointerObj((void *)action, SWIGTYPE_p_SoCallbackAction, 1);
+  pynode = autocast_base((SoBase*)node);
 
   /* the first item in the userdata sequence is the python callback
    * function; the second is the supplied userdata python object */
@@ -121,8 +121,34 @@ SoPointPythonCB(void * userdata, SoCallbackAction * action, const SoPrimitiveVer
   $1 = PyCallable_Check($input) ? 1 : 0;
 }
 
-/* add python specific callback functions */
+%ignore SoCallbackAction::getMaterial(SbColor & ambient, SbColor & diffuse,
+                                      SbColor & specular, SbColor & emission,
+                                      float & shininess, float & transparency,
+                                      const int index = 0) const;
+
 %extend SoCallbackAction {
+  /* return a list for the out getMaterial() parameters */
+  PyObject * getMaterial(const int index = 0) {
+    SbColor * ambient = new SbColor;
+    SbColor * diffuse = new SbColor;
+    SbColor * specular = new SbColor;
+    SbColor * emission = new SbColor;
+    float shininess, transparency;
+    PyObject * result = PyTuple_New(6);
+
+    self->getMaterial(*ambient, *diffuse, *specular, *emission, shininess, transparency, index);
+
+    PyTuple_SetItem(result, 0, SWIG_NewPointerObj(ambient, SWIGTYPE_p_SbColor, 1));
+    PyTuple_SetItem(result, 1, SWIG_NewPointerObj(diffuse, SWIGTYPE_p_SbColor, 1));
+    PyTuple_SetItem(result, 2, SWIG_NewPointerObj(specular, SWIGTYPE_p_SbColor, 1));
+    PyTuple_SetItem(result, 3, SWIG_NewPointerObj(emission, SWIGTYPE_p_SbColor, 1));
+    PyTuple_SetItem(result, 4, PyFloat_FromDouble((double)shininess));
+    PyTuple_SetItem(result, 5, PyFloat_FromDouble((double)transparency));
+
+    return result;
+  }
+
+  /* add python specific callback functions */
   void addPreCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {
     PyObject *t = PyTuple_New(2);
     PyTuple_SetItem(t, 0, pyfunc);

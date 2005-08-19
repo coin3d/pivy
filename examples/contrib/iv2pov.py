@@ -112,7 +112,10 @@ def lightCallback(userdata, action, light):
 
 
 def preShapeCallback(userdata, action, node):
-    print "\n// Mesh start\nmesh {"
+    print "\n// Mesh start"
+    if node.getName().getString() != "":
+        print "// name: '%s'" % node.getName().getString()    
+    print "mesh {"
     return SoCallbackAction.CONTINUE
 
 
@@ -195,13 +198,18 @@ def convert(root):
 def main():
     myWindow = SoGui.init(sys.argv[0])
     if myWindow == None: sys.exit(1)
-    
+
+    sys.stderr.write("Inventor => POV converter - Version 0.01 alpha\n")
+    if len(sys.argv) != 2:
+        sys.stderr.write(" Usage: iv2pov.py [iv file] > out.pov\n")
+        sys.exit(1)
+        
     myInput = SoInput()
     if not myInput.openFile(sys.argv[1]):
+        sys.stderr.write(" Could not open specified file.\n")
         sys.exit(1)
     root = SoDB.readAll(myInput)
 
-    sys.stderr.write("Inventor => POV converter - Version 0.01 alpha\n")
     sys.stderr.write("* Select a camera angle and press 'q'\n")
     
     # setup viewer
@@ -214,7 +222,7 @@ def main():
     SoGui.show(myWindow)
     SoGui.mainLoop()
 
-    sys.stderr.write("* Starting...\n")
+    sys.stderr.write("* Processing...\n")
     cam = myViewer.getCamera()
     root.insertChild(cam, 0)
     convert(root)
@@ -225,7 +233,7 @@ def main():
     # the scene gets completely dark...)
     global lightfound    
     if lightfound != True:
-        sys.stderr.write("* Scene contains no lights. Adding a headlight to camera.\n")
+        sys.stderr.write("* Scene contained no lights. Added a headlight to the camera.\n")
         pos = cam.position.getValue()
         print "// Default headlight"
         print "light_source { <%f, %f, %f>, rgb <1, 1, 1> }" % (pos[0], pos[1], pos[2])

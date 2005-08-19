@@ -43,10 +43,11 @@
 ##  * Better camera support
 ##  * Search graph for lights or cameras BEFORE processing. Add
 ##    if missing.
-##  * Print some kind of instructioins
+##  * Better material handeling
+##  * Make it into a library?
 ##
 
-import math
+
 from pivy.coin import *
 from pivy.sogui import *
 
@@ -74,7 +75,8 @@ def cameraCallback(userdata, action, camera):
     print "\ncamera {"
     print " perspective"
     print " up <0, 1, 0>"
-    print " right <%f, 0, 0>" % camera.aspectRatio.getValue()
+    ## FIXME: This is not really needed (?)  (20050819 handegar)
+    ##print " right <%f, 0, 0>" % camera.aspectRatio.getValue()
     print " direction <0, 0, -1>"
     campos = camera.position.getValue()
     print " location <%f, %f, %f>" % (campos[0], campos[1], campos[2])
@@ -198,6 +200,9 @@ def main():
     if not myInput.openFile(sys.argv[1]):
         sys.exit(1)
     root = SoDB.readAll(myInput)
+
+    sys.stderr.write("Inventor => POV converter - Version 0.01 alpha\n")
+    sys.stderr.write("* Select a camera angle and press 'q'\n")
     
     # setup viewer
     myViewer = SoGuiExaminerViewer(myWindow)
@@ -209,15 +214,18 @@ def main():
     SoGui.show(myWindow)
     SoGui.mainLoop()
 
-
+    sys.stderr.write("* Starting...\n")
     cam = myViewer.getCamera()
     root.insertChild(cam, 0)
     convert(root)
+    sys.stderr.write("* ...finished\n")
+
 
     # Add a default headlight if no light were processed (or else
     # the scene gets completely dark...)
     global lightfound    
     if lightfound != True:
+        sys.stderr.write("* Scene contains no lights. Adding a headlight to camera.\n")
         pos = cam.position.getValue()
         print "// Default headlight"
         print "light_source { <%f, %f, %f>, rgb <1, 1, 1> }" % (pos[0], pos[1], pos[2])

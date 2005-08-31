@@ -1,7 +1,13 @@
 New in Pivy v0.4.0 (so far):
 * features:
+  - purer and simpler OpenBSD'esque license
   - SIMVoleon support
+  - Sc21 support
+  - new contributed examples
 * bugfixes:
+  - missing autocast invocation in SoCallbackActionPythonCB() for SoNode param 
+  - out parameter handling for SoCallbackAction::getMaterial()
+  - proper handling of size[2] == 0 in SbImage::setValue(SbVec3s size,...)
 
 New in Pivy v0.3.0:
 * features:

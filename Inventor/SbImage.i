@@ -4,7 +4,7 @@
   PyObject * vec2s = $input;
   PyObject * nc = $input;
 
-  if ((SWIG_ConvertPtr(vec2s,(void **) &$2, SWIGTYPE_p_SbVec2s, SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+  if ((SWIG_ConvertPtr(vec2s, (void **) &$2, SWIGTYPE_p_SbVec2s, SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
   if ($2 == NULL) {
     PyErr_SetString(PyExc_TypeError,"null reference"); SWIG_fail;
   }
@@ -24,7 +24,7 @@
   PyObject * vec3s = $input;
   PyObject * nc = $input;
 
-  if ((SWIG_ConvertPtr(vec3s,(void **) &$2, SWIGTYPE_p_SbVec3s, SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+  if ((SWIG_ConvertPtr(vec3s, (void **)&$2, SWIGTYPE_p_SbVec3s, SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
   if ($2 == NULL) {
     PyErr_SetString(PyExc_TypeError,"null reference"); SWIG_fail;
   }
@@ -44,7 +44,7 @@
   PyObject * nc = $input;
   PyObject * buf = $input;
 
-  if ((SWIG_ConvertPtr(vec2s,(void **) &$1, SWIGTYPE_p_SbVec2s, SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+  if ((SWIG_ConvertPtr(vec2s, (void **)&$1, SWIGTYPE_p_SbVec2s, SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
   if ($1 == NULL) {
     PyErr_SetString(PyExc_TypeError,"null reference"); SWIG_fail;
   }
@@ -54,7 +54,7 @@
     PyString_AsStringAndSize(buf, (char **)&image, &len);
     $3 = image;
   } else {
-    PyErr_SetString(PyExc_TypeError, "expected a sequence."); SWIG_fail;
+    PyErr_SetString(PyExc_TypeError, "expected a string."); SWIG_fail;
   }
 }
 
@@ -64,17 +64,17 @@
   PyObject * nc = $input;
   PyObject * buf = $input;
 
-  if ((SWIG_ConvertPtr(vec3s,(void **) &$1, SWIGTYPE_p_SbVec3s, SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+  if ((SWIG_ConvertPtr(vec3s, (void **)&$1, SWIGTYPE_p_SbVec3s, SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
   if ($1 == NULL) {
     PyErr_SetString(PyExc_TypeError,"null reference"); SWIG_fail;
   }
   $2 = PyInt_AsLong(nc);
   if (PyString_Check(buf)) {
-    int len = (*$1)[0] * (*$1)[1] * $2;
+    int len = (*$1)[0] * (*$1)[1] * ((*$1)[2] ? (*$1)[2] : 1) * $2;
     PyString_AsStringAndSize(buf, (char **)&image, &len);
     $3 = image;
   } else {
-    PyErr_SetString(PyExc_TypeError, "expected a sequence."); SWIG_fail;
+    PyErr_SetString(PyExc_TypeError, "expected a string."); SWIG_fail;
   }
 }
 

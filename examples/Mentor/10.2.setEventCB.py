@@ -145,7 +145,6 @@ def main():
 
     # Create and set up the root node
     root = SoSeparator()
-    root.ref()
 
     # Add a camera
     myCamera = SoPerspectiveCamera()

@@ -64,7 +64,6 @@ def main():
     if myWindow == None: sys.exit(1)     
 
     root = SoSeparator()
-    root.ref()
 
     # Add a camera and light
     myCamera = SoPerspectiveCamera()

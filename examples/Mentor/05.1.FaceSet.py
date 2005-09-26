@@ -61,7 +61,6 @@ IV_STRICT = 1
 
 def makeObeliskFaceSet():
    obelisk = SoSeparator()
-   obelisk.ref()
 
    if IV_STRICT:
        # This is the preferred code for Inventor 2.1
@@ -110,7 +109,6 @@ def makeObeliskFaceSet():
        myFaceSet.numVertices.setValues(0, 8, numvertices)
        obelisk.addChild(myFaceSet)
 
-   obelisk.unrefNoDelete()
    return obelisk
 
 ## CODE FOR The Inventor Mentor ENDS HERE
@@ -122,7 +120,6 @@ def main():
     if myWindow == None: sys.exit(1)
 
     root = SoSeparator()
-    root.ref()
 
     root.addChild(makeObeliskFaceSet())
 

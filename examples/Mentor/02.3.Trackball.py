@@ -34,7 +34,6 @@ def main():
     if myWindow == None: sys.exit(1)
 
     root = SoSeparator()
-    root.ref()
 
     myCamera = SoPerspectiveCamera()
     root.addChild(myCamera)             # child 0

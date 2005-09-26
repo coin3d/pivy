@@ -69,7 +69,6 @@ def main():
     if myWindow == None: sys.exit(1)
 
     root = SoSeparator()
-    root.ref()
    
 ###########################################################   
 # CODE FOR The Inventor Mentor STARTS HERE

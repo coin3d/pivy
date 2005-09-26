@@ -35,7 +35,6 @@ def main():
     if myWindow == None: sys.exit(1)
 
     root = SoGroup()
-    root.ref()
 
     # Choose a font
     myFont = SoFont()

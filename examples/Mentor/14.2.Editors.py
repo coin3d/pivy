@@ -45,7 +45,6 @@ def main():
 
     # SCENE!
     myScene = SoSceneKit()
-    myScene.ref()
 
     # LIGHTS! Add an SoLightKit to the "lightList." The 
     # SoLightKit creates an SoDirectionalLight by default.

@@ -60,7 +60,6 @@ def main():
     myCamera = SoPerspectiveCamera()
     myMaterial = SoMaterial()
    
-    root.ref()
     myCamera.position = (0.212482, -0.881014, 2.5)
     myCamera.heightAngle = M_PI/4
     root.addChild(myCamera)

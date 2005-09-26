@@ -38,7 +38,6 @@ def main():
     if myWindow == None: sys.exit(1)     
 
     root = SoSeparator()
-    root.ref()
 
     # Create myDragger with an initial translation of (1,0,0)
     myDragger = SoTranslate1Dragger()

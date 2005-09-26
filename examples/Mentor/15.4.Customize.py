@@ -40,7 +40,6 @@ def main():
     if myWindow == None: sys.exit(1)     
 
     root = SoSeparator()
-    root.ref()
 
     # Create 3 translate1Draggers and place them in space.
     xDragSep = SoSeparator()
@@ -75,8 +74,6 @@ def main():
     # These are custom geometry for the draggers.
     myTranslator = SoSeparator()
     myTranslatorActive = SoSeparator()
-    myTranslator.ref()
-    myTranslatorActive.ref()
     # Materials for the dragger in regular and active states
     myMtl = SoMaterial()
     myActiveMtl = SoMaterial()
@@ -130,7 +127,6 @@ def main():
     # direction. So our text's translation is:
     # (xDragTranslate[0],yDragTranslate[0],zDragTranslate[0])
     myCalc = SoCalculator()
-    myCalc.ref()
     myCalc.A.connectFrom(xDragger.translation)
     myCalc.B.connectFrom(yDragger.translation)
     myCalc.C.connectFrom(zDragger.translation)

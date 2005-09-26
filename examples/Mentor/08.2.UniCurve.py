@@ -127,7 +127,6 @@ knots = (0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10)
 # Create the nodes needed for the B-Spline curve.
 def makeCurve():
     curveSep = SoSeparator()
-    curveSep.ref()
 
     # Set the draw style of the curve.
     drawStyle = SoDrawStyle()
@@ -147,7 +146,6 @@ def makeCurve():
     curveSep.addChild(controlPts)
     curveSep.addChild(curve)
 
-    curveSep.unrefNoDelete()
     return curveSep
 
 # CODE FOR The Inventor Mentor ENDS HERE
@@ -161,7 +159,6 @@ def main():
         sys.exit(1)
 
     root  = SoSeparator()
-    root.ref()
 
     # Create the scene graph for the spiral
     spiral   = SoSeparator()

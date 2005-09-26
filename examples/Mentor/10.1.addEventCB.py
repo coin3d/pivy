@@ -102,7 +102,6 @@ def main():
 
     # Create and set up the selection node
     selectionRoot = SoSelection()
-    selectionRoot.ref()
     selectionRoot.policy = SoSelection.SHIFT
    
     # Add a camera and some light

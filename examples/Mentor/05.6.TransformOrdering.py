@@ -38,7 +38,6 @@ def main():
     if myWindow == None: sys.exit(1)
 
     root = SoSeparator()
-    root.ref()
 
     # Create two separators, for left and right objects.
     leftSep = SoSeparator()

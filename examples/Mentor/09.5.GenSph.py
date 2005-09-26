@@ -74,18 +74,15 @@ def main():
     root = SoSeparator()
     myCamera = SoPerspectiveCamera()
     myMaterial = SoMaterial()
-    root.ref()
     root.addChild(myCamera)
     root.addChild(SoDirectionalLight())
     myMaterial.diffuseColor = (1.0, 0.0, 0.0)   # Red
     root.addChild(myMaterial)
     root.addChild(SoSphere())
-    root.ref()
 
     # Write out the triangles that form the sphere in the scene
     printSpheres(root)
 
-    root.unref()
     return 0
 
 if __name__ == "__main__":

@@ -33,7 +33,6 @@ def main():
     if myWindow == None: sys.exit(1)
 
     root = SoSeparator()
-    root.ref()
     myMaterial = SoMaterial()
     myMaterial.diffuseColor = (1.0, 0.0, 0.0)
     root.addChild(myMaterial)

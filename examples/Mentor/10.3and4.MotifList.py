@@ -239,7 +239,6 @@ def main():
 
     # Create and set up the selection node
     selectionRoot = SoSelection()
-    selectionRoot.ref()
     selectionRoot.policy = SoSelection.SHIFT
     selectionRoot.addSelectionCallback(mySelectionCB, TRUE)
     selectionRoot.addDeselectionCallback(mySelectionCB, FALSE)

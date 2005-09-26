@@ -158,7 +158,6 @@ knots = (0, 0, 0, 0, 1, 1, 1, 1)
 # and its trim curves.
 def makeSurface():
     surfSep = SoSeparator()
-    surfSep.ref()
 
     # Define the Bezier surface including the control
     # points, trim curve, and a complexity.
@@ -198,7 +197,6 @@ def makeSurface():
     surfSep.addChild(nTrim3)
     surfSep.addChild(surface)
 
-    surfSep.unrefNoDelete()
     return surfSep
 
 # CODE FOR The Inventor Mentor ENDS HERE
@@ -212,7 +210,6 @@ def main():
         sys.exit(1)
 
     root = SoSeparator()
-    root.ref()
 
     rot = SoRotation()
     rot.rotation.setValue(SbRotation(SbVec3f(0.0, 1.0, 0.0), M_PI/2.0))
@@ -223,7 +220,6 @@ def main():
     surf   = makeSurface()
     tex    = SoTexture2()
 
-    tex.ref()
     tex.filename = "diamondRug.rgb"
     carpet.addChild(tex)
     carpet.addChild(surf)

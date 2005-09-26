@@ -36,7 +36,6 @@ def main():
 
     # Set up camera and light
     root = SoSeparator()
-    root.ref()
     myCamera = SoPerspectiveCamera()
     root.addChild(myCamera)
     root.addChild(SoDirectionalLight())

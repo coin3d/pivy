@@ -151,13 +151,11 @@ def createTransformPath(inputPath):
     # node be editXf.
     pathToXform = None
     pathToXform = inputPath.copy()
-    pathToXform.ref()
     if not isTailGroup: # pop off the last entry.
         pathToXform.pop()
     # add editXf to the end
     xfIndex = parent.findChild(editXf)
     pathToXform.append(xfIndex)
-    pathToXform.unrefNoDelete()
     
     return pathToXform
 
@@ -176,7 +174,6 @@ def selectionCallback(void, # user data is not used
     # the transform that effects the selected object.
     xformPath = createTransformPath(selectionPath)
     if not xformPath: return
-    xformPath.ref()
 
     # Attach the handle box to the sphere,
     # the trackball to the cube
@@ -202,13 +199,10 @@ def deselectionCallback(void, # user data is not used
     
     if deselectionPath.getTail().isOfType(SoSphere.getClassTypeId()):
         myHandleBox.replaceManip(handleBoxPath,None)
-        handleBoxPath.unref()
     elif deselectionPath.getTail().isOfType(SoCube.getClassTypeId()):
         myTrackball.replaceManip(trackballPath,None)
-        trackballPath.unref()
     elif deselectionPath.getTail().isOfType(SoWrapperKit.getClassTypeId()):
         myTransformBox.replaceManip(transformBoxPath,None)
-        transformBoxPath.unref()
 
 # This is called when a manipulator is
 # about to begin manipulation.
@@ -231,7 +225,6 @@ def main():
 
     # create and set up the selection node
     selectionRoot = SoSelection()
-    selectionRoot.ref()
     selectionRoot.addSelectionCallback(selectionCallback, None)
     selectionRoot.addDeselectionCallback(deselectionCallback, None)
 
@@ -277,11 +270,8 @@ def main():
 
     # create the manipulators
     myHandleBox = SoHandleBoxManip()
-    myHandleBox.ref()
     myTrackball = SoTrackballManip()
-    myTrackball.ref()
     myTransformBox = SoTransformBoxManip()
-    myTransformBox.ref()
 
     # Get the draggers and add callbacks to them. Note
     # that you don't put callbacks on manipulators. You put

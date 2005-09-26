@@ -46,7 +46,6 @@ def main():
     
    # Create some objects and give them names:
    root = SoSeparator()
-   root.ref()
    root.setName("Root")
     
    myCube = SoCube()

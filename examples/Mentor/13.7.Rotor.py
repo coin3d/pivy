@@ -52,7 +52,6 @@ def main():
     if myWindow == None: sys.exit(1)     
 
     root = SoSeparator()
-    root.ref()
 
     # Read in the data for the windmill tower
     windmillTower = readFile("windmillTower.iv")

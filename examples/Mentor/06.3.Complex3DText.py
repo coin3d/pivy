@@ -35,7 +35,6 @@ def main():
     if myWindow == None: sys.exit(1)
 
     root = SoGroup()
-    root.ref()
 
     # Set up camera 
     myCamera = SoPerspectiveCamera()

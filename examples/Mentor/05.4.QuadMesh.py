@@ -66,7 +66,6 @@ IV_STRICT = 0
 # Routine to create a scene graph representing an arch.
 def makeArch():
    result = SoSeparator()
-   result.ref()
 
    if IV_STRICT:
        # This is the preferred code for Inventor 2.1 
@@ -107,7 +106,6 @@ def makeArch():
        myQuadMesh.verticesPerColumn = 5
        result.addChild(myQuadMesh)
 
-   result.unrefNoDelete()
    return result
 
 ## CODE FOR The Inventor Mentor ENDS HERE
@@ -119,7 +117,6 @@ def main():
     if myWindow == None: sys.exit(1)
 
     root = makeArch()
-    root.ref()
 
     myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(root)

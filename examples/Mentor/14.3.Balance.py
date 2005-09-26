@@ -106,7 +106,6 @@ def main():
     if myWindow == None: sys.exit(1)     
 
     myScene = SoSceneKit()
-    myScene.ref()
 
     myScene.setPart("lightList[0]", SoLightKit())
     myScene.setPart("cameraList[0]", SoCameraKit())

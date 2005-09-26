@@ -39,7 +39,6 @@ def GLRender(action):
 def callback(action):
     doAction(action)
 
-self.ref()
 wa = SoWriteAction()
 wa.apply(self)
 

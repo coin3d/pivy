@@ -115,7 +115,6 @@ def main():
     # Make a scene containing an event callback node
     root = SoSeparator()
     eventCB = SoEventCallback()
-    root.ref()
     root.addChild(eventCB)
 
     # Read the geometry from a file and add to the scene

@@ -37,7 +37,6 @@ def main():
     if myWindow == None: sys.exit(1)
 
     root = SoSeparator()
-    root.ref()
 
     # Create a blinker node and put it in the scene. A blinker
     # switches between its children at timed intervals.

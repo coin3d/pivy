@@ -105,7 +105,6 @@ def main():
     if myWindow == None: sys.exit(1)
 
     root = makeDodecahedron()
-    root.ref()
 
     myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(root)

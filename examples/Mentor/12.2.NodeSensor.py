@@ -51,7 +51,6 @@ def main():
     SoDB.init()
 
     root = SoSeparator()
-    root.ref()
     root.setName("Root")
 
     myCube = SoCube()

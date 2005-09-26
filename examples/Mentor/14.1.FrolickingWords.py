@@ -38,7 +38,6 @@ def main():
     if myWindow == None: sys.exit(1)     
 
     root = SoSeparator()
-    root.ref()
 
     # Create shape kits with the words "HAPPY" and "NICE"
     happyKit = SoShapeKit()
@@ -55,11 +54,9 @@ def main():
 
     # Create the Elapsed Time engine
     myTimer = SoElapsedTime()
-    myTimer.ref()
 
     # Create two calculator - one for HAPPY, one for NICE.
     happyCalc = SoCalculator()
-    happyCalc.ref()
     happyCalc.a.connectFrom(myTimer.timeOut)
     happyCalc.expression = """ta=cos(2*a); tb=sin(2*a);
                               oA = vec3f(3*pow(ta,3),3*pow(tb,3),1);
@@ -69,7 +66,6 @@ def main():
     # The second calculator uses different arguments to
     # sin() and cos(), so it moves out of phase.
     niceCalc = SoCalculator()
-    niceCalc.ref()
     niceCalc.a.connectFrom(myTimer.timeOut)
     niceCalc.expression = """ta=cos(2*a+2); tb=sin(2*a+2);
                              oA = vec3f(3*pow(ta,3),3*pow(tb,3),1);

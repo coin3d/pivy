@@ -78,7 +78,6 @@ IV_STRICT = 1
 # Routine to create a scene graph representing a pennant.
 def makePennant():
     result = SoSeparator()
-    result.ref()
 
     # A shape hints tells the ordering of polygons. 
     # This insures double sided lighting.
@@ -126,7 +125,6 @@ def makePennant():
         myStrips.numVertices.setValues(0, 2, numVertices)
         result.addChild(myStrips)
 
-    result.unrefNoDelete()
     return result
 
 ## CODE FOR The Inventor Mentor ENDS HERE
@@ -138,7 +136,6 @@ def main():
     if myWindow == None: sys.exit(1)
 
     root = makePennant()
-    root.ref()
 
     myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(root)

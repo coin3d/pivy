@@ -149,7 +149,6 @@ def main():
 
     # Build a simple scene graph
     root = SoSeparator()
-    root.ref()
     buildScene(root)
 
     # Build the floor geometry
@@ -223,7 +222,6 @@ def main():
     glXSwapBuffers(display, window)
 
     time.sleep(10) 
-    root.unref()
     return 0
 
 if __name__ == "__main__":

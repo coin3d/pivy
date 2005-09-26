@@ -60,7 +60,6 @@ def main():
 ###########################################################
 
     root = SoSeparator()
-    root.ref()
     root.addChild(flagXform)
     myCone = SoCone()
     myCone.bottomRadius = 0.1

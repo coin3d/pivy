@@ -43,7 +43,6 @@ def main():
     root = SoDB.readAll(sceneInput)
     if root == None:
         return 1
-    root.ref()
 
 ##############################################################
 # CODE FOR The Inventor Mentor STARTS HERE
@@ -66,7 +65,6 @@ def main():
     myWriteAction = SoWriteAction()
     myWriteAction.apply(root)
 
-    root.unref()
     return 0
 
 if __name__ == "__main__":

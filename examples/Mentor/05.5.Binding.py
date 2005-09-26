@@ -86,7 +86,6 @@ IV_STRICT = 1
 # Routine to create a scene graph representing a dodecahedron
 def makeStellatedDodecahedron():
     result = SoSeparator()
-    result.ref()
 
     if IV_STRICT:
         # This is the preferred code for Inventor 2.1 
@@ -134,9 +133,7 @@ def makeStellatedDodecahedron():
         myFaceSet.coordIndex.setValues(0, 72, indices)
         result.addChild(myFaceSet)
 
-    result.unrefNoDelete()
     return result
-
 
 def main():
     whichBinding = 0
@@ -155,7 +152,6 @@ def main():
     if myWindow == None: sys.exit(1)
 
     root = makeStellatedDodecahedron()
-    root.ref()
 
     if IV_STRICT:
         # Get the indexed face set for editing

@@ -82,15 +82,10 @@ def selCB(void, path):
     
     # Find the transform affecting this object
     xfPath = findXform(path)
-    xfPath.ref()
     
     # Replace the transform with a manipulator
     manip = SoHandleBoxManip()
-    manip.ref()
     manip.replaceNode(xfPath)
-
-    # Unref the xfPath
-    xfPath.unref()
 
 # Remove the manipulator affecting this path.
 # The first parameter, userData, is not used.
@@ -99,15 +94,10 @@ def deselCB(void, path):
 
     # Find the manipulator affecting this object
     manipPath = findManip(path)
-    manipPath.ref()
 
     # Replace the manipulator with a transform 
     manip = manipPath.getTail()
     manip.replaceManip(manipPath, SoTransform())
-    manip.unref()
-
-    # Unref the manipPath
-    manipPath.unref()
 
 ##############################################################
 # CODE FOR The Inventor Mentor STARTS HERE  (part 1)
@@ -180,7 +170,6 @@ def main():
     
     # Create a scene graph. Use the toggle selection policy.
     sel = SoSelection()
-    sel.ref()
     sel.policy = SoSelection.TOGGLE
     sel.addChild(buildScene())
 

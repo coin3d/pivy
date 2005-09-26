@@ -63,7 +63,6 @@ def main():
 
     # Create and set up the selection node
     selectionRoot = SoSelection()
-    selectionRoot.ref()
     selectionRoot.policy = SoSelection.SINGLE
     selectionRoot.addSelectionCallback(mySelectionCB)
     selectionRoot.addDeselectionCallback(myDeselectionCB)

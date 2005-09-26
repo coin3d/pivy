@@ -136,7 +136,6 @@ def main():
     # Build a simple scene graph, including a camera and
     # a SoCallback node for performing some GL rendering.
     root = SoSeparator()
-    root.ref()
 
     myCamera = SoPerspectiveCamera()
     myCamera.position = (0.0, 0.0, 5.0)

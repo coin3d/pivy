@@ -109,7 +109,6 @@ def main():
     
     # Create our scene graph.
     sel = SoSelection()
-    sel.ref()
     sel.addChild(buildScene())
 
     # Create a viewer with a render action that displays highlights

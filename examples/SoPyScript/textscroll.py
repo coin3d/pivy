@@ -22,7 +22,6 @@ timersensor = SoTimerSensor(changeStringSensorCallback, None)
 timersensor.setInterval(interval)
 timersensor.schedule()
 
-self.ref()
 wa = SoWriteAction()
 wa.apply(self)
 

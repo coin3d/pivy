@@ -49,7 +49,6 @@ def main():
         sys.exit(1)
    
     root = SoDB.readAll(inputFile)
-    root.ref()
 
     myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(root)

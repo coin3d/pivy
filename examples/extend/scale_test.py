@@ -32,9 +32,6 @@ def construct_new_marker(v):
     markerroot.addChild(t)
     
     kit = ShapeScale()
-    # FIXME: ref() on the kit is needed. find out why! smells like
-    # some old fish is swimming around somewhere! 20050804 tamer.
-    kit.ref()
     kit.active = TRUE
     kit.projectedSize = 5.0
   
@@ -120,7 +117,6 @@ if __name__ == "__main__":
     show_instructions()
 
     newroot = SoSeparator()
-    newroot.ref()
 
     newroot.addChild(root)
 
@@ -142,6 +138,5 @@ if __name__ == "__main__":
     SoGui.mainLoop()
 
     del ex1
-    newroot.unref()
     
     sys.exit(0)

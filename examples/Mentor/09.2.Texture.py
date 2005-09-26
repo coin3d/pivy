@@ -57,7 +57,6 @@ def main():
     texRoot = SoSeparator()
     input = SoInput()
 
-    texRoot.ref()
     input.openFile("jumpyMan.iv")
     result = SoDB.readAll(input)
 
@@ -74,16 +73,13 @@ def main():
 
     # Generate the texture map
     texture = SoTexture2()
-    texture.ref()
     if generateTextureMap(texRoot, texture, 64, 64):
         print "Successfully generated texture map"
     else:
         print "Could not generate texture map"
-    texRoot.unref()
 
     # Make a scene with a cube and apply the texture to it
     root = SoSeparator()
-    root.ref()
     root.addChild(texture)
     root.addChild(SoCube())
 

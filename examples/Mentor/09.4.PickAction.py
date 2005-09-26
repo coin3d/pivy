@@ -76,7 +76,6 @@ def main():
         sys.exit(1)
     
     root = SoSeparator()
-    root.ref()
 
     # Add an event callback to catch mouse button presses.
     # The callback is set up later on.

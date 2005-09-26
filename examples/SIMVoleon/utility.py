@@ -31,11 +31,11 @@ def generate8bitVoxelSet(dim):
     t = 0
 
     while t < 50:
-        v = SbVec3f(sin((t + 1.4234) * 1.9) * sin(t) * 0.45 + 0.5,
-                    cos((t * 2.5) - 10) * 0.45 + 0.5,
-                    cos((t - 0.23123) * 3) * sin(t + 0.5) * cos(t) * 0.45 + 0.5)
+        v = (sin((t + 1.4234) * 1.9) * sin(t) * 0.45 + 0.5,
+             cos((t * 2.5) - 10) * 0.45 + 0.5,
+             cos((t - 0.23123) * 3) * sin(t + 0.5) * cos(t) * 0.45 + 0.5)
 
-        assert(v[0] < 1.0 and v[1] < 1.0 and v[2] < 1.0)
+        # assert(v[0] < 1.0 and v[1] < 1.0 and v[2] < 1.0)
         nx = int(dim[0] * v[0])
         ny = int(dim[1] * v[1])
         nz = int(dim[2] * v[2])

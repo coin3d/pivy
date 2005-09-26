@@ -35,18 +35,13 @@ def main():
     SoVolumeRendering.init()
 
     root = SoSeparator()
-    root.ref()
 
     dim = SbVec3s(64, 64, 64)
-
-    # FIXME: add proper typemaps for the insane void * VolumeViz API
-    # stupidity. 20050804 tamer.
-
-    # voxeldata = utility.generate8bitVoxelSet(dim)
+    voxeldata = utility.generate8bitVoxelSet(dim)
 
     # Add SoVolumeData to scene graph
     volumedata = SoVolumeData()
-    # volumedata.setVolumeData(dim, ["foobar"], SoVolumeData.UNSIGNED_BYTE)
+    volumedata.setVolumeData(dim, voxeldata.tostring(), SoVolumeData.UNSIGNED_BYTE)
     root.addChild(volumedata)
 
     # Add TransferFunction (color map) to scene graph

@@ -495,7 +495,10 @@ SoPyScript::executePyScript(void)
     SoDebugError::post("SoPyScript::executePyScript",
                        "SoNode type could not be found!");
   }
-  
+
+  // refcount ourselves for autoref'ing to work
+  this->ref();
+
   // add the field to the global dict
   PyDict_SetItemString(PRIVATE(this)->local_module_dict, 
                        "self",

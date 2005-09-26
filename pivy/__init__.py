@@ -29,3 +29,7 @@
 #
 
 __all__ = ['coin']
+
+# initialize the Coin system
+from coin import SoDB
+SoDB.init()

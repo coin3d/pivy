@@ -33,7 +33,7 @@ from pivy.coin import *
 
 def main():
     # Initialize Inventor
-    SoDB.init()
+    # SoDB.init() invoked automatically upon coin module import
     
     # Open and read input scene graph
     sceneInput = SoInput()

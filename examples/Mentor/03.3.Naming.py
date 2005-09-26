@@ -42,7 +42,7 @@ def RemoveCube():
    myRoot.removeChild(myCube)
 
 def main():
-   SoDB.init()
+   # SoDB.init() invoked automatically upon coin module import
     
    # Create some objects and give them names:
    root = SoSeparator()

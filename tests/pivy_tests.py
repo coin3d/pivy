@@ -1015,5 +1015,4 @@ class OperatorTests(unittest.TestCase):
         self.failUnless((SoSeparator() != None))
         
 if __name__ == "__main__":
-    SoDB.init()
     unittest.main()

@@ -48,7 +48,7 @@ def rootChangedCB(void, s):
         print " (no fields changed)"
 
 def main():
-    SoDB.init()
+    # SoDB.init() invoked automatically upon coin module import
 
     root = SoSeparator()
     root.setName("Root")

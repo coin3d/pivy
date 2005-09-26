@@ -145,7 +145,7 @@ def drawFloor():
 
 def main():
     # Initialize Inventor
-    SoDB.init()
+    # SoDB.init() invoked automatically upon coin module import
 
     # Build a simple scene graph
     root = SoSeparator()

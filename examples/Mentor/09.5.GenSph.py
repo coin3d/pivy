@@ -68,7 +68,7 @@ def printSpheres(root):
 
 def main():
     # Initialize Inventor
-    SoDB.init()
+    # SoDB.init() invoked automatically upon coin module import
 
     # Make a scene containing a red sphere
     root = SoSeparator()

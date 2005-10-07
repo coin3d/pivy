@@ -4,7 +4,7 @@
 # arguments and environmental variables.
 #
 echo "Checking for PyObjC installation"
-if (python -c "import obj")
+if (python -c "import objc")
 then
   echo "OK, continuing installation"
   let retval=0

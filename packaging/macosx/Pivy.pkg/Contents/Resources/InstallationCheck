@@ -10,7 +10,7 @@ then
   let retval=0
 else 
   echo "ERROR: You have to install PyObjC before installing Pivy!"
-  let retval=112
+  let retval=119
 fi
 
 echo "\$retval = $retval"

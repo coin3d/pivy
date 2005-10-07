@@ -4,13 +4,13 @@
 # arguments and environmental variables.
 #
 echo "Checking for PyObjC installation"
-if (python -c "import objc")
+if (python -c "import obj")
 then
   echo "OK, continuing installation"
   let retval=0
 else 
   echo "ERROR: You have to install PyObjC before installing Pivy!"
-  let retval=112
+  let retval=119
 fi
 
 echo "\$retval = $retval"

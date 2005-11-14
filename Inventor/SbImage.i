@@ -14,7 +14,7 @@
     PyString_AsStringAndSize(buf, (char **)&image, &len);
     $1 = image;
   } else {
-    PyErr_SetString(PyExc_TypeError, "expected a sequence."); SWIG_fail;
+    PyErr_SetString(PyExc_TypeError, "expected a string."); SWIG_fail;
   }
 }
 
@@ -34,7 +34,7 @@
     PyString_AsStringAndSize(buf, (char **)&image, &len);
     $1 = image;
   } else {
-    PyErr_SetString(PyExc_TypeError, "expected a sequence."); SWIG_fail;
+    PyErr_SetString(PyExc_TypeError, "expected a string."); SWIG_fail;
   }
 }
 

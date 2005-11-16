@@ -16,6 +16,15 @@
 %module shapescale
 
 %{
+#if defined(_WIN32) || defined(__WIN32__)
+#include <windows.h>
+#undef max
+#undef ERROR
+#undef DELETE
+#endif
+
+#undef ANY
+
 #include "ShapeScale.h"
 #include "coin_header_includes.h"
 %}

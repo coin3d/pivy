@@ -195,18 +195,24 @@ class pivy_build(build):
     def check_gui_bindings(self):
         "check for availability of SoGui bindings and removes the not available ones"
         if sys.platform == "win32":
-            print "Using SoWin by default for Windows builds!"
+            print "Coin and SoWin are built by default on Windows..."
             self.MODULES = {'coin'  : ('_coin',  'coin-config', 'pivy.'),
                             'sowin' : ('gui._sowin', 'sowin-config', 'pivy.gui.')}
-            return
-        for gui in self.SOGUI:
-            gui_config_cmd = self.MODULES[gui][1]
-            if not self.check_cmd_exists(gui_config_cmd):
-                del self.MODULES[gui]
+            print blue("Checking for QTDIR environment variable..."),
+            if os.getenv("QTDIR"):
+                self.MODULES['soqt'] = ('gui._soqt', 'soqt-config', 'pivy.gui.')
+                print blue(os.getenv("QTDIR"))
             else:
-                print blue("Checking for %s version..." % gui),
-                version = self.do_os_popen("%s --version" % gui_config_cmd)
-                print blue("%s" % version)
+                print red("not set. (SoQt bindings won't be built)")
+        else:
+            for gui in self.SOGUI:
+                gui_config_cmd = self.MODULES[gui][1]
+                if not self.check_cmd_exists(gui_config_cmd):
+                    del self.MODULES[gui]
+                else:
+                    print blue("Checking for %s version..." % gui),
+                    version = self.do_os_popen("%s --version" % gui_config_cmd)
+                    print blue("%s" % version)
 
     def get_coin_features(self):
         "set the global variable SWIG_COND_SYMBOLS needed for conditional " + \
@@ -345,9 +351,14 @@ class pivy_build(build):
                 INCLUDE_DIR = os.getenv("COIN3DDIR") + "\\include"
                 CPP_FLAGS = "-I" + INCLUDE_DIR +  " " + \
                             "-I" + os.getenv("COIN3DDIR") + "\\include\\Inventor\\annex" + \
-                            " /DSOWIN_DLL /DCOIN_DLL /wd4244 /wd4049"
-                LDFLAGS_LIBS = os.getenv("COIN3DDIR") + "\\lib\\coin2.lib " + \
-                               os.getenv("COIN3DDIR") + "\\lib\\sowin1.lib"
+                            " /DCOIN_DLL /wd4244 /wd4049"
+                LDFLAGS_LIBS = os.getenv("COIN3DDIR") + "\\lib\\coin2.lib "
+                if module == "sowin":
+                    CPP_FLAGS += " /DSOWIN_DLL"
+                    LDFLAGS_LIBS += os.getenv("COIN3DDIR") + "\\lib\\sowin1.lib"
+                elif module == "soqt":
+                    CPP_FLAGS += " -I" + os.getenv("QTDIR") + "\\include /DSOQT_DLL"
+                    LDFLAGS_LIBS += os.getenv("COIN3DDIR") + "\\lib\\soqt1.lib "
             else:
                 INCLUDE_DIR = self.do_os_popen("coin-config --includedir")
                 CPP_FLAGS = self.do_os_popen("%s --cppflags" % config_cmd)

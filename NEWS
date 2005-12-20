@@ -4,10 +4,14 @@ New in Pivy v0.4.0 (so far):
   - SIMVoleon support
   - Sc21 support
   - new contributed examples
+  - SoQt Windows out-of-the-box build support
 * bugfixes:
   - missing autocast invocation in SoCallbackActionPythonCB() for SoNode param 
   - out parameter handling for SoCallbackAction::getMaterial()
   - proper handling of size[2] == 0 in SbImage::setValue(SbVec3s size,...)
+  - callback handling for:
+    + SoSensorManager::setChangedCallback()
+    + SoSceneManager::setRenderCallback()
 
 New in Pivy v0.3.0:
 * features:

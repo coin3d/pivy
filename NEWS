@@ -12,6 +12,7 @@ New in Pivy v0.4.0 (so far):
   - callback handling for:
     + SoSensorManager::setChangedCallback()
     + SoSceneManager::setRenderCallback()
+  - win32 build system fix: COIN3DDIR environment variable changed to COINDIR
 
 New in Pivy v0.3.0:
 * features:

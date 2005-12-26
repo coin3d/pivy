@@ -39,13 +39,13 @@ if str(Platform()) != 'win32' and env['warnings']:
 
 
 if str(Platform()) == 'win32':
-    env.Append(CPPPATH = os.getenv("COIN3DDIR") + os.sep + 'include')
+    env.Append(CPPPATH = os.getenv("COINDIR") + os.sep + 'include')
     env.Append(CPPDEFINES = 'COIN_DLL')
     env.Append(CPPFLAGS = Split('/wd4244 /wd4049'))
     env.Append(LIBPATH = (sys.exec_prefix + os.sep + 'libs').split())
-    env.Append(LIBPATH = os.getenv('COIN3DDIR') + '\\lib' )
+    env.Append(LIBPATH = os.getenv('COINDIR') + '\\lib' )
     env.Append(LIBS = 'coin2.lib')
-    INCLUDE_DIR = os.getenv("COIN3DDIR") + os.sep + 'include'
+    INCLUDE_DIR = os.getenv("COINDIR") + os.sep + 'include'
 else:
     env.ParseConfig('coin-config --cppflags --libs --ldflags')
     INCLUDE_DIR = os.popen('coin-config --includedir').read()

@@ -41,12 +41,12 @@ env.Repository('../../SoPyScript')
 examin_env = env.Copy(CPPPATH = ['.', distutils.sysconfig.get_python_inc()])
 
 if str(Platform()) == 'win32':
-    examin_env.Append(CPPPATH = os.getenv("COIN3DDIR") + os.sep + 'include')
+    examin_env.Append(CPPPATH = os.getenv("COINDIR") + os.sep + 'include')
     examin_env.Append(CPPDEFINES = Split('COIN_DLL SOWIN_DLL'))
     examin_env.Append(CPPFLAGS = Split('/wd4244 /wd4049'))
     examin_env.Append(LIBPATH = (sys.exec_prefix + os.sep + 'libs').split())
-    examin_env.Append(LINKFLAGS = os.getenv('COIN3DDIR') + '\\lib\\coin2.lib ' + \
-                      os.getenv('COIN3DDIR') + '\\lib\\sowin1.lib')
+    examin_env.Append(LINKFLAGS = os.getenv('COINDIR') + '\\lib\\coin2.lib ' + \
+                      os.getenv('COINDIR') + '\\lib\\sowin1.lib')
 else:
     examin_env.ParseConfig('soqt-config --cppflags --libs --ldflags')
 

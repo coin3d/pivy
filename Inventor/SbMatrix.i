@@ -1,16 +1,16 @@
 %{
 static void
-convert_SbMat_array(PyObject *input, SbMat temp)
+convert_SbMat_array(PyObject * input, SbMat temp)
 {
   if (PySequence_Check(input) && (PySequence_Size(input) == 4) &&
       (PySequence_Size(PySequence_GetItem(input, 0)) == 4) &&
       (PySequence_Size(PySequence_GetItem(input, 1)) == 4) &&
       (PySequence_Size(PySequence_GetItem(input, 2)) == 4) &&
-      (PySequence_Size(PySequence_GetItem(input, 3)) == 4)) {
+      (PySequence_Size(PySequence_GetItem(input, 3)) == 4)) {    
     int i,j;
     for (i=0; i < 4; i++) {
       for (j=0; j < 4; j++) {
-        PyObject *oij = PySequence_GetItem(PySequence_GetItem(input, i), j);
+        PyObject * oij = PySequence_GetItem(PySequence_GetItem(input, i), j);
         if (!PyNumber_Check(oij)) {
           PyErr_SetString(PyExc_TypeError,
                           "sequence must contain 4 sequences where every sequence contains 4 floats");
@@ -18,6 +18,7 @@ convert_SbMat_array(PyObject *input, SbMat temp)
           return;
         }
         temp[i][j] = PyFloat_AsDouble(oij);
+        Py_DECREF(oij);
       }
     }
   } else {
@@ -28,27 +29,36 @@ convert_SbMat_array(PyObject *input, SbMat temp)
 }
 %}
 
-%typemap(in) SbMat * (SbMat temp) {
+%typemap(in) SbMat & (SbMat temp) {
   convert_SbMat_array($input, temp);
   $1 = &temp;
 }
 
-%typemap(typecheck) SbMat * {
+%typemap(typecheck) SbMat & {
   $1 = PySequence_Check($input) ? 1 : 0;
 }
 
 %typemap(out) SbMat & {
-  int i,j;
-  $result = PyTuple_New(4);
-  
-  for (i=0; i<4; i++) {
-    PyObject *oi = PyList_New(4);
-    for (j=0; j<4; j++) {
-      PyObject *oj = PyFloat_FromDouble((double)(*$1)[i][j]);
-      PyList_SetItem(oi, j, oj);
-    }
-    PyTuple_SetItem($result, i, oi);
-  }
+  $result = Py_BuildValue("([ffff][ffff][ffff][ffff])",
+                          (double)(*$1)[0][0],
+                          (double)(*$1)[0][1],
+                          (double)(*$1)[0][2],
+                          (double)(*$1)[0][3],
+                          
+                          (double)(*$1)[1][0],
+                          (double)(*$1)[1][1],
+                          (double)(*$1)[1][2],
+                          (double)(*$1)[1][3],
+                          
+                          (double)(*$1)[2][0],
+                          (double)(*$1)[2][1],
+                          (double)(*$1)[2][2],
+                          (double)(*$1)[2][3],
+                          
+                          (double)(*$1)[3][0],
+                          (double)(*$1)[3][1],
+                          (double)(*$1)[3][2],
+                          (double)(*$1)[3][3]);
 }
 
 %ignore SbMatrix::getTransform(SbVec3f & translation, SbRotation & rotation,
@@ -71,22 +81,14 @@ convert_SbMat_array(PyObject *input, SbMat temp)
     SbVec3f * s = new SbVec3f;
     SbRotation * r = new SbRotation;
     SbRotation * so = new SbRotation;
-    PyObject * result;
 
     self->getTransform(*t, *r, *s, *so);
-        
-    result = PyTuple_New(4);
-    PyTuple_SetItem(result, 0,
-                    SWIG_NewPointerObj((void *) t, SWIGTYPE_p_SbVec3f, 1));
-    PyTuple_SetItem(result, 1,
-                    SWIG_NewPointerObj((void *) r, SWIGTYPE_p_SbRotation, 1));
-    PyTuple_SetItem(result, 2,
-                    SWIG_NewPointerObj((void *) s, SWIGTYPE_p_SbVec3f, 1));
-    PyTuple_SetItem(result, 3,
-                    SWIG_NewPointerObj((void *) so, SWIGTYPE_p_SbRotation, 1));
-    Py_INCREF(result);
 
-    return result;
+    return Py_BuildValue("(OOOO)",
+                         SWIG_NewPointerObj((void *)t, SWIGTYPE_p_SbVec3f, 1),
+                         SWIG_NewPointerObj((void *)r, SWIGTYPE_p_SbRotation, 1),
+                         SWIG_NewPointerObj((void *)s, SWIGTYPE_p_SbVec3f, 1),
+                         SWIG_NewPointerObj((void *)so, SWIGTYPE_p_SbRotation, 1));
   }
 
   PyObject * getTransform(SbVec3f & center) {
@@ -94,22 +96,14 @@ convert_SbMat_array(PyObject *input, SbMat temp)
     SbVec3f * s = new SbVec3f;
     SbRotation * r = new SbRotation;
     SbRotation * so = new SbRotation;
-    PyObject * result;
 
     self->getTransform(*t, *r, *s, *so, center);
-        
-    result = PyTuple_New(4);
-    PyTuple_SetItem(result, 0,
-                    SWIG_NewPointerObj((void *) t, SWIGTYPE_p_SbVec3f, 1));
-    PyTuple_SetItem(result, 1,
-                    SWIG_NewPointerObj((void *) r, SWIGTYPE_p_SbRotation, 1));
-    PyTuple_SetItem(result, 2,
-                    SWIG_NewPointerObj((void *) s, SWIGTYPE_p_SbVec3f, 1));
-    PyTuple_SetItem(result, 3,
-                    SWIG_NewPointerObj((void *) so, SWIGTYPE_p_SbRotation, 1));
-    Py_INCREF(result);
 
-    return result;
+    return Py_BuildValue("(OOOO)",
+                         SWIG_NewPointerObj((void *)t, SWIGTYPE_p_SbVec3f, 1),
+                         SWIG_NewPointerObj((void *)r, SWIGTYPE_p_SbRotation, 1),
+                         SWIG_NewPointerObj((void *)s, SWIGTYPE_p_SbVec3f, 1),
+                         SWIG_NewPointerObj((void *)so, SWIGTYPE_p_SbRotation, 1));
   }
 
   /* add operator overloading methods instead of the global functions */

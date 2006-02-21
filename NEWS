@@ -13,6 +13,9 @@ New in Pivy v0.4.0 (so far):
     + SoSensorManager::setChangedCallback()
     + SoSceneManager::setRenderCallback()
   - win32 build system fix: COIN3DDIR environment variable changed to COINDIR
+  - pythonic SoFieldContainer::getFieldName() returning a PyString
+  - SbMatrix.setValue() works again taking a ((ffff),(ffff),(ffff),(ffff))
+  - memleaks
 
 New in Pivy v0.3.0:
 * features:

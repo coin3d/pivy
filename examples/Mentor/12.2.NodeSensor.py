@@ -39,11 +39,9 @@ def rootChangedCB(void, s):
     print "The node named '%s' changed" % (changedNode.getName().getString())
 
     if changedField:
-        # the getFieldName() method returns a tuple with 2 values in pivy.
-        # first argument is an integer (representing the SbBool) and the
-        # second is a SbName instance.
-        fieldName = changedNode.getFieldName(changedField)[1]
-        print " (field %s)" % (fieldName.getString())
+        # the pythonic getFieldName() method returns a string or None in Pivy.
+        fieldName = changedNode.getFieldName(changedField)
+        print " (field %s)" % (fieldName)
     else:
         print " (no fields changed)"
 

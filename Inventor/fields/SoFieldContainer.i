@@ -1,17 +1,11 @@
 %extend SoFieldContainer {
   PyObject * getFieldName(SoField * field) {
-    SbName * name = new SbName;
-    PyObject * result;
-
-    SbBool tf = self->getFieldName(field, *name);
-
-    result = PyTuple_New(2);
-    PyTuple_SetItem(result, 0, PyInt_FromLong(tf));
-    PyTuple_SetItem(result, 1,
-                    SWIG_NewPointerObj((void *) name, SWIGTYPE_p_SbName, 1));
-    Py_INCREF(result);
-
-    return result;
+    SbName name;
+    if (!self->getFieldName(field, name)) {
+      Py_INCREF(Py_None);
+      return Py_None;
+    }
+    return Py_BuildValue("s", name.getString());
   }
   
 /* add generic interface to access fields as attributes */

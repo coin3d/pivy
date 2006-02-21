@@ -24,35 +24,35 @@ cast(PyObject * self, PyObject * args)
 {
   swig_type_info * swig_type = 0;
   void * cast_obj = 0;
-  size_t type_len;
   char * type_name, * ptr_type;
-  PyObject * obj;
+  int type_len;
+  PyObject * obj = 0;
 
-  if (!PyArg_ParseTuple(args, "Os", &obj, &type_name)) return NULL;
-  type_len = strlen(type_name);
+  if (!PyArg_ParseTuple(args, "Os#:cast", &obj, &type_name, &type_len)) {
+    SWIG_fail;
+  }
 
   /*
    * add a pointer sign to the string coming from the interpreter
    * e.g. "SoSeparator" becomes "SoSeparator *" - so that SWIG_TypeQuery()
    * can do its job.
    */
-  ptr_type = (char*)malloc(type_len+3);
-  if (ptr_type == NULL) return NULL;
+  if (!(ptr_type = (char*)malloc(type_len+3))) { SWIG_fail; }
 
   memset(ptr_type, 0, type_len+3);
   strncpy(ptr_type, type_name, type_len);
   strcat(ptr_type, " *");
 
-  if ((swig_type = SWIG_TypeQuery(ptr_type)) == 0) {
+  if (!(swig_type = SWIG_TypeQuery(ptr_type))) {
     /* the britney maneuver: "baby one more time" by prefixing 'So' */
     char * cast_name = (char*)malloc(type_len + 5);
     memset(cast_name, 0, type_len + 5);
     cast_name[0] = 'S'; cast_name[1] = 'o';
     strncpy(cast_name+2, ptr_type, type_len+2);
 
-    if ((swig_type = SWIG_TypeQuery(cast_name)) == 0) {
+    if (!(swig_type = SWIG_TypeQuery(cast_name))) {
       free(cast_name); free(ptr_type);
-      return NULL;
+      SWIG_fail;
     }
 
     free(cast_name);
@@ -60,9 +60,12 @@ cast(PyObject * self, PyObject * args)
 
   free(ptr_type);
 
-  if ((SWIG_ConvertPtr(obj, (void**)&cast_obj, NULL, 1)) == -1) return NULL;
+  SWIG_ConvertPtr(obj, (void**)&cast_obj, NULL, SWIG_POINTER_EXCEPTION | 0);
+  if (SWIG_arg_fail(1)) { SWIG_fail; }
 
   return SWIG_NewPointerObj((void*)cast_obj, swig_type, 0);
+  fail:
+  return NULL;
 }
 
 /* autocasting helper function for SoBase */
@@ -73,19 +76,20 @@ autocast_base(SoBase * base)
 
   /* autocast the result to the corresponding type */
   if (base && base->isOfType(SoFieldContainer::getClassTypeId())) {
-    PyObject * result_tuple = NULL;  
+    PyObject * cast_args = NULL;
+    PyObject * obj = NULL;
     SoType type = base->getTypeId();
 
     /* in case of a non built-in type get the closest built-in parent */
     while (!(type.isBad() || result)) {
-      result_tuple = PyTuple_New(2);
-      PyTuple_SetItem(result_tuple, 0, SWIG_NewPointerObj((void*)base, SWIGTYPE_p_SoBase, 1));
-      PyTuple_SetItem(result_tuple, 1, PyString_FromString(type.getName().getString()));
-      Py_INCREF(result_tuple);
+      obj = SWIG_NewPointerObj((void*)base, SWIGTYPE_p_SoBase, 0);
+      cast_args = Py_BuildValue("(Os)", obj, type.getName().getString());
+      
+      result = cast(NULL, cast_args);
 
-      result = cast(NULL, result_tuple);
+      Py_DECREF(cast_args);
+      Py_DECREF(obj);
 
-      Py_DECREF(result_tuple);
       if (!result) { type = type.getParent(); }
     }
   }      
@@ -106,19 +110,20 @@ autocast_path(SoPath * path)
   
   /* autocast the result to the corresponding type */
   if (path) {
-    PyObject * result_tuple = NULL;  
+    PyObject * cast_args = NULL;
+    PyObject * obj = NULL;
     SoType type = path->getTypeId();
 
     /* in case of a non built-in type get the closest built-in parent */
     while (!(type.isBad() || result)) {
-      result_tuple = PyTuple_New(2);
-      PyTuple_SetItem(result_tuple, 0, SWIG_NewPointerObj((void*)path, SWIGTYPE_p_SoPath, 1));
-      PyTuple_SetItem(result_tuple, 1, PyString_FromString(type.getName().getString()));
-      Py_INCREF(result_tuple);
-    
-      result = cast(NULL, result_tuple);
+      obj = SWIG_NewPointerObj((void*)path, SWIGTYPE_p_SoPath, 0);
+      cast_args = Py_BuildValue("(Os)", obj, type.getName().getString());
+      
+      result = cast(NULL, cast_args);
 
-      Py_DECREF(result_tuple);
+      Py_DECREF(cast_args);
+      Py_DECREF(obj);
+
       if (!result) { type = type.getParent(); }
     }
   }
@@ -136,22 +141,23 @@ SWIGEXPORT PyObject *
 autocast_field(SoField * field)
 {
   PyObject * result = NULL;
-  
+
   /* autocast the result to the corresponding type */
   if (field) {
-    PyObject * result_tuple = NULL;  
+    PyObject * cast_args = NULL;
+    PyObject * obj = NULL;
     SoType type = field->getTypeId();
 
     /* in case of a non built-in type get the closest built-in parent */
     while (!(type.isBad() || result)) {
-      result_tuple = PyTuple_New(2);
-      PyTuple_SetItem(result_tuple, 0, SWIG_NewPointerObj((void*)field, SWIGTYPE_p_SoField, 1));
-      PyTuple_SetItem(result_tuple, 1, PyString_FromString(type.getName().getString()));
-      Py_INCREF(result_tuple);
+      obj = SWIG_NewPointerObj((void*)field, SWIGTYPE_p_SoField, 0);
+      cast_args = Py_BuildValue("(Os)", obj, type.getName().getString());
       
-      result = cast(NULL, result_tuple);
+      result = cast(NULL, cast_args);
+
+      Py_DECREF(cast_args);
+      Py_DECREF(obj);
       
-      Py_DECREF(result_tuple);
       if (!result) { type = type.getParent(); }
     }
   }
@@ -172,19 +178,20 @@ autocast_event(SoEvent * event)
   
   /* autocast the result to the corresponding type */
   if (event) {
-    PyObject * result_tuple = NULL;  
+    PyObject * cast_args = NULL;
+    PyObject * obj = NULL;
     SoType type = event->getTypeId();
 
     /* in case of a non built-in type get the closest built-in parent */
     while (!(type.isBad() || result)) {
-      result_tuple = PyTuple_New(2);
-      PyTuple_SetItem(result_tuple, 0, SWIG_NewPointerObj((void*)event, SWIGTYPE_p_SoEvent, 1));
-      PyTuple_SetItem(result_tuple, 1, PyString_FromString(type.getName().getString()));
-      Py_INCREF(result_tuple);
-    
-      result = cast(NULL, result_tuple);
+      obj = SWIG_NewPointerObj((void*)event, SWIGTYPE_p_SoEvent, 0);
+      cast_args = Py_BuildValue("(Os)", obj, type.getName().getString());
+      
+      result = cast(NULL, cast_args);
 
-      Py_DECREF(result_tuple);
+      Py_DECREF(cast_args);
+      Py_DECREF(obj);
+
       if (!result) { type = type.getParent(); }
     }
   }
@@ -200,31 +207,31 @@ autocast_event(SoEvent * event)
 
 /* typemaps for autocasting types through the Inventor type system */
 %typemap(out) SoBase * {
-  return autocast_base($1);
+  $result = autocast_base($1);
 }
 
 %typemap(out) SoFieldContainer * {
-  return autocast_base($1);
+  $result = autocast_base($1);
 }
 
 %typemap(out) SoNode * {
-  return autocast_base($1);
+  $result = autocast_base($1);
 }
 
 %typemap(out) SoPath * {
-  return autocast_path($1);
+  $result = autocast_path($1);
 }
 
 %typemap(out) SoEngine * {
-  return autocast_base($1);
+  $result = autocast_base($1);
 }
 
 %typemap(out) SoField * {
-  return autocast_field($1);
+  $result = autocast_field($1);
 }
 
 %typemap(out) SoEvent * {
-  return autocast_event($1);
+  $result = autocast_event($1);
 }
 
 %native(cast) PyObject * cast(PyObject * self, PyObject * args);
@@ -269,15 +276,30 @@ autocast_event(SoEvent * event)
 %typemap(out) uint32_t = unsigned int;
 %typemap(typecheck) uint32_t = unsigned int;
 
+%typemap(typecheck) SbName & {
+  void *ptr = NULL;
+  $1 = 1;
+  if (!PyString_Check($input) && (SWIG_ConvertPtr($input, (void**)(&ptr), SWIGTYPE_p_SbName, 0) == -1)) {
+    $1 = 0;
+  }
+}
+
 %typemap(in) SbName & {
   if (PyString_Check($input)) {
     $1 = new SbName(PyString_AsString($input));
   } else {
-    SWIG_ConvertPtr($input, (void**)&$1, SWIGTYPE_p_SbName, 1);
+    SbName * tmp = NULL;
+    $1 = new SbName;
+    SWIG_ConvertPtr($input, (void**)&tmp, SWIGTYPE_p_SbName, 1);
+    *$1 = *tmp;
   }
 }
 
-%typemap(typecheck) SbName & {
+%typemap(freearg) SbName & {
+  if ($1) { delete $1; }
+}
+
+%typemap(typecheck) SbName {
   void *ptr = NULL;
   $1 = 1;
   if (!PyString_Check($input) && (SWIG_ConvertPtr($input, (void**)(&ptr), SWIGTYPE_p_SbName, 0) == -1)) {
@@ -295,22 +317,6 @@ autocast_event(SoEvent * event)
   }
 }
 
-%typemap(typecheck) SbName {
-  void *ptr = NULL;
-  $1 = 1;
-  if (!PyString_Check($input) && (SWIG_ConvertPtr($input, (void**)(&ptr), SWIGTYPE_p_SbName, 0) == -1)) {
-    $1 = 0;
-  }
-}
-
-%typemap(in) SbString & {
-  if (PyString_Check($input)) {
-    $1 = new SbString(PyString_AsString($input));
-  } else {
-    SWIG_ConvertPtr($input, (void**)&$1, SWIGTYPE_p_SbString, 1);
-  }
-}
-
 %typemap(typecheck) SbString & {
   void *ptr = NULL;
   $1 = 1;
@@ -319,12 +325,19 @@ autocast_event(SoEvent * event)
   }
 }
 
-%typemap(in) SbTime & {
-  if (PyFloat_Check($input)) {
-    $1 = new SbTime(PyFloat_AsDouble($input));
+%typemap(in) SbString & {
+  if (PyString_Check($input)) {
+    $1 = new SbString(PyString_AsString($input));
   } else {
-    SWIG_ConvertPtr($input, (void**)&$1, SWIGTYPE_p_SbTime, 1);
+    SbString * tmp = NULL;
+    $1 = new SbString;
+    SWIG_ConvertPtr($input, (void**)&tmp, SWIGTYPE_p_SbString, 1);
+    *$1 = *tmp;
   }
+}
+
+%typemap(freearg) SbString & {
+  if ($1) { delete $1; }
 }
 
 %typemap(typecheck) SbTime & {
@@ -333,6 +346,21 @@ autocast_event(SoEvent * event)
   if (!PyFloat_Check($input) && (SWIG_ConvertPtr($input, (void**)(&ptr), SWIGTYPE_p_SbTime, 0) == -1)) {
     $1 = 0;
   }
+}
+
+%typemap(in) SbTime & {
+  if (PyFloat_Check($input)) {
+    $1 = new SbTime(PyFloat_AsDouble($input));
+  } else {
+    SbTime * tmp = NULL;
+    $1 = new SbTime;
+    SWIG_ConvertPtr($input, (void**)&tmp, SWIGTYPE_p_SbTime, 1);
+    *$1 = *tmp;
+  }
+}
+
+%typemap(freearg) SbTime & {
+  if ($1) { delete $1; }
 }
 
 %typemap(in) FILE * {

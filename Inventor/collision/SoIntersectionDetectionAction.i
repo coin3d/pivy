@@ -54,7 +54,7 @@ SoIntersectionFilterPythonCB(void * closure,
   
   Py_DECREF(arglist);
   Py_DECREF(path1);
-  Py_DECREF(path1);
+  Py_DECREF(path2);
   Py_XDECREF(result);
 
   return (SbBool)iresult;

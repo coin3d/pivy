@@ -15,20 +15,15 @@ sensorQueueChangedPythonCB(void * userdata)
   }  
   Py_DECREF(arglist);
   Py_XDECREF(result);
-
-  return /*void*/;
 }
 %}
 
 /* add python specific callback functions */
 %extend SoSensorManager {
   void setChangedCallback(PyObject * pyfunc, PyObject * data) {
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, data);
-    Py_INCREF(pyfunc);
-    Py_INCREF(data);
-    
-    self->setChangedCallback(sensorQueueChangedPythonCB, (void *)t);
+    self->setChangedCallback(sensorQueueChangedPythonCB, 
+                             (void *)Py_BuildValue("(OO)", 
+                                                   pyfunc, 
+                                                   data ? data : Py_None));
   }
 }

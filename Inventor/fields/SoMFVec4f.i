@@ -1,23 +1,24 @@
 %{
 static void
-convert_SoMFVec4f_array(PyObject *input, int len, float temp[][4])
+convert_SoMFVec4f_array(PyObject * input, int len, float temp[][4])
 {
   int i,j;
-
   for (i=0; i<len; i++) {
-    PyObject *oi = PySequence_GetItem(input,i);
-
+    PyObject * oi = PySequence_GetItem(input, i);
     for (j=0; j<4; j++) {
-      PyObject *oj = PySequence_GetItem(oi,j);
-
+      PyObject * oj = PySequence_GetItem(oi, j);
       if (PyNumber_Check(oj)) {
         temp[i][j] = (float) PyFloat_AsDouble(oj);
       } else {
-        PyErr_SetString(PyExc_ValueError,"Sequence elements must be numbers");
-        free(temp);       
+        PyErr_SetString(PyExc_ValueError, "Sequence elements must be numbers");
+        free(temp);
+        Py_DECREF(oi);
+        Py_DECREF(oj);
         return;
       }
+      Py_DECREF(oj);
     }
+    Py_DECREF(oi);
   }
   return;
 }
@@ -25,13 +26,10 @@ convert_SoMFVec4f_array(PyObject *input, int len, float temp[][4])
 
 %typemap(in) const float xyzw[][4] (float (*temp)[4]) {
   int len;
-
   if (PySequence_Check($input)) {
     len = PySequence_Length($input);
-
-    temp = (float (*)[4]) malloc(len*4*sizeof(float));
+    temp = (float(*)[4])malloc(len*4*sizeof(float));
     convert_SoMFVec4f_array($input, len, temp);
-  
     $1 = temp;
   } else {
     PyErr_SetString(PyExc_TypeError, "expected a sequence.");
@@ -60,12 +58,12 @@ convert_SoMFVec4f_array(PyObject *input, int len, float temp[][4])
     PyObject * obj = PySequence_GetItem($input,0);
     void *ptr;
     if (SWIG_ConvertPtr(obj, &ptr, $descriptor(SbVec4f *), 0) == -1) { $1 = 1; }
+    Py_DECREF(obj);
   }
 }
 
 %typemap(in) const SbVec4f *newvals {
   int len;
-
   if (PySequence_Check($input)) {
     len = PySequence_Length($input);
     if (len > 0) {
@@ -96,6 +94,7 @@ convert_SoMFVec4f_array(PyObject *input, int len, float temp[][4])
       void *ptr;
       if (SWIG_ConvertPtr(obj, &ptr, $descriptor(SbVec4f *), 0) != -1) { $1 = 1; }
       else { $1 = 0; }
+      Py_DECREF(obj);
     }
   } else { $1 = 0; }
 }

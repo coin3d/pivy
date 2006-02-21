@@ -7,13 +7,13 @@ SoCallbackActionPythonCB(void * userdata,
   PyObject *result, *acCB, *pynode;
   int iresult = 0;
 
-  acCB = SWIG_NewPointerObj((void *)action, SWIGTYPE_p_SoCallbackAction, 1);
+  acCB = SWIG_NewPointerObj((void *)action, SWIGTYPE_p_SoCallbackAction, 0);
   pynode = autocast_base((SoBase*)node);
 
   /* the first item in the userdata sequence is the python callback
    * function; the second is the supplied userdata python object */
   func = PyTuple_GetItem((PyObject *)userdata, 0);
-  arglist = Py_BuildValue("OOO", PyTuple_GetItem((PyObject *)userdata, 1), acCB, pynode);
+  arglist = Py_BuildValue("(OOO)", PyTuple_GetItem((PyObject *)userdata, 1), acCB, pynode);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
@@ -23,6 +23,7 @@ SoCallbackActionPythonCB(void * userdata,
   }
   
   Py_DECREF(arglist);
+  Py_DECREF(acCB);
   Py_XDECREF(result);
 
   return (SoCallbackAction::Response)iresult;
@@ -38,23 +39,26 @@ SoTrianglePythonCB(void * userdata, SoCallbackAction * action,
   PyObject *result, *acCB;
   PyObject *vertex1, *vertex2, *vertex3;
 
-  acCB = SWIG_NewPointerObj((void *) action, SWIGTYPE_p_SoCallbackAction, 1);
-  vertex1 = SWIG_NewPointerObj((void *) v1, SWIGTYPE_p_SoPrimitiveVertex, 1);
-  vertex2 = SWIG_NewPointerObj((void *) v2, SWIGTYPE_p_SoPrimitiveVertex, 1);
-  vertex3 = SWIG_NewPointerObj((void *) v3, SWIGTYPE_p_SoPrimitiveVertex, 1);
+  acCB = SWIG_NewPointerObj((void *) action, SWIGTYPE_p_SoCallbackAction, 0);
+  vertex1 = SWIG_NewPointerObj((void *) v1, SWIGTYPE_p_SoPrimitiveVertex, 0);
+  vertex2 = SWIG_NewPointerObj((void *) v2, SWIGTYPE_p_SoPrimitiveVertex, 0);
+  vertex3 = SWIG_NewPointerObj((void *) v3, SWIGTYPE_p_SoPrimitiveVertex, 0);
 
   /* the first item in the userdata sequence is the python callback
    * function; the second is the supplied userdata python object */
   func = PyTuple_GetItem((PyObject *)userdata, 0);
-  arglist = Py_BuildValue("OOOOO", PyTuple_GetItem((PyObject *)userdata, 1), acCB, vertex1, vertex2, vertex3);
+  arglist = Py_BuildValue("(OOOOO)", PyTuple_GetItem((PyObject *)userdata, 1), acCB, vertex1, vertex2, vertex3);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
-  Py_DECREF(arglist);
-  Py_XDECREF(result);
 
-  return /*void*/;
+  Py_DECREF(arglist);
+  Py_DECREF(acCB);
+  Py_DECREF(vertex1);
+  Py_DECREF(vertex2);
+  Py_DECREF(vertex3);
+  Py_XDECREF(result);
 }
 
 static void
@@ -66,22 +70,24 @@ SoLineSegmentPythonCB(void * userdata, SoCallbackAction * action,
   PyObject *result, *acCB;
   PyObject *vertex1, *vertex2;
 
-  acCB = SWIG_NewPointerObj((void *) action, SWIGTYPE_p_SoCallbackAction, 1);
-  vertex1 = SWIG_NewPointerObj((void *) v1, SWIGTYPE_p_SoPrimitiveVertex, 1);
-  vertex2 = SWIG_NewPointerObj((void *) v2, SWIGTYPE_p_SoPrimitiveVertex, 1);
+  acCB = SWIG_NewPointerObj((void *) action, SWIGTYPE_p_SoCallbackAction, 0);
+  vertex1 = SWIG_NewPointerObj((void *) v1, SWIGTYPE_p_SoPrimitiveVertex, 0);
+  vertex2 = SWIG_NewPointerObj((void *) v2, SWIGTYPE_p_SoPrimitiveVertex, 0);
 
   /* the first item in the userdata sequence is the python callback
    * function; the second is the supplied userdata python object */
   func = PyTuple_GetItem((PyObject *)userdata, 0);
-  arglist = Py_BuildValue("OOOO", PyTuple_GetItem((PyObject *)userdata, 1), acCB, vertex1, vertex2);
+  arglist = Py_BuildValue("(OOOO)", PyTuple_GetItem((PyObject *)userdata, 1), acCB, vertex1, vertex2);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
-  Py_DECREF(arglist);
-  Py_XDECREF(result);
 
-  return /*void*/;
+  Py_DECREF(arglist);
+  Py_DECREF(acCB);
+  Py_DECREF(vertex1);
+  Py_DECREF(vertex2);
+  Py_XDECREF(result);
 }
 
 static void
@@ -91,21 +97,22 @@ SoPointPythonCB(void * userdata, SoCallbackAction * action, const SoPrimitiveVer
   PyObject *result, *acCB;
   PyObject *vertex;
 
-  acCB = SWIG_NewPointerObj((void *) action, SWIGTYPE_p_SoCallbackAction, 1);
-  vertex = SWIG_NewPointerObj((void *) v, SWIGTYPE_p_SoPrimitiveVertex, 1);
+  acCB = SWIG_NewPointerObj((void *) action, SWIGTYPE_p_SoCallbackAction, 0);
+  vertex = SWIG_NewPointerObj((void *) v, SWIGTYPE_p_SoPrimitiveVertex, 0);
 
   /* the first item in the userdata sequence is the python callback
    * function; the second is the supplied userdata python object */
   func = PyTuple_GetItem((PyObject *)userdata, 0);
-  arglist = Py_BuildValue("OOO", PyTuple_GetItem((PyObject *)userdata, 1), acCB, vertex);
+  arglist = Py_BuildValue("(OOO)", PyTuple_GetItem((PyObject *)userdata, 1), acCB, vertex);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
-  Py_DECREF(arglist);
-  Py_XDECREF(result);
 
-  return /*void*/;
+  Py_DECREF(arglist);
+  Py_DECREF(acCB);
+  Py_DECREF(vertex);
+  Py_XDECREF(result);
 }
 %}
 
@@ -134,88 +141,65 @@ SoPointPythonCB(void * userdata, SoCallbackAction * action, const SoPrimitiveVer
     SbColor * specular = new SbColor;
     SbColor * emission = new SbColor;
     float shininess, transparency;
-    PyObject * result = PyTuple_New(6);
 
     self->getMaterial(*ambient, *diffuse, *specular, *emission, shininess, transparency, index);
-
-    PyTuple_SetItem(result, 0, SWIG_NewPointerObj(ambient, SWIGTYPE_p_SbColor, 1));
-    PyTuple_SetItem(result, 1, SWIG_NewPointerObj(diffuse, SWIGTYPE_p_SbColor, 1));
-    PyTuple_SetItem(result, 2, SWIG_NewPointerObj(specular, SWIGTYPE_p_SbColor, 1));
-    PyTuple_SetItem(result, 3, SWIG_NewPointerObj(emission, SWIGTYPE_p_SbColor, 1));
-    PyTuple_SetItem(result, 4, PyFloat_FromDouble((double)shininess));
-    PyTuple_SetItem(result, 5, PyFloat_FromDouble((double)transparency));
-
-    return result;
+    
+    return Py_BuildValue("(OOOOff)", 
+                         SWIG_NewPointerObj(ambient, SWIGTYPE_p_SbColor, 1),
+                         SWIG_NewPointerObj(diffuse, SWIGTYPE_p_SbColor, 1),
+                         SWIG_NewPointerObj(specular, SWIGTYPE_p_SbColor, 1),
+                         SWIG_NewPointerObj(emission, SWIGTYPE_p_SbColor, 1),
+                         shininess,
+                         transparency);
   }
 
   /* add python specific callback functions */
   void addPreCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, userdata);
-    Py_INCREF(pyfunc);
-    Py_INCREF(userdata);
-
-    self->addPreCallback(type, SoCallbackActionPythonCB, (void *) t);
+    self->addPreCallback(type, SoCallbackActionPythonCB,
+                         (void *)Py_BuildValue("(OO)",
+                                               pyfunc,
+                                               userdata ? userdata : Py_None));
   }
 
   void addPostCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, userdata);
-    Py_INCREF(pyfunc);
-    Py_INCREF(userdata);
-
-    self->addPostCallback(type, SoCallbackActionPythonCB, (void *) t);
+    self->addPostCallback(type, SoCallbackActionPythonCB,
+                          (void *)Py_BuildValue("(OO)",
+                                                pyfunc,
+                                                userdata ? userdata : Py_None));
   }
 
   void addPreTailCallback(PyObject *pyfunc, PyObject *userdata) {
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, userdata);
-    Py_INCREF(pyfunc);
-    Py_INCREF(userdata);
-
-    self->addPreTailCallback(SoCallbackActionPythonCB, (void *) t);
+    self->addPreTailCallback(SoCallbackActionPythonCB,
+                             (void *)Py_BuildValue("(OO)",
+                                                   pyfunc,
+                                                   userdata ? userdata : Py_None));
   }
 
   void addPostTailCallback(PyObject *pyfunc, PyObject *userdata) {
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, userdata);
-    Py_INCREF(pyfunc);
-    Py_INCREF(userdata);
-
-    self->addPostTailCallback(SoCallbackActionPythonCB, (void *) t);
+    self->addPostTailCallback(SoCallbackActionPythonCB,
+                              (void *)Py_BuildValue("(OO)",
+                                                    pyfunc,
+                                                    userdata ? userdata : Py_None));
   }
 
   void addTriangleCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, userdata);
-    Py_INCREF(pyfunc);
-    Py_INCREF(userdata);
-
-    self->addTriangleCallback(type, SoTrianglePythonCB, (void *) t);
+    self->addTriangleCallback(type, SoTrianglePythonCB,
+                              (void *)Py_BuildValue("(OO)",
+                                                    pyfunc,
+                                                    userdata ? userdata : Py_None));
   }
 
   void addLineSegmentCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, userdata);
-    Py_INCREF(pyfunc);
-    Py_INCREF(userdata);
-
-    self->addLineSegmentCallback(type, SoLineSegmentPythonCB, (void *) t);
+    self->addLineSegmentCallback(type, SoLineSegmentPythonCB,
+                                 (void *)Py_BuildValue("(OO)",
+                                                       pyfunc,
+                                                       userdata ? userdata : Py_None));
   }
 
   void addPointCallback(const SoType type, PyObject *pyfunc, PyObject *userdata) {
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, userdata);
-    Py_INCREF(pyfunc);
-    Py_INCREF(userdata);
-
-    self->addPointCallback(type, SoPointPythonCB, (void *) t);
+    self->addPointCallback(type, SoPointPythonCB,
+                           (void *)Py_BuildValue("(OO)",
+                                                 pyfunc,
+                                                 userdata ? userdata : Py_None));
   }
 }

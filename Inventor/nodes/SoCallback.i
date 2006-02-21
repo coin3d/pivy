@@ -5,21 +5,20 @@ SoPythonCallBack(void * userdata, SoAction * action)
   PyObject *func, *arglist;
   PyObject *result, *acCB;
 
-  acCB = SWIG_NewPointerObj((void *) action, SWIGTYPE_p_SoAction, 1);
+  acCB = SWIG_NewPointerObj((void *) action, SWIGTYPE_p_SoAction, 0);
 
   /* the first item in the userdata sequence is the python callback
    * function; the second is the supplied userdata python object */
   func = PyTuple_GetItem((PyObject *)userdata, 0);
-  arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)userdata, 1), acCB);
+  arglist = Py_BuildValue("(OO)", PyTuple_GetItem((PyObject *)userdata, 1), acCB);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
 
   Py_DECREF(arglist);
+  Py_DECREF(acCB);
   Py_XDECREF(result);
-
-  return /*void*/;
 }
 %}
 
@@ -38,17 +37,9 @@ SoPythonCallBack(void * userdata, SoAction * action)
 /* add python specific callback functions */
 %extend SoCallback {
   void setCallback(PyObject *pyfunc, PyObject *userdata = NULL) {
-    if (userdata == NULL) {
-      Py_INCREF(Py_None);
-      userdata = Py_None;
-    }
-    
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, userdata);
-    Py_INCREF(pyfunc);
-    Py_INCREF(userdata);
-    
-    self->setCallback(SoPythonCallBack, (void *) t);
+    self->setCallback(SoPythonCallBack, 
+                      (void *)Py_BuildValue("(OO)", 
+                                            pyfunc, 
+                                            userdata ? userdata : Py_None));
   }
 }

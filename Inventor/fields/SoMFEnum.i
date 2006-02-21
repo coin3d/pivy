@@ -1,31 +1,30 @@
 %{
 static void
-convert_SoMFEnum_array(PyObject *input, int len, int *temp)
+convert_SoMFEnum_array(PyObject * input, int len, int * temp)
 {
   int i;
-
   for (i=0; i<len; i++) {
-    PyObject *oi = PySequence_GetItem(input,i);
+    PyObject * oi = PySequence_GetItem(input,i);
     if (PyNumber_Check(oi)) {
       temp[i] = (int) PyInt_AsLong(oi);
     } else {
       PyErr_SetString(PyExc_ValueError,"Sequence elements must be numbers");
       free(temp);       
+      Py_DECREF(oi);
       return;
     }
+    Py_DECREF(oi);
   }
   return;
 }
 %}
 
-%typemap(in) const int * newvals (int *temp) {
+%typemap(in) const int * newvals (int * temp) {
   int len;
-
   if (PySequence_Check($input)) {
     len = PySequence_Length($input);
-    temp = (int *)malloc(len*sizeof(int));
-    convert_SoMFEnum_array($input, len, temp);
-  
+    temp = (int*)malloc(len*sizeof(int));
+    convert_SoMFEnum_array($input, len, temp);  
     $1 = temp;
   } else {
     PyErr_SetString(PyExc_TypeError, "expected a sequence.");

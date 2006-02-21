@@ -1,12 +1,11 @@
 %typemap(in) const char * [] {
   int len;
-
   if (PySequence_Check($input)) {
     len = PySequence_Length($input);
     if (len > 0) {
       $1 = (char **)malloc(len * sizeof(char *));
       for (int i = 0; i < len; i++ ) {
-        PyObject *item = PyObject_Str(PySequence_GetItem($input,i));
+        PyObject * item = PyObject_Str(PySequence_GetItem($input,i));
         $1[i] = PyString_AsString(item);
         Py_DECREF(item);
       }
@@ -58,7 +57,7 @@ def setValues(*args):
 
 %extend SoMFString {
   const SbString & __getitem__(int i) { return (*self)[i]; }
-  void  __setitem__(int i, const SbString & value) { self->set1Value(i, value); }
+  void __setitem__(int i, const SbString & value) { self->set1Value(i, value); }
   void setValue(const SoMFString * other ){ *self = *other; }
   const SbString * __getValuesHelper__(int & len, int i = 0) {
     if (i < 0 || i > self->getNum()) { return NULL; }

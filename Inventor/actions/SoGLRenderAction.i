@@ -16,8 +16,6 @@ SoGLRenderPassPythonCB(void * userdata)
 
   Py_DECREF(arglist);
   Py_XDECREF(result);
-
-  return /*void*/;
 }
 
 static SoGLRenderAction::AbortCode
@@ -55,16 +53,15 @@ SoGLPreRenderPythonCB(void * userdata, class SoGLRenderAction * action)
   /* the first item in the userdata sequence is the python callback
    * function; the second is the supplied userdata python object */
   func = PyTuple_GetItem((PyObject *)userdata, 0);
-  arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)userdata, 1), acCB);
+  arglist = Py_BuildValue("(OO)", PyTuple_GetItem((PyObject *)userdata, 1), acCB);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
 
   Py_DECREF(arglist);
+  Py_DECREF(acCB);
   Py_XDECREF(result);
-
-  return /*void*/;
 }
 %}
 
@@ -83,63 +80,30 @@ SoGLPreRenderPythonCB(void * userdata, class SoGLRenderAction * action)
 /* add python specific callback functions */
 %extend SoGLRenderAction {
   void setPassCallback(PyObject *pyfunc, PyObject * userdata){
-    if (userdata == NULL) {
-      Py_INCREF(Py_None);
-      userdata = Py_None;
-    }
-    
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, userdata);
-    Py_INCREF(pyfunc);
-    Py_INCREF(userdata);
-    
-    self->setPassCallback(SoGLRenderPassPythonCB, (void *) t);
+    self->setPassCallback(SoGLRenderPassPythonCB,
+                          (void *)Py_BuildValue("(OO)",
+                                                pyfunc,
+                                                userdata ? userdata : Py_None));
   }
 
   void setAbortCallback(PyObject *pyfunc, PyObject * userdata){
-    if (userdata == NULL) {
-      Py_INCREF(Py_None);
-      userdata = Py_None;
-    }
-	  
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, userdata);
-    Py_INCREF(pyfunc);
-    Py_INCREF(userdata);
-
-    self->setAbortCallback(SoGLRenderAbortPythonCB, (void *) t);    
+    self->setAbortCallback(SoGLRenderAbortPythonCB,
+                           (void *)Py_BuildValue("(OO)",
+                                                 pyfunc,
+                                                 userdata ? userdata : Py_None));
   }
   
   void addPreRenderCallback(PyObject *pyfunc, PyObject * userdata) {
-    if (userdata == NULL) {
-      Py_INCREF(Py_None);
-      userdata = Py_None;
-    }
-	  
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, userdata);
-    Py_INCREF(pyfunc);
-    Py_INCREF(userdata);
-
-    self->addPreRenderCallback(SoGLPreRenderPythonCB, (void *) t);
+    self->addPreRenderCallback(SoGLPreRenderPythonCB,
+                               (void *)Py_BuildValue("(OO)",
+                                                     pyfunc,
+                                                     userdata ? userdata : Py_None));
   }
 
   void removePreRenderCallback(PyObject *pyfunc, PyObject * userdata) {
-    if (userdata == NULL) {
-      Py_INCREF(Py_None);
-      userdata = Py_None;
-    }
-	  
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, userdata);
-    Py_INCREF(pyfunc);
-    Py_INCREF(userdata);
-
-    self->removePreRenderCallback(SoGLPreRenderPythonCB, (void *) t);
+    self->removePreRenderCallback(SoGLPreRenderPythonCB,
+                                  (void *)Py_BuildValue("(OO)",
+                                                        pyfunc,
+                                                        userdata ? userdata : Py_None));
   }
-
 }

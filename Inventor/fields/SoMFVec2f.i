@@ -1,23 +1,24 @@
 %{
 static void
-convert_SoMFVec2f_array(PyObject *input, int len, float temp[][2])
+convert_SoMFVec2f_array(PyObject * input, int len, float temp[][2])
 {
   int i,j;
-
   for (i=0; i<len; i++) {
-    PyObject *oi = PySequence_GetItem(input,i);
-
+    PyObject * oi = PySequence_GetItem(input, i);
     for (j=0; j<2; j++) {
-      PyObject *oj = PySequence_GetItem(oi,j);
-
+      PyObject * oj = PySequence_GetItem(oi, j);
       if (PyNumber_Check(oj)) {
         temp[i][j] = (float) PyFloat_AsDouble(oj);
       } else {
-        PyErr_SetString(PyExc_ValueError,"Sequence elements must be numbers");
+        PyErr_SetString(PyExc_ValueError, "Sequence elements must be numbers");
         free(temp);       
+        Py_DECREF(oi);
+        Py_DECREF(oj);
         return;
       }
+      Py_DECREF(oj);
     }
+    Py_DECREF(oi);
   }
   return;
 }
@@ -25,13 +26,10 @@ convert_SoMFVec2f_array(PyObject *input, int len, float temp[][2])
 
 %typemap(in) const float xy[][2] (float (*temp)[2]) {
   int len;
-
   if (PySequence_Check($input)) {
     len = PySequence_Length($input);
-
     temp = (float (*)[2]) malloc(len*2*sizeof(float));
     convert_SoMFVec2f_array($input, len, temp);
-  
     $1 = temp;
   } else {
     PyErr_SetString(PyExc_TypeError, "expected a sequence.");
@@ -56,17 +54,17 @@ convert_SoMFVec2f_array(PyObject *input, int len, float temp[][2])
 
 %typemap(typecheck,precedence=SWIG_TYPECHECK_POINTER) const float xy[][2] {
   if(PySequence_Check($input) && PySequence_Size($input) > 0 ){
-    PyObject * obj = PySequence_GetItem($input,0);
-    void *ptr;
+    PyObject * obj = PySequence_GetItem($input, 0);
+    void * ptr;
     if (SWIG_ConvertPtr(obj, &ptr, $descriptor(SbVec2f *), 0) == -1) { $1 = 1; }
     else { $1 = 0; }
+    Py_DECREF(obj);
   }
   else { $1 = 0; }
 }
 
 %typemap(in) const SbVec2f *newvals {
   int len;
-
   if (PySequence_Check($input)) {
     len = PySequence_Length($input);
     if (len > 0) {
@@ -89,13 +87,14 @@ convert_SoMFVec2f_array(PyObject *input, int len, float temp[][2])
 }
 
 %typemap(typecheck,precedence=SWIG_TYPECHECK_POINTER) const SbVec2f *newvals {
-  if(PySequence_Check($input)) {
-    if(PySequence_Size($input) == 0) { $1 = 1; }
+  if (PySequence_Check($input)) {
+    if (PySequence_Size($input) == 0) { $1 = 1; }
     else {
-      PyObject * obj = PySequence_GetItem($input,0);
-      void *ptr;
+      PyObject * obj = PySequence_GetItem($input, 0);
+      void * ptr;
       if (SWIG_ConvertPtr(obj, &ptr, $descriptor(SbVec2f *), 0) != -1) { $1 = 1; }
       else { $1 = 0; }
+      Py_DECREF(obj);
     }
   } else { $1 = 0; }
 }

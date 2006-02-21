@@ -1,31 +1,31 @@
 %{
 static void
-convert_SoMFUInt32_array(PyObject *input, int len, uint32_t *temp)
+convert_SoMFUInt32_array(PyObject * input, int len, uint32_t * temp)
 {
   int i;
-
   for (i=0; i<len; i++) {
-    PyObject *oi = PySequence_GetItem(input,i);
+    PyObject * oi = PySequence_GetItem(input, i);
     if (PyNumber_Check(oi)) {
       temp[i] = (uint32_t) PyInt_AsLong(oi);
     } else {
-      PyErr_SetString(PyExc_ValueError,"Sequence elements must be numbers");
+      PyErr_SetString(PyExc_ValueError, "Sequence elements must be numbers");
       free(temp);       
+      Py_DECREF(oi);
       return;
     }
+    Py_DECREF(oi);
   }
   return;
 }
 %}
 
-%typemap(in) uint32_t * (uint32_t *temp) {
+%typemap(in) uint32_t * (uint32_t * temp) {
   int len;
 
   if (PySequence_Check($input)) {
     len = PySequence_Length($input);
-    temp = (uint32_t *) malloc(len*sizeof(uint32_t));
-    convert_SoMFUInt32_array($input, len, temp);
-  
+    temp = (uint32_t*)malloc(len*sizeof(uint32_t));
+    convert_SoMFUInt32_array($input, len, temp);  
     $1 = temp;
   } else {
     PyErr_SetString(PyExc_TypeError, "expected a sequence.");

@@ -5,18 +5,19 @@ SoSensorPythonCB(void * data, SoSensor * sensor)
   PyObject *func, *arglist;
   PyObject *result, *sensCB;
 
-  sensCB = SWIG_NewPointerObj((void *)sensor, SWIGTYPE_p_SoSensor, 1);
+  sensCB = SWIG_NewPointerObj((void *)sensor, SWIGTYPE_p_SoSensor, 0);
 
   /* the first item in the data sequence is the python callback
    * function; the second is the supplied data python object */
   func = PyTuple_GetItem((PyObject *)data, 0);
-  arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)data, 1), sensCB);
+  arglist = Py_BuildValue("(OO)", PyTuple_GetItem((PyObject *)data, 1), sensCB);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
 
   Py_DECREF(arglist);
+  Py_DECREF(sensCB);
   Py_XDECREF(result);
 }
 %}

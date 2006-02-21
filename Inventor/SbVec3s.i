@@ -1,6 +1,6 @@
 %{
 static void
-convert_SbVec3s_array(PyObject *input, short temp[3])
+convert_SbVec3s_array(PyObject * input, short temp[3])
 {
   if (PySequence_Check(input) && (PySequence_Size(input) == 3) &&
       PyNumber_Check(PySequence_GetItem(input, 0)) && 

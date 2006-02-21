@@ -3,16 +3,17 @@ static void
 convert_SoMFUShort_array(PyObject *input, int len, unsigned short *temp)
 {
   int i;
-
   for (i=0; i<len; i++) {
-    PyObject *oi = PySequence_GetItem(input,i);
+    PyObject *oi = PySequence_GetItem(input, i);
     if (PyNumber_Check(oi)) {
       temp[i] = (short) PyInt_AsLong(oi);
     } else {
       PyErr_SetString(PyExc_ValueError,"Sequence elements must be numbers");
-      free(temp);       
+      free(temp);
+      Py_DECREF(oi);
       return;
     }
+    Py_DECREF(oi);
   }
   return;
 }
@@ -23,7 +24,7 @@ convert_SoMFUShort_array(PyObject *input, int len, unsigned short *temp)
 
   if (PySequence_Check($input)) {
     len = PySequence_Length($input);
-    temp = (unsigned short *) malloc(len*sizeof(unsigned short));
+    temp = (unsigned short*)malloc(len*sizeof(unsigned short));
     convert_SoMFUShort_array($input, len, temp);
   
     $1 = temp;

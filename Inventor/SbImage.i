@@ -80,30 +80,29 @@
 
 %extend SbImage {
   PyObject * getValue() {
-    PyObject *result;
-    SbVec3s size;
     int nc;
+    SbVec3s size;
+    PyObject * result;
 
     const unsigned char * image = self->getValue(size, nc);
-    
-    result = PyTuple_New(3);
     
     /* check for 3D image */
     if (size[2] == 0) {
       SbVec2s * vec2s = new SbVec2s(size[0], size[1]);
-      PyTuple_SetItem(result, 0, PyString_FromStringAndSize((const char*)image,
-                                                            (*vec2s)[0] * (*vec2s)[1] * nc));
-      PyTuple_SetItem(result, 1, SWIG_NewPointerObj((void *)vec2s, SWIGTYPE_p_SbVec2s, 1));
+      result = Py_BuildValue("(s#Oi)",
+                             (const char*)image,
+                             (*vec2s)[0] * (*vec2s)[1] * nc,
+                             SWIG_NewPointerObj((void *)vec2s, SWIGTYPE_p_SbVec2s, 1),
+                             nc);
     } else {
       SbVec3s * vec3s = new SbVec3s(size[0], size[1], size[2]);
-      PyTuple_SetItem(result, 0, PyString_FromStringAndSize((const char*)image,
-                                                            (*vec3s)[0] * (*vec3s)[1] * (*vec3s)[2] * nc));
-      PyTuple_SetItem(result, 1, SWIG_NewPointerObj((void *)vec3s, SWIGTYPE_p_SbVec3s, 1));
+      result = Py_BuildValue("(s#Oi)",
+                             (const char*)image,
+                             (*vec3s)[0] * (*vec3s)[1] * (*vec3s)[2] * nc,
+                             SWIG_NewPointerObj((void *)vec3s, SWIGTYPE_p_SbVec3s, 1),
+                             nc);
     }
       
-    PyTuple_SetItem(result, 2, PyInt_FromLong(nc));
-    Py_INCREF(result);
-
     return result;
   }
 }

@@ -30,12 +30,10 @@ convert_SbVec3d_array(PyObject *input, double temp[3])
  * created this typemap for getValue(void) instead as a workaround.
  */
 %typemap(out) double * {
-  int i;
-  $result = PyTuple_New(3);
-  
-  for (i=0; i<3; i++) {
-    PyTuple_SetItem($result, i, PyFloat_FromDouble((double)(*($1+i))));
-  }
+  $result = Py_BuildValue("(fff)",
+                          (double)(*($1)),
+                          (double)(*($1+1)),
+                          (double)(*($1+2)));
 }
 
 /* add operator overloading methods instead of the global functions */

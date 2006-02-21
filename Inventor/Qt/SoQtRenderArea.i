@@ -41,13 +41,13 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
 
   /* if no QEvent could be created through sip return a swig QEvent type */
   if (!qev) {
-    qev = SWIG_NewPointerObj((void *)event, SWIGTYPE_p_QEvent, 1);
+    qev = SWIG_NewPointerObj((void *)event, SWIGTYPE_p_QEvent, 0);
   }
 
   /* the first item in the closure sequence is the python callback
    * function; the second is the supplied closure python object */
   func = PyTuple_GetItem((PyObject *)closure, 0);
-  arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)closure, 1), qev);
+  arglist = Py_BuildValue("(OO)", PyTuple_GetItem((PyObject *)closure, 1), qev);
 
   if (!(result = PyEval_CallObject(func, arglist))) {
     PyErr_Print();
@@ -79,17 +79,9 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
 /* add python specific callback functions */
 %extend SoQtRenderArea {
   void setEventCallback(PyObject *pyfunc, PyObject *user = NULL) {
-    if (!user) {
-      Py_INCREF(Py_None);
-      user = Py_None;
-    }
-	  
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, user);
-    Py_INCREF(pyfunc);
-    Py_INCREF(user);
-
-    self->setEventCallback(SoQtRenderAreaEventPythonCB, (void *) t);
+    self->setEventCallback(SoQtRenderAreaEventPythonCB,
+                           (void *)Py_BuildValue("(OO)",
+                                                 pyfunc,
+                                                 user ? user : Py_None));
   }
 }

@@ -1,6 +1,6 @@
 %{
 static void
-convert_SbVec4d_array(PyObject *input, double temp[4])
+convert_SbVec4d_array(PyObject * input, double temp[4])
 {
   if (PySequence_Check(input) && (PySequence_Size(input) == 4) &&
       PyNumber_Check(PySequence_GetItem(input, 0)) && 
@@ -32,12 +32,11 @@ convert_SbVec4d_array(PyObject *input, double temp[4])
  * created this typemap for getValue(void) instead as a workaround.
  */
 %typemap(out) double * {
-  int i;
-  $result = PyTuple_New(4);
-  
-  for (i=0; i<4; i++) {
-    PyTuple_SetItem($result, i, PyFloat_FromDouble((double)(*($1+i))));
-  }
+  $result = Py_BuildValue("(ffff)",
+                          (double)(*($1)),
+                          (double)(*($1+1)),
+                          (double)(*($1+2)),
+                          (double)(*($1+3)));
 }
 
 /* add operator overloading methods instead of the global functions */

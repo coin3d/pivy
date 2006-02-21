@@ -5,20 +5,20 @@ SoDraggerPythonCB(void * data, SoDragger * dragger)
   PyObject *func, *arglist;
   PyObject *result, *dragCB;
 
-  dragCB = SWIG_NewPointerObj((void *) dragger, SWIGTYPE_p_SoDragger, 1);
+  dragCB = SWIG_NewPointerObj((void *) dragger, SWIGTYPE_p_SoDragger, 0);
 
   /* the first item in the data sequence is the python callback
    * function; the second is the supplied data python object */
   func = PyTuple_GetItem((PyObject *)data, 0);
-  arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)data, 1), dragCB);
+  arglist = Py_BuildValue("(OO)", PyTuple_GetItem((PyObject *)data, 1), dragCB);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
-  Py_DECREF(arglist);
-  Py_XDECREF(result);
 
-  return /*void*/;
+  Py_DECREF(arglist);
+  Py_DECREF(dragCB);
+  Py_XDECREF(result);
 }
 %}
 
@@ -37,142 +37,72 @@ SoDraggerPythonCB(void * data, SoDragger * dragger)
 /* add python specific callback functions */
 %extend SoDragger {
   void addStartCallback(PyObject *pyfunc, PyObject *data = NULL) {
-    if (data == NULL) {
-      Py_INCREF(Py_None);
-      data = Py_None;
-    }
-
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, data);
-    Py_INCREF(pyfunc);
-    Py_INCREF(data);
-
-    self->addStartCallback(SoDraggerPythonCB, (void *) t);
+    self->addStartCallback(SoDraggerPythonCB,
+                           (void *)Py_BuildValue("(OO)", 
+                                                 pyfunc, 
+                                                 data ? data : Py_None));
   }
 
   void removeStartCallback(PyObject *pyfunc, PyObject *data = NULL) {
-    if (data == NULL) {
-      Py_INCREF(Py_None);
-      data = Py_None;
-    }
-
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, data);
-
-    self->removeStartCallback(SoDraggerPythonCB, (void *) t);
+    self->removeStartCallback(SoDraggerPythonCB, 
+                              (void *)Py_BuildValue("(OO)", 
+                                                    pyfunc, 
+                                                    data ? data : Py_None));
   }
 
   void addMotionCallback(PyObject *pyfunc, PyObject *data = NULL) {
-    if (data == NULL) {
-      Py_INCREF(Py_None);
-      data = Py_None;
-    }
-
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, data);
-    Py_INCREF(pyfunc);
-    Py_INCREF(data);
-
-    self->addMotionCallback(SoDraggerPythonCB, (void *) t);
+    self->addMotionCallback(SoDraggerPythonCB,
+                            (void *)Py_BuildValue("(OO)", 
+                                                  pyfunc, 
+                                                  data ? data : Py_None));
   }
 
   void removeMotionCallback(PyObject *pyfunc, PyObject *data = NULL) {
-    if (data == NULL) {
-      Py_INCREF(Py_None);
-      data = Py_None;
-    }
-
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, data);
-
-    self->removeMotionCallback(SoDraggerPythonCB, (void *) t);
+    self->removeMotionCallback(SoDraggerPythonCB,
+                               (void *)Py_BuildValue("(OO)",
+                                                     pyfunc,
+                                                     data ? data : Py_None));
   }
 
   void addFinishCallback(PyObject *pyfunc, PyObject *data = NULL) {
-    if (data == NULL) {
-      Py_INCREF(Py_None);
-      data = Py_None;
-    }
-
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, data);
-    Py_INCREF(pyfunc);
-    Py_INCREF(data);
-
-    self->addFinishCallback(SoDraggerPythonCB, (void *) t);
+    self->addFinishCallback(SoDraggerPythonCB,
+                            (void *)Py_BuildValue("(OO)",
+                                                  pyfunc,
+                                                  data ? data : Py_None));
   }
 
   void removeFinishCallback(PyObject *pyfunc, PyObject *data = NULL) {
-    if (data == NULL) {
-      Py_INCREF(Py_None);
-      data = Py_None;
-    }
-
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, data);
-
-    self->removeFinishCallback(SoDraggerPythonCB, (void *) t);
+    self->removeFinishCallback(SoDraggerPythonCB,
+                               (void *)Py_BuildValue("(OO)",
+                                                     pyfunc,
+                                                     data ? data : Py_None));
   }
 
   void addValueChangedCallback(PyObject *pyfunc, PyObject *data = NULL) {
-    if (data == NULL) {
-      Py_INCREF(Py_None);
-      data = Py_None;
-    }
-
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, data);
-    Py_INCREF(pyfunc);
-    Py_INCREF(data);
-
-    self->addValueChangedCallback(SoDraggerPythonCB, (void *) t);
+    self->addValueChangedCallback(SoDraggerPythonCB,
+                                  (void *)Py_BuildValue("(OO)",
+                                                        pyfunc,
+                                                        data ? data : Py_None));
   }
 
   void removeValueChangedCallback(PyObject *pyfunc, PyObject *data = NULL) {
-    if (data == NULL) {
-      Py_INCREF(Py_None);
-      data = Py_None;
-    }
-
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, data);
-
-    self->removeValueChangedCallback(SoDraggerPythonCB, (void *) t);
+    self->removeValueChangedCallback(SoDraggerPythonCB,
+                                     (void *)Py_BuildValue("(OO)",
+                                                           pyfunc,
+                                                           data ? data : Py_None));
   }
 
   void addOtherEventCallback(PyObject *pyfunc, PyObject *data = NULL) {
-    if (data == NULL) {
-      Py_INCREF(Py_None);
-      data = Py_None;
-    }
-
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, data);
-    Py_INCREF(pyfunc);
-    Py_INCREF(data);
-
-    self->addOtherEventCallback(SoDraggerPythonCB, (void *) t);
+    self->addOtherEventCallback(SoDraggerPythonCB,
+                                (void *)Py_BuildValue("(OO)",
+                                                      pyfunc,
+                                                      data ? data : Py_None));
   }
 
   void removeOtherEventCallback(PyObject *pyfunc, PyObject *data = NULL) {
-    if (data == NULL) {
-      Py_INCREF(Py_None);
-      data = Py_None;
-    }
-
-    PyObject *t = PyTuple_New(2);
-    PyTuple_SetItem(t, 0, pyfunc);
-    PyTuple_SetItem(t, 1, data);
-
-    self->removeOtherEventCallback(SoDraggerPythonCB, (void *) t);
+    self->removeOtherEventCallback(SoDraggerPythonCB,
+                                   (void *)Py_BuildValue("(OO)",
+                                                         pyfunc,
+                                                         data ? data : Py_None));
   }
 }

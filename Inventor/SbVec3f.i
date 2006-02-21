@@ -1,6 +1,6 @@
 %{
 static void
-convert_SbVec3f_array(PyObject *input, float temp[3])
+convert_SbVec3f_array(PyObject * input, float temp[3])
 {
   if (PySequence_Check(input) && (PySequence_Size(input) == 3) &&
       PyNumber_Check(PySequence_GetItem(input, 0)) && 
@@ -30,12 +30,10 @@ convert_SbVec3f_array(PyObject *input, float temp[3])
  * created this typemap for getValue(void) instead as a workaround.
  */
 %typemap(out) float * {
-  int i;
-  $result = PyTuple_New(3);
-  
-  for (i=0; i<3; i++) {
-    PyTuple_SetItem($result, i, PyFloat_FromDouble((double)(*($1+i))));
-  }
+  $result = Py_BuildValue("(fff)",
+                          (double)(*($1)),
+                          (double)(*($1+1)),
+                          (double)(*($1+2)));
 }
 
 /* add operator overloading methods instead of the global functions */

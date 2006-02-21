@@ -8,13 +8,9 @@
 }
 
 %typemap(argout) (SbVec3f& line0, SbVec3f& line1) {
-  PyObject *o1, *o2;
-  o1 = SWIG_NewPointerObj((void *) $1, $1_descriptor, 1);
-  o2 = SWIG_NewPointerObj((void *) $2, $2_descriptor, 1);
-
-  $result = PyTuple_New(2);
-  PyTuple_SetItem($result, 0, o1);
-  PyTuple_SetItem($result, 1, o2);
+  $result = Py_BuildValue("(OO)", 
+                          SWIG_NewPointerObj((void *) $1, $1_descriptor, 1),
+                          SWIG_NewPointerObj((void *) $2, $2_descriptor, 1));
 }
 
 %typemap(in) (const SbVec3f& src, SbVec3f& dst) {

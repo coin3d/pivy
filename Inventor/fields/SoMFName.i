@@ -1,12 +1,11 @@
 %typemap(in) const char * strings[] {
-  int len;
-  
+  int len;  
   if (PySequence_Check($input)) {
     len = PySequence_Length($input);
     if (len > 0) {
       $1 = (char **)malloc(len * sizeof(char *));
       for (int i = 0; i < len; i++) {
-        PyObject *item = PyObject_Str(PySequence_GetItem($input,i));
+        PyObject * item = PyObject_Str(PySequence_GetItem($input,i));
         $1[i] = PyString_AsString(item);
         Py_DECREF(item);
       }

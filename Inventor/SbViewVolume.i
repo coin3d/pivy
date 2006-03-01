@@ -1,28 +1,30 @@
-%typemap(in) (const SbVec2f& pt, SbVec3f& line0, SbVec3f& line1) {
-  if ((SWIG_ConvertPtr(obj1,(void **) &arg2, SWIGTYPE_p_SbVec2f,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
-  if (arg2 == NULL) {
-    PyErr_SetString(PyExc_TypeError,"null reference"); SWIG_fail; 
+%ignore SbViewVolume::projectPointToLine(const SbVec2f & pt, SbLine & line) const;
+%ignore SbViewVolume::projectPointToLine(const SbVec2f & pt, SbVec3f & line0, SbVec3f & line1) const;
+%ignore SbViewVolume::projectToScreen(const SbVec3f & src, SbVec3f & dst) const;
+
+%feature("autodoc", "projectPointToLine() -> (SbVec3f, SbVec3f)") SbViewVolume::projectPointToLine;
+%feature("autodoc", "projectToScreen() -> (SbVec3f, SbVec3f)") SbViewVolume::projectToScreen;
+
+%extend SbViewVolume {
+  PyObject * projectPointToLine(const SbVec2f & pt) {
+    SbVec3f * line0 = new SbVec3f;
+    SbVec3f * line1 = new SbVec3f;
+
+    self->projectPointToLine(pt, *line0, *line1);
+
+    return Py_BuildValue("(OO)",
+                         SWIG_NewPointerObj((void *)line0, SWIGTYPE_p_SbVec3f, 1),
+                         SWIG_NewPointerObj((void *)line1, SWIGTYPE_p_SbVec3f, 1));
   }
-  $2 = new SbVec3f();
-  $3 = new SbVec3f();
-}
 
-%typemap(argout) (SbVec3f& line0, SbVec3f& line1) {
-  $result = Py_BuildValue("(OO)", 
-                          SWIG_NewPointerObj((void *) $1, $1_descriptor, 1),
-                          SWIG_NewPointerObj((void *) $2, $2_descriptor, 1));
-}
+  PyObject * projectToScreen() {
+    SbVec3f * src = new SbVec3f;
+    SbVec3f * dst = new SbVec3f;
 
-%typemap(in) (const SbVec3f& src, SbVec3f& dst) {
-  if ((SWIG_ConvertPtr(obj1,(void **) &arg2, SWIGTYPE_p_SbVec3f,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
-  if (arg2 == NULL) {
-    PyErr_SetString(PyExc_TypeError,"null reference"); SWIG_fail; 
+    self->projectToScreen(*src, *dst);
+
+    return Py_BuildValue("(OO)",
+                         SWIG_NewPointerObj((void *)src, SWIGTYPE_p_SbVec3f, 1),
+                         SWIG_NewPointerObj((void *)dst, SWIGTYPE_p_SbVec3f, 1));
   }
-  $2 = new SbVec3f();
 }
-
-%typemap(argout) (const SbVec3f& src, SbVec3f& dst) {
-  $result = SWIG_NewPointerObj((void *) $1, $1_descriptor, 1);
-}
-
-%ignore SbViewVolume::projectPointToLine(const SbVec2f& pt, SbLine& line) const;

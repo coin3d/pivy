@@ -13,7 +13,15 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-%module(package="pivy.gui") soqt
+
+%define SOQT_MODULE_DOCSTRING
+"The soqt module is a wrapper for the SoQt library. The module will try
+to import the sip module which is used for PyQt. If found the involved
+wrapped Qt structures are converted to ones suitable for PyQt,
+otherwise it will fall back to regular SWIG structures."
+%enddef
+
+%module(package="pivy.gui", docstring=SOQT_MODULE_DOCSTRING) soqt
 
 %{
 #if defined(_WIN32) || defined(__WIN32__)
@@ -63,7 +71,7 @@ Pivy_PythonInteractiveLoop(void *data) {
 %include pivy_common_typemaps.i
 
 /* import the pivy main interface file */
-%import coin.i
+%import(module="pivy") coin.i
 
 /* typemaps to bridge against PyQt */
 %typemap(out) QEvent * {

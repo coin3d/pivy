@@ -13,7 +13,12 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-%module(package="pivy.gui") soxt
+
+%define SOXT_MODULE_DOCSTRING
+"The soxt module is a wrapper for the SoXt library."
+%enddef
+
+%module(package="pivy.gui", docstring=SOXT_MODULE_DOCSTRING) soxt
 
 %{
 
@@ -63,7 +68,7 @@ Pivy_PythonInteractiveLoop(void *data) {
 %include pivy_common_typemaps.i
 
 /* import the pivy main interface file */
-%import coin.i
+%import(module="pivy") coin.i
 
 %include Inventor/Xt/devices/SoXtLinuxJoystick.h
 %include Inventor/Xt/devices/SoXtDevice.h

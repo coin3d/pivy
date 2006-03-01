@@ -13,7 +13,16 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-%module(package="pivy") coin
+
+%define COIN_MODULE_DOCSTRING
+"Pivy is a Coin binding for Python. Coin is a high-level 3D graphics
+library with a C++ Application Programming Interface. Coin uses
+scene-graph data structures to render real-time graphics suitable for
+mostly all kinds of scientific and engineering visualization
+applications."
+%enddef
+
+%module(package="pivy", docstring=COIN_MODULE_DOCSTRING) coin
 
 %{
 #if defined(_WIN32) || defined(__WIN32__)
@@ -30,6 +39,9 @@
 /* make GLState in SoGLLazyElement known to SWIG */
 typedef SoGLLazyElement::GLState GLState;
 %}
+
+/* enable autodoc'ing for the generated wrapper */
+%feature("autodoc", "1");
 
 /* let SWIG handle reference counting for all SoBase derived classes */
 %feature("ref") SoBase "$this->ref();"

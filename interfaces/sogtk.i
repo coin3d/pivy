@@ -13,7 +13,12 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-%module(package="pivy.gui") sogtk
+
+%define SOGTK_MODULE_DOCSTRING
+"The sogtk module is a wrapper for the SoGtk library."
+%enddef
+
+%module(package="pivy.gui", docstring=SOGTK_MODULE_DOCSTRING) sogtk
 
 #include <Inventor/Gtk/devices/SoGtkDevice.h>
 #include <Inventor/Gtk/devices/SoGtkKeyboard.h>
@@ -52,7 +57,7 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
 %include pivy_common_typemaps.i
 
 /* import the pivy main interface file */
-%import coin.i
+%import(module="pivy") coin.i
 
 %include Inventor/Gtk/devices/SoGtkDevice.h
 %include Inventor/Gtk/devices/SoGtkKeyboard.h

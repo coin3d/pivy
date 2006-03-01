@@ -118,7 +118,7 @@ class pivy_build(build):
 
     SWIG_SUPPRESS_WARNINGS = "-w302,306,307,312,389,361,362,467,503,509,510"
     SWIG_PARAMS = "-c++ -python -includeall -modern -D__PIVY__ " + \
-                  "-I. -Ifake_headers -I%s %s -o %s_wrap.cpp " + \
+                  "-I. -Ifake_headers -I\"%s\" %s -o %s_wrap.cpp " + \
                   "interfaces" + os.sep + "%s.i"
 
     SOGUI = ['soqt', 'soxt', 'sogtk', 'sowin']
@@ -329,7 +329,7 @@ class pivy_build(build):
             print green(".")
 
         if sys.platform == "win32":
-            INCLUDE_DIR = os.getenv("COINDIR") + "\\include"
+            INCLUDE_DIR = '"' + os.getenv("COINDIR") + "\\include" + '"'
         else:
             INCLUDE_DIR = self.do_os_popen("coin-config --includedir")
 
@@ -349,16 +349,16 @@ class pivy_build(build):
             
             if sys.platform == "win32":
                 INCLUDE_DIR = os.getenv("COINDIR") + "\\include"
-                CPP_FLAGS = "-I" + INCLUDE_DIR +  " " + \
-                            "-I" + os.getenv("COINDIR") + "\\include\\Inventor\\annex" + \
+                CPP_FLAGS = "-I" + '"' + INCLUDE_DIR + '"' + " " + \
+                            "-I" + '"' + os.getenv("COINDIR") + "\\include\\Inventor\\annex" + '"' + \
                             " /DCOIN_DLL /wd4244 /wd4049"
-                LDFLAGS_LIBS = os.getenv("COINDIR") + "\\lib\\coin2.lib "
+                LDFLAGS_LIBS = '"' + os.getenv("COINDIR") + "\\lib\\coin2.lib\" "
                 if module == "sowin":
                     CPP_FLAGS += " /DSOWIN_DLL"
-                    LDFLAGS_LIBS += os.getenv("COINDIR") + "\\lib\\sowin1.lib"
+                    LDFLAGS_LIBS += '"' + os.getenv("COINDIR") + "\\lib\\sowin1.lib" + '"'
                 elif module == "soqt":
-                    CPP_FLAGS += " -I" + os.getenv("QTDIR") + "\\include /DSOQT_DLL"
-                    LDFLAGS_LIBS += os.getenv("COINDIR") + "\\lib\\soqt1.lib "
+                    CPP_FLAGS += " -I" + '"' + os.getenv("QTDIR") + "\\include\" /DSOQT_DLL"
+                    LDFLAGS_LIBS += '"' + os.getenv("COINDIR") + "\\lib\\soqt1.lib\" "
             else:
                 INCLUDE_DIR = self.do_os_popen("coin-config --includedir")
                 CPP_FLAGS = self.do_os_popen("%s --cppflags" % config_cmd)

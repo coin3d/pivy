@@ -1,3 +1,5 @@
+%ignore SbString::vsprintf(const char * formatstr, va_list args);
+
 /* add operator overloading methods instead of the global functions */
 %extend SbString {      
   int __eq__(const SbString &u) { return *self == u; }

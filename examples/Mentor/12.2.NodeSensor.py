@@ -29,9 +29,11 @@ import sys
 from pivy.coin import *
 
 # Sensor callback function:
-def rootChangedCB(void, s):
-    # We know the sensor is really a data sensor:
-    mySensor = cast(s, "SoDataSensor")
+def rootChangedCB(void, mySensor):
+    # Sensors get autocasted; there is no need to cast them manually
+    # through the cast() function, such as:
+    #   mySensor = cast(s, "SoDataSensor")
+    # mySensor is therefore a SoNodeSensor.
 
     changedNode = mySensor.getTriggerNode()
     changedField = mySensor.getTriggerField()

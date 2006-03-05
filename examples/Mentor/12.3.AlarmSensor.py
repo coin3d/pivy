@@ -31,10 +31,8 @@ from pivy.sogui import *
 ###########################################################
 # CODE FOR The Inventor Mentor STARTS HERE
 
-def raiseFlagCallback(data, sensor):
-    # We know data is really a SoTransform node:
-    flagAngleXform = cast(data, "SoTransform")
-
+def raiseFlagCallback(flagAngleXform, sensor):
+    # We know that flagAngleXform is an autocasted SoTransform node
     # Rotate flag by 90 degrees about the Z axis:
     flagAngleXform.rotation.setValue(SbVec3f(0,0,1), M_PI/2)
 

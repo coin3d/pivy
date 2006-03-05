@@ -112,8 +112,7 @@ def createList(display, selection):
 
 # This callback is invoked every time the user picks
 # an item in the Motif list.
-def myListPickCB(Widget, userData, listData):
-    selection = cast(userData, "SoSelection")
+def myListPickCB(Widget, selection, listData):
     mySearchAction = SoSearchAction()
     
     # Remove the selection callbacks so that we don't get
@@ -150,11 +149,10 @@ def myListPickCB(Widget, userData, listData):
 # (we set this convention up when we registered this callback).
 # The function updates the Motif list to reflect the current
 # selection.
-def mySelectionCB(userData, selectionPath):
+def mySelectionCB(isSelection, selectionPath):
     global motifList
 
     args = [None]
-    isSelection = cast(userData, "SbBool") 
     
     # We have to temporarily change the selection policy to
     # MULTIPLE so that we can select and deselect single items.

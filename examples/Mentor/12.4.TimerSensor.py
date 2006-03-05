@@ -40,17 +40,15 @@ from pivy.sogui import *
 
 # This function is called either 10 times/second or once every
 # second the scheduling changes every 5 seconds (see below):
-def rotatingSensorCallback(data, sensor):
+def rotatingSensorCallback(myRotation, sensor):
     # Rotate an object...
-    myRotation = cast(data, "SoRotation")
     currentRotation = myRotation.rotation.getValue()
     currentRotation *= SbRotation(SbVec3f(0,0,1), M_PI/90.0)
     myRotation.rotation.setValue(currentRotation)
 
 # This function is called once every 5 seconds, and
 # reschedules the other sensor.
-def schedulingSensorCallback(data, sensor):
-    rotatingSensor = cast(data, "SoTimerSensor")
+def schedulingSensorCallback(rotatingSensor, sensor):
     rotatingSensor.unschedule()
     if rotatingSensor.getInterval() == 1.0:
         rotatingSensor.setInterval(1.0/10.0)

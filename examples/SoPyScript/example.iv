@@ -83,7 +83,6 @@ interval = 0.15
 
 def changeStringSensorCallback(data, sensor):
   global idx
-  sensor = cast(sensor, 'SoTimerSensor')
   string.setValue(text[:idx])
 
   if idx == text_length:

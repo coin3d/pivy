@@ -2,22 +2,30 @@
 static void
 SoSensorPythonCB(void * data, SoSensor * sensor)
 {
-  PyObject *func, *arglist;
-  PyObject *result, *sensCB;
-
-  sensCB = SWIG_NewPointerObj((void *)sensor, SWIGTYPE_p_SoSensor, 0);
+  swig_type_info * swig_type = 0;
+  char * sensor_cast_name = NULL;
+  PyObject * func, * arglist;
+  PyObject * result, * pysensor;
 
   /* the first item in the data sequence is the python callback
-   * function; the second is the supplied data python object */
+   * function; the second item is the supplied data python object; the
+   * third item contains the sensor type that we should create */
+  sensor_cast_name = PyString_AsString(PyTuple_GetItem((PyObject *)data, 2));
+  if (!(swig_type = SWIG_TypeQuery(sensor_cast_name))) {
+    PyErr_SetString(PyExc_TypeError, "Sensor type query failed.");
+    return;
+  }
+  pysensor = SWIG_NewPointerObj((void *)sensor, swig_type, 0);
+
   func = PyTuple_GetItem((PyObject *)data, 0);
-  arglist = Py_BuildValue("(OO)", PyTuple_GetItem((PyObject *)data, 1), sensCB);
+  arglist = Py_BuildValue("(OO)", PyTuple_GetItem((PyObject *)data, 1), pysensor);
 
   if ((result = PyEval_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
 
   Py_DECREF(arglist);
-  Py_DECREF(sensCB);
+  Py_DECREF(pysensor);
   Py_XDECREF(result);
 }
 %}

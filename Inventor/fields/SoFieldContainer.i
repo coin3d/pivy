@@ -10,7 +10,7 @@
   
 /* add generic interface to access fields as attributes */
 %pythoncode %{
-  def __getattr__(self,name):
+  def __getattr__(self, name):
     try:
         return SoBase.__getattribute__(self, name)
     except AttributeError, e:
@@ -19,7 +19,7 @@
             raise e
         return field
           
-  def __setattr__(self,name,value):
+  def __setattr__(self, name, value):
     # I don't understand why we need this, but otherwise it does not work :/
     if name == 'this':
         return SoBase.__setattr__(self, name, value)

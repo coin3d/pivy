@@ -17,5 +17,7 @@
 __all__ = ['coin']
 
 # initialize the Coin system
-from coin import SoDB
+from coin import SoDB, SoNodeKit, SoInteraction
 SoDB.init()
+SoNodeKit.init()
+SoInteraction.init()

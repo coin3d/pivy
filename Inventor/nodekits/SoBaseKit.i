@@ -2,14 +2,11 @@
 %extend SoBaseKit {
 %pythoncode %{
     def __getattr__(self,name):
-        try:
-            return SoNode.__getattr__(self, name)
-        except AttributeError, e:
-            c = _coin.SoBaseKit_getNodekitCatalog(self)
-            if c.getPartNumber(name) >= 0:
-                part = self.getPart(name,1)
-                return part
-            raise e
+       c = _coin.SoBaseKit_getNodekitCatalog(self)
+       if c.getPartNumber(name) >= 0:
+           part = self.getPart(name,1)
+           return part
+       return SoNode.__getattr__(self, name)
 
     def __setattr__(self,name,value):
        if name == 'this':

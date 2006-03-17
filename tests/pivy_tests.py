@@ -1014,5 +1014,22 @@ class OperatorTests(unittest.TestCase):
         """check __nq__ operator None comparison"""
         self.failUnless((SoSeparator() != None))
         
+class InitTests(unittest.TestCase):
+    """checks if all node packages are initialized at startup"""
+    def testInitNodeKits(self):
+        """test if SoNodeKit::init was called"""
+        self.failUnless(SoShapeKit() is not None)
+
+    def testInitInteraction(self):
+        """test if interaction nodes (draggers etc) are initialized at startup"""
+        self.failUnless(SoAntiSquish() is not None)
+
+class NodeKitTests(unittest.TestCase):
+    """checks API of SoBaseKit and related stuff"""
+    def testRecursiveParts(self):
+        """test if . returns a part not a nodefield"""
+        s = SoShapeKit()
+        self.failUnless(isinstance(s.appearance.material, SoMaterial))
+
 if __name__ == "__main__":
     unittest.main()

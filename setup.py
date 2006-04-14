@@ -329,7 +329,7 @@ class pivy_build(build):
             print green(".")
 
         if sys.platform == "win32":
-            INCLUDE_DIR = '"' + os.getenv("COINDIR") + "\\include" + '"'
+            INCLUDE_DIR = os.path.join(os.getenv("COINDIR"), "include")
         else:
             INCLUDE_DIR = self.do_os_popen("coin-config --includedir")
 
@@ -348,17 +348,17 @@ class pivy_build(build):
             mod_out_prefix = module_pkg_name.replace('.', os.sep) + module
             
             if sys.platform == "win32":
-                INCLUDE_DIR = os.getenv("COINDIR") + "\\include"
+                INCLUDE_DIR = os.path.join(os.getenv("COINDIR"), "include")
                 CPP_FLAGS = "-I" + '"' + INCLUDE_DIR + '"' + " " + \
-                            "-I" + '"' + os.getenv("COINDIR") + "\\include\\Inventor\\annex" + '"' + \
+                            "-I" + os.path.join(os.getenv("COINDIR"), "include", "Inventor", "annex") + \
                             " /DCOIN_DLL /wd4244 /wd4049"
-                LDFLAGS_LIBS = '"' + os.getenv("COINDIR") + "\\lib\\coin2.lib\" "
+                LDFLAGS_LIBS = os.path.join(os.getenv("COINDIR"), "lib", "coin2.lib") + " "
                 if module == "sowin":
                     CPP_FLAGS += " /DSOWIN_DLL"
-                    LDFLAGS_LIBS += '"' + os.getenv("COINDIR") + "\\lib\\sowin1.lib" + '"'
+                    LDFLAGS_LIBS += os.path.join(os.getenv("COINDIR"), "lib", "sowin1.lib")
                 elif module == "soqt":
                     CPP_FLAGS += " -I" + '"' + os.getenv("QTDIR") + "\\include\" /DSOQT_DLL"
-                    LDFLAGS_LIBS += '"' + os.getenv("COINDIR") + "\\lib\\soqt1.lib\" "
+                    LDFLAGS_LIBS += os.path.join(os.getenv("COINDIR"), "lib", "soqt1.lib") + " "
             else:
                 INCLUDE_DIR = self.do_os_popen("coin-config --includedir")
                 CPP_FLAGS = self.do_os_popen("%s --cppflags" % config_cmd)

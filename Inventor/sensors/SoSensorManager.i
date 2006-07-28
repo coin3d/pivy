@@ -26,4 +26,14 @@ sensorQueueChangedPythonCB(void * userdata)
                                                    pyfunc, 
                                                    data ? data : Py_None));
   }
+
+  PyObject * isTimerSensorPending() {
+    SbTime tm;
+    if (!self->isTimerSensorPending(tm)) {
+      Py_INCREF(Py_None);
+      return Py_None;
+    }
+    SbTime * retTm = new SbTime(tm.getValue());
+    return SWIG_NewPointerObj((void *)retTm, SWIGTYPE_p_SbTime, 1);
+  }
 }

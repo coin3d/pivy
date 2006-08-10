@@ -1031,5 +1031,16 @@ class NodeKitTests(unittest.TestCase):
         s = SoShapeKit()
         self.failUnless(isinstance(s.appearance.material, SoMaterial))
 
+class SoGroupMethods(unittest.TestCase):
+    """checks methods and operators for SoGroup"""
+    def testSequence(self):
+        """check sequence operators for SoGroup"""
+        g = SoGroup()
+        c = SoCone()
+        g.addChild(c)
+        self.assertEqual(len(g), 1)
+        for x in g:
+            self.assertEqual(x, c)
+
 if __name__ == "__main__":
     unittest.main()

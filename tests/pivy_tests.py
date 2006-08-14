@@ -1034,13 +1034,32 @@ class NodeKitTests(unittest.TestCase):
 class SoGroupMethods(unittest.TestCase):
     """checks methods and operators for SoGroup"""
     def testSequence(self):
-        """check sequence operators for SoGroup"""
+        """check SoGroup sequence operator"""
         g = SoGroup()
         c = SoCone()
         g.addChild(c)
         self.assertEqual(len(g), 1)
         for x in g:
             self.assertEqual(x, c)
+
+    def testContains(self):
+        """check SoGroup containment operator in"""
+        g = SoGroup()
+        c = SoCone()
+        c2 = SoCone()
+        g.addChild(c)
+        self.failUnless(c in g)
+        self.failUnless(c2 not in g)
+
+    def testAccess(self):
+        """check SoGroup array access operator []"""
+        g = SoGroup()
+        c = SoCone()
+        c2 = SoCone()
+        g.addChild(c)
+        g.addChild(c2)
+        self.assertEqual(g[0], c)
+        self.assertEqual(g[1], c2)
 
 if __name__ == "__main__":
     unittest.main()

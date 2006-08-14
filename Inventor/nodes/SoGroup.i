@@ -7,7 +7,9 @@
          yield self.getChild(i)
          i += 1
 %}
-   /* FIXME: write a get1 method that returns a string as a
-      result. 20050731 gerhard. */
+
+  /* methods to emulate Python Container object */
   int __len__(void) { return self->getNumChildren(); }
+  int __contains__(const SoNode * node ) { return (self->findChild(node) != -1); }
+  SoNode * __getitem__(int index) { return self->getChild(index); }
 }

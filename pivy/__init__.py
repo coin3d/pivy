@@ -16,6 +16,13 @@
 
 __all__ = ['coin']
 
+# set dynamic link flags for global to allow Coin to use dynamic loading
+try:
+    import sys, dl
+    sys.setdlopenflags(dl.RTLD_GLOBAL | sys.getdlopenflags())
+except Exception, e:
+    None
+
 # initialize the Coin system
 from coin import SoDB, SoNodeKit, SoInteraction
 SoDB.init()

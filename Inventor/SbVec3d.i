@@ -41,6 +41,7 @@ convert_SbVec3d_array(PyObject *input, double temp[3])
   SbVec3d __add__(const SbVec3d &u) { return *self + u; }
   SbVec3d __sub__(const SbVec3d &u) { return *self - u; }
   SbVec3d __mul__(const double d) { return *self * d; }
+  SbVec3d __mul__(const SbDPMatrix &m) { SbVec3d res; m.multVecMatrix(*self,res); return res; }
   SbVec3d __rmul__(const double d) { return *self * d; }
   SbVec3d __div__(const double d) { return *self / d; }
   int __eq__(const SbVec3d &u) { return *self == u; }
@@ -48,6 +49,15 @@ convert_SbVec3d_array(PyObject *input, double temp[3])
   // add a method for wrapping c++ operator[] access
   double __getitem__(int i) { return (self->getValue())[i]; }
   void  __setitem__(int i, double value) { (*self)[i] = value; }
+  
+%pythoncode %{
+   def __iter__(self):
+      for i in range(3):
+         yield self[i]
+      
+   def __len__(self):
+         return 3
+%}
 }
 
 %apply double *OUTPUT { double & x, double & y, double & z };

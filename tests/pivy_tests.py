@@ -1061,5 +1061,91 @@ class SoGroupMethods(unittest.TestCase):
         self.assertEqual(g[0], c)
         self.assertEqual(g[1], c2)
 
+class SbBaseClasses(unittest.TestCase):
+    """checks methods and operators of and between various Sb* classes"""
+    def testConstructors(self):
+        v1 = SbVec3f()
+        v2 = SbVec3f(1,2,3)
+        v3 = SbVec3f([1,2,3])
+        v4 = SbVec3f(v2)
+
+        v1 = SbVec4f()
+        v2 = SbVec4f(1,2,3,4)
+        v3 = SbVec4f([1,2,3,4])
+        v4 = SbVec4f(v2)
+
+        v1 = SbVec3d()
+        v2 = SbVec3d(1,2,3)
+        v3 = SbVec3d([1,2,3])
+        v4 = SbVec3d(v2)
+
+        v1 = SbVec4d()
+        v2 = SbVec4d(1,2,3,4)
+        v3 = SbVec4d([1,2,3,4])
+        v4 = SbVec4d(v2)
+
+        m0 = SbMatrix()
+        m1 = SbMatrix([[0,1,0,0], [0,0,1,0], [1,0,0,0], [0,0,0,1]])
+        m2 = SbMatrix(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
+        # the following is not part of Coin API, should it be supported ?
+        #m3 = SbMatrix(m1)
+
+        m0 = SbDPMatrix()
+        m1 = SbDPMatrix([[0,1,0,0], [0,0,1,0], [1,0,0,0], [0,0,0,1]])
+        m2 = SbDPMatrix(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
+        # the following treats the SbMatrix as a sequence!
+        #m3 = SbDPMatrix(SbMatrix())
+
+    def testVecMatrixOperators(self):
+        """tests operators between vec and matrix classes"""
+        v = SbVec3f(1,0,0)
+        m = SbMatrix([[0,1,0,0], [0,0,1,0], [1,0,0,0], [0,0,0,1]])
+        self.assertEqual(m * v, SbVec3f(0,0,1))
+        self.assertEqual(v * m, SbVec3f(0,1,0))
+        v4 = SbVec4f(1,0,0,1)
+        self.assertEqual(v4 * m, SbVec4f(0,1,0,1))
+
+    def testVectorAsArrays(self):
+        """tests various container operators of vectors"""
+        d2 = [1,2]
+        d3 = [1, 2, 3]
+        d4 = [1.0, 2.0, 3.0, 4.0]
+
+        v = SbVec2s(d2)
+        self.assertEqual(len(v),2)
+        self.assertEqual([x for x in v], d2)
+        v = SbVec2f(d2)
+        self.assertEqual(len(v),2)
+        self.assertEqual([x for x in v], d2)
+        v = SbVec2d(d2)
+        self.assertEqual(len(v),2)
+        self.assertEqual([x for x in v], d2)
+        v = SbVec3s(d3)
+        self.assertEqual(len(v),3)
+        self.assertEqual([x for x in v], d3)
+        v = SbVec3f(d3)
+        self.assertEqual(len(v),3)
+        self.assertEqual([x for x in v], d3)
+        vd = SbVec3d(d3)
+        self.assertEqual(len(vd),3)
+        self.assertEqual([x for x in vd], d3)
+        v4 = SbVec4f(d4)
+        self.assertEqual(len(v4),4)
+        self.assertEqual([x for x in v4], d4)
+        vd4 = SbVec4d(d4)
+        self.assertEqual(len(vd4),4)
+        self.assertEqual([x for x in vd4], d4)
+
+    def testVecdDBMatrixOperators(self):
+        """tests operators between vec and matrix classes, double precision"""
+        v = SbVec3d(1,0,0)
+        m = SbDPMatrix([[0,1,0,0], [0,0,1,0], [1,0,0,0], [0,0,0,1]])
+        self.assertEqual(m * v, SbVec3d(0,0,1))
+        self.assertEqual(v * m, SbVec3d(0,1,0))
+        # fails due to a bug in Coin3D, hopefully will be fixed soon
+        v4 = SbVec4d(1,0,0,1)
+        self.assertEqual(v4 * m, SbVec4d(0,1,0,1), 'bug in Coin3D, left in to check')
+
+
 if __name__ == "__main__":
     unittest.main()

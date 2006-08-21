@@ -70,4 +70,3 @@ convert_SbDPMat_array(PyObject * input, SbDPMat temp)
   int __ne__(const SbDPMatrix & u) { return *self != u; }
 }
 
-%ignore SbDPMatrix::SbDPMatrix(const SbDPMat & matrix);

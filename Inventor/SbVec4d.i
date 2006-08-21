@@ -23,7 +23,7 @@ convert_SbVec4d_array(PyObject * input, double temp[4])
   $1 = temp;
 }
 
-%typemap(typecheck) double q[4] {
+%typemap(typecheck) double v[4] {
   $1 = PySequence_Check($input) ? 1 : 0 ;
 }
 
@@ -44,6 +44,7 @@ convert_SbVec4d_array(PyObject * input, double temp[4])
   SbVec4d __add__(const SbVec4d &u) { return *self + u; }
   SbVec4d __sub__(const SbVec4d &u) { return *self - u; }
   SbVec4d __mul__(const double d) { return *self * d; }
+  SbVec4d __mul__(const SbDPMatrix &m) { SbVec4d res; m.multVecMatrix(*self,res); return res; }
   SbVec4d __rmul__(const double d) { return *self * d; }
   SbVec4d __div__(const double d) { return *self / d; }
   int __eq__(const SbVec4d &u ) { return *self == u; }
@@ -51,6 +52,15 @@ convert_SbVec4d_array(PyObject * input, double temp[4])
   // swig - add a method for wrapping c++ operator[] access
   double __getitem__(int i) { return (self->getValue())[i]; }
   void  __setitem__(int i, double value) { (*self)[i] = value; }
+  
+%pythoncode %{
+   def __iter__(self):
+      for i in range(4):
+         yield self[i]
+
+   def __len__(self):
+         return 4
+%}
 }
 
 %apply double *OUTPUT { double& x, double& y, double& z, double& w };

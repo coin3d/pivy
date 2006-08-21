@@ -37,6 +37,15 @@ convert_SbVec3s_array(PyObject * input, short temp[3])
   // add a method for wrapping c++ operator[] access
   short __getitem__(int i) { return (self->getValue())[i]; }
   void  __setitem__(int i, short value) { (*self)[i] = value; }
+
+%pythoncode %{
+   def __iter__(self):
+      for i in range(3):
+         yield self[i]
+      
+   def __len__(self):
+         return 3
+%}
 }
 
 %apply short *OUTPUT { short &x, short &y, short &z };

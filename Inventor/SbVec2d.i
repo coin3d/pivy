@@ -35,6 +35,15 @@ convert_SbVec2d_array(PyObject *input, double temp[2])
   // add a method for wrapping c++ operator[] access
   double __getitem__(int i) { return (self->getValue())[i]; }
   void  __setitem__(int i, double value) { (*self)[i] = value; }
+
+%pythoncode %{
+   def __iter__(self):
+      for i in range(2):
+         yield self[i]
+
+   def __len__(self):
+         return 2
+%}
 }
 
 %apply double *OUTPUT { double & x, double & y };

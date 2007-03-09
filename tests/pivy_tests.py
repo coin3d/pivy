@@ -1146,6 +1146,30 @@ class SbBaseClasses(unittest.TestCase):
         v4 = SbVec4d(1,0,0,1)
         self.assertEqual(v4 * m, SbVec4d(0,1,0,1), 'bug in Coin3D, left in to check')
 
+class SoPathTests(unittest.TestCase):
+    """checks various methods for SoPath"""
+
+    def setUp(self):
+        self.nodes = [ SoSeparator() ]
+        for i in range(3):
+            child = SoGroup()
+            self.nodes[-1].addChild(child)
+            self.nodes.append(child)
+
+    def tearDown(self):
+        del self.nodes
+
+    def testSoPathIterator(self):
+        """check iterator in SoPath"""
+        path = SoPath()
+        for n in self.nodes:
+            path.append(n)
+        index = 0
+        for n in path:
+            self.assert_(n == self.nodes[index])
+            index += 1
+        for i in path.index():
+            self.assertEqual(i, 0)
 
 if __name__ == "__main__":
     unittest.main()

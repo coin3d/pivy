@@ -986,6 +986,12 @@ class SoFieldMethods(unittest.TestCase):
         self.failUnless(len(s) == 3 == s.getNum(),
                         'len(s) on non-empty field failed')
 
+    def testGet1(self):
+        """check get1() for SoMFields"""
+        s = SoMFInt32()
+        s.setValues([1,2,3])
+        self.failUnless(s.get1(1) == '2', 'get1(1) failed')
+        
 class SbTimeMethods(unittest.TestCase):
     """test SbTime methods"""
     def testConstructors(self):

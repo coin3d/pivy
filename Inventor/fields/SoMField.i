@@ -1,3 +1,5 @@
+%ignore SoMField::get1(const int index, SbString & valuestring);
+
 %extend SoMField {
 /* extend __iter__ to return a new iterator object */
 %pythoncode %{
@@ -7,7 +9,12 @@
          yield self[i]
          i += 1
 %}
-   /* FIXME: write a get1 method that returns a string as a
-      result. 20050731 gerhard. */
   int __len__(void) { return self->getNum(); }
+
+  /* a get1 method that returns a string as a result. */
+  SbString get1(const int index) {
+    SbString valuestring;
+    self->get1(index, valuestring);
+    return valuestring;
+  }
 }

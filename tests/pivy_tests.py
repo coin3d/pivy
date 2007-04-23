@@ -1113,34 +1113,21 @@ class SbBaseClasses(unittest.TestCase):
 
     def testVectorAsArrays(self):
         """tests various container operators of vectors"""
-        d2 = [1,2]
-        d3 = [1, 2, 3]
-        d4 = [1.0, 2.0, 3.0, 4.0]
 
-        v = SbVec2s(d2)
-        self.assertEqual(len(v),2)
-        self.assertEqual([x for x in v], d2)
-        v = SbVec2f(d2)
-        self.assertEqual(len(v),2)
-        self.assertEqual([x for x in v], d2)
-        v = SbVec2d(d2)
-        self.assertEqual(len(v),2)
-        self.assertEqual([x for x in v], d2)
-        v = SbVec3s(d3)
-        self.assertEqual(len(v),3)
-        self.assertEqual([x for x in v], d3)
-        v = SbVec3f(d3)
-        self.assertEqual(len(v),3)
-        self.assertEqual([x for x in v], d3)
-        vd = SbVec3d(d3)
-        self.assertEqual(len(vd),3)
-        self.assertEqual([x for x in vd], d3)
-        v4 = SbVec4f(d4)
-        self.assertEqual(len(v4),4)
-        self.assertEqual([x for x in v4], d4)
-        vd4 = SbVec4d(d4)
-        self.assertEqual(len(vd4),4)
-        self.assertEqual([x for x in vd4], d4)
+        d = {}
+        d[2] = [1,2]
+        d[3] = [1, 2, 3]
+        d[4] = [1.0, 2.0, 3.0, 4.0]
+        
+        vecs = [SbVec2s(d[2]), SbVec2f(d[2]), SbVec2d(d[2]),
+                SbVec3s(d[3]), SbVec3f(d[3]), SbVec3d(d[3]),
+                SbVec4f(d[4]), SbVec4d(d[4])]
+
+        for i,v in zip([2,2,2,3,3,3,4,4], vecs):
+            self.assertEqual(i, len(v))
+            self.assertEqual([x for x in v], d[i] )
+            for j in range(i):
+                self.assertEqual(d[i][j], v[j])
 
     def testVecdDBMatrixOperators(self):
         """tests operators between vec and matrix classes, double precision"""

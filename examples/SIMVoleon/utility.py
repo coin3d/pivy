@@ -17,8 +17,6 @@
 #
 # Systems in Motion, <URL:http://www.sim.no>, <mailto:support@sim.no>
 #
-# Python translation: Tamer Fahmy <tamer@tammura.at>
-#
 
 import array
 from math import sin, cos

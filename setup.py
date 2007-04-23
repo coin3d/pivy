@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ###
-# Copyright (c) 2002-2006 Tamer Fahmy <tamer@tammura.at>
+# Copyright (c) 2002-2007 Systems in Motion
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -436,9 +436,9 @@ setup(name = "Pivy",
       description = "A Python binding for Coin",
       long_description = __doc__,
       author = "Tamer Fahmy",
-      author_email = "tamer@tammura.at",
-      download_url="http://www.tammura.at/download/",
-      url = "http://pivy.tammura.at/",
+      author_email = "tamer@coin3d.org",
+      download_url="http://pivy.coin3d.org/download/",
+      url = "http://pivy.coin3d.org/",
       cmdclass = {'build'   : pivy_build,
                   'clean'   : pivy_clean},
       ext_package = 'pivy',

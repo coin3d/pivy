@@ -1,5 +1,5 @@
 ###
-# Copyright (c) 2002-2006 Tamer Fahmy <tamer@tammura.at>
+# Copyright (c) 2002-2007 Systems in Motion
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above

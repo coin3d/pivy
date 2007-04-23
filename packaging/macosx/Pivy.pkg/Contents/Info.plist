@@ -5,7 +5,7 @@
 	<key>CFBundleGetInfoString</key>
 	<string>0.4.0, Copyright © 2005 Tamer Fahmy</string>
 	<key>CFBundleIdentifier</key>
-	<string>at.tammura.pivy</string>
+	<string>org.coin3d.pivy</string>
 	<key>CFBundleShortVersionString</key>
 	<string>0.4.0</string>
 	<key>IFPkgFlagAllowBackRev</key>

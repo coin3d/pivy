@@ -9,5 +9,7 @@
       return other and (self.this == other.this) or False
     def __ne__(self,other):
       return other and (self.this != other.this) or True
+    def __nonzero__(self):
+      return True
 %}
 }

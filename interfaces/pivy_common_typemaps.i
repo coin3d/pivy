@@ -18,6 +18,12 @@
 %{
 #include <Inventor/SbTime.h>
 
+#if (PY_VERSION_HEX < 0x02050000)
+/* Py_ssize_t needed for Python 2.5 compatibility, but isn't defined
+ * in earlier Python versions. */
+typedef int Py_ssize_t;
+#endif
+
 /* a casting helper function */
 SWIGEXPORT PyObject *
 cast(PyObject * self, PyObject * args)

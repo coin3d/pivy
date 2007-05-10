@@ -15,7 +15,7 @@
 %extend SoSFImage {
   void setValue(const SbVec2s & size, const int nc, PyObject * pixels)
   {
-    int len = size[0] * size[1] * nc;
+    Py_ssize_t len = size[0] * size[1] * nc;
     unsigned char * image;
 
     PyString_AsStringAndSize(pixels, (char **)&image, &len);

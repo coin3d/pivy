@@ -10,7 +10,7 @@
   }
   $3 = PyInt_AsLong(nc);
   if (PyString_Check(buf)) {
-    int len = (*$2)[0] * (*$2)[1] * $3;
+    Py_ssize_t len = (*$2)[0] * (*$2)[1] * $3;
     PyString_AsStringAndSize(buf, (char **)&image, &len);
     $1 = image;
   } else {
@@ -30,7 +30,7 @@
   }
   $3 = PyInt_AsLong(nc);
   if (PyString_Check(buf)) {
-    int len = (*$2)[0] * (*$2)[1] * (*$2)[2] * $3;
+    Py_ssize_t len = (*$2)[0] * (*$2)[1] * (*$2)[2] * $3;
     PyString_AsStringAndSize(buf, (char **)&image, &len);
     $1 = image;
   } else {
@@ -50,7 +50,7 @@
   }
   $2 = PyInt_AsLong(nc);
   if (PyString_Check(buf)) {
-    int len = (*$1)[0] * (*$1)[1] * $2;
+    Py_ssize_t len = (*$1)[0] * (*$1)[1] * $2;
     PyString_AsStringAndSize(buf, (char **)&image, &len);
     $3 = image;
   } else {
@@ -70,7 +70,7 @@
   }
   $2 = PyInt_AsLong(nc);
   if (PyString_Check(buf)) {
-    int len = (*$1)[0] * (*$1)[1] * ((*$1)[2] ? (*$1)[2] : 1) * $2;
+    Py_ssize_t len = (*$1)[0] * (*$1)[1] * ((*$1)[2] ? (*$1)[2] : 1) * $2;
     PyString_AsStringAndSize(buf, (char **)&image, &len);
     $3 = image;
   } else {

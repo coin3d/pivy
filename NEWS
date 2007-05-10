@@ -6,6 +6,7 @@ New in Pivy v0.4.0 (so far):
   - new contributed examples
   - out-of-the-box build support for SoQt on win32
   - autocasting for SoSensor derived nodes
+  - Python 2.5 support
 * bugfixes:
   - missing autocast invocation in SoCallbackActionPythonCB() for SoNode param 
   - out parameter handling for SoCallbackAction::getMaterial()

@@ -1,4 +1,4 @@
-New in Pivy v0.4.0 (so far):
+New in Pivy v0.5.0 (so far):
 * features:
   - purer and simpler OpenBSD'esque license
   - SIMVoleon support
@@ -7,6 +7,7 @@ New in Pivy v0.4.0 (so far):
   - out-of-the-box build support for SoQt on win32
   - autocasting for SoSensor derived nodes
   - Python 2.5 support
+  - PyQt4 support
 * bugfixes:
   - missing autocast invocation in SoCallbackActionPythonCB() for SoNode param 
   - out parameter handling for SoCallbackAction::getMaterial()

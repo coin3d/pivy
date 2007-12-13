@@ -65,7 +65,7 @@ Topic :: Multimedia :: Graphics :: 3D Rendering
 Topic :: Software Development :: Libraries :: Python Modules
 """
 
-PIVY_VERSION = "0.4.0"
+PIVY_VERSION = "0.5.0"
 
 class pivy_build(build):
     PIVY_SNAKES = r"""
@@ -129,7 +129,7 @@ class pivy_build(build):
                'sogtk'     : ('gui._sogtk', 'sogtk-config',     'pivy.gui.'),
                'sowin'     : ('gui._sowin', 'sowin-config',     'pivy.gui.')}
 
-    SUPPORTED_SWIG_VERSIONS = ['1.3.25']
+    SUPPORTED_SWIG_VERSIONS = ['1.3.31']
     SWIG_VERSION = ""
     SWIG_COND_SYMBOLS = []
     CXX_INCS = "-Iinterfaces "
@@ -173,9 +173,9 @@ class pivy_build(build):
         print blue("Coin version..."),
         version = self.do_os_popen("coin-config --version")
         print blue("%s" % version)
-        if not version.startswith('2.4'):
+        if not version.startswith('2.5'):
             print yellow("** Warning: Pivy has only been tested with Coin "
-                         "versions 2.4.x.")
+                         "versions 2.5.x.")
 
     def check_simvoleon_version(self):
         "return if SIMVoleon is available and check the version"

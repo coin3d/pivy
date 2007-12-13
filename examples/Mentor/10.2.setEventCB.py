@@ -38,7 +38,10 @@ from pivy.coin import *
 from pivy.gui.soqt import *
 
 # PyQt module has to be imported as last one if used in the same namespace
-from qt import *
+if SoQt.getVersionToolkitString().startswith('4'):
+    from PyQt4.Qt import *
+else:
+    from qt import *
 
 # Timer sensor 
 # Rotate 90 degrees every second, update 30 times a second
@@ -126,6 +129,32 @@ def myAppEventHandler(myRenderArea, anyevent):
 
     return handled
 
+def myAppEventHandlerQt4(myRenderArea, anyevent):
+    handled = TRUE
+
+    if anyevent.type() == QEvent.MouseButtonPress:
+        if anyevent.button() == Qt.LeftButton:
+            vec = myProjectPoint(myRenderArea, anyevent.x(), anyevent.y())
+            myAddPoint(myRenderArea, vec)
+        elif anyevent.button() == Qt.MidButton:
+            myTicker.schedule()  # start spinning the camera
+        elif anyevent.button() == Qt.RightButton:
+            myClearPoints(myRenderArea)  # clear the point set
+
+    elif anyevent.type() == QEvent.MouseButtonRelease:
+        if anyevent.button() == Qt.MidButton:
+            myTicker.unschedule()  # stop spinning the camera
+
+    elif anyevent.type() == QEvent.MouseMove:
+        if anyevent.buttons() == Qt.LeftButton:
+            vec = myProjectPoint(myRenderArea, anyevent.x(), anyevent.y())
+            myAddPoint(myRenderArea, vec)
+
+    else:
+        handled = FALSE
+
+    return handled
+
 # CODE FOR The Inventor Mentor ENDS HERE
 ###############################################################
 
@@ -180,9 +209,13 @@ def main():
 ###############################################################
 # CODE FOR The Inventor Mentor STARTS HERE  (part 2)
 
-        # Have render area send events to us instead of the scene 
+    # Have render area send events to us instead of the scene 
     # graph.  We pass the render area as user data.
-    myRenderArea.setEventCallback(myAppEventHandler, myRenderArea)
+
+    if SoQt.getVersionToolkitString().startswith('4'):
+        myRenderArea.setEventCallback(myAppEventHandlerQt4, myRenderArea)
+    else:
+        myRenderArea.setEventCallback(myAppEventHandler, myRenderArea)
 
 # CODE FOR The Inventor Mentor ENDS HERE
 ###############################################################

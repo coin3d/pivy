@@ -8,6 +8,8 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
 
   /* try to create a QEvent PyQt instance over sip */
 
+  initialize_pyqt_module_import_name();
+
   /* check if the sip module is available and import it */
   if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "sip"))) {
     sip = PyImport_ImportModule("sip");
@@ -15,8 +17,8 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
 
   if (sip && PyModule_Check(sip)) {
     /* check if the qt module is available and import it */
-    if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "qt"))) {
-      qt = PyImport_ImportModule("qt");
+    if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), PYQT_MODULE_IMPORT_NAME))) {
+      qt = PyImport_ImportModule(PYQT_MODULE_IMPORT_NAME);
     }
 
     if (qt && PyModule_Check(qt)) {

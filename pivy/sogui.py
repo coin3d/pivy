@@ -60,7 +60,7 @@ class SoGui_Proxy:
         # try to bind it.
         elif type(gui) == type(''):
             try:
-                sogui = __import__(gui.lower())
+                sogui = __import__('pivy.gui.' + gui.lower())
             except ImportError:
                 print 'SoGui proxy error: The specified Gui binding could not be bound!'
                 sys.exit(1)
@@ -93,7 +93,7 @@ class SoGui_Proxy:
 
 
 # look for user overrides in the main dictionary of the interpreter
-gui = None; debug = 0
+gui, debug = None, False
 
 if sys.modules.has_key('__main__'):
     try:

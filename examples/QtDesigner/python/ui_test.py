@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '../test.ui'
 #
-# Created: Tue Feb 12 17:53:40 2008
+# Created: Tue Feb 12 18:37:15 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,24 +27,24 @@ class Ui_MainWindow(object):
         self.hboxlayout = QtGui.QHBoxLayout()
         self.hboxlayout.setObjectName("hboxlayout")
 
-        self.buttonGroup = QtGui.QGroupBox(self.centralWidget)
-        self.buttonGroup.setObjectName("buttonGroup")
+        self.groupBox = QtGui.QGroupBox(self.centralWidget)
+        self.groupBox.setObjectName("groupBox")
 
-        self.hboxlayout1 = QtGui.QHBoxLayout(self.buttonGroup)
+        self.hboxlayout1 = QtGui.QHBoxLayout(self.groupBox)
         self.hboxlayout1.setObjectName("hboxlayout1")
 
-        self.button_x = QtGui.QPushButton(self.buttonGroup)
+        self.button_x = QtGui.QRadioButton(self.groupBox)
         self.button_x.setObjectName("button_x")
         self.hboxlayout1.addWidget(self.button_x)
 
-        self.button_y = QtGui.QPushButton(self.buttonGroup)
+        self.button_y = QtGui.QRadioButton(self.groupBox)
         self.button_y.setObjectName("button_y")
         self.hboxlayout1.addWidget(self.button_y)
 
-        self.button_z = QtGui.QPushButton(self.buttonGroup)
+        self.button_z = QtGui.QRadioButton(self.groupBox)
         self.button_z.setObjectName("button_z")
         self.hboxlayout1.addWidget(self.button_z)
-        self.hboxlayout.addWidget(self.buttonGroup)
+        self.hboxlayout.addWidget(self.groupBox)
 
         self.vboxlayout1 = QtGui.QVBoxLayout()
         self.vboxlayout1.setObjectName("vboxlayout1")
@@ -78,11 +78,11 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
-        self.buttonGroup.setTitle(QtGui.QApplication.translate("MainWindow", "GroupBox", None, QtGui.QApplication.UnicodeUTF8))
-        self.button_x.setText(QtGui.QApplication.translate("MainWindow", "X", None, QtGui.QApplication.UnicodeUTF8))
-        self.button_y.setText(QtGui.QApplication.translate("MainWindow", "Y", None, QtGui.QApplication.UnicodeUTF8))
-        self.button_z.setText(QtGui.QApplication.translate("MainWindow", "Z", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkbox.setText(QtGui.QApplication.translate("MainWindow", "CheckBox", None, QtGui.QApplication.UnicodeUTF8))
-        self.button.setText(QtGui.QApplication.translate("MainWindow", "PushButton", None, QtGui.QApplication.UnicodeUTF8))
+        self.groupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Choose axis", None, QtGui.QApplication.UnicodeUTF8))
+        self.button_x.setText(QtGui.QApplication.translate("MainWindow", "&X", None, QtGui.QApplication.UnicodeUTF8))
+        self.button_y.setText(QtGui.QApplication.translate("MainWindow", "&Y", None, QtGui.QApplication.UnicodeUTF8))
+        self.button_z.setText(QtGui.QApplication.translate("MainWindow", "&Z", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkbox.setText(QtGui.QApplication.translate("MainWindow", "Enable &rotation", None, QtGui.QApplication.UnicodeUTF8))
+        self.button.setText(QtGui.QApplication.translate("MainWindow", "&Change cone color", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("MainWindow", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
 

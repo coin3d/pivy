@@ -20,29 +20,29 @@
     <item>
      <layout class="QHBoxLayout" >
       <item>
-       <widget class="QGroupBox" name="buttonGroup" >
+       <widget class="QGroupBox" name="groupBox" >
         <property name="title" >
-         <string>GroupBox</string>
+         <string>Choose axis</string>
         </property>
         <layout class="QHBoxLayout" >
          <item>
-          <widget class="QPushButton" name="button_x" >
+          <widget class="QRadioButton" name="button_x" >
            <property name="text" >
-            <string>X</string>
+            <string>&amp;X</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="button_y" >
+          <widget class="QRadioButton" name="button_y" >
            <property name="text" >
-            <string>Y</string>
+            <string>&amp;Y</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="button_z" >
+          <widget class="QRadioButton" name="button_z" >
            <property name="text" >
-            <string>Z</string>
+            <string>&amp;Z</string>
            </property>
           </widget>
          </item>
@@ -54,14 +54,14 @@
         <item>
          <widget class="QCheckBox" name="checkbox" >
           <property name="text" >
-           <string>CheckBox</string>
+           <string>Enable &amp;rotation</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="button" >
           <property name="text" >
-           <string>PushButton</string>
+           <string>&amp;Change cone color</string>
           </property>
          </widget>
         </item>

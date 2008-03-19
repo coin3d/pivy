@@ -357,7 +357,7 @@ class pivy_build(build):
                     LDFLAGS_LIBS += os.path.join(os.getenv("COINDIR"), "lib", "sowin1.lib")
                 elif module == "soqt":
                     CPP_FLAGS += " -I" + '"' + os.getenv("QTDIR") + "\\include\"  /DSOQT_DLL"
-                    CPP_FLAGS += " -I" + '"' + os.getenv("QTDIR") + "\\include\Qt"
+                    CPP_FLAGS += " -I" + '"' + os.getenv("QTDIR") + "\\include\Qt\""
                     LDFLAGS_LIBS += os.path.join(os.getenv("COINDIR"), "lib", "soqt1.lib") + " "
             else:
                 INCLUDE_DIR = self.do_os_popen("coin-config --includedir")

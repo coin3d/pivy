@@ -129,7 +129,7 @@ class pivy_build(build):
                'sogtk'     : ('gui._sogtk', 'sogtk-config',     'pivy.gui.'),
                'sowin'     : ('gui._sowin', 'sowin-config',     'pivy.gui.')}
 
-    SUPPORTED_SWIG_VERSIONS = ['1.3.31']
+    SUPPORTED_SWIG_VERSIONS = ['1.3.31', '1.3.33']
     SWIG_VERSION = ""
     SWIG_COND_SYMBOLS = []
     CXX_INCS = "-Iinterfaces "
@@ -173,9 +173,9 @@ class pivy_build(build):
         print blue("Coin version..."),
         version = self.do_os_popen("coin-config --version")
         print blue("%s" % version)
-        if not version.startswith('2.5'):
+        if not version.startswith('3'):
             print yellow("** Warning: Pivy has only been tested with Coin "
-                         "versions 2.5.x.")
+                         "versions Coin-dev 3.")
 
     def check_simvoleon_version(self):
         "return if SIMVoleon is available and check the version"
@@ -196,8 +196,7 @@ class pivy_build(build):
         "check for availability of SoGui bindings and removes the not available ones"
         if sys.platform == "win32":
             print "Coin and SoWin are built by default on Windows..."
-            self.MODULES = {'coin'  : ('_coin',  'coin-config', 'pivy.'),
-                            'sowin' : ('gui._sowin', 'sowin-config', 'pivy.gui.')}
+            self.MODULES = {'coin'  : ('_coin',  'coin-config', 'pivy.')}
             print blue("Checking for QTDIR environment variable..."),
             if os.getenv("QTDIR"):
                 self.MODULES['soqt'] = ('gui._soqt', 'soqt-config', 'pivy.gui.')
@@ -352,7 +351,7 @@ class pivy_build(build):
                 CPP_FLAGS = "-I" + '"' + INCLUDE_DIR + '"' + " " + \
                             "-I" + os.path.join(os.getenv("COINDIR"), "include", "Inventor", "annex") + \
                             " /DCOIN_DLL /wd4244 /wd4049"
-                LDFLAGS_LIBS = os.path.join(os.getenv("COINDIR"), "lib", "coin2.lib") + " "
+                LDFLAGS_LIBS = os.path.join(os.getenv("COINDIR"), "lib", "coin3.lib") + " "
                 if module == "sowin":
                     CPP_FLAGS += " /DSOWIN_DLL"
                     LDFLAGS_LIBS += os.path.join(os.getenv("COINDIR"), "lib", "sowin1.lib")

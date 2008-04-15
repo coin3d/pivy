@@ -325,9 +325,7 @@ class FieldSetValue(unittest.TestCase):
         """check setValue for SoSFTime"""
         t = SoSFTime()
         s = SoSFTime()
-# FIXME: Conversion from float to SbTime doesn't work at the moment. kintel 20080415
-#        t.setValue(150.5)
-        t.setValue(SbTime(150.5))
+        t.setValue(150.5)
         s.setValue(t)
         self.failUnless(150.5 == t.getValue() == s.getValue(), 
                         'setValue on SoSFTime failed')

@@ -45,7 +45,7 @@
 
 %ignore SoMFColor::setValues(const int, const int, const SbColor *);
 
-%feature("shadow") SoMFColor::setValues(const int start, const int num, const float rgb[][3]) %{
+%feature("shadow") SoMFColor::setValues(int start, int num, const float rgb[][3]) %{
 def setValues(*args):
    if len(args) == 2:
      return _coin.SoMFColor_setValues(args[0], 0, len(args[1]), args[1])

@@ -17,7 +17,7 @@
 #
 
 ###
-# Pivy unit test suite
+# Pivy Coin unit test suite
 #
 # For detailed info on its usage and on how to write additional test cases
 # read:

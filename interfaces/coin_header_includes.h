@@ -366,6 +366,24 @@
 #include <Inventor/misc/SoTranReceiver.h>
 #include <Inventor/misc/SoTranscribe.h>
 #include <Inventor/misc/SoTranSender.h>
+#if COIN_MAJOR_VERSION > 2
+#include <Inventor/navigation/SoCenterMode.h>
+#include <Inventor/navigation/SoIdleMode.h>
+#include <Inventor/navigation/SoNavigationControl.h>
+#include <Inventor/navigation/SoNavigation.h>
+#include <Inventor/navigation/SoNavigationMode.h>
+#include <Inventor/navigation/SoNavigationState.h>
+#include <Inventor/navigation/SoNavigationSystem.h>
+#include <Inventor/navigation/SoOrthoCenterMode.h>
+#include <Inventor/navigation/SoPanMode.h>
+#include <Inventor/navigation/SoPickMode.h>
+#include <Inventor/navigation/SoPitchMode.h>
+#include <Inventor/navigation/SoRollMode.h>
+#include <Inventor/navigation/SoRotateMode.h>
+#include <Inventor/navigation/SoSubMode.h>
+#include <Inventor/navigation/SoYawMode.h>
+#include <Inventor/navigation/SoZoomMode.h>
+#endif
 #include <Inventor/nodekits/SoAppearanceKit.h>
 #include <Inventor/nodekits/SoBaseKit.h>
 #include <Inventor/nodekits/SoCameraKit.h>

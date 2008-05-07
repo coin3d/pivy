@@ -366,24 +366,6 @@
 #include <Inventor/misc/SoTranReceiver.h>
 #include <Inventor/misc/SoTranscribe.h>
 #include <Inventor/misc/SoTranSender.h>
-#if COIN_MAJOR_VERSION > 2
-#include <Inventor/navigation/SoCenterMode.h>
-#include <Inventor/navigation/SoIdleMode.h>
-#include <Inventor/navigation/SoNavigationControl.h>
-#include <Inventor/navigation/SoNavigation.h>
-#include <Inventor/navigation/SoNavigationMode.h>
-#include <Inventor/navigation/SoNavigationState.h>
-#include <Inventor/navigation/SoNavigationSystem.h>
-#include <Inventor/navigation/SoOrthoCenterMode.h>
-#include <Inventor/navigation/SoPanMode.h>
-#include <Inventor/navigation/SoPickMode.h>
-#include <Inventor/navigation/SoPitchMode.h>
-#include <Inventor/navigation/SoRollMode.h>
-#include <Inventor/navigation/SoRotateMode.h>
-#include <Inventor/navigation/SoSubMode.h>
-#include <Inventor/navigation/SoYawMode.h>
-#include <Inventor/navigation/SoZoomMode.h>
-#endif
 #include <Inventor/nodekits/SoAppearanceKit.h>
 #include <Inventor/nodekits/SoBaseKit.h>
 #include <Inventor/nodekits/SoCameraKit.h>
@@ -678,3 +660,25 @@
 #include <Inventor/VRMLnodes/SoVRMLViewpoint.h>
 #include <Inventor/VRMLnodes/SoVRMLVisibilitySensor.h>
 #include <Inventor/VRMLnodes/SoVRMLWorldInfo.h>
+
+#if COIN_MAJOR_VERSION > 2
+#include <Inventor/SoEventManager.h>
+#include <Inventor/SoRenderManager.h>
+#include <Inventor/scxml/ScXMLAnchor.h>
+#include <Inventor/scxml/ScXMLDocument.h>
+#include <Inventor/scxml/ScXMLEvent.h>
+#include <Inventor/scxml/ScXMLFinal.h>
+#include <Inventor/scxml/ScXML.h>
+#include <Inventor/scxml/ScXMLHistory.h>
+#include <Inventor/scxml/ScXMLInitial.h>
+#include <Inventor/scxml/ScXMLInvoke.h>
+#include <Inventor/scxml/ScXMLObject.h>
+#include <Inventor/scxml/ScXMLOnEntry.h>
+#include <Inventor/scxml/ScXMLOnExit.h>
+#include <Inventor/scxml/ScXMLState.h>
+#include <Inventor/scxml/ScXMLStateMachine.h>
+#include <Inventor/scxml/ScXMLSubObject.h>
+#include <Inventor/scxml/ScXMLTransition.h>
+#include <Inventor/scxml/SoScXMLEvent.h>
+#include <Inventor/scxml/SoScXMLStateMachine.h>
+#endif

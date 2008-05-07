@@ -55,6 +55,7 @@ class MouseHandler(DeviceHandler):
         return self.location2
 
     def mouseWheelEvent(self, qevent):
+        assert(False and "not implemented")
         self.setModifiers(self.mousebutton, qevent)
 
         self.mousebutton.setPosition(self.location2.getPosition())
@@ -87,6 +88,8 @@ class MouseHandler(DeviceHandler):
         elif qevent.button() == Qt.RightButton:
             self.mousebutton.setButton(SoMouseButtonEvent.BUTTON2)
         elif qevent.button() == Qt.MidButton:
+            # REMOVE when ready: hack to quit
+            raise SystemExit
             self.mousebutton.setButton(SoMouseButtonEvent.BUTTON3)
         else:
             # FIXME jkg: default case

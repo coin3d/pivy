@@ -1,5 +1,6 @@
 from PyQt4.QtCore import QEvent
 from PyQt4.QtCore import QSize
+from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QMouseEvent
 from PyQt4.QtGui import QWheelEvent
 from PyQt4.QtGui import QResizeEvent
@@ -25,10 +26,9 @@ class MouseHandler(DeviceHandler):
 
     def translateEvent(self, qevent):
         """Translates from QMouseEvents to SoLocation2Events and SoMouseButtonEvents"""
-        print "jalla", qevent
 
         if qevent.type() == QEvent.MouseMove:
-            return self.mouseMoveEvent(qevent);
+            return self.mouseMoveEvent(qevent)
 
         if qevent.type() in (QEvent.MouseButtonPress, QEvent.MouseButtonRelease):
             return self.mouseButtonEvent(qevent)
@@ -54,7 +54,7 @@ class MouseHandler(DeviceHandler):
         self.location2.setPosition(pos)
         return self.location2
 
-    def mouseWheelEvent(qevent):
+    def mouseWheelEvent(self, qevent):
         self.setModifiers(self.mousebutton, qevent)
 
         self.mousebutton.setPosition(self.location2.getPosition())
@@ -73,29 +73,24 @@ class MouseHandler(DeviceHandler):
 #      return self.mousebutton;
 
 
-    def mouseButtonEvent(qevent):
-        self.setModifiers(self.mousebutton, event)
+    def mouseButtonEvent(self, qevent):
+        self.setModifiers(self.mousebutton, qevent)
         self.mousebutton.setPosition(self.location2.getPosition())
 
         if qevent.type() == QEvent.MouseButtonPress:
             self.mousebutton.setState(SoButtonEvent.DOWN)
         else:
-            self.mousebutton.setState(SoButtonEvent.UP);
+            self.mousebutton.setState(SoButtonEvent.UP)
 
         if qevent.button() == Qt.LeftButton:
             self.mousebutton.setButton(SoMouseButtonEvent.BUTTON1)
-
-        if qevent.button() == Qt.RightButton:
+        elif qevent.button() == Qt.RightButton:
             self.mousebutton.setButton(SoMouseButtonEvent.BUTTON2)
-            return
-
-        if qevent.button() == Qt.MidButton:
+        elif qevent.button() == Qt.MidButton:
             self.mousebutton.setButton(SoMouseButtonEvent.BUTTON3)
-            return
-
-        # FIXME jkg: default case
-        self.mousebutton.setButton(SoMouseButtonEvent.ANY)
-        SoDebugError.postInfo("MouseHandler.mouseButtonEvent",
-                             "Unhandled ButtonState = %x", event.button())
-        #        break
+        else:
+            # FIXME jkg: default case
+            self.mousebutton.setButton(SoMouseButtonEvent.ANY)
+            SoDebugError.postInfo("MouseHandler.mouseButtonEvent",
+                                  "Unhandled ButtonState = %x", event.button())
         return self.mousebutton

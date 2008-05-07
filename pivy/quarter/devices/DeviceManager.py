@@ -36,21 +36,18 @@ class DeviceManager:
 
     def translateEvent(self, qevent):
         """Runs trough the list of registered devices to translate event"""
-        print "hmm2"
         if qevent.type() == QEvent.MouseMove:
             self.globalpos = qevent.globalPos()
-            print self.globalpos
 
-        print "devices:", self.devices
         for device in self.devices:
             soevent = device.translateEvent(qevent)
             if soevent:
-              # cache mouse position so other devices can access it
-              if (soevent.getTypeId() == SoLocation2Event.getClassTypeId()):
-                self.lastmousepos = soevent.getPosition()
-              return soevent
+                # cache mouse position so other devices can access it
+                if (soevent.getTypeId() == SoLocation2Event.getClassTypeId()):
+                    self.lastmousepos = soevent.getPosition()
 
-        #raise Exception("hey")
+                return soevent
+
         return None
 
     def getWidget(self):

@@ -20,7 +20,7 @@ class DeviceHandler:
         # Note: On Mac OS X, the ControlModifier value corresponds to the
         # Command keys on the Macintosh keyboard, and the MetaModifier
         # value corresponds to the Control keys.
-        print "FIXME jkg: setmodifiers"
+        #print "FIXME jkg: setmodifiers"
 #        print soevent
 #        soevent.setShiftDown(qevent.modifiers() and Qt.ShiftModifier)
 #        soevent.setAltDown(qevent.modifiers() and Qt.AltModifier)

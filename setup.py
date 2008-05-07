@@ -129,7 +129,7 @@ class pivy_build(build):
                'sogtk'     : ('gui._sogtk', 'sogtk-config',     'pivy.gui.'),
                'sowin'     : ('gui._sowin', 'sowin-config',     'pivy.gui.')}
 
-    SUPPORTED_SWIG_VERSIONS = ['1.3.31', '1.3.33']
+    SUPPORTED_SWIG_VERSIONS = ['1.3.31', '1.3.33', '1.3.35']
     SWIG_VERSION = ""
     SWIG_COND_SYMBOLS = []
     CXX_INCS = "-Iinterfaces "

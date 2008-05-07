@@ -27,16 +27,48 @@ from devices import MouseHandler
 from eventhandlers import EventManager
 
 
-# FIXME jkg: change to private/static method?
-def renderCB(closure, manager):
-    print "rendercb"
-    assert(closure)
+# FIXME jkg: (1) this is not called and (2) change to private/static method?
+def renderCB(closure, rendermanagerdummy):
     thisp = closure
+    print thisp
+    assert(thisp)
     thisp.makeCurrent()
     thisp.actualRedraw()
     if (thisp.doubleBuffer()):
         thisp.swapBuffers()
     thisp.doneCurrent()
+
+# FIXME jkg: lacking ContextMenu
+def statechangecb(userdata, statemachine, stateid, enter, foo):
+    contextmenurequest = SbName("contextmenurequest")
+    thisp = userdata
+    assert(thisp)
+    state = SbName()
+    if enter:
+        state = SbName(stateid)
+    if thisp.contextmenuenabled and state == contextmenurequest:
+        if not thisp.contextmenu:
+            thisp.contextmenu = ContextMenu(self)
+        thisp.contextmenu.exec_(self.devicemanager.getLastGlobalPosition())
+        if state in statecursormap.keys():
+            cursor = thisp.statecursormap[state]
+            thisp.setCursor(cursor)
+
+def prerendercb(userdata, manager):
+    thisp = userdata
+    evman = thisp.soeventmanager
+    assert(thisp and evman)
+    for c in range(evman.getNumSoScXMLStateMachines()):
+        statemachine = evman.getSoScXMLStateMachine(c)
+        statemachine.preGLRender()
+
+def postrendercb(userdata, manager):
+    thisp = userdata
+    evman = thisp.soeventmanager
+    assert(evman)
+    for c in range(evman.getNumSoScXMLStateMachines()):
+        statemachine = evman.getSoScXMLStateMachine(c)
+        statemachine.postGLRender()
 
 class QuarterWidget(QGLWidget):
     def __init__(self, parent = None, sharewidget = None):
@@ -45,7 +77,7 @@ class QuarterWidget(QGLWidget):
         # from QuarterWidgetP
         self.cachecontext_list = []
         self.cachecontext = self.findCacheContext(self, sharewidget)
-        #self.statecursormap = StateCursorMap()
+        self.statecursormap = {}
 
         self.scene = None
         self.contextmenu = None
@@ -59,34 +91,28 @@ class QuarterWidget(QGLWidget):
         self.eventmanager = EventManager(self)
         self.devicemanager = DeviceManager(self)
 
-        statechangecb = staticmethod(self.statechangecb)
-
         statemachine = ScXML.readFile("coin:scxml/navigation/examiner.xml")
         if (statemachine and statemachine.isOfType(SoScXMLStateMachine.getClassTypeId())):
             sostatemachine = cast(statemachine, "SoScXMLStateMachine")
-            print sostatemachine
             statemachine.addStateChangeCallback(statechangecb, self)
             self.soeventmanager.setNavigationSystem(None)
             self.soeventmanager.addSoScXMLStateMachine(sostatemachine)
             sostatemachine.initialize()
-            print "ok"
 
         self.headlight = SoDirectionalLight()
         self.headlight.ref()
 
-        raise SystemExit
-
-        #self.sorendermanager.setAutoClipping(SoRenderManager.VARIABLE_NEAR_PLANE)
+        self.sorendermanager.setAutoClipping(SoRenderManager.VARIABLE_NEAR_PLANE)
         self.sorendermanager.setRenderCallback(renderCB, self)
-        # FIXME jkg: set alpha 0
         self.sorendermanager.setBackgroundColor(SbColor4f(0, 0, 0, 0))
         self.sorendermanager.activate()
-        #self.sorendermanager.addPreRenderCallback(prerendercb, self)
-        #self.sorendermanager.addPostRenderCallback(postrendercb, self)
+        self.sorendermanager.addPreRenderCallback(prerendercb, self)
+        self.sorendermanager.addPostRenderCallback(postrendercb, self)
 
-        #self.soeventmanager.setNavigationState(SoEventManager.MIXED_NAVIGATION)
+        self.soeventmanager.setNavigationState(SoEventManager.MIXED_NAVIGATION)
 
         self.devicemanager.registerDevice(MouseHandler())
+
 #        self.devicemanager.registerDevice(KeyboardHandler())
 #        self.eventmanager.registerEventHandler(DragDropHandler())
 
@@ -126,10 +152,6 @@ class QuarterWidget(QGLWidget):
                 camera = SoPerspectiveCamera()
                 superscene.addChild(camera)
                 viewall = True
-                # FIXME jkg: remove when viewAll is in place
-                xf = SoTransform()
-                xf.set("translation 0 0 -4")
-                superscene.addChild(xf)
 
             superscene.addChild(node)
             node.unref()
@@ -146,10 +168,18 @@ class QuarterWidget(QGLWidget):
             superscene.touch()
 
     def viewAll(self):
-        print "FIXME jkg: missing nav viewall stuff"
+        """ Reposition the current camera to display the entire scene"""
+        if self.soeventmanager.getNavigationSystem():
+            self.soeventmanager.getNavigationSystem().viewAll()
+
+        viewallevent = SbName("sim.coin3d.coin.navigation.ViewAll")
+        for c in range(self.soeventmanager.getNumSoScXMLStateMachines()):
+            sostatemachine = self.soeventmanager.getSoScXMLStateMachine(c)
+            if (sostatemachine.isActive()):
+                sostatemachine.queueEvent(viewallevent)
+                sostatemachine.processEventQueue()
 
     def initializeGL(self):
-        # NOTE 20080507 jkg: got unexplainable hang here yesterday. but not today
         self.setFormat(QGLFormat(QGL.DepthBuffer))
 
     def resizeGL(self, width, height):
@@ -163,60 +193,33 @@ class QuarterWidget(QGLWidget):
     def actualRedraw(self):
         self.sorendermanager.render(True, True)
 
-    def event(self, event):
+    def event(self, qevent):
         """Translates Qt Events into Coin events and passes them on to the
           scenemanager for processing. If the event can not be translated or
           processed, it is forwarded to Qt and the method returns false. This
           method could be overridden in a subclass in order to catch events of
           particular interest to the application programmer."""
-        if self.eventmanager.handleEvent(event):
-            return
 
-        print "event not handled", event
+        if self.eventmanager.handleEvent(qevent):
+            return True
 
-        raise Exception("hm")
-        soevent = self.devicemanager.translateEvent(event)
+        soevent = self.devicemanager.translateEvent(qevent)
         if (soevent and self.soeventmanager.processEvent(soevent)):
             return True
 
-        QGLWidget.event(self, event)
+        QGLWidget.event(self, qevent)
+        return True
+
 
     def setStateCursor(self, state, cursor):
-        """  You can set the cursor you want to use for a given navigation
-          state. See the Coin documentation on navigation for information
-          about available states"""
-        # will overwrite the value of an existing item
-        #self.statecursormap->insert(state, cursor);
-        pass
-
+        self.statecursormap[state] = cursor
 
     # QuarterWidgetP
-
     def searchForCamera(self, root):
         sa = SoSearchAction()
         sa.setInterest(SoSearchAction.FIRST)
         sa.setType(SoCamera.getClassTypeId())
         sa.apply(root)
-
-
-#include "QuarterWidgetP.h"
-#include <Quarter/QuarterWidget.h>
-#include <Quarter/devices/DeviceManager.h>
-
-#include <QtGui/QCursor>
-#include <QtCore/QMap>
-
-#include <Inventor/nodes/SoCamera.h>
-#include <Inventor/nodes/SoNode.h>
-#include <Inventor/actions/SoSearchAction.h>
-#include <Inventor/elements/SoGLCacheContextElement.h>
-#include <Inventor/lists/SbList.h>
-#include <Inventor/SoEventManager.h>
-#include <Inventor/scxml/SoScXMLStateMachine.h>
-
-#include "ContextMenu.h"
-
-
 
     def getCacheContextId(self):
         return self.cachecontext.id
@@ -239,35 +242,3 @@ class QuarterWidget(QGLWidget):
         self.cachecontext_list.append(cachecontext)
 
         return cachecontext
-
-    def prerendercb(userdata, manager):
-        #thisp = static_cast<QuarterWidgetP *>(userdata);
-        thisp = userdata
-        evman = thisp.soeventmanager
-        assert(evman)
-
-        for c in range(evman.getNumSoScXMLStateMachines()):
-            statemachine = evman.getSoScXMLStateMachine(c)
-            statemachine.preGLRender()
-
-    def postrendercb(userdata, manager):
-        #QuarterWidgetP * thisp = static_cast<QuarterWidgetP *>(userdata);
-        evman = thisp.soeventmanager
-        assert(evman)
-        for c in range(evman.getNumSoScXMLStateMachines()):
-            statemachine = evman.getSoScXMLStateMachine(c)
-            statemachine.postGLRender()
-
-    def statechangecb(userdata, statemachine, stateid, enter, foo):
-        contextmenurequest = SbName("contextmenurequest")
-        #QuarterWidgetP * thisp = static_cast<QuarterWidgetP *>(userdata);
-        assert(thisp and thisp.master)
-        if (enter):
-            state = SbName(stateid)
-        if (thisp.contextmenuenabled and state == contextmenurequest):
-            if (not thisp.contextmenu):
-                self.contextmenu = ContextMenu(self)
-            self.contextmenu.exec_(self.devicemanager.getLastGlobalPosition())
-#        if (statecursormap.contains(state)):
-#            cursor = statecursormap.value(state)
-#            self.setCursor(cursor)

@@ -2,19 +2,19 @@ from PyQt4.QtGui import QImage
 from pivy.coin import SbImage
 
 
-# FIXME jkg: wrapper for SbImage needs to be updated
-
-
 def readImageCB(filename, image, closure):
     return closure.readImage(filename, image)
 
 
 class ImageReader():
     def __init__(self):
-      SbImage.addReadImageCB(readImageCB, self)
+        pass
+        # FIXME: enable once ImageReader has been translated. 20080508
+        # tamer.
+        #SbImage.addReadImageCB(readImageCB, self)
 
     def __del__(self):
-      SbImage.removeReadImageCB(readImageCB, self)
+        SbImage.removeReadImageCB(readImageCB, self)
 
     def readImage(self, filename, sbimage):
         image = QImage()
@@ -28,7 +28,7 @@ class ImageReader():
                 c = 4 if image.hasAlphaChannel() else 3
                 image.convertToFormat(QImage.Format_ARGB32 if image.hasAlphaChannel() else QImage.Format_RGB32)
 
-                # TODO: implement
+                # FIXME 20080508 jkg: implement when pivy is ready
                 #sbimage.setValue(SbVec2s(image.width(), image.height()), c, None)
 
                 return True

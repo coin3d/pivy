@@ -121,12 +121,12 @@ from devices import KeyboardHandler
 from eventhandlers import EventManager
 
 from SensorManager import SensorManager
-# from ImageReader import ImageReader
+from ImageReader import ImageReader
 
 from ContextMenu import ContextMenu
 
 # FIXME jkg: (1) this is not called and (2) change to private/static method?
-def renderCB(closure, rendermanagerdummy):
+def renderCB(test, closure, rendermanagerdummy):
     thisp = closure
     assert(thisp)
     thisp.makeCurrent()
@@ -185,9 +185,7 @@ class QuarterWidget(QtOpenGL.QGLWidget):
         if not QuarterWidget._sensormanager:
             QuarterWidget._sensormanager = SensorManager()
 
-        # FIXME: enable once ImageReader has been translated. 20080508
-        # tamer.
-        if 0 and not QuarterWidget._imagereader:
+        if not QuarterWidget._imagereader:
             QuarterWidget._imagereader = ImageReader()
 
         # from QuarterWidgetP

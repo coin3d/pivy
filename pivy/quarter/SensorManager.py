@@ -72,7 +72,7 @@ class SensorManager(QObject):
     def sensorQueueChanged(self):
         sensormanager = SoDB.getSensorManager()
         assert(sensormanager)
-  
+
         interval = sensormanager.isTimerSensorPending()
 
         if interval:
@@ -91,16 +91,16 @@ class SensorManager(QObject):
 
         if sensormanager.isDelaySensorPending():
             self._idletimer.start(0)
-    
+
             if not self._delaytimer.isActive():
                 time = SoDB.getDelaySensorTimeout()
-                
+
                 if time != SbTime.zero():
                     self._delaytimer.start(interval.getMsecValue())
             else:
                 if self._idletimer.isActive():
                     self._idletimer.stop()
-            
+
                 if self._delaytimer.isActive():
                     self._delaytimer.stop()
 

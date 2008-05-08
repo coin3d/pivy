@@ -123,6 +123,8 @@ from eventhandlers import EventManager
 from SensorManager import SensorManager
 # from ImageReader import ImageReader
 
+from ContextMenu import ContextMenu
+
 # FIXME jkg: (1) this is not called and (2) change to private/static method?
 def renderCB(closure, rendermanagerdummy):
     thisp = closure
@@ -143,9 +145,9 @@ def statechangecb(userdata, statemachine, stateid, enter, foo):
         state = coin.SbName(stateid)
     if thisp.contextmenuenabled and state == contextmenurequest:
         if not thisp.contextmenu:
-            thisp.contextmenu = ContextMenu(self)
-        thisp.contextmenu.exec_(self.devicemanager.getLastGlobalPosition())
-        if state in statecursormap.keys():
+            thisp.contextmenu = ContextMenu(thisp)
+        thisp.contextmenu.exec_(thisp.devicemanager.getLastGlobalPosition())
+        if state in thisp.statecursormap.keys():
             cursor = thisp.statecursormap[state]
             thisp.setCursor(cursor)
 
@@ -176,7 +178,7 @@ class QuarterWidget(QtOpenGL.QGLWidget):
             QtOpenGL.QGLWidget.__init__(self, context, parent, sharewidget)
         else:
             QtOpenGL.QGLWidget.__init__(self, parent, sharewidget)
-        
+
         if f: self.setWindowFlags(f)
 
         # initialize Sensormanager and ImageReader instances only once
@@ -353,3 +355,9 @@ class QuarterWidget(QtOpenGL.QGLWidget):
         self.cachecontext_list.append(cachecontext)
 
         return cachecontext
+
+    def getSoRenderManager(self):
+        return self.sorendermanager
+
+    def getSoEventManager(self):
+        return self.soeventmanager

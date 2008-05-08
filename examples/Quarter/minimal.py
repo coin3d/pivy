@@ -18,16 +18,17 @@
 
 import sys
 
+from PyQt4.QtGui import QApplication
+
 from pivy.coin import SoSeparator
 from pivy.coin import SoBaseColor
 from pivy.coin import SbColor
 from pivy.coin import SoCone
 
-from pivy.quarter import QuarterApplication
 from pivy.quarter import QuarterWidget
 
 def main():
-    app = QuarterApplication(sys.argv)
+    app = QApplication(sys.argv)
 
     root = SoSeparator()
     col = SoBaseColor()

@@ -22,8 +22,15 @@
   DeviceManager by default.
 """
 
+from PyQt4.QtCore import QEvent
+
+from EventHandler import EventHandler
+
+
+# FIXME 20080508 jkg: we need to verify that this actually works, maybe its just vista..
+
 class DragDropHandler(EventHandler):
-    def __init__(self):        
+    def __init__(self):
         self._suffixes = ("iv", "wrl")
 
     """
@@ -31,17 +38,17 @@ class DragDropHandler(EventHandler):
     valid Inventor or VRML it opens the file, reads in the scenegraph
     and calls setSceneGraph on the QuarterWidget
     """
-    def handleEvent(event):
+    def handleEvent(self, event):
         if event.type() == QEvent.DragEnter:
             self._dragEnterEvent(event)
-            return true
+            return True
         elif event.type() == QEvent.Drop:
             self._dropEvent(event)
-            return true
+            return True
         else:
-            return false
+            return False
 
-    def _dragEnterEvent(event):
+    def _dragEnterEvent(self, event):
         mimedata = event.mimeData()
         if not mimedata.hasUrls() and not mimedata.hasText(): return
 
@@ -53,7 +60,7 @@ class DragDropHandler(EventHandler):
 
         event.acceptProposedAction()
 
-    def _dropEvent(event):
+    def _dropEvent(self, event):
         mimedata = event.mimeData()
 
         input = SoInput()
@@ -69,7 +76,7 @@ class DragDropHandler(EventHandler):
             input.setBuffer(bytes.constData(), bytes.size())
             if not input.isValidBuffer(): return
 
-          # attempt to import it
+        # attempt to import it
         root = SoDB.readAll(input)
         if not root: return
 

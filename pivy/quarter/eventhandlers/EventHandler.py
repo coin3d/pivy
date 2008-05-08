@@ -26,9 +26,9 @@ class EventHandler:
   Subclasses must override this method to provide custom event
   handling
   """
-  def handleEvent(event):
+  def handleEvent(self, event):
       pass
 
-  def setManager(manager):
+  def setManager(self, manager):
       self.manager = manager
 

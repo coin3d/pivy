@@ -119,6 +119,7 @@ from devices import MouseHandler
 from devices import KeyboardHandler
 
 from eventhandlers import EventManager
+from eventhandlers import DragDropHandler
 
 from SensorManager import SensorManager
 from ImageReader import ImageReader
@@ -225,7 +226,7 @@ class QuarterWidget(QtOpenGL.QGLWidget):
 
         self.devicemanager.registerDevice(MouseHandler())
         self.devicemanager.registerDevice(KeyboardHandler())
-#        self.eventmanager.registerEventHandler(DragDropHandler())
+        self.eventmanager.registerEventHandler(DragDropHandler())
 
         # set up a cache context for the default SoGLRenderAction
         self.sorendermanager.getGLRenderAction().setCacheContext(self.getCacheContextId())

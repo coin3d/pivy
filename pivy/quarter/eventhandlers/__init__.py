@@ -15,5 +15,7 @@
 #
 
 import EventManager
+import DragDropHandler
 
 EventManager = EventManager.EventManager
+DragDropHandler = DragDropHandler.DragDropHandler

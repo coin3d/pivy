@@ -1,5 +1,4 @@
 
-#import EventHandler
 
 class EventManager:
     """ The EventManager class is responsible for holding a list of

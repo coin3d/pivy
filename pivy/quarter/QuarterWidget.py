@@ -138,6 +138,7 @@ def renderCB(closure, manager):
         thisp.swapBuffers()
     thisp.doneCurrent()
 
+# FIXME jkg: figure out what foo is
 def statechangeCB(userdata, statemachine, stateid, enter, foo):
     if enter:
         assert(userdata)
@@ -319,8 +320,8 @@ class QuarterWidget(QtOpenGL.QGLWidget):
         if (soevent and self.soeventmanager.processEvent(soevent)):
             return True
 
-        QtOpenGL.QGLWidget.event(self, qevent)
-        return True
+        # NOTE jkg: we must return True or False
+        return QtOpenGL.QGLWidget.event(self, qevent)
 
     def setStateCursor(self, state, cursor):
         self.statecursormap[state] = cursor

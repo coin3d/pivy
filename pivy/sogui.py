@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ###
-# Copyright (c) 2002-2007 Systems in Motion
+# Copyright (c) 2002-2008 Kongsberg SIM
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -30,10 +30,10 @@ import sys
 class SoGui_Proxy:
     """Probes for existing SoGui bindings and proxies method
     invocations to their SoGui counterparts."""
-    
+
     def __init__(self, gui, debug):
         self.debug = debug
-        
+
         # if no binding has been specified check for availability of a known
         # one in a defined order SoQt -> SoWin -> SoXt -> SoGtk
         if not gui:
@@ -75,7 +75,7 @@ class SoGui_Proxy:
                        'Device', 'Keyboard', 'Mouse', 'Spaceball',
                        'ExaminerViewer', 'ConstrainedViewer']:
             d['SoGui' + suffix] = eval('sogui.%s%s' % (gui, suffix))
-                        
+
         self.__gui__ = eval('sogui.' + gui)
 
     def __getattr__(self, name):
@@ -88,7 +88,7 @@ class SoGui_Proxy:
 
     def __hash__(self):
         return 0
-    
+
     __str__ = __repr__
 
 
@@ -100,7 +100,7 @@ if sys.modules.has_key('__main__'):
         debug = sys.modules['__main__'].SOGUI_DEBUG
     except AttributeError:
         pass
-    
+
     try:
         gui = sys.modules['__main__'].SOGUI_BINDING
     except AttributeError:

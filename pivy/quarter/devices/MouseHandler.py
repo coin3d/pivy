@@ -1,18 +1,24 @@
-from PyQt4.QtCore import QEvent
-from PyQt4.QtCore import QSize
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QMouseEvent
-from PyQt4.QtGui import QWheelEvent
-from PyQt4.QtGui import QResizeEvent
+###
+# Copyright (c) 2002-2008 Kongsberg SIM
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+#
 
+from PyQt4 import QtCore, QtGui
 
-from pivy.coin import SoLocation2Event
-from pivy.coin import SbVec2s
-from pivy.coin import SoButtonEvent
-from pivy.coin import SoMouseButtonEvent
+from pivy import coin
 
 from DeviceHandler import DeviceHandler
-
 
 class MouseHandler(DeviceHandler):
     def __init__(self):
@@ -27,16 +33,16 @@ class MouseHandler(DeviceHandler):
     def translateEvent(self, qevent):
         """Translates from QMouseEvents to SoLocation2Events and SoMouseButtonEvents"""
 
-        if qevent.type() == QEvent.MouseMove:
+        if qevent.type() == QtCore.QEvent.MouseMove:
             return self.mouseMoveEvent(qevent)
 
-        if qevent.type() in (QEvent.MouseButtonPress, QEvent.MouseButtonRelease):
+        if qevent.type() in (QtCore.QEvent.MouseButtonPress, QtCore.QEvent.MouseButtonRelease):
             return self.mouseButtonEvent(qevent)
 
-        if qevent.type() == QEvent.Wheel:
+        if qevent.type() == QtCore.QEvent.Wheel:
             return self.mouseWheelEvent(qevent)
 
-        if qevent.type() == QEvent.Resize:
+        if qevent.type() == QtCore.QEvent.Resize:
             self.resizeEvent(qevent)
 
         return None
@@ -78,22 +84,22 @@ class MouseHandler(DeviceHandler):
         self.setModifiers(self.mousebutton, qevent)
         self.mousebutton.setPosition(self.location2.getPosition())
 
-        if qevent.type() == QEvent.MouseButtonPress:
-            self.mousebutton.setState(SoButtonEvent.DOWN)
+        if qevent.type() == QtCore.QEvent.MouseButtonPress:
+            self.mousebutton.setState(coin.SoButtonEvent.DOWN)
         else:
-            self.mousebutton.setState(SoButtonEvent.UP)
+            self.mousebutton.setState(coin.SoButtonEvent.UP)
 
-        if qevent.button() == Qt.LeftButton:
-            self.mousebutton.setButton(SoMouseButtonEvent.BUTTON1)
-        elif qevent.button() == Qt.RightButton:
-            self.mousebutton.setButton(SoMouseButtonEvent.BUTTON2)
-        elif qevent.button() == Qt.MidButton:
+        if qevent.button() == QtCore.Qt.LeftButton:
+            self.mousebutton.setButton(coin.SoMouseButtonEvent.BUTTON1)
+        elif qevent.button() == QtCore.Qt.RightButton:
+            self.mousebutton.setButton(coin.SoMouseButtonEvent.BUTTON2)
+        elif qevent.button() == QtCore.Qt.MidButton:
             # REMOVE when ready: hack to quit
             raise SystemExit
-            self.mousebutton.setButton(SoMouseButtonEvent.BUTTON3)
+            self.mousebutton.setButton(coin.SoMouseButtonEvent.BUTTON3)
         else:
             # FIXME jkg: default case
-            self.mousebutton.setButton(SoMouseButtonEvent.ANY)
+            self.mousebutton.setButton(coin.SoMouseButtonEvent.ANY)
             SoDebugError.postInfo("MouseHandler.mouseButtonEvent",
                                   "Unhandled ButtonState = %x", event.button())
         return self.mousebutton

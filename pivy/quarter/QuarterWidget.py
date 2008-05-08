@@ -22,6 +22,7 @@ from pivy.coin import SbViewportRegion
 
 from devices import DeviceManager
 from devices import MouseHandler
+from devices import KeyboardHandler
 
 from eventhandlers import EventManager
 
@@ -111,8 +112,7 @@ class QuarterWidget(QGLWidget):
         self.soeventmanager.setNavigationState(SoEventManager.MIXED_NAVIGATION)
 
         self.devicemanager.registerDevice(MouseHandler())
-
-#        self.devicemanager.registerDevice(KeyboardHandler())
+        self.devicemanager.registerDevice(KeyboardHandler())
 #        self.eventmanager.registerEventHandler(DragDropHandler())
 
         # set up a cache context for the default SoGLRenderAction

@@ -16,6 +16,8 @@
 
 import DeviceManager
 import MouseHandler
+import KeyboardHandler
 
 DeviceManager = DeviceManager.DeviceManager
 MouseHandler = MouseHandler.MouseHandler
+KeyboardHandler = KeyboardHandler.KeyboardHandler

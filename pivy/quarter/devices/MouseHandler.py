@@ -26,9 +26,9 @@ class MouseHandler(DeviceHandler):
         on the QuarterWidget. It is registered with the DeviceManager by
         default."""
 
-        self.location2 = SoLocation2Event()
-        self.mousebutton = SoMouseButtonEvent()
-        self.windowsize = SbVec2s(-1, -1)
+        self.location2 = coin.SoLocation2Event()
+        self.mousebutton = coin.SoMouseButtonEvent()
+        self.windowsize = coin.SbVec2s(-1, -1)
 
     def translateEvent(self, qevent):
         """Translates from QMouseEvents to SoLocation2Events and SoMouseButtonEvents"""
@@ -49,14 +49,14 @@ class MouseHandler(DeviceHandler):
 
 
     def resizeEvent(self, qevent):
-        self.windowsize = SbVec2s(qevent.size().width(),
-                                  qevent.size().height())
+        self.windowsize = coin.SbVec2s(qevent.size().width(),
+                                       qevent.size().height())
 
     def mouseMoveEvent(self, qevent):
         self.setModifiers(self.location2, qevent)
 
         assert(self.windowsize[1] != -1)
-        pos = SbVec2s(qevent.pos().x(), self.windowsize[1] - qevent.pos().y() - 1)
+        pos = coin.SbVec2s(qevent.pos().x(), self.windowsize[1] - qevent.pos().y() - 1)
         self.location2.setPosition(pos)
         return self.location2
 
@@ -94,11 +94,8 @@ class MouseHandler(DeviceHandler):
         elif qevent.button() == QtCore.Qt.RightButton:
             self.mousebutton.setButton(coin.SoMouseButtonEvent.BUTTON2)
         elif qevent.button() == QtCore.Qt.MidButton:
-            # REMOVE when ready: hack to quit
-            raise SystemExit
             self.mousebutton.setButton(coin.SoMouseButtonEvent.BUTTON3)
         else:
-            # FIXME jkg: default case
             self.mousebutton.setButton(coin.SoMouseButtonEvent.ANY)
             SoDebugError.postInfo("MouseHandler.mouseButtonEvent",
                                   "Unhandled ButtonState = %x", event.button())

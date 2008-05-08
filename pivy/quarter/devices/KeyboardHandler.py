@@ -20,6 +20,7 @@ from pivy import coin
 
 from DeviceHandler import DeviceHandler
 
+
 class KeyboardHandler(DeviceHandler):
     """The KeyboardHandler class provides translation of keyboard
     events on the QuarterWidget. It is registered with the DeviceManager
@@ -63,7 +64,6 @@ class KeyboardHandler(DeviceHandler):
             sokey = self._keyboardmap[qkey]
 
         printable = str(qevent.text().toAscii())
-        print type(printable),printable
         self._keyboard.setPrintableCharacter(printable)
         self._keyboard.setKey(sokey)
 

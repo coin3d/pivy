@@ -5,7 +5,6 @@ from PyQt4.QtCore import Qt
 
 from pivy.coin import SoRenderManager
 from pivy.coin import SoEventManager
-#from pivy.coin import SoSceneManager
 from pivy.coin import SoSearchAction
 from pivy.coin import SoCamera
 from pivy.coin import SoPerspectiveCamera
@@ -30,7 +29,6 @@ from eventhandlers import EventManager
 # FIXME jkg: (1) this is not called and (2) change to private/static method?
 def renderCB(closure, rendermanagerdummy):
     thisp = closure
-    print thisp
     assert(thisp)
     thisp.makeCurrent()
     thisp.actualRedraw()
@@ -69,6 +67,7 @@ def postrendercb(userdata, manager):
     for c in range(evman.getNumSoScXMLStateMachines()):
         statemachine = evman.getSoScXMLStateMachine(c)
         statemachine.postGLRender()
+
 
 class QuarterWidget(QGLWidget):
     def __init__(self, parent = None, sharewidget = None):
@@ -130,7 +129,6 @@ class QuarterWidget(QGLWidget):
         self.setMouseTracking(True)
         self.setFocusPolicy(Qt.StrongFocus);
 
-
     def setSceneGraph(self, node):
         if node and self.scene==node:
             return
@@ -180,7 +178,8 @@ class QuarterWidget(QGLWidget):
                 sostatemachine.processEventQueue()
 
     def initializeGL(self):
-        self.setFormat(QGLFormat(QGL.DepthBuffer))
+        # NOTE jkg: DepthBuffer is enabled by default, so I dont see why Quarter (C++) sets it
+        pass
 
     def resizeGL(self, width, height):
         vp = SbViewportRegion(width, height)
@@ -210,11 +209,9 @@ class QuarterWidget(QGLWidget):
         QGLWidget.event(self, qevent)
         return True
 
-
     def setStateCursor(self, state, cursor):
         self.statecursormap[state] = cursor
 
-    # QuarterWidgetP
     def searchForCamera(self, root):
         sa = SoSearchAction()
         sa.setInterest(SoSearchAction.FIRST)

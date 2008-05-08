@@ -125,33 +125,31 @@ from ImageReader import ImageReader
 
 from ContextMenu import ContextMenu
 
+
 # FIXME jkg: (1) this is not called and (2) change to private/static method?
-def renderCB(test, closure, rendermanagerdummy):
+def renderCB(closure, manager):
+    print "closure:", closure
+    assert(closure)
     thisp = closure
-    assert(thisp)
     thisp.makeCurrent()
     thisp.actualRedraw()
     if (thisp.doubleBuffer()):
         thisp.swapBuffers()
     thisp.doneCurrent()
 
-# FIXME jkg: lacking ContextMenu
-def statechangecb(userdata, statemachine, stateid, enter, foo):
-    contextmenurequest = coin.SbName("contextmenurequest")
-    thisp = userdata
-    assert(thisp)
-    state = coin.SbName()
+def statechangeCB(userdata, statemachine, stateid, enter, foo):
     if enter:
-        state = coin.SbName(stateid)
-    if thisp.contextmenuenabled and state == contextmenurequest:
-        if not thisp.contextmenu:
-            thisp.contextmenu = ContextMenu(thisp)
-        thisp.contextmenu.exec_(thisp.devicemanager.getLastGlobalPosition())
-        if state in thisp.statecursormap.keys():
-            cursor = thisp.statecursormap[state]
+        assert(userdata)
+        thisp = userdata
+        if thisp.contextmenuenabled and stateid == "contextmenurequest":
+            if not thisp.contextmenu:
+                thisp.contextmenu = ContextMenu(thisp)
+            thisp.contextmenu.exec_(thisp.devicemanager.getLastGlobalPosition())
+        if stateid in thisp.statecursormap.keys():
+            cursor = thisp.statecursormap[stateid]
             thisp.setCursor(cursor)
 
-def prerendercb(userdata, manager):
+def prerenderCB(userdata, manager):
     thisp = userdata
     evman = thisp.soeventmanager
     assert(thisp and evman)
@@ -159,7 +157,7 @@ def prerendercb(userdata, manager):
         statemachine = evman.getSoScXMLStateMachine(c)
         statemachine.preGLRender()
 
-def postrendercb(userdata, manager):
+def postrenderCB(userdata, manager):
     thisp = userdata
     evman = thisp.soeventmanager
     assert(evman)
@@ -208,7 +206,7 @@ class QuarterWidget(QtOpenGL.QGLWidget):
         statemachine = coin.ScXML.readFile("coin:scxml/navigation/examiner.xml")
         if statemachine and statemachine.isOfType(coin.SoScXMLStateMachine.getClassTypeId()):
             sostatemachine = coin.cast(statemachine, "SoScXMLStateMachine")
-            statemachine.addStateChangeCallback(statechangecb, self)
+            statemachine.addStateChangeCallback(statechangeCB, self)
             self.soeventmanager.setNavigationSystem(None)
             self.soeventmanager.addSoScXMLStateMachine(sostatemachine)
             sostatemachine.initialize()
@@ -220,8 +218,8 @@ class QuarterWidget(QtOpenGL.QGLWidget):
         self.sorendermanager.setRenderCallback(renderCB, self)
         self.sorendermanager.setBackgroundColor(coin.SbColor4f(0, 0, 0, 0))
         self.sorendermanager.activate()
-        self.sorendermanager.addPreRenderCallback(prerendercb, self)
-        self.sorendermanager.addPostRenderCallback(postrendercb, self)
+        #self.sorendermanager.addPreRenderCallback(prerenderCB, self)
+        #self.sorendermanager.addPostRenderCallback(postrenderCB, self)
 
         self.soeventmanager.setNavigationState(coin.SoEventManager.MIXED_NAVIGATION)
 

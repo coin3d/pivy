@@ -51,7 +51,7 @@
   \code
   #include <Inventor/nodes/SoBaseColor.h>
   #include <Inventor/nodes/SoCone.h>
-  #include <Inventor/nodes/SoSeparator.h>
+  #include <Inventor/nodes/coin.SoSeparator.h>
 
   #include <Quarter/QuarterWidget.h>
   #include <Quarter/QuarterApplication.h>
@@ -67,7 +67,7 @@
 
     // Make a dead simple scene graph by using the Coin library, only
     // containing a single yellow cone under the scenegraph root.
-    SoSeparator * root = new SoSeparator;
+    coin.SoSeparator * root = new coin.SoSeparator;
     root->ref();
 
     SoBaseColor * col = new SoBaseColor;
@@ -110,27 +110,9 @@
   \subpage examiner
 """
 
-from PyQt4.QtOpenGL import QGLWidget
-from PyQt4.QtOpenGL import QGLFormat
-from PyQt4.QtOpenGL import QGL
-from PyQt4.QtCore import Qt
+from PyQt4 import QtOpenGL, QtCore
 
-from pivy.coin import SoRenderManager
-from pivy.coin import SoEventManager
-from pivy.coin import SoSearchAction
-from pivy.coin import SoCamera
-from pivy.coin import SoPerspectiveCamera
-from pivy.coin import SoTransform
-from pivy.coin import ScXML
-from pivy.coin import SoScXMLStateMachine
-from pivy.coin import cast
-from pivy.coin import SoGLCacheContextElement
-
-from pivy.coin import SoDirectionalLight
-from pivy.coin import SoSeparator
-from pivy.coin import SbColor4f
-from pivy.coin import SbName
-from pivy.coin import SbViewportRegion
+from pivy import coin
 
 from devices import DeviceManager
 from devices import MouseHandler
@@ -139,7 +121,7 @@ from devices import KeyboardHandler
 from eventhandlers import EventManager
 
 from SensorManager import SensorManager
-from ImageReader import ImageReader
+# from ImageReader import ImageReader
 
 # FIXME jkg: (1) this is not called and (2) change to private/static method?
 def renderCB(closure, rendermanagerdummy):
@@ -153,12 +135,12 @@ def renderCB(closure, rendermanagerdummy):
 
 # FIXME jkg: lacking ContextMenu
 def statechangecb(userdata, statemachine, stateid, enter, foo):
-    contextmenurequest = SbName("contextmenurequest")
+    contextmenurequest = coin.SbName("contextmenurequest")
     thisp = userdata
     assert(thisp)
-    state = SbName()
+    state = coin.SbName()
     if enter:
-        state = SbName(stateid)
+        state = coin.SbName(stateid)
     if thisp.contextmenuenabled and state == contextmenurequest:
         if not thisp.contextmenu:
             thisp.contextmenu = ContextMenu(self)
@@ -184,13 +166,18 @@ def postrendercb(userdata, manager):
         statemachine.postGLRender()
 
 
-class QuarterWidget(QGLWidget):
+class QuarterWidget(QtOpenGL.QGLWidget):
 
     _sensormanager = None
     _imagereader = None
 
-    def __init__(self, parent = None, sharewidget = None):
-        QGLWidget.__init__(self, parent)
+    def __init__(self, context=None, parent=None, sharewidget=None, f=0):
+        if context and isinstance(context, QtOpenGL.QGLContext):
+            QtOpenGL.QGLWidget.__init__(self, context, parent, sharewidget)
+        else:
+            QtOpenGL.QGLWidget.__init__(self, parent, sharewidget)
+        
+        if f: self.setWindowFlags(f)
 
         # initialize Sensormanager and ImageReader instances only once
         if not QuarterWidget._sensormanager:
@@ -210,33 +197,33 @@ class QuarterWidget(QGLWidget):
         self.contextmenu = None
         self.contextmenuenabled = True
 
-        self.sorendermanager = SoRenderManager()
-        self.soeventmanager = SoEventManager()
+        self.sorendermanager = coin.SoRenderManager()
+        self.soeventmanager = coin.SoEventManager()
 
-        #Mind the order of initialization as the XML state machine uses
-        #callbacks which depends on other state being initialized
+        # Mind the order of initialization as the XML state machine uses
+        # callbacks which depends on other state being initialized
         self.eventmanager = EventManager(self)
         self.devicemanager = DeviceManager(self)
 
-        statemachine = ScXML.readFile("coin:scxml/navigation/examiner.xml")
-        if (statemachine and statemachine.isOfType(SoScXMLStateMachine.getClassTypeId())):
-            sostatemachine = cast(statemachine, "SoScXMLStateMachine")
+        statemachine = coin.ScXML.readFile("coin:scxml/navigation/examiner.xml")
+        if statemachine and statemachine.isOfType(coin.SoScXMLStateMachine.getClassTypeId()):
+            sostatemachine = coin.cast(statemachine, "SoScXMLStateMachine")
             statemachine.addStateChangeCallback(statechangecb, self)
             self.soeventmanager.setNavigationSystem(None)
             self.soeventmanager.addSoScXMLStateMachine(sostatemachine)
             sostatemachine.initialize()
 
-        self.headlight = SoDirectionalLight()
+        self.headlight = coin.SoDirectionalLight()
         self.headlight.ref()
 
-        self.sorendermanager.setAutoClipping(SoRenderManager.VARIABLE_NEAR_PLANE)
+        self.sorendermanager.setAutoClipping(coin.SoRenderManager.VARIABLE_NEAR_PLANE)
         self.sorendermanager.setRenderCallback(renderCB, self)
-        self.sorendermanager.setBackgroundColor(SbColor4f(0, 0, 0, 0))
+        self.sorendermanager.setBackgroundColor(coin.SbColor4f(0, 0, 0, 0))
         self.sorendermanager.activate()
         self.sorendermanager.addPreRenderCallback(prerendercb, self)
         self.sorendermanager.addPostRenderCallback(postrendercb, self)
 
-        self.soeventmanager.setNavigationState(SoEventManager.MIXED_NAVIGATION)
+        self.soeventmanager.setNavigationState(coin.SoEventManager.MIXED_NAVIGATION)
 
         self.devicemanager.registerDevice(MouseHandler())
         self.devicemanager.registerDevice(KeyboardHandler())
@@ -245,16 +232,16 @@ class QuarterWidget(QGLWidget):
         # set up a cache context for the default SoGLRenderAction
         self.sorendermanager.getGLRenderAction().setCacheContext(self.getCacheContextId())
 
-        self.setStateCursor("interact", Qt.ArrowCursor)
-        self.setStateCursor("idle", Qt.OpenHandCursor)
-        self.setStateCursor("rotate", Qt.ClosedHandCursor)
-        self.setStateCursor("pan", Qt.SizeAllCursor)
-        self.setStateCursor("zoom", Qt.SizeVerCursor)
-        self.setStateCursor("seek", Qt.CrossCursor)
-        self.setStateCursor("spin", Qt.OpenHandCursor)
+        self.setStateCursor("interact", QtCore.Qt.ArrowCursor)
+        self.setStateCursor("idle", QtCore.Qt.OpenHandCursor)
+        self.setStateCursor("rotate", QtCore.Qt.ClosedHandCursor)
+        self.setStateCursor("pan", QtCore.Qt.SizeAllCursor)
+        self.setStateCursor("zoom", QtCore.Qt.SizeVerCursor)
+        self.setStateCursor("seek", QtCore.Qt.CrossCursor)
+        self.setStateCursor("spin", QtCore.Qt.OpenHandCursor)
 
         self.setMouseTracking(True)
-        self.setFocusPolicy(Qt.StrongFocus);
+        self.setFocusPolicy(QtCore.Qt.StrongFocus);
 
     def setSceneGraph(self, node):
         if node and self.scene==node:
@@ -269,12 +256,12 @@ class QuarterWidget(QGLWidget):
             self.scene = node
             self.scene.ref()
 
-            superscene = SoSeparator()
+            superscene = coin.SoSeparator()
             superscene.addChild(self.headlight)
 
             camera = self.searchForCamera(node)
             if not camera:
-                camera = SoPerspectiveCamera()
+                camera = coin.SoPerspectiveCamera()
                 superscene.addChild(camera)
                 viewall = True
 
@@ -297,7 +284,7 @@ class QuarterWidget(QGLWidget):
         if self.soeventmanager.getNavigationSystem():
             self.soeventmanager.getNavigationSystem().viewAll()
 
-        viewallevent = SbName("sim.coin3d.coin.navigation.ViewAll")
+        viewallevent = coin.SbName("sim.coin3d.coin.navigation.ViewAll")
         for c in range(self.soeventmanager.getNumSoScXMLStateMachines()):
             sostatemachine = self.soeventmanager.getSoScXMLStateMachine(c)
             if (sostatemachine.isActive()):
@@ -309,7 +296,7 @@ class QuarterWidget(QGLWidget):
         pass
 
     def resizeGL(self, width, height):
-        vp = SbViewportRegion(width, height)
+        vp = coin.SbViewportRegion(width, height)
         self.sorendermanager.setViewportRegion(vp)
         self.soeventmanager.setViewportRegion(vp)
 
@@ -333,16 +320,16 @@ class QuarterWidget(QGLWidget):
         if (soevent and self.soeventmanager.processEvent(soevent)):
             return True
 
-        QGLWidget.event(self, qevent)
+        QtOpenGL.QGLWidget.event(self, qevent)
         return True
 
     def setStateCursor(self, state, cursor):
         self.statecursormap[state] = cursor
 
     def searchForCamera(self, root):
-        sa = SoSearchAction()
-        sa.setInterest(SoSearchAction.FIRST)
-        sa.setType(SoCamera.getClassTypeId())
+        sa = coin.SoSearchAction()
+        sa.setInterest(coin.SoSearchAction.FIRST)
+        sa.setType(coin.SoCamera.getClassTypeId())
         sa.apply(root)
 
     def getCacheContextId(self):
@@ -361,7 +348,7 @@ class QuarterWidget(QGLWidget):
                     cachecontext.widgetlist.append(widget)
                     return cachecontext;
         cachecontext = QuarterWidgetP_cachecontext()
-        cachecontext.id = SoGLCacheContextElement.getUniqueCacheContext()
+        cachecontext.id = coin.SoGLCacheContextElement.getUniqueCacheContext()
         cachecontext.widgetlist.append(widget)
         self.cachecontext_list.append(cachecontext)
 

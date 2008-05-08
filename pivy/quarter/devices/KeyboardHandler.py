@@ -58,7 +58,7 @@ class KeyboardHandler(DeviceHandler):
         qkey = qevent.key()
 
         sokey = None
-        if modifiers and QtCore.Qt.KeypadModifier:
+        if modifiers & QtCore.Qt.KeypadModifier:
             sokey = self._keypadmap[qkey]
         else:
             sokey = self._keyboardmap[qkey]

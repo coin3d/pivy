@@ -144,9 +144,7 @@ def statechangeCB(userdata, statemachine, stateid, enter, foo):
         assert(userdata)
         thisp = userdata
         if thisp.contextmenuenabled and stateid == "contextmenurequest":
-            if not thisp.contextmenu:
-                thisp.contextmenu = ContextMenu(thisp)
-            thisp.contextmenu.exec_(thisp.devicemanager.getLastGlobalPosition())
+            thisp.getContextMenu().exec_(thisp.devicemanager.getLastGlobalPosition())
         if stateid in thisp.statecursormap.keys():
             cursor = thisp.statecursormap[stateid]
             thisp.setCursor(cursor)
@@ -359,3 +357,55 @@ class QuarterWidget(QtOpenGL.QGLWidget):
 
     def getSoEventManager(self):
         return self.soeventmanager
+
+    def setBackgroundColor(self, color):
+        """Set backgroundcolor to a given QColor
+          Remember that QColors are given in integers between 0 and 255, as
+          opposed to SbColor4f which is in [0 ,1]. The default alpha value for
+          a QColor is 255, but you'll probably want to set it to zero before
+          using it as an OpenGL clear color."""
+
+        bgcolor = coinSbColor4f(coin.SbClamp(color.red()   / 255.0, 0.0, 1.0),
+                                coin.SbClamp(color.green() / 255.0, 0.0, 1.0),
+                                coin.SbClamp(color.blue()  / 255.0, 0.0, 1.0),
+                                coin.SbClamp(color.alpha() / 255.0, 0.0, 1.0))
+        self.sorendermanager.setBackgroundcolor(bgcolor)
+
+    def getBackgroundColor(self):
+        """  Returns color used for clearing the rendering area before
+          rendering the scene."""
+
+        bg = self.sorendermanager.getBackgroundColor()
+
+        return QColor(coin.SbClamp(int(bg[0] * 255.0), 0, 255),
+                      coin.SbClamp(int(bg[1] * 255.0), 0, 255),
+                      coin.SbClamp(int(bg[2] * 255.0), 0, 255),
+                      coin.SbClamp(int(bg[3] * 255.0), 0, 255))
+
+    def getContextMenu(self):
+        """Returns the context menu used by the widget."""
+        if not self.contextmenu:
+            self.contextmenu = ContextMenu(self)
+        # NOTE 20080508 jkg: seems like we can drop .getMenu()
+        return self.contextmenu.getMenu()
+
+    def contextMenuEnabled(self):
+        return contextmenuenabled
+
+    def enableContextMenu(self, yesno):
+        self.contextmenuenabled = yesno
+
+    def setTransparencyType(self, type):
+        """This method sets the transparency type to be used for the scene."""
+        assert(self.sorendermanager)
+        self.sorendermanager.getGLRenderAction().setTransparencyType(type)
+        self.sorendermanager.scheduleRedraw()
+
+    def enableHeadlight(self, onoff):
+        """  Enable/disable the headlight. This wille toggle the SoDirectionalLigh::on
+          field (returned from getHeadlight())."""
+        self.headlight.on = onoff
+
+    def getHeadlight(self):
+        """Returns the light used for the headlight."""
+        return self.headlight

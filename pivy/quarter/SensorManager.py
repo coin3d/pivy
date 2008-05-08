@@ -26,9 +26,11 @@ from pivy.coin import SoRenderManager
 
 from SignalThread import SignalThread
 
+
 class SensorManager(QObject):
 
     def __init__(self):
+        QObject.__init__(self, None)
         self._mainthreadid = QThread.currentThreadId()
 
         self._signalthread = SignalThread()

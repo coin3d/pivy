@@ -127,9 +127,8 @@ from ImageReader import ImageReader
 from ContextMenu import ContextMenu
 
 
-# FIXME jkg: (1) this is not called and (2) change to private/static method?
+# FIXME 20080508 jkg: change to private/static method?
 def renderCB(closure, manager):
-    print "closure:", closure
     assert(closure)
     thisp = closure
     thisp.makeCurrent()
@@ -172,6 +171,7 @@ class QuarterWidget(QtOpenGL.QGLWidget):
     _imagereader = None
 
     def __init__(self, context=None, parent=None, sharewidget=None, f=0):
+        # FIXME 20080508 jkg: better write unit tests for this
         if context and isinstance(context, QtOpenGL.QGLContext):
             QtOpenGL.QGLWidget.__init__(self, context, parent, sharewidget)
         else:
@@ -186,7 +186,6 @@ class QuarterWidget(QtOpenGL.QGLWidget):
         if not QuarterWidget._imagereader:
             QuarterWidget._imagereader = ImageReader()
 
-        # from QuarterWidgetP
         self.cachecontext_list = []
         self.cachecontext = self.findCacheContext(self, sharewidget)
         self.statecursormap = {}
@@ -218,8 +217,8 @@ class QuarterWidget(QtOpenGL.QGLWidget):
         self.sorendermanager.setRenderCallback(renderCB, self)
         self.sorendermanager.setBackgroundColor(coin.SbColor4f(0, 0, 0, 0))
         self.sorendermanager.activate()
-        #self.sorendermanager.addPreRenderCallback(prerenderCB, self)
-        #self.sorendermanager.addPostRenderCallback(postrenderCB, self)
+        self.sorendermanager.addPreRenderCallback(prerenderCB, self)
+        self.sorendermanager.addPostRenderCallback(postrenderCB, self)
 
         self.soeventmanager.setNavigationState(coin.SoEventManager.MIXED_NAVIGATION)
 
@@ -386,7 +385,7 @@ class QuarterWidget(QtOpenGL.QGLWidget):
         """Returns the context menu used by the widget."""
         if not self.contextmenu:
             self.contextmenu = ContextMenu(self)
-        # NOTE 20080508 jkg: seems like we can drop .getMenu()
+        # NOTE 20080508 jkg: seems like we can drop .getMenu() but I dont see why that works
         return self.contextmenu.getMenu()
 
     def contextMenuEnabled(self):

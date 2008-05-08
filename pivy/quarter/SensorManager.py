@@ -32,7 +32,7 @@ class SensorManager(QObject):
         self._mainthreadid = QThread.currentThreadId()
 
         self._signalthread = SignalThread()
-        QObject.connect(self.signalthread, SIGNAL("triggerSignal()"),
+        QObject.connect(self._signalthread, SIGNAL("triggerSignal()"),
                         self.sensorQueueChanged)
 
         self._idletimer = QTimer()
@@ -90,7 +90,7 @@ class SensorManager(QObject):
 
 
         if sensormanager.isDelaySensorPending():
-            this.idletimer.start(0)
+            self._idletimer.start(0)
     
             if not self._delaytimer.isActive():
                 time = SoDB.getDelaySensorTimeout()

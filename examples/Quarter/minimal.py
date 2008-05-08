@@ -39,9 +39,9 @@ def main():
     viewer = QuarterWidget()
     viewer.setSceneGraph(root)
 
+    viewer.setWindowTitle("minimal")
     viewer.show()
-    result = app.exec_()
-    return result
+    sys.exit(app.exec_())
 
 if __name__ == '__main__':
     main()

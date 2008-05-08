@@ -112,6 +112,8 @@
 
 from PyQt4 import QtOpenGL, QtCore
 
+from OpenGL.GL import glEnable, GL_DEPTH_TEST
+
 from pivy import coin
 
 from devices import DeviceManager
@@ -289,8 +291,7 @@ class QuarterWidget(QtOpenGL.QGLWidget):
                 sostatemachine.processEventQueue()
 
     def initializeGL(self):
-        # NOTE jkg: DepthBuffer is enabled by default, so I dont see why Quarter (C++) sets it
-        pass
+        glEnable(GL_DEPTH_TEST)
 
     def resizeGL(self, width, height):
         vp = coin.SbViewportRegion(width, height)

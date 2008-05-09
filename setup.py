@@ -136,7 +136,20 @@ class pivy_build(build):
     CXX_LIBS = ""
 
     ext_modules = []
-    py_modules = ['pivy.sogui']
+    py_modules = ['pivy.sogui',
+                  'pivy.quarter.ContextMenu',
+                  'pivy.quarter.ImageReader',
+                  'pivy.quarter.QuarterWidget',
+                  'pivy.quarter.SensorManager',
+                  'pivy.quarter.SignalThread',
+                  'pivy.quarter.devices.DeviceHandler',
+                  'pivy.quarter.devices.DeviceManager',
+                  'pivy.quarter.devices.KeyboardHandler',
+                  'pivy.quarter.devices.MouseHandler',
+                  'pivy.quarter.eventhandlers.DragDropHandler',
+                  'pivy.quarter.eventhandlers.EventHandler',
+                  'pivy.quarter.eventhandlers.EventManager',
+                  'pivy.quarter.plugins.designer.python.PyQuarterWidgetPlugin']
 
     def do_os_popen(self, cmd):
         "return the output of a command in a single line"
@@ -436,7 +449,7 @@ setup(name = "Pivy",
       description = "A Python binding for Coin",
       long_description = __doc__,
       author = "Tamer Fahmy",
-      author_email = "tamer@coin3d.org",
+      author_email = "tamer@sim.no",
       download_url="http://pivy.coin3d.org/download/",
       url = "http://pivy.coin3d.org/",
       cmdclass = {'build'   : pivy_build,

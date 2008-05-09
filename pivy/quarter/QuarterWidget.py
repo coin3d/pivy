@@ -213,7 +213,6 @@ class QuarterWidget(QtOpenGL.QGLWidget):
             sostatemachine.initialize()
 
         self.headlight = coin.SoDirectionalLight()
-        self.headlight.ref()
 
         self.sorendermanager.setAutoClipping(coin.SoRenderManager.VARIABLE_NEAR_PLANE)
         self.sorendermanager.setRenderCallback(renderCB, self)
@@ -251,9 +250,7 @@ class QuarterWidget(QtOpenGL.QGLWidget):
         viewall = False
 
         if node:
-            node.ref()
             self.scene = node
-            self.scene.ref()
 
             superscene = coin.SoSeparator()
             superscene.addChild(self.headlight)
@@ -265,7 +262,6 @@ class QuarterWidget(QtOpenGL.QGLWidget):
                 viewall = True
 
             superscene.addChild(node)
-            node.unref()
 
         self.soeventmanager.setSceneGraph(superscene)
         self.sorendermanager.setSceneGraph(superscene)
@@ -329,6 +325,13 @@ class QuarterWidget(QtOpenGL.QGLWidget):
         sa.setInterest(coin.SoSearchAction.FIRST)
         sa.setType(coin.SoCamera.getClassTypeId())
         sa.apply(root)
+
+        if sa.getPath():
+            node = sa.getPath().getTail()
+            if node and node.isOfType(SoCamera.getClassTypeId()):
+                return node        
+        return None
+
 
     def getCacheContextId(self):
         return self.cachecontext.id

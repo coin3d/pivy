@@ -149,7 +149,8 @@ if not gui:
                 self.quarterwidget = mainwindow
 
             def getCamera(self):
-                return self.quarterwidget.searchForCamera(self._root)
+                rendermgr = self.quarterwidget.getSoRenderManager()
+                return rendermgr.getCamera()
                 
             def getSize(self):
                 size = self.quarterwidget.size()
@@ -163,8 +164,7 @@ if not gui:
                 pass
 
             def setBackgroundColor(self, color):
-                # FIXME: investigate. 20080509 tamer.
-                pass
+                self.quarterwidget.setBackgroundColor(color)
 
             def setDrawStyle(self, type, style):
                 # FIXME: we happily ignore the type. investigate. 20080509 tamer.

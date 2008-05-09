@@ -251,7 +251,7 @@ class QuarterWidget(QtOpenGL.QGLWidget):
 
         if node:
             self.scene = node
-
+            self.scene.ref()
             superscene = coin.SoSeparator()
             superscene.addChild(self.headlight)
 
@@ -329,9 +329,8 @@ class QuarterWidget(QtOpenGL.QGLWidget):
         if sa.getPath():
             node = sa.getPath().getTail()
             if node and node.isOfType(SoCamera.getClassTypeId()):
-                return node        
+                return node
         return None
-
 
     def getCacheContextId(self):
         return self.cachecontext.id

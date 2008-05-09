@@ -37,26 +37,21 @@ class PyQuarterWidgetPlugin(QtDesigner.QPyDesignerCustomWidgetPlugin):
         if self._initialized:
             return
 
-        # Quarter.init()
         self._initialized = True
 
     def isInitialized(self):
         return self._initialized
 
     def createWidget(self, parent):
-        # FIXME: shortcircuited for testing until QuarterWidget is in
-        # place. 20080507 tamer.
-        return None
-
-        # widget = quarter.QuarterWidget(parent, self._firstwidget)
-        # 
-        # if not self._firstwidget:
-        #     self._firstwidget = widget
-        #     self.connect(widget, QtCore.SIGNAL("destroyed(QObject*)"),
-        #                  self, QtCore.SLOT("widgetDestroyed(QObject*)"))        
-        # 
-        # widget.setSceneGraph(coin.SoCube())
-        # return widget
+        widget = quarter.QuarterWidget(parent, self._firstwidget)
+        
+        if not self._firstwidget:
+            self._firstwidget = widget
+            self.connect(widget, QtCore.SIGNAL("destroyed(QObject*)"),
+                         self, QtCore.SLOT("widgetDestroyed(QObject*)"))        
+        
+        widget.setSceneGraph(coin.SoCube())
+        return widget
 
     def name(self):
         return "PyQuarterWidget"

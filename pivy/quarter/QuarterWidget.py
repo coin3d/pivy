@@ -368,10 +368,10 @@ class QuarterWidget(QtOpenGL.QGLWidget):
           a QColor is 255, but you'll probably want to set it to zero before
           using it as an OpenGL clear color."""
 
-        bgcolor = coinSbColor4f(coin.SbClamp(color.red()   / 255.0, 0.0, 1.0),
-                                coin.SbClamp(color.green() / 255.0, 0.0, 1.0),
-                                coin.SbClamp(color.blue()  / 255.0, 0.0, 1.0),
-                                coin.SbClamp(color.alpha() / 255.0, 0.0, 1.0))
+        bgcolor = coin.SbColor4f(coin.SbClamp(color.red()   / 255.0, 0.0, 1.0),
+                                 coin.SbClamp(color.green() / 255.0, 0.0, 1.0),
+                                 coin.SbClamp(color.blue()  / 255.0, 0.0, 1.0),
+                                 coin.SbClamp(color.alpha() / 255.0, 0.0, 1.0))
         self.sorendermanager.setBackgroundcolor(bgcolor)
 
     def getBackgroundColor(self):

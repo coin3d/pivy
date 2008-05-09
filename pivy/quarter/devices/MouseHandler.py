@@ -61,23 +61,26 @@ class MouseHandler(DeviceHandler):
         return self.location2
 
     def mouseWheelEvent(self, qevent):
-        assert(False and "not implemented")
-        self.setModifiers(self.mousebutton, qevent)
 
+        # FIXME 20080509 jkg: zooming with mouse wheel seems to not work.
+        # At least it does not work in the original Quarter examples either.
+
+        self.setModifiers(self.mousebutton, qevent)
         self.mousebutton.setPosition(self.location2.getPosition())
 
-        # FIXME jkg:
-  # QWheelEvent::delta() returns the distance that the wheel is
-  # rotated, in eights of a degree. A positive value indicates that
-  # the wheel was rotated forwards away from the user; a negative
-  # value indicates that the wheel was rotated backwards toward the
-  # user.
-#      (qevent.delta() > 0) ?
-#        self.mousebutton->setButton(SoMouseButtonEvent::BUTTON4) :
-#        self.mousebutton->setButton(SoMouseButtonEvent::BUTTON5);
-#
-#      self.mousebutton->setState(SoButtonEvent::DOWN);
-#      return self.mousebutton;
+        # QWheelEvent::delta() returns the distance that the wheel is
+        # rotated, in eights of a degree. A positive value indicates that
+        # the wheel was rotated forwards away from the user; a negative
+        # value indicates that the wheel was rotated backwards toward the
+        # user.
+
+        if qevent.delta() > 0:
+            self.mousebutton.setButton(coin.SoMouseButtonEvent.BUTTON4)
+        else:
+            self.mousebutton.setButton(coin.SoMouseButtonEvent.BUTTON5)
+
+        self.mousebutton.setState(coin.SoButtonEvent.DOWN)
+        return self.mousebutton
 
 
     def mouseButtonEvent(self, qevent):

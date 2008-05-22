@@ -172,7 +172,8 @@ class QuarterWidget(QtOpenGL.QGLWidget):
     _sensormanager = None
     _imagereader = None
 
-    def __init__(self, context=None, parent=None, sharewidget=None, f=0):
+    def __init__(self, context=None, parent=None, sharewidget=None, f=0,
+                 scxml="coin:scxml/navigation/examiner.xml"):
         # FIXME 20080508 jkg: better write unit tests for this
         if context and isinstance(context, QtOpenGL.QGLContext):
             QtOpenGL.QGLWidget.__init__(self, context, parent, sharewidget)
@@ -204,7 +205,7 @@ class QuarterWidget(QtOpenGL.QGLWidget):
         self.eventmanager = EventManager(self)
         self.devicemanager = DeviceManager(self)
 
-        statemachine = coin.ScXML.readFile("coin:scxml/navigation/examiner.xml")
+        statemachine = coin.ScXML.readFile(scxml)
         if statemachine and statemachine.isOfType(coin.SoScXMLStateMachine.getClassTypeId()):
             sostatemachine = coin.cast(statemachine, "SoScXMLStateMachine")
             statemachine.addStateChangeCallback(statechangeCB, self)
@@ -366,8 +367,8 @@ class QuarterWidget(QtOpenGL.QGLWidget):
           Remember that QColors are given in integers between 0 and 255, as
           opposed to SbColor4f which is in [0 ,1]. The default alpha value for
           a QColor is 255, but you'll probably want to set it to zero before
-          using it as an OpenGL clear color."""
-
+          using it as an OpenGL clear color."""        
+        # FIXME 20080522 jkg: correct namespace? is SbClamp even wrapped?
         bgcolor = coin.SbColor4f(coin.SbClamp(color.red()   / 255.0, 0.0, 1.0),
                                  coin.SbClamp(color.green() / 255.0, 0.0, 1.0),
                                  coin.SbClamp(color.blue()  / 255.0, 0.0, 1.0),

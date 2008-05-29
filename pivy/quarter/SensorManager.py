@@ -21,7 +21,6 @@ from PyQt4.QtCore import SIGNAL
 
 from pivy.coin import SoDB
 from pivy.coin import SbTime
-from pivy.coin import SoSceneManager
 from pivy.coin import SoRenderManager
 
 from SignalThread import SignalThread

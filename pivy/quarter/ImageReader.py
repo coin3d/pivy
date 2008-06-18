@@ -40,7 +40,6 @@ class ImageReader:
                 c = 1
             else:
                 # FIXME: consider if we should detect allGrayscale() and alpha (c = 2)
-                # FIXME: ternary operator requires 2.5 or higher
                 c = 3
                 if image.hasAlphaChannel():
                     c = 4

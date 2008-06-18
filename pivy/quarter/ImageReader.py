@@ -22,7 +22,7 @@ def readImageCB(filename, image, closure):
     return closure.readImage(filename, image)
 
 
-class ImageReader():
+class ImageReader:
     def __init__(self):
         pass
         # FIXME: enable once ImageReader has been translated. 20080508
@@ -41,8 +41,12 @@ class ImageReader():
             else:
                 # FIXME: consider if we should detect allGrayscale() and alpha (c = 2)
                 # FIXME: ternary operator requires 2.5 or higher
-                c = 4 if image.hasAlphaChannel() else 3
-                image.convertToFormat(QImage.Format_ARGB32 if image.hasAlphaChannel() else QImage.Format_RGB32)
+                c = 3
+                if image.hasAlphaChannel():
+                    c = 4
+                    image.convertToFormat(QImage.Format_ARGB32)
+                else:
+                    image.convertToFormat(QImage.Format_RGB32)
 
                 # FIXME 20080508 jkg: implement when pivy is ready
                 #sbimage.setValue(SbVec2s(image.width(), image.height()), c, None)

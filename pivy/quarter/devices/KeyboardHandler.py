@@ -83,7 +83,7 @@ class KeyboardHandler(DeviceHandler):
     def initKeyMap(self):
 
         # FIXME jkg: move out?
-        class QMap():
+        class QMap:
             def __init__(self):
                 self.map = {}
             def __getitem__(self, key):

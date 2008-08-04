@@ -110,9 +110,14 @@
   \subpage examiner
 """
 
+import logging
+
 from PyQt4 import QtOpenGL, QtCore
 
-from OpenGL.GL import glEnable, GL_DEPTH_TEST
+try:
+    from OpenGL.GL import glEnable, GL_DEPTH_TEST
+except RuntimeError, v:
+    logging.warning("dependency not found: %s" % v)
 
 from pivy import coin
 
@@ -212,6 +217,8 @@ class QuarterWidget(QtOpenGL.QGLWidget):
             self.soeventmanager.setNavigationSystem(None)
             self.soeventmanager.addSoScXMLStateMachine(sostatemachine)
             sostatemachine.initialize()
+        else:
+            raise "could not initialize statemachine, given file not found?"
 
         self.headlight = coin.SoDirectionalLight()
 
@@ -289,7 +296,10 @@ class QuarterWidget(QtOpenGL.QGLWidget):
                 sostatemachine.processEventQueue()
 
     def initializeGL(self):
-        glEnable(GL_DEPTH_TEST)
+        try:
+            glEnable(GL_DEPTH_TEST)
+        except NameError, v:
+            logging.warning("dependency not available: %s" % v)
 
     def resizeGL(self, width, height):
         vp = coin.SbViewportRegion(width, height)

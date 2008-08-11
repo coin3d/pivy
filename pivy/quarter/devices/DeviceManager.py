@@ -26,7 +26,7 @@
 from PyQt4.QtCore import QEvent
 from PyQt4.QtGui import QMouseEvent
 from pivy.coin import SoLocation2Event
-from pivy.coin import SbVec2f
+from pivy.coin import SbVec2s
 
 #from pivy.quarter import DeviceHandler
 #from pivy.quarter.QuarterWidget import QuarterWidget
@@ -47,7 +47,7 @@ class DeviceManager:
         # NOTE jkg: equalient to DeviceManagerP
         self.devices = []
         self.quarterwidget = quarterwidget
-        self.lastmousepos = SbVec2f(0, 0)
+        self.lastmousepos = SbVec2s(0, 0)
 
     def translateEvent(self, qevent):
         """Runs trough the list of registered devices to translate event"""

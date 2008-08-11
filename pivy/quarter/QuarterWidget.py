@@ -116,7 +116,7 @@ from PyQt4 import QtOpenGL, QtCore
 
 try:
     from OpenGL.GL import glEnable, GL_DEPTH_TEST
-except RuntimeError, v:
+except (RuntimeError, ImportError), v:
     logging.warning("dependency not found: %s" % v)
 
 from pivy import coin

@@ -214,7 +214,6 @@ class QuarterWidget(QtOpenGL.QGLWidget):
         if statemachine and statemachine.isOfType(coin.SoScXMLStateMachine.getClassTypeId()):
             sostatemachine = coin.cast(statemachine, "SoScXMLStateMachine")
             statemachine.addStateChangeCallback(statechangeCB, self)
-            self.soeventmanager.setNavigationSystem(None)
             self.soeventmanager.addSoScXMLStateMachine(sostatemachine)
             sostatemachine.initialize()
         else:
@@ -285,9 +284,6 @@ class QuarterWidget(QtOpenGL.QGLWidget):
 
     def viewAll(self):
         """ Reposition the current camera to display the entire scene"""
-        if self.soeventmanager.getNavigationSystem():
-            self.soeventmanager.getNavigationSystem().viewAll()
-
         viewallevent = coin.SbName("sim.coin3d.coin.navigation.ViewAll")
         for c in range(self.soeventmanager.getNumSoScXMLStateMachines()):
             sostatemachine = self.soeventmanager.getSoScXMLStateMachine(c)

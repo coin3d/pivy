@@ -114,11 +114,6 @@ import logging
 
 from PyQt4 import QtOpenGL, QtCore
 
-try:
-    from OpenGL.GL import glEnable, GL_DEPTH_TEST
-except (RuntimeError, ImportError), v:
-    logging.warning("dependency not found: %s" % v)
-
 from pivy import coin
 
 from devices import DeviceManager
@@ -261,6 +256,7 @@ class QuarterWidget(QtOpenGL.QGLWidget):
             self.scene.ref()
 
             superscene = coin.SoSeparator()
+            superscene.addChild(coin.SoDepthBuffer())
             superscene.addChild(self.headlight)
 
             camera = self.searchForCamera(node)
@@ -290,12 +286,6 @@ class QuarterWidget(QtOpenGL.QGLWidget):
             if (sostatemachine.isActive()):
                 sostatemachine.queueEvent(viewallevent)
                 sostatemachine.processEventQueue()
-
-    def initializeGL(self):
-        try:
-            glEnable(GL_DEPTH_TEST)
-        except NameError, v:
-            logging.warning("dependency not available: %s" % v)
 
     def resizeGL(self, width, height):
         vp = coin.SbViewportRegion(width, height)

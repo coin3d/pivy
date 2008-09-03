@@ -16,6 +16,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
+import os
 import sys
 
 from PyQt4 import QtCore, QtGui
@@ -77,6 +78,8 @@ class MdiMainWindow(QMainWindow):
         windowmapper = QtCore.QSignalMapper(self)
         self.connect(windowmapper, QtCore.SIGNAL("mapped(QWidget *)"), self._workspace.setActiveWindow)
 
+        self.dirname = os.curdir
+
     def dragEnterEvent(self, event):
         # just accept anything...
         event.acceptProposedAction()
@@ -91,9 +94,10 @@ class MdiMainWindow(QMainWindow):
         self._workspace.closeAllWindows()
 
     def open(self):
-        self.open_path(QFileDialog.getOpenFileName(self))
+        self.open_path(QFileDialog.getOpenFileName(self, "", self.dirname))
 
     def open_path(self, filename):
+        self.dirname = os.path.dirname(str(filename.toLatin1()))
         if not filename.isEmpty():
             existing = self.findMdiChild(filename)
             if existing:

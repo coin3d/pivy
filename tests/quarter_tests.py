@@ -27,7 +27,7 @@
 # Invoke this script with '--help' for usage information.
 #
 
-from pivy.gui.quarter import *
+from pivy.quarter import *
 import unittest
 
 class Quarter(unittest.TestCase):

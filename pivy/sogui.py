@@ -60,7 +60,7 @@ class SoGui_Proxy:
         # try to bind it.
         elif type(gui) == type(''):
             try:
-                sogui = __import__('pivy.gui.' + gui.lower())
+                sogui = getattr(__import__('pivy.gui.' + gui.lower()).gui, gui.lower())
             except ImportError:
                 print 'SoGui proxy error: The specified Gui binding could not be bound!'
                 sys.exit(1)

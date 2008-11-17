@@ -78,7 +78,7 @@ class MdiMainWindow(QMainWindow):
         windowmapper = QtCore.QSignalMapper(self)
         self.connect(windowmapper, QtCore.SIGNAL("mapped(QWidget *)"), self._workspace.setActiveWindow)
 
-        self.dirname = os.curdir
+        self.dirname = os.curdir        
 
     def dragEnterEvent(self, event):
         # just accept anything...
@@ -129,8 +129,10 @@ class MdiMainWindow(QMainWindow):
 def main():
     app = QApplication(sys.argv)
 
-    mdi = MdiMainWindow(app)
+    mdi = MdiMainWindow(app)    
     mdi.show()
+    if len(sys.argv)==2:
+        mdi.open_path(QtCore.QString(sys.argv[1]))
     sys.exit(app.exec_())
 
 

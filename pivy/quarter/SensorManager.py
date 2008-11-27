@@ -83,6 +83,7 @@ class SensorManager(QObject):
                 interval.setValue(1.0/5000.0)
 
             if not self._timerqueuetimer.isActive():
+                # FIXME jkg: frodo changed this to time.getMsecValue() in C++ Quarter. test and apply.
                 self._timerqueuetimer.start(interval.getMsecValue())
             else:
                 self._timerqueuetimer.setInterval(interval.getMsecValue())

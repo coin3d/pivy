@@ -85,6 +85,7 @@ class MouseHandler(DeviceHandler):
 
     def mouseButtonEvent(self, qevent):
         self.setModifiers(self.mousebutton, qevent)
+        self.mouseMoveEvent(qevent) # NOTE jkg: mouseMoveEvent not triggered when showing popup menu in PyQt
         self.mousebutton.setPosition(self.location2.getPosition())
 
         if qevent.type() == QtCore.QEvent.MouseButtonPress:

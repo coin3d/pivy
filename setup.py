@@ -150,18 +150,18 @@ class pivy_build(build):
                   'pivy.quarter.eventhandlers.EventHandler',
                   'pivy.quarter.eventhandlers.EventManager',
                   'pivy.quarter.plugins.designer.python.PyQuarterWidgetPlugin']
-
+                  
     @staticmethod
     def requireLibrary(basepath, libname):
         m = re.split("\.",libname)
         prefix = '.'.join(m[0:-1])
         suffix = m [-1]
-        libfile = os.path.join(os.getenv("COINDIR"), "lib", "coin3.lib")
         tested = []
         for extra in [ "", "d" ]:
-            toTest = os.path.join(basepath,prefix + extra + "." + suffix)
+            libNameToTest = prefix + extra + "." + suffix
+            toTest = os.path.join(basepath,libNameToTest)
             if os.path.exists(toTest):
-                return toTest
+                return [toTest, libNameToTest]
             else:
                 tested.append(toTest)
         
@@ -171,7 +171,6 @@ class pivy_build(build):
             print yellow(elem)
         raise Exception, "File not found"
 
-        
 
     def do_os_popen(self, cmd):
         "return the output of a command in a single line"
@@ -386,7 +385,7 @@ class pivy_build(build):
                 CPP_FLAGS = "-I" + '"' + INCLUDE_DIR + '"' + " " + \
                             "-I" + os.path.join(os.getenv("COINDIR"), "include", "Inventor", "annex") + \
                             " /DCOIN_DLL /wd4244 /wd4049"
-                coinLibfile = self.requireLibrary(os.path.join(os.getenv("COINDIR"), "lib"),"coin3.lib")
+                coinLibfile, dummy = self.requireLibrary(os.path.join(os.getenv("COINDIR"), "lib"),"coin3.lib")
                 LDFLAGS_LIBS = coinLibfile + " "
                 if module == "sowin":
                     CPP_FLAGS += " /DSOWIN_DLL"

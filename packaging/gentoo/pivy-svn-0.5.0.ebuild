@@ -4,10 +4,10 @@
 
 inherit eutils distutils subversion
 
-ESVN_REPO_URI="svn://svn.tammura.at/pivy/trunk"
+ESVN_REPO_URI="http://svn.coin3d.org/repos/Pivy/trunk"
 
 DESCRIPTION="Python Coin bindings"
-HOMEPAGE="http://pivy.tammura.at/"
+HOMEPAGE="http://pivy.coin3d.org/"
 LICENSE="as-is"
 SLOT="0"
 KEYWORDS="-* ~amd64 ~x86"

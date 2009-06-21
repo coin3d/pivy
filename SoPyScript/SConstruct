@@ -19,12 +19,12 @@ import distutils.sysconfig
 
 SetOption('implicit_cache', 1)
 
-opts = Options('custom.py')
-opts.AddOptions(BoolOption('warnings', 'compilation with -Wall', 1),
-                BoolOption('debug', 'debug output and symbols', 0))
+opts = Variables('custom.py')
+opts.AddVariables(BoolVariable('warnings', 'compilation with -Wall', 1),
+                  BoolVariable('debug', 'debug output and symbols', 0))
 
 env = Environment(ENV = os.environ,
-                  options = opts,
+                  variables = opts,
                   tools=['default'])
 
 Help(opts.GenerateHelpText(env))
@@ -37,7 +37,7 @@ else:
 if str(Platform()) != 'win32' and env['warnings']:
     env.Append(CCFLAGS = '-Wall')
 
-sopyscript_env = env.Copy()
+sopyscript_env = env.Clone()
 
 if str(Platform()) == 'win32':
     sopyscript_env.Append(CPPPATH = os.getenv("COINDIR") + os.sep + 'include')

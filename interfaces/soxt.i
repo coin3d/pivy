@@ -26,7 +26,6 @@
 #include <Inventor/Xt/devices/SoXtDevice.h>
 #include <Inventor/Xt/devices/SoXtKeyboard.h>
 #include <Inventor/Xt/devices/SoXtMouse.h>
-#include <Inventor/Xt/devices/SoXtSpaceball.h>
 #include <Inventor/Xt/editors/SoXtColorEditor.h>
 #include <Inventor/Xt/editors/SoXtMaterialEditor.h>
 #include <Inventor/Xt/nodes/SoGuiColorEditor.h>
@@ -74,7 +73,6 @@ Pivy_PythonInteractiveLoop(void *data) {
 %include Inventor/Xt/devices/SoXtDevice.h
 %include Inventor/Xt/devices/SoXtKeyboard.h
 %include Inventor/Xt/devices/SoXtMouse.h
-%include Inventor/Xt/devices/SoXtSpaceball.h
 %include Inventor/Xt/editors/SoXtColorEditor.h
 %include Inventor/Xt/editors/SoXtMaterialEditor.h
 %include Inventor/Xt/nodes/SoGuiColorEditor.h

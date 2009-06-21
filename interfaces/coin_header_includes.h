@@ -254,7 +254,6 @@
 #include <Inventor/events/SoLocation2Event.h>
 #include <Inventor/events/SoMotion3Event.h>
 #include <Inventor/events/SoMouseButtonEvent.h>
-#include <Inventor/events/SoSpaceballButtonEvent.h>
 #include <Inventor/events/SoSubEvent.h>
 #include <Inventor/fields/SoFieldContainer.h>
 #include <Inventor/fields/SoFieldData.h>

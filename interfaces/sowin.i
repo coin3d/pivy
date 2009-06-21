@@ -27,7 +27,6 @@
 #include <Inventor/Win/devices/SoWinDevice.h>
 #include <Inventor/Win/devices/SoWinKeyboard.h>
 #include <Inventor/Win/devices/SoWinMouse.h>
-#include <Inventor/Win/devices/SoWinSpaceball.h>
 #include <Inventor/Win/viewers/SoWinViewer.h>
 #include <Inventor/Win/viewers/SoWinFullViewer.h>
 #include <Inventor/Win/viewers/SoWinExaminerViewer.h>
@@ -66,7 +65,6 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
 %include Inventor/Win/devices/SoWinDevice.h
 %include Inventor/Win/devices/SoWinKeyboard.h
 %include Inventor/Win/devices/SoWinMouse.h
-%include Inventor/Win/devices/SoWinSpaceball.h
 %include Inventor/Win/viewers/SoWinViewer.h
 %include Inventor/Win/viewers/SoWinFullViewer.h
 %include Inventor/Win/viewers/SoWinExaminerViewer.h

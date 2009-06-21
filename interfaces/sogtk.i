@@ -23,7 +23,6 @@
 #include <Inventor/Gtk/devices/SoGtkDevice.h>
 #include <Inventor/Gtk/devices/SoGtkKeyboard.h>
 #include <Inventor/Gtk/devices/SoGtkMouse.h>
-#include <Inventor/Gtk/devices/SoGtkSpaceball.h>
 #include <Inventor/Gtk/widgets/SoGtkPopupMenu.h>
 #include <Inventor/Gtk/viewers/SoGtkViewer.h>
 #include <Inventor/Gtk/viewers/SoGtkConstrainedViewer.h>
@@ -62,7 +61,6 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
 %include Inventor/Gtk/devices/SoGtkDevice.h
 %include Inventor/Gtk/devices/SoGtkKeyboard.h
 %include Inventor/Gtk/devices/SoGtkMouse.h
-%include Inventor/Gtk/devices/SoGtkSpaceball.h
 %include Inventor/Gtk/widgets/SoGtkPopupMenu.h
 %include Inventor/Gtk/viewers/SoGtkViewer.h
 %include Inventor/Gtk/viewers/SoGtkConstrainedViewer.h

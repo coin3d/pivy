@@ -72,7 +72,7 @@ class SoGui_Proxy:
         # SoGui binding to our global (module) namespace
         for suffix in ['Cursor', 'Component', 'GLWidget', 'RenderArea',
                        'Viewer', 'FullViewer', 'FlyViewer', 'PlaneViewer',
-                       'Device', 'Keyboard', 'Mouse', 'Spaceball',
+                       'Device', 'Keyboard', 'Mouse',
                        'ExaminerViewer', 'ConstrainedViewer']:
             d['SoGui' + suffix] = eval('sogui.%s%s' % (gui, suffix))
 

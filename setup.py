@@ -396,6 +396,10 @@ class pivy_build(build):
                     LDFLAGS_LIBS += os.path.join(os.getenv("COINDIR"), "lib", "soqt1.lib") + " "
             else:
                 INCLUDE_DIR = self.do_os_popen("coin-config --includedir")
+                if module_name != 'coin':
+                    mod_include_dir = self.do_os_popen("%s --includedir" % config_cmd)
+                    if mod_include_dir != INCLUDE_DIR:
+                        INCLUDE_DIR += '\" -I\"%s' % mod_include_dir
                 CPP_FLAGS = self.do_os_popen("%s --cppflags" % config_cmd)
                 LDFLAGS_LIBS = self.do_os_popen("%s --ldflags --libs" % config_cmd)
 

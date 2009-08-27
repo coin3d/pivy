@@ -19,9 +19,9 @@ import distutils.sysconfig
 
 SetOption('implicit_cache', 1)
 
-opts = Options('custom.py')
-opts.AddOptions(BoolOption('warnings', 'compilation with -Wall', 1),
-                BoolOption('debug', 'debug output and symbols', 0))
+opts = Variables('custom.py')
+opts.AddVariables(BoolVariable('warnings', 'compilation with -Wall', 1),
+                  BoolVariable('debug', 'debug output and symbols', 0))
 
 env = Environment(ENV = os.environ,
                   options = opts,
@@ -38,7 +38,7 @@ if str(Platform()) != 'win32' and env['warnings']:
     env.Append(CCFLAGS = '-Wall')
 
 env.Repository('../../SoPyScript')
-examin_env = env.Copy(CPPPATH = ['.', distutils.sysconfig.get_python_inc()])
+examin_env = env.Clone(CPPPATH = ['.', distutils.sysconfig.get_python_inc()])
 
 if str(Platform()) == 'win32':
     examin_env.Append(CPPPATH = os.getenv("COINDIR") + os.sep + 'include')

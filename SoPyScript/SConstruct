@@ -44,7 +44,7 @@ if str(Platform()) == 'win32':
     sopyscript_env.Append(CPPDEFINES = Split('COIN_DLL PYSCRIPT_DLL PYSCRIPT_EXPORTS'))
     sopyscript_env.Append(CPPFLAGS = Split('/wd4244 /wd4049'))
     sopyscript_env.Append(LIBPATH = (sys.exec_prefix + os.sep + 'libs').split())
-    sopyscript_env.Append(LINKFLAGS = os.getenv('COINDIR') + '\\lib\\coin2.lib')
+    sopyscript_env.Append(LINKFLAGS = os.getenv('COINDIR') + '\\lib\\coin3.lib')
 else:
     sopyscript_env.ParseConfig('coin-config --cppflags --libs --ldflags')
 

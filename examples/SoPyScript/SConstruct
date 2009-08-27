@@ -45,7 +45,7 @@ if str(Platform()) == 'win32':
     examin_env.Append(CPPDEFINES = Split('COIN_DLL SOWIN_DLL'))
     examin_env.Append(CPPFLAGS = Split('/wd4244 /wd4049'))
     examin_env.Append(LIBPATH = (sys.exec_prefix + os.sep + 'libs').split())
-    examin_env.Append(LINKFLAGS = os.getenv('COINDIR') + '\\lib\\coin2.lib ' + \
+    examin_env.Append(LINKFLAGS = os.getenv('COINDIR') + '\\lib\\coin3.lib ' + \
                       os.getenv('COINDIR') + '\\lib\\sowin1.lib')
 else:
     examin_env.ParseConfig('soqt-config --cppflags --libs --ldflags')

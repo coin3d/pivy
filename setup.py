@@ -30,7 +30,7 @@ applications.
 ###
 # Setup file for the Pivy distribution.
 #
-import os, shutil, sys, re
+import glob, os, shutil, sys
 
 from distutils.command.build import build
 from distutils.command.clean import clean
@@ -150,27 +150,6 @@ class pivy_build(build):
                   'pivy.quarter.eventhandlers.EventHandler',
                   'pivy.quarter.eventhandlers.EventManager',
                   'pivy.quarter.plugins.designer.python.PyQuarterWidgetPlugin']
-                  
-    @staticmethod
-    def requireLibrary(basepath, libname):
-        m = re.split("\.",libname)
-        prefix = '.'.join(m[0:-1])
-        suffix = m [-1]
-        tested = []
-        for extra in [ "", "d" ]:
-            libNameToTest = prefix + extra + "." + suffix
-            toTest = os.path.join(basepath,libNameToTest)
-            if os.path.exists(toTest):
-                return [toTest, libNameToTest]
-            else:
-                tested.append(toTest)
-        
-        print red(libname + " not found")
-        print red("Tried:")
-        for elem in tested:
-            print yellow(elem)
-        raise Exception, "File not found"
-
 
     def do_os_popen(self, cmd):
         "return the output of a command in a single line"
@@ -385,8 +364,8 @@ class pivy_build(build):
                 CPP_FLAGS = "-I" + '"' + INCLUDE_DIR + '"' + " " + \
                             "-I" + os.path.join(os.getenv("COINDIR"), "include", "Inventor", "annex") + \
                             " /DCOIN_DLL /wd4244 /wd4049"
-                coinLibfile, dummy = self.requireLibrary(os.path.join(os.getenv("COINDIR"), "lib"),"coin3.lib")
-                LDFLAGS_LIBS = coinLibfile + " "
+                # aquire highest non-debug Coin library version
+                LDFLAGS_LIBS = max(glob.glob(os.path.join(os.getenv("COINDIR"), "lib", "coin?.lib"))) + " "
                 if module == "sowin":
                     CPP_FLAGS += " /DSOWIN_DLL"
                     LDFLAGS_LIBS += os.path.join(os.getenv("COINDIR"), "lib", "sowin1.lib")

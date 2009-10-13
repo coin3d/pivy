@@ -142,7 +142,6 @@
 #include <Inventor/elements/SoGLProjectionMatrixElement.h>
 #include <Inventor/elements/SoGLRenderPassElement.h>
 #include <Inventor/elements/SoGLShapeHintsElement.h>
-#include <Inventor/elements/SoGLTexture3EnabledElement.h>
 #include <Inventor/elements/SoGLTextureCoordinateElement.h>
 #include <Inventor/elements/SoGLTextureEnabledElement.h>
 #include <Inventor/elements/SoGLTextureImageElement.h>
@@ -187,7 +186,6 @@
 #include <Inventor/elements/SoSubElement.h>
 #include <Inventor/elements/SoSwitchElement.h>
 #include <Inventor/elements/SoTextOutlineEnabledElement.h>
-#include <Inventor/elements/SoTexture3EnabledElement.h>
 #include <Inventor/elements/SoTextureCombineElement.h>
 #include <Inventor/elements/SoTextureCoordinateBindingElement.h>
 #include <Inventor/elements/SoTextureCoordinateElement.h>
@@ -663,12 +661,71 @@
 #if COIN_MAJOR_VERSION > 2
 #include <Inventor/SoEventManager.h>
 #include <Inventor/SoRenderManager.h>
+#endif
+
+#if COIN_MAJOR_VERSION == 3
 #include <Inventor/scxml/ScXMLEvent.h>
 #include <Inventor/scxml/ScXML.h>
 #include <Inventor/scxml/ScXMLInvoke.h>
 #include <Inventor/scxml/ScXMLObject.h>
 #include <Inventor/scxml/ScXMLStateMachine.h>
 #include <Inventor/scxml/ScXMLSubObject.h>
+#include <Inventor/scxml/SoScXMLEvent.h>
+#include <Inventor/scxml/SoScXMLStateMachine.h>
+#endif
+
+#if COIN_MAJOR_VERSION > 3
+#include <Inventor/navigation/SoScXMLDollyTarget.h>
+#include <Inventor/navigation/SoScXMLFlightControlTarget.h>
+#include <Inventor/navigation/SoScXMLMiscTarget.h>
+#include <Inventor/navigation/SoScXMLMotionTarget.h>
+#include <Inventor/navigation/SoScXMLNavigation.h>
+#include <Inventor/navigation/SoScXMLNavigationTarget.h>
+#include <Inventor/navigation/SoScXMLPanTarget.h>
+#include <Inventor/navigation/SoScXMLRotateTarget.h>
+#include <Inventor/navigation/SoScXMLSeekTarget.h>
+#include <Inventor/navigation/SoScXMLSpinTarget.h>
+#include <Inventor/navigation/SoScXMLZoomTarget.h>
+#include <Inventor/scxml/ScXML.h>
+#include <Inventor/scxml/ScXMLAbstractStateElt.h>
+#include <Inventor/scxml/ScXMLAnchorElt.h>
+#include <Inventor/scxml/ScXMLAssignElt.h>
+#include <Inventor/scxml/ScXMLCoinEvaluator.h>
+#include <Inventor/scxml/ScXMLContentElt.h>
+#include <Inventor/scxml/ScXMLDataElt.h>
+#include <Inventor/scxml/ScXMLDataModelElt.h>
+#include <Inventor/scxml/ScXMLDocument.h>
+#include <Inventor/scxml/ScXMLECMAScriptEvaluator.h>
+#include <Inventor/scxml/ScXMLElseElt.h>
+#include <Inventor/scxml/ScXMLElseIfElt.h>
+#include <Inventor/scxml/ScXMLElt.h>
+#include <Inventor/scxml/ScXMLEvaluator.h>
+#include <Inventor/scxml/ScXMLEvent.h>
+#include <Inventor/scxml/ScXMLEventElt.h>
+#include <Inventor/scxml/ScXMLEventTarget.h>
+#include <Inventor/scxml/ScXMLExecutableElt.h>
+#include <Inventor/scxml/ScXMLFinalElt.h>
+#include <Inventor/scxml/ScXMLFinalizeElt.h>
+#include <Inventor/scxml/ScXMLHistoryElt.h>
+#include <Inventor/scxml/ScXMLIfElt.h>
+#include <Inventor/scxml/ScXMLInitialElt.h>
+#include <Inventor/scxml/ScXMLInvokeElt.h>
+#include <Inventor/scxml/ScXMLLogElt.h>
+#include <Inventor/scxml/ScXMLMinimumEvaluator.h>
+#include <Inventor/scxml/ScXMLObject.h>
+#include <Inventor/scxml/ScXMLOnEntryElt.h>
+#include <Inventor/scxml/ScXMLOnExitElt.h>
+#include <Inventor/scxml/ScXMLParallelElt.h>
+#include <Inventor/scxml/ScXMLParamElt.h>
+#include <Inventor/scxml/ScXMLScriptElt.h>
+#include <Inventor/scxml/ScXMLScxmlElt.h>
+#include <Inventor/scxml/ScXMLSendElt.h>
+#include <Inventor/scxml/ScXMLStateElt.h>
+#include <Inventor/scxml/ScXMLStateMachine.h>
+#include <Inventor/scxml/ScXMLSubObject.h>
+#include <Inventor/scxml/ScXMLTransitionElt.h>
+#include <Inventor/scxml/ScXMLValidateElt.h>
+#include <Inventor/scxml/ScXMLXPathEvaluator.h>
 #include <Inventor/scxml/SoScXMLEvent.h>
 #include <Inventor/scxml/SoScXMLStateMachine.h>
 #endif

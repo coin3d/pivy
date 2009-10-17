@@ -30,7 +30,7 @@ applications.
 ###
 # Setup file for the Pivy distribution.
 #
-import glob, os, shutil, sys
+import glob, os, shutil, subprocess, sys
 
 from distutils.command.build import build
 from distutils.command.clean import clean
@@ -263,9 +263,9 @@ class pivy_build(build):
         if not self.check_cmd_exists(swig):
             sys.exit(1)
         print blue("Checking for SWIG version..."),
-        fd = os.popen4("%s -version" % swig)[1]
-        version = fd.readlines()[1].strip().split(" ")[2]
-        fd.close()
+        p = subprocess.Popen("%s -version" % swig, 
+                             shell=True, stdout=subprocess.PIPE, close_fds=True)
+        version = p.stdout.readlines()[1].strip().split(" ")[2]
         print blue("%s" % version)
         SWIG_VERSION = version
         if not version in self.SUPPORTED_SWIG_VERSIONS:

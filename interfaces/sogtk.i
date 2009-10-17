@@ -56,7 +56,7 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
 %include pivy_common_typemaps.i
 
 /* import the pivy main interface file */
-%import(module="pivy") coin.i
+%import coin.i
 
 %include Inventor/Gtk/devices/SoGtkDevice.h
 %include Inventor/Gtk/devices/SoGtkKeyboard.h

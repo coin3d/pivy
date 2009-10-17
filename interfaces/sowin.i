@@ -60,7 +60,7 @@ static void *Pivy_PythonInteractiveLoop(void *data) {
 %include pivy_common_typemaps.i
 
 /* import the pivy main interface file */
-%import(module="pivy") coin.i
+%import coin.i
 
 %include Inventor/Win/devices/SoWinDevice.h
 %include Inventor/Win/devices/SoWinKeyboard.h

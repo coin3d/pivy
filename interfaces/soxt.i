@@ -67,7 +67,7 @@ Pivy_PythonInteractiveLoop(void *data) {
 %include pivy_common_typemaps.i
 
 /* import the pivy main interface file */
-%import(module="pivy") coin.i
+%import coin.i
 
 %include Inventor/Xt/devices/SoXtLinuxJoystick.h
 %include Inventor/Xt/devices/SoXtDevice.h

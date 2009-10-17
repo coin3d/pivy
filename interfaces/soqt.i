@@ -87,7 +87,7 @@ initialize_pyqt_module_import_name()
 %include pivy_common_typemaps.i
 
 /* import the pivy main interface file */
-%import(module="pivy") coin.i
+%import coin.i
 
 /* typemaps to bridge against PyQt */
 %typemap(out) QEvent * {

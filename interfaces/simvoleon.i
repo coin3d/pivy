@@ -60,7 +60,7 @@
 %include pivy_common_typemaps.i
 
 /* import the pivy main interface file */
-%import(module="pivy") coin.i
+%import coin.i
 
 %ignore SoVolumeData::setVolumeData(const SbVec3s &dimension, 
                                     void *data, 

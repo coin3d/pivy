@@ -62,10 +62,6 @@ sopyscript_env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars().get('LIN
                                   distutils.sysconfig.get_config_vars().get('BLDLIBRARY', '').split())
 
 sopyscript_env.Depends('SoPyScript.cpp', 'swigpyrun.h')
-
 sopyscript_env.Command('swigpyrun.h', '',
                                    'swig -python -external-runtime swigpyrun.h')
 sopyscript_env.SharedLibrary('SoPyScript', 'SoPyScript.cpp')
-
-
-

@@ -39,6 +39,13 @@ if str(Platform()) != 'win32' and env['warnings']:
 
 sopyscript_env = env.Clone()
 
+# Workaround to detect OpenSolaris
+if str(Platform()) == 'sunos':
+    sopyscript_env.Tool("sunc++")
+    sopyscript_env.Tool("suncc")
+    sopyscript_env.Tool("sunar")
+    sopyscript_env.Tool("sunlink")
+
 if str(Platform()) == 'win32':
     sopyscript_env.Append(CPPPATH = os.getenv("COINDIR") + os.sep + 'include')
     sopyscript_env.Append(CPPDEFINES = Split('COIN_DLL PYSCRIPT_DLL PYSCRIPT_EXPORTS'))
@@ -54,4 +61,11 @@ sopyscript_env.Append(LIBPATH = ['..', distutils.sysconfig.get_python_lib()])
 sopyscript_env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars().get('LINKFORSHARED', '').split() +
                                   distutils.sysconfig.get_config_vars().get('BLDLIBRARY', '').split())
 
+sopyscript_env.Depends('SoPyScript.cpp', 'swigpyrun.h')
+
+sopyscript_env.Command('swigpyrun.h', '',
+                                   'swig -python -external-runtime swigpyrun.h')
 sopyscript_env.SharedLibrary('SoPyScript', 'SoPyScript.cpp')
+
+
+

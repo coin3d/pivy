@@ -1,5 +1,5 @@
 ###
-# Copyright (c) 2002-2007 Systems in Motion
+# Copyright (c) 2002-2009 Kongsberg SIM
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -56,5 +56,5 @@ sopyscript_env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars().get('LIN
 
 sopyscript_env.Depends('SoPyScript.cpp', 'swigpyrun.h')
 sopyscript_env.Command('swigpyrun.h', '',
-                                   'swig -python -external-runtime swigpyrun.h')
+                       'swig -python -external-runtime swigpyrun.h')
 sopyscript_env.SharedLibrary('SoPyScript', 'SoPyScript.cpp')

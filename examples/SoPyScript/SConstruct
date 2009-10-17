@@ -55,5 +55,5 @@ examin_env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars().get('LINKFOR
 
 examin_env.Depends('SoPyScript.cpp', 'swigpyrun.h')
 examin_env.Command('swigpyrun.h', '',
-                                   'swig -python -external-runtime swigpyrun.h')
+                   'swig -python -external-runtime swigpyrun.h')
 examin_env.Program('examin', Split((str(Platform()) == 'win32' and 'sowinexamin.cpp' or 'soqtexamin.cpp') + ' SoPyScript.cpp'))

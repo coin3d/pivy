@@ -417,3 +417,6 @@ autocast_event(SoEvent * event)
 %ignore SoNormalBundle::set;
 %ignore SoNormalBundle::get;
 %ignore SoNormalBundle::send;
+
+%ignore SoMultiTextureCoordinateElement::setFunction;
+%ignore SoGLMultiTextureCoordinateElement::setTexGen;

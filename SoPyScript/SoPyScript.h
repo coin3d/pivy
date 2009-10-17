@@ -54,7 +54,7 @@ public:
 protected:
   virtual ~SoPyScript();
 
-  virtual void doAction(SoAction * action, const char * funcname = NULL);
+  virtual void doPyAction(SoAction * action, const char * funcname);
   virtual void GLRender(SoGLRenderAction * action);
   virtual void GLRenderBelowPath(SoGLRenderAction * action);
   virtual void GLRenderInPath(SoGLRenderAction * action);

@@ -66,7 +66,7 @@ class SoPyScriptP {
       local_module_dict(PyDict_New())
     {
       if (!global_module_dict) {
-        Py_SetProgramName("SoPyScript");
+        Py_SetProgramName((char *)"SoPyScript");
         Py_Initialize();
         global_module_dict = PyModule_GetDict(PyImport_AddModule("__main__"));
         
@@ -180,7 +180,7 @@ SoPyScript::~SoPyScript()
 
 // Doc in parent
 void
-SoPyScript::doAction(SoAction * action, const char * funcname)
+SoPyScript::doPyAction(SoAction * action, const char * funcname)
 {
   if (funcname && !script.isIgnored()) {
     GlobalLock lock;
@@ -233,7 +233,7 @@ SoPyScript::doAction(SoAction * action, const char * funcname)
 void
 SoPyScript::GLRender(SoGLRenderAction * action)
 {
-  SoPyScript::doAction(action, "GLRender");
+  SoPyScript::doPyAction(action, "GLRender");
   inherited::GLRender(action);
 }
 
@@ -241,7 +241,7 @@ SoPyScript::GLRender(SoGLRenderAction * action)
 void
 SoPyScript::GLRenderBelowPath(SoGLRenderAction * action)
 {
-  SoPyScript::doAction(action, "GLRenderBelowPath");
+  SoPyScript::doPyAction(action, "GLRenderBelowPath");
   inherited::GLRenderBelowPath(action);
 }
 
@@ -249,7 +249,7 @@ SoPyScript::GLRenderBelowPath(SoGLRenderAction * action)
 void
 SoPyScript::GLRenderInPath(SoGLRenderAction * action)
 {
-  SoPyScript::doAction(action, "GLRenderInPath");
+  SoPyScript::doPyAction(action, "GLRenderInPath");
   inherited::GLRenderInPath(action);
 }
 
@@ -257,7 +257,7 @@ SoPyScript::GLRenderInPath(SoGLRenderAction * action)
 void
 SoPyScript::GLRenderOffPath(SoGLRenderAction * action)
 {
-  SoPyScript::doAction(action, "GLRenderOffPath");
+  SoPyScript::doPyAction(action, "GLRenderOffPath");
   inherited::GLRenderOffPath(action);
 }
 
@@ -265,7 +265,7 @@ SoPyScript::GLRenderOffPath(SoGLRenderAction * action)
 void
 SoPyScript::callback(SoCallbackAction * action)
 {
-  SoPyScript::doAction(action, "callback");
+  SoPyScript::doPyAction(action, "callback");
   inherited::callback(action);
 }
 
@@ -273,7 +273,7 @@ SoPyScript::callback(SoCallbackAction * action)
 void
 SoPyScript::getBoundingBox(SoGetBoundingBoxAction * action)
 {
-  SoPyScript::doAction(action, "getBoundingBox");
+  SoPyScript::doPyAction(action, "getBoundingBox");
   inherited::getBoundingBox(action);
 }
 
@@ -281,7 +281,7 @@ SoPyScript::getBoundingBox(SoGetBoundingBoxAction * action)
 void
 SoPyScript::getMatrix(SoGetMatrixAction * action)
 {
-  SoPyScript::doAction(action, "getMatrix");
+  SoPyScript::doPyAction(action, "getMatrix");
   inherited::getMatrix(action);
 }
 
@@ -289,7 +289,7 @@ SoPyScript::getMatrix(SoGetMatrixAction * action)
 void
 SoPyScript::handleEvent(SoHandleEventAction * action)
 {
-  SoPyScript::doAction(action, "handleEvent");
+  SoPyScript::doPyAction(action, "handleEvent");
   inherited::handleEvent(action);
 }
 
@@ -297,7 +297,7 @@ SoPyScript::handleEvent(SoHandleEventAction * action)
 void
 SoPyScript::pick(SoPickAction * action)
 {
-  SoPyScript::doAction(action, "pick");
+  SoPyScript::doPyAction(action, "pick");
   inherited::pick(action);
 }
 
@@ -305,7 +305,7 @@ SoPyScript::pick(SoPickAction * action)
 void
 SoPyScript::rayPick(SoRayPickAction * action)
 {
-  SoPyScript::doAction(action, "rayPick");
+  SoPyScript::doPyAction(action, "rayPick");
   inherited::rayPick(action);
 }
 
@@ -313,7 +313,7 @@ SoPyScript::rayPick(SoRayPickAction * action)
 void
 SoPyScript::search(SoSearchAction * action)
 {
-  SoPyScript::doAction(action, "search");
+  SoPyScript::doPyAction(action, "search");
   inherited::search(action);
 }
 
@@ -321,7 +321,7 @@ SoPyScript::search(SoSearchAction * action)
 void
 SoPyScript::write(SoWriteAction * action)
 {
-  SoPyScript::doAction(action, "write");
+  SoPyScript::doPyAction(action, "write");
   inherited::write(action);
 }
 
@@ -329,7 +329,7 @@ SoPyScript::write(SoWriteAction * action)
 void
 SoPyScript::audioRender(SoAudioRenderAction * action)
 {
-  SoPyScript::doAction(action, "audioRender");
+  SoPyScript::doPyAction(action, "audioRender");
   inherited::audioRender(action);
 }
 
@@ -337,7 +337,7 @@ SoPyScript::audioRender(SoAudioRenderAction * action)
 void
 SoPyScript::getPrimitiveCount(SoGetPrimitiveCountAction * action)
 {
-  SoPyScript::doAction(action, "getPrimitiveCount");
+  SoPyScript::doPyAction(action, "getPrimitiveCount");
   inherited::getPrimitiveCount(action);
 }
 

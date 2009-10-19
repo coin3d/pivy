@@ -264,8 +264,9 @@ class pivy_build(build):
             sys.exit(1)
         print blue("Checking for SWIG version..."),
         p = subprocess.Popen("%s -version" % swig, 
-                             shell=True, stdout=subprocess.PIPE, close_fds=True)
+                             shell=True, stdout=subprocess.PIPE)
         version = p.stdout.readlines()[1].strip().split(" ")[2]
+        p.stdout.close()
         print blue("%s" % version)
         SWIG_VERSION = version
         if not version in self.SUPPORTED_SWIG_VERSIONS:

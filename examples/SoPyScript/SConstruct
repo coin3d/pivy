@@ -46,7 +46,7 @@ if str(Platform()) == 'win32':
     examin_env.Append(CPPPATH = os.getenv("COINDIR") + os.sep + 'include')
     examin_env.Append(CPPDEFINES = Split('COIN_DLL SOWIN_DLL'))
     examin_env.Append(CPPFLAGS = Split('/MD /wd4244 /wd4049'))
-    examin_env.Append(LIBPATH = (sys.exec_prefix + os.sep + 'libs').split())
+    examin_env.Append(LIBPATH = sys.exec_prefix + os.sep + 'libs')
     examin_env.Append(LINKFLAGS = [os.getenv('COINDIR') + '\\lib\\coin4.lib ',
                                    os.getenv('COINDIR') + '\\lib\\sowin1.lib'])
 else:

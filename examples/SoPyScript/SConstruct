@@ -1,5 +1,5 @@
 ###
-# Copyright (c) 2002-2007 Systems in Motion
+# Copyright (c) 2002-2009 Kongsberg SIM
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -23,9 +23,7 @@ opts = Variables('custom.py')
 opts.AddVariables(BoolVariable('warnings', 'compilation with -Wall', 1),
                   BoolVariable('debug', 'debug output and symbols', 0))
 
-env = Environment(ENV = os.environ,
-                  options = opts,
-                  tools=['default', 'suncc'])
+env = Environment(ENV = os.environ, options = opts)
 
 Help(opts.GenerateHelpText(env))
 
@@ -40,13 +38,17 @@ if str(Platform()) != 'win32' and env['warnings']:
 env.Repository('../../SoPyScript')
 examin_env = env.Clone(CPPPATH = ['.', distutils.sysconfig.get_python_inc()])
 
+# Use suncc on OpenSolaris
+if str(Platform()) == 'sunos':
+    examin_env.Tool("suncc")
+
 if str(Platform()) == 'win32':
     examin_env.Append(CPPPATH = os.getenv("COINDIR") + os.sep + 'include')
     examin_env.Append(CPPDEFINES = Split('COIN_DLL SOWIN_DLL'))
-    examin_env.Append(CPPFLAGS = Split('/wd4244 /wd4049'))
+    examin_env.Append(CPPFLAGS = Split('/MD /wd4244 /wd4049'))
     examin_env.Append(LIBPATH = (sys.exec_prefix + os.sep + 'libs').split())
-    examin_env.Append(LINKFLAGS = os.getenv('COINDIR') + '\\lib\\coin3.lib ' + \
-                      os.getenv('COINDIR') + '\\lib\\sowin1.lib')
+    examin_env.Append(LINKFLAGS = [os.getenv('COINDIR') + '\\lib\\coin4.lib ',
+                                   os.getenv('COINDIR') + '\\lib\\sowin1.lib'])
 else:
     examin_env.ParseConfig('soqt-config --cppflags --libs --ldflags')
 

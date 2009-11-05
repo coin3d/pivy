@@ -42,7 +42,7 @@ from distutils import sysconfig
 # if we are on a Gentoo box salute the chap and output stuff in nice colors
 # Gentoo is Python friendly, so be especially friendly to them! ;)
 try:
-    from output import green, blue, turquoise, red, yellow
+    from portage.output import green, blue, turquoise, red, yellow
     print red("Oooh, it's a Gentoo! Nice nice! tuhtah salutes you! :)")
 except:
     def red(text): return text

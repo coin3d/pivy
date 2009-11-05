@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ###
-# Copyright (c) 2002-2007 Systems in Motion
+# Copyright (c) 2002-2009 Systems in Motion
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above

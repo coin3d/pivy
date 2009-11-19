@@ -209,7 +209,8 @@ class pivy_build(build):
         "check for availability of SoGui bindings and removes the not available ones"
         if sys.platform == "win32":
             print "Coin and SoWin are built by default on Windows..."
-            self.MODULES = {'coin'  : ('_coin',  'coin-config', 'pivy.')}
+            self.MODULES = {'coin'  : ('_coin',  'coin-config', 'pivy.'),
+                            'sowin' : ('gui._sowin', 'sowin-config', 'pivy.gui.')}
             print blue("Checking for QTDIR environment variable..."),
             if os.getenv("QTDIR"):
                 self.MODULES['soqt'] = ('gui._soqt', 'soqt-config', 'pivy.gui.')

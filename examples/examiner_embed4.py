@@ -98,7 +98,6 @@ class EmbeddedWindow(QMainWindow):
         self.connect(self.checkbox, SIGNAL("clicked()"), self.rotate)
 
     def change_axis(self, axis):
-        print "changed"
         self.rotxyz.axis = axis
 
     def change_color(self):

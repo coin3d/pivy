@@ -39,15 +39,19 @@ class EmbeddedWindow(QMainWindow):
         self.examiner = QWidget(self.centralWidget)
         self.mainLayout.addWidget(self.examiner)
         self.hLayout = QHBoxLayout()
-        self.buttonGroup = QGroupBox("Choose axis", self.centralWidget)
-        self.hboxlayout1 = QHBoxLayout(self.buttonGroup)
-        self.radio_x = QRadioButton("&X", self.buttonGroup)
-        self.radio_y = QRadioButton("&Y", self.buttonGroup)
-        self.radio_z = QRadioButton("&Z", self.buttonGroup)
+        self.groupBox = QGroupBox("Choose axis", self.centralWidget)
+        self.hboxlayout1 = QHBoxLayout(self.groupBox)
+        self.buttonGroup = QButtonGroup(self.groupBox)
+        self.radio_x = QRadioButton("&X", self.groupBox)
+        self.radio_y = QRadioButton("&Y", self.groupBox)
+        self.radio_z = QRadioButton("&Z", self.groupBox)
+        self.buttonGroup.addButton(self.radio_x, 0)
+        self.buttonGroup.addButton(self.radio_y, 1)
+        self.buttonGroup.addButton(self.radio_z, 2)
         self.hboxlayout1.addWidget(self.radio_x)
         self.hboxlayout1.addWidget(self.radio_y)
         self.hboxlayout1.addWidget(self.radio_z)
-        self.hLayout.addWidget(self.buttonGroup)
+        self.hLayout.addWidget(self.groupBox)
 
         self.controlLayout = QVBoxLayout()
         self.checkbox = QCheckBox("Enable &rotation", self.centralWidget)
@@ -89,20 +93,13 @@ class EmbeddedWindow(QMainWindow):
         self.exam.setTitle("Embedded viewer")
         self.exam.show()
 
-        self.connect(self.radio_x, SIGNAL("clicked(bool)"), self.change_axis_x)
-        self.connect(self.radio_y, SIGNAL("clicked(bool)"), self.change_axis_y)
-        self.connect(self.radio_z, SIGNAL("clicked(bool)"), self.change_axis_z)
+        self.connect(self.buttonGroup, SIGNAL("buttonClicked(int)"), self.change_axis)
         self.connect(self.button, SIGNAL("clicked()"), self.change_color)
         self.connect(self.checkbox, SIGNAL("clicked()"), self.rotate)
 
-    def change_axis_x(self, axis):
-        self.rotxyz.axis = SoRotationXYZ.X
-
-    def change_axis_y(self):
-        self.rotxyz.axis = SoRotationXYZ.Y
-
-    def change_axis_z(self):
-        self.rotxyz.axis = SoRotationXYZ.Z
+    def change_axis(self, axis):
+        print "changed"
+        self.rotxyz.axis = axis
 
     def change_color(self):
         self.material.diffuseColor = (random(), random(), random())

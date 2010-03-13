@@ -114,7 +114,7 @@ if not gui:
 
         import PyQt4
         import pivy
-        
+
         class SoGui(object):
             @staticmethod
             def init(*args):
@@ -140,7 +140,7 @@ if not gui:
             STILL, INTERACTIVE = range(2)
             BUFFER_SINGLE, BUFFER_DOUBLE, BUFFER_INTERACTIVE = range(3)
             VARIABLE_NEAR_PLANE, CONSTANT_NEAR_PLANE = range(2)
-            
+
         class SoGui_Quarter_Wrapper(object):
             """A SoGui QuarterWidget wrapper"""
 
@@ -151,7 +151,7 @@ if not gui:
             def getCamera(self):
                 rendermgr = self.quarterwidget.getSoRenderManager()
                 return rendermgr.getCamera()
-                
+
             def getSize(self):
                 size = self.quarterwidget.size()
                 return pivy.coin.SbVec2s((size.width, size.height))
@@ -174,14 +174,14 @@ if not gui:
             def setGLRenderAction(self, renderaction):
                 rendermgr = self.quarterwidget.getSoRenderManager()
                 rendermgr.setGLRenderAction(renderaction)
-                
+
             def setHeadlight(self, onOff):
                 self.quarterwidget.enableHeadlight(onOff)
 
             def setOverlaySceneGraph(self, overlay):
                 # FIXME: investigate. 20080509 tamer.
-                pass                
-                
+                pass
+
             def setSceneGraph(self, root):
                 self.quarterwidget.setSceneGraph(root)
                 self._root = root

@@ -61,9 +61,7 @@ class EmbeddedWindow(QMainWindow):
 
         self.setCentralWidget(self.centralWidget)
 
-
         self.radio_x.setChecked(True)
-
 
         # construct a simple scenegraph
         root = SoSeparator()
@@ -72,7 +70,7 @@ class EmbeddedWindow(QMainWindow):
         self.elapsedTime = SoElapsedTime()
         self.gate.enable = False
         self.gate.input.connectFrom(self.elapsedTime.timeOut)
-        self.rotxyz.angle.connectFrom(self.gate.output)        
+        self.rotxyz.angle.connectFrom(self.gate.output)
         self.material = SoMaterial()
         self.material.diffuseColor = (0.0, 1.0, 1.0)
         self.cone = SoCone()
@@ -81,7 +79,7 @@ class EmbeddedWindow(QMainWindow):
         root.addChild(self.cone)
 
         # N.B.: keep in mind that it is important to keep the examiner
-        # viewer as an instance variable by prefixing it with 'self.' 
+        # viewer as an instance variable by prefixing it with 'self.'
         # otherwise it will fall out of scope and gets deallocated ->
         # no redraws and crashes. 20050727 tamer.
 
@@ -91,14 +89,20 @@ class EmbeddedWindow(QMainWindow):
         self.exam.setTitle("Embedded viewer")
         self.exam.show()
 
-
-
-        self.connect(self.buttonGroup, SIGNAL("clicked(int)"), self.change_axis)
+        self.connect(self.radio_x, SIGNAL("clicked(bool)"), self.change_axis_x)
+        self.connect(self.radio_y, SIGNAL("clicked(bool)"), self.change_axis_y)
+        self.connect(self.radio_z, SIGNAL("clicked(bool)"), self.change_axis_z)
         self.connect(self.button, SIGNAL("clicked()"), self.change_color)
         self.connect(self.checkbox, SIGNAL("clicked()"), self.rotate)
 
-    def change_axis(self, axis):
-        self.rotxyz.axis = axis
+    def change_axis_x(self, axis):
+        self.rotxyz.axis = SoRotationXYZ.X
+
+    def change_axis_y(self):
+        self.rotxyz.axis = SoRotationXYZ.Y
+
+    def change_axis_z(self):
+        self.rotxyz.axis = SoRotationXYZ.Z
 
     def change_color(self):
         self.material.diffuseColor = (random(), random(), random())

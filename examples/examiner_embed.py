@@ -48,7 +48,7 @@ class EmbeddedWindow(QMainWindow):
         self.radio_y = QRadioButton("&Y", self.buttonGroup)
         self.radio_z = QRadioButton("&Z", self.buttonGroup)
         self.radio_x.setChecked(True)
-        
+
         self.mainLayout.addWidget(self.examiner)
 
         # construct a simple scenegraph
@@ -58,7 +58,7 @@ class EmbeddedWindow(QMainWindow):
         self.elapsedTime = SoElapsedTime()
         self.gate.enable = False
         self.gate.input.connectFrom(self.elapsedTime.timeOut)
-        self.rotxyz.angle.connectFrom(self.gate.output)        
+        self.rotxyz.angle.connectFrom(self.gate.output)
         self.material = SoMaterial()
         self.material.diffuseColor = (0.0, 1.0, 1.0)
         self.cone = SoCone()
@@ -67,7 +67,7 @@ class EmbeddedWindow(QMainWindow):
         root.addChild(self.cone)
 
         # N.B.: keep in mind that it is important to keep the examiner
-        # viewer as an instance variable by prefixing it with 'self.' 
+        # viewer as an instance variable by prefixing it with 'self.'
         # otherwise it will fall out of scope and gets deallocated ->
         # no redraws and crashes. 20050727 tamer.
 

@@ -62,10 +62,12 @@
 /* import the pivy main interface file */
 %import coin.i
 
-%ignore SoVolumeData::setVolumeData(const SbVec3s &dimension, 
-                                    void *data, 
-                                    SoVolumeData::DataType type=SoVolumeData::UNSIGNED_BYTE, 
+%ignore SoVolumeData::setVolumeData(const SbVec3s &dimension,
+                                    void *data,
+                                    SoVolumeData::DataType type=SoVolumeData::UNSIGNED_BYTE,
                                     int significantbits=0);
+
+%ignore SoVRVolFileReader::setUserData(void * data);
 
 %extend SoVolumeData {
   void setVolumeData(SbVec3s dimension, char * data) {
@@ -73,25 +75,11 @@
   }
 }
 
-#if 0
-%typemap(in) (const SbVec3s & dimension, void * data) {
-  void * data;
-  PyObject * vec3s = $input;
-  PyObject * buf = $input;
-
-  if ((SWIG_ConvertPtr(vec3s, (void **)&$1, SWIGTYPE_p_SbVec3s, SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
-  if ($1 == NULL) {
-    PyErr_SetString(PyExc_TypeError,"null reference"); SWIG_fail;
-  }
-  if (PyString_Check(buf)) {
-    int len = (*$1)[0] * (*$1)[1] * ((*$1)[2] ? (*$1)[2] : 1);
-    PyString_AsStringAndSize(buf, (char **)&data, &len);
-    $2 = data;
-  } else {
-    PyErr_SetString(PyExc_TypeError, "expected a string."); SWIG_fail;
+%extend SoVRVolFileReader {
+  void setUserData(char * filename) {
+    self->setUserData(filename);
   }
 }
-#endif
 
 %typemap(out) void * data = char *;
 %typemap(typecheck) void * data = char *;

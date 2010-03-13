@@ -20,6 +20,8 @@
 # Systems in Motion, <URL:http://www.sim.no>, <mailto:support@sim.no>
 #
 
+SOGUI_BINDING = "SoQt"
+
 import sys
 
 from pivy.coin import *
@@ -39,7 +41,7 @@ def main():
 
     # Add SoVolumeData to scene graph
     volumedata = SoVolumeData()
-    volumedata.setVolumeData(dim, voxeldata.tostring(), SoVolumeData.UNSIGNED_BYTE)
+    volumedata.setVolumeData(dim, voxeldata.tostring())
     root.addChild(volumedata)
 
     # Add TransferFunction (color map) to scene graph
@@ -53,7 +55,7 @@ def main():
     viewer = SoGuiExaminerViewer(window)
     viewer.setBackgroundColor(SbColor(0.1, 0.3, 0.5))
     viewer.setSceneGraph(root)
-    
+
     viewer.show()
     SoGui.show(window)
     SoGui.mainLoop()

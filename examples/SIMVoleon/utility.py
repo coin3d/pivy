@@ -25,10 +25,10 @@ from pivy.coin import *
 
 def generate8bitVoxelSet(dim):
     blocksize = dim[0] * dim[1] * dim[2];
-    voxels = array.array('c', ['\0'] * dim[0] * dim[1] * dim[2])
+    voxels = array.array('B', [0] * dim[0] * dim[1] * dim[2])
     t = 0
 
-    while t < 50:
+    for i in range(50016):
         v = (sin((t + 1.4234) * 1.9) * sin(t) * 0.45 + 0.5,
              cos((t * 2.5) - 10) * 0.45 + 0.5,
              cos((t - 0.23123) * 3) * sin(t + 0.5) * cos(t) * 0.45 + 0.5)
@@ -39,8 +39,8 @@ def generate8bitVoxelSet(dim):
         nz = int(dim[2] * v[2])
 
         memposition = nz*dim[0]*dim[1] + ny*dim[0] + nx
-        voxels[memposition] = chr(abs(int(255.0 * cos(t))))
+        voxels[memposition] = int((255.0 * cos(t)) % 256)
 
         t += 0.001
 
-    return voxels;
+    return voxels

@@ -6,7 +6,7 @@
    def __iter__(self):
       for i in range(self.getLength()):
          yield self.getNode(i)
-         
+
    def index(self):
       for i in range(self.getLength()):
          yield self.getIndex(i)

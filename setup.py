@@ -194,7 +194,7 @@ class pivy_build(build):
         "return if SIMVoleon is available and check the version"
         if sys.platform == "win32": return
         if not self.check_cmd_exists("simvoleon-config"):
-            del self.MODULES['simvoleon']
+            self.MODULES.pop('simvoleon', None)
             return False
 
         print blue("SIMVoleon version..."),
@@ -209,19 +209,19 @@ class pivy_build(build):
         "check for availability of SoGui bindings and removes the not available ones"
         if sys.platform == "win32":
             print "Coin and SoWin are built by default on Windows..."
-            self.MODULES = {'coin'  : ('_coin',  'coin-config', 'pivy.'),
-                            'sowin' : ('gui._sowin', 'sowin-config', 'pivy.gui.')}
+            self.MODULES.pop('soxt', None)
+            self.MODULES.pop('sogtk', None)
             print blue("Checking for QTDIR environment variable..."),
             if os.getenv("QTDIR"):
-                self.MODULES['soqt'] = ('gui._soqt', 'soqt-config', 'pivy.gui.')
                 print blue(os.getenv("QTDIR"))
             else:
+                self.MODULES.pop('soqt', None)
                 print red("not set. (SoQt bindings won't be built)")
         else:
             for gui in self.SOGUI:
                 gui_config_cmd = self.MODULES[gui][1]
                 if not self.check_cmd_exists(gui_config_cmd):
-                    del self.MODULES[gui]
+                    self.MODULES.pop(gui, None)
                 else:
                     print blue("Checking for %s version..." % gui),
                     version = self.do_os_popen("%s --version" % gui_config_cmd)
@@ -331,7 +331,7 @@ class pivy_build(build):
         self.get_coin_features()
         if self.SOGUI: self.check_gui_bindings()
         
-        if self.check_simvoleon_version():
+        if 'simvoleon' in self.MODULES and self.check_simvoleon_version():
             if sys.platform == "win32":
                 INCLUDE_DIR = os.getenv("SIMVOLEONDIR") + "\\include"
             else:
@@ -450,6 +450,11 @@ class pivy_clean(clean):
         print green(".")
 
         clean.run(self)
+
+for i in reversed(range(len(sys.argv))):
+    if sys.argv[i][:10] == "--without-":
+        pivy_build.MODULES.pop(sys.argv[i][10:], None)
+        del sys.argv[i]
 
 setup(name = "Pivy",
       version = PIVY_VERSION,

@@ -192,8 +192,7 @@ class pivy_build(build):
 
     def check_simvoleon_version(self):
         "return if SIMVoleon is available and check the version"
-        if sys.platform == "win32": return
-        if not self.check_cmd_exists("simvoleon-config"):
+        if sys.platform == "win32" or not self.check_cmd_exists("simvoleon-config"):
             self.MODULES.pop('simvoleon', None)
             return False
 

@@ -129,7 +129,7 @@ class pivy_build(build):
                'sogtk'     : ('gui._sogtk', 'sogtk-config',     'pivy.gui.'),
                'sowin'     : ('gui._sowin', 'sowin-config',     'pivy.gui.')}
 
-    SUPPORTED_SWIG_VERSIONS = ['1.3.31', '1.3.33', '1.3.35']
+    SUPPORTED_SWIG_VERSIONS = ['1.3.31', '1.3.33', '1.3.35', '1.3.40']
     SWIG_VERSION = ""
     SWIG_COND_SYMBOLS = []
     CXX_INCS = "-Iinterfaces "
@@ -354,6 +354,7 @@ class pivy_build(build):
     def swig_generate(self):
         "build all available modules"
 
+        quote = lambda s : '"' + s + '"'
         for module in self.MODULES:
             module_name = self.MODULES[module][0]
             config_cmd = self.MODULES[module][1]
@@ -362,14 +363,14 @@ class pivy_build(build):
             
             if sys.platform == "win32":
                 INCLUDE_DIR = os.path.join(os.getenv("COINDIR"), "include")
-                CPP_FLAGS = "-I" + '"' + INCLUDE_DIR + '"' + " " + \
-                            "-I" + os.path.join(os.getenv("COINDIR"), "include", "Inventor", "annex") + \
+                CPP_FLAGS = "-I" + quote(INCLUDE_DIR) + " " + \
+                            "-I" + quote(os.path.join(os.getenv("COINDIR"), "include", "Inventor", "annex")) + \
                             " /DCOIN_DLL /wd4244 /wd4049"
                 # aquire highest non-debug Coin library version
-                LDFLAGS_LIBS = max(glob.glob(os.path.join(os.getenv("COINDIR"), "lib", "coin?.lib"))) + " "
+                LDFLAGS_LIBS = quote(max(glob.glob(os.path.join(os.getenv("COINDIR"), "lib", "coin?.lib")))) + " "
                 if module == "sowin":
                     CPP_FLAGS += " /DSOWIN_DLL"
-                    LDFLAGS_LIBS += os.path.join(os.getenv("COINDIR"), "lib", "sowin1.lib")
+                    LDFLAGS_LIBS += quote(os.path.join(os.getenv("COINDIR"), "lib", "sowin1.lib"))
                 elif module == "soqt":
                     CPP_FLAGS += " -I" + '"' + os.getenv("QTDIR") + "\\include\"  /DSOQT_DLL"
                     CPP_FLAGS += " -I" + '"' + os.getenv("QTDIR") + "\\include\Qt\""

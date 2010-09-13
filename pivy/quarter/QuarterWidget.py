@@ -112,7 +112,7 @@
 
 import logging
 
-from PyQt4 import QtOpenGL, QtCore
+from PyQt4 import QtCore, QtGui, QtOpenGL
 
 from pivy import coin
 
@@ -363,13 +363,12 @@ class QuarterWidget(QtOpenGL.QGLWidget):
           Remember that QColors are given in integers between 0 and 255, as
           opposed to SbColor4f which is in [0 ,1]. The default alpha value for
           a QColor is 255, but you'll probably want to set it to zero before
-          using it as an OpenGL clear color."""        
-        # FIXME 20080522 jkg: correct namespace? is SbClamp even wrapped?
-        bgcolor = coin.SbColor4f(coin.SbClamp(color.red()   / 255.0, 0.0, 1.0),
-                                 coin.SbClamp(color.green() / 255.0, 0.0, 1.0),
-                                 coin.SbClamp(color.blue()  / 255.0, 0.0, 1.0),
-                                 coin.SbClamp(color.alpha() / 255.0, 0.0, 1.0))
-        self.sorendermanager.setBackgroundcolor(bgcolor)
+          using it as an OpenGL clear color."""
+        bgcolor = coin.SbColor4f(max(0, min(1, color.red() / 255.0)),
+                                 max(0, min(1, color.green() / 255.0)),
+                                 max(0, min(1, color.blue() / 255.0)),
+                                 max(0, min(1, color.alpha() / 255.0)))
+        self.sorendermanager.setBackgroundColor(bgcolor)
 
     def getBackgroundColor(self):
         """  Returns color used for clearing the rendering area before
@@ -377,10 +376,10 @@ class QuarterWidget(QtOpenGL.QGLWidget):
 
         bg = self.sorendermanager.getBackgroundColor()
 
-        return QColor(coin.SbClamp(int(bg[0] * 255.0), 0, 255),
-                      coin.SbClamp(int(bg[1] * 255.0), 0, 255),
-                      coin.SbClamp(int(bg[2] * 255.0), 0, 255),
-                      coin.SbClamp(int(bg[3] * 255.0), 0, 255))
+        return QtGui.QColor(max(0, min(255, int(bg[0] * 255.0))),
+                            max(0, min(255, int(bg[1] * 255.0))),
+                            max(0, min(255, int(bg[2] * 255.0))),
+                            max(0, min(255, int(bg[3] * 255.0))))
 
     def getContextMenu(self):
         """Returns the context menu used by the widget."""

@@ -172,15 +172,34 @@ class QuarterWidget(QtOpenGL.QGLWidget):
     _sensormanager = None
     _imagereader = None
 
-    def __init__(self, context=None, parent=None, sharewidget=None, f=0,
-                 scxml="coin:scxml/navigation/examiner.xml"):
-        # FIXME 20080508 jkg: better write unit tests for this
-        if context and isinstance(context, QtOpenGL.QGLContext):
-            QtOpenGL.QGLWidget.__init__(self, context, parent, sharewidget)
-        else:
-            QtOpenGL.QGLWidget.__init__(self, parent, sharewidget)
+    def __init__(self, *args, **kwargs):
+        """
+        Constructs a QuarterWidget.
+        QuarterWidget(QWidget parent = None, QGLWidget sharewidget = None, Qt.WindowFlags f = 0, scxml = "coin:scxml/navigation/examiner.xml")
+        QuarterWidget(QGLContext context, QWidget parent = None, QGLWidget sharewidget = None, Qt.WindowFlags f = 0, scxml = "coin:scxml/navigation/examiner.xml")
+        QuarterWidget(QGLFormat format, QWidget parent = None, QGLWidget sharewidget = None, Qt.WindowFlags f = 0, scxml = "coin:scxml/navigation/examiner.xml")
+        """
 
-        if f: self.setWindowFlags(f)
+        params = ["parent", "sharewidget"]
+        values = {"parent": None, "sharewidget": None, "f": 0, "scxml": "coin:scxml/navigation/examiner.xml"}
+        values.update(kwargs)
+        
+        if len(args) > 0 and isinstance(args[0], QtOpenGL.QGLContext) or "context" in kwargs:
+            params.insert(0, "context")
+        elif len(args) > 0 and isinstance(args[0], QtOpenGL.QGLFormat) or "format" in kwargs:
+            params.insert(0, "format")
+
+        if len(args) > len(params):
+            values["f"] = args[len(params)]
+
+        if len(args) > len(params) + 1:
+            values["scxml"] = args[len(params) + 1]
+
+        for i in range(len(args), len(params)):
+            args += (values[params[i]],)
+
+        QtOpenGL.QGLWidget.__init__(self, *args[:len(params)])
+        if values["f"]: self.setWindowFlags(values["f"])
 
         # initialize Sensormanager and ImageReader instances only once
         if not QuarterWidget._sensormanager:
@@ -190,7 +209,7 @@ class QuarterWidget(QtOpenGL.QGLWidget):
             QuarterWidget._imagereader = ImageReader()
 
         self.cachecontext_list = []
-        self.cachecontext = self.findCacheContext(self, sharewidget)
+        self.cachecontext = self.findCacheContext(self, values["sharewidget"])
         self.statecursormap = {}
 
         self.scene = None
@@ -205,7 +224,7 @@ class QuarterWidget(QtOpenGL.QGLWidget):
         self.eventmanager = EventManager(self)
         self.devicemanager = DeviceManager(self)
 
-        statemachine = coin.ScXML.readFile(scxml)
+        statemachine = coin.ScXML.readFile(values["scxml"])
         if statemachine and statemachine.isOfType(coin.SoScXMLStateMachine.getClassTypeId()):
             sostatemachine = coin.cast(statemachine, "SoScXMLStateMachine")
             statemachine.addStateChangeCallback(statechangeCB, self)

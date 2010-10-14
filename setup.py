@@ -218,6 +218,8 @@ class pivy_build(build):
                 print red("not set. (SoQt bindings won't be built)")
         else:
             for gui in self.SOGUI:
+                if not self.MODULES.has_key(gui):
+                    continue
                 gui_config_cmd = self.MODULES[gui][1]
                 if not self.check_cmd_exists(gui_config_cmd):
                     self.MODULES.pop(gui, None)

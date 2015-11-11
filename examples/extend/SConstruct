@@ -1,0 +1,69 @@
+###
+# Copyright (c) 2002-2007 Systems in Motion
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+#
+
+import os, sys
+import distutils.sysconfig
+
+SetOption('implicit_cache', 1)
+
+opts = Options('custom.py')
+opts.AddOptions(BoolOption('warnings', 'compilation with -Wall', 0),
+                BoolOption('debug', 'debug output and symbols', 0))
+
+env = Environment(ENV = os.environ,
+                  options = opts,
+                  tools=['default'])
+
+Help(opts.GenerateHelpText(env))
+
+if env['debug']:
+    env.Append(CCFLAGS = (str(Platform()) == 'win32') and ['/Zi'] or ['-g'])
+else:
+    env.Append(CCFLAGS = (str(Platform()) == 'win32') and ['/O2'] or ['-O2'])
+
+if str(Platform()) != 'win32' and env['warnings']:
+    env.Append(CCFLAGS = '-Wall')
+
+
+if str(Platform()) == 'win32':
+    env.Append(CPPPATH = os.getenv("COINDIR") + os.sep + 'include')
+    env.Append(CPPDEFINES = 'COIN_DLL')
+    env.Append(CPPFLAGS = Split('/wd4244 /wd4049'))
+    env.Append(LIBPATH = (sys.exec_prefix + os.sep + 'libs').split())
+    env.Append(LIBPATH = os.getenv('COINDIR') + '\\lib' )
+    env.Append(LIBS = 'coin2.lib')
+    INCLUDE_DIR = os.getenv("COINDIR") + os.sep + 'include'
+else:
+    env.ParseConfig('coin-config --cppflags --libs --ldflags')
+    INCLUDE_DIR = os.popen('coin-config --includedir').read()
+
+PIVY_ROOT = '../..'
+
+env.Append(CPPPATH = ['.', PIVY_ROOT + '/interfaces', distutils.sysconfig.get_python_inc()])
+env.Append(LIBPATH = [PIVY_ROOT, distutils.sysconfig.get_python_lib()])
+env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars().get('LINKFORSHARED', '').split())
+
+SWIG_SUPPRESS_WARNINGS = '-w302,306,307,312,389,361,362,467,503,509,510'
+env.Append(SWIGFLAGS = '-c++ -python -includeall -modern -D__PIVY__ ' +
+           '-I. -I%s/interfaces -I%s/fake_headers -I/usr/local/include -I%s %s' %
+           (PIVY_ROOT, PIVY_ROOT, INCLUDE_DIR, SWIG_SUPPRESS_WARNINGS))
+
+lib = env.SharedLibrary('_shapescale', Split('shapescale.i ShapeScale.cpp'),
+                        SHLIBPREFIX = '',
+                        SHLIBSUFFIX = distutils.sysconfig.get_config_vars()['SO'],
+                        SWIGCXXFILESUFFIX = '_wrap.cpp')
+
+env.Clean(lib, Split('shapescale.py shapescale.pyc'))

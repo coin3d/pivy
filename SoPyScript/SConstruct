@@ -1,0 +1,62 @@
+###
+# Copyright (c) 2002-2009 Kongsberg SIM
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+#
+
+import os, sys
+import distutils.sysconfig
+
+SetOption('implicit_cache', 1)
+
+opts = Variables('custom.py')
+opts.AddVariables(BoolVariable('warnings', 'compilation with -Wall', 1),
+                  BoolVariable('debug', 'debug output and symbols', 0))
+
+env = Environment(ENV = os.environ, variables = opts)
+
+Help(opts.GenerateHelpText(env))
+
+if env['debug']:
+    env.Append(CCFLAGS = (str(Platform()) == 'win32') and ['/Zi'] or ['-g'])
+else:
+    env.Append(CCFLAGS = (str(Platform()) == 'win32') and ['/O2'] or ['-O2'])
+
+if str(Platform()) != 'win32' and env['warnings']:
+    env.Append(CCFLAGS = '-Wall')
+
+sopyscript_env = env.Clone()
+
+# Use suncc on OpenSolaris
+if str(Platform()) == 'sunos':
+    sopyscript_env.Tool("suncc")
+
+if str(Platform()) == 'win32':
+    sopyscript_env.Append(CPPPATH = os.getenv("COINDIR") + os.sep + 'include')
+    sopyscript_env.Append(CPPDEFINES = Split('COIN_DLL PYSCRIPT_DLL PYSCRIPT_EXPORTS'))
+    sopyscript_env.Append(CPPFLAGS = Split('/wd4244 /wd4049'))
+    sopyscript_env.Append(LIBPATH = sys.exec_prefix + os.sep + 'libs')
+    sopyscript_env.Append(LINKFLAGS = os.getenv('COINDIR') + '\\lib\\coin4.lib')
+else:
+    sopyscript_env.ParseConfig('coin-config --cppflags --libs --ldflags')
+
+sopyscript_env.Append(CPPPATH = ['.', distutils.sysconfig.get_python_inc()])
+sopyscript_env.Append(LIBPATH = ['..', distutils.sysconfig.get_python_lib()])
+
+sopyscript_env.Append(LINKFLAGS = distutils.sysconfig.get_config_vars().get('LINKFORSHARED', '').split() +
+                                  distutils.sysconfig.get_config_vars().get('BLDLIBRARY', '').split())
+
+sopyscript_env.Depends('SoPyScript.cpp', 'swigpyrun.h')
+sopyscript_env.Command('swigpyrun.h', '',
+                       'swig -python -external-runtime swigpyrun.h')
+sopyscript_env.SharedLibrary('SoPyScript', 'SoPyScript.cpp')

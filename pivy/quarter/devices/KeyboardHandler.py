@@ -18,7 +18,7 @@ from PyQt4 import QtCore
 
 from pivy import coin
 
-from DeviceHandler import DeviceHandler
+from .DeviceHandler import DeviceHandler
 
 
 class KeyboardHandler(DeviceHandler):

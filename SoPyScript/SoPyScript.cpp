@@ -536,7 +536,12 @@ SoPyScript::executePyScript(void)
     // add the field handler to the handler registry
     PyDict_SetItemString(PRIVATE(this)->handler_registry_dict, 
                          fieldName.getString(),
-                         PyString_FromString(funcname.getString()));
+#ifdef PY_2
+                         PyString_FromString(funcname.getString());
+#else
+                         PyString_FromString(funcname.getString());
+#endif
+                         )
   }
 
   // check if the script denotes an URL or path
@@ -551,8 +556,12 @@ SoPyScript::executePyScript(void)
     SbStringList subdirs;
     SbString fullName = SoInput::searchForFile(pyString, SoInput::getDirectories(), subdirs);
     if (fullName != "") { pyString = fullName; }
-    
-    PyObject * url = PyString_FromString(pyString.getString());
+    PyObject * url = 
+#ifdef PY_2
+      PyString_FromString(pyString.getString());
+#else
+      PyBytes_FromString(pyString.getString());
+#endif
 
     // add the url to the global dict
     PyDict_SetItemString(PRIVATE(this)->local_module_dict, "url", url);
@@ -567,7 +576,11 @@ SoPyScript::executePyScript(void)
     PyObject * script_new = PyDict_GetItemString(PRIVATE(this)->local_module_dict, "script");
     if (script_new != Py_None) {
       pyString.makeEmpty();
-      pyString = PyString_AsString(script_new);
+      pyString = 
+#ifdef PY_2
+        PyString_AsString(script_new);
+#else
+        PyBytes_AsString(script_new);
     }
     Py_DECREF(url);
   }
@@ -610,22 +623,38 @@ SoPyScript::eval_cb(void * data, SoSensor *)
       if (!funcname) { continue; }
 
       // check if it is a string
+#ifdef PY_2
       if (PyString_Check(funcname)) {
+#else
+      if (PyBytes_Check(funcname)) {
+#endif
         // get the function handle in the global module dictionary if available
         PyObject * func = PyDict_GetItemString(PRIVATE(self)->local_module_dict,
+#ifdef PY_2
                                                PyString_AsString(funcname));
+#else
+                                               PyBytes_AsString(funcname));
+#endif
         if (!func) { continue; }
 
         if (coin_getenv("PIVY_DEBUG")) {
           SoDebugError::postInfo("SoPyScript::eval_cb",
                                  "fieldname: %s, funcname: %s, func: %p",
                                  fieldname.getString(),
+#ifdef PY_2
                                  PyString_AsString(funcname),
+#else
+                                 PyBytes_AsString(funcname),
+#endif
                                  func);
         }
 
         if (!PyCallable_Check(func)) {
+#ifdef PY_2
           SbString errMsg(PyString_AsString(funcname));
+#else
+          SbString errMsg(PyBytes_AsString(funcname));
+#endif
           errMsg += " is not a callable object!";
           PyErr_SetString(PyExc_TypeError, errMsg.getString());
         } else {

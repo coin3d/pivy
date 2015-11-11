@@ -14,8 +14,8 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-import EventManager
-import DragDropHandler
+from . import EventManager
+from . import DragDropHandler
 
 EventManager = EventManager.EventManager
 DragDropHandler = DragDropHandler.DragDropHandler

@@ -116,17 +116,17 @@ from PyQt4 import QtCore, QtGui, QtOpenGL
 
 from pivy import coin
 
-from devices import DeviceManager
-from devices import MouseHandler
-from devices import KeyboardHandler
+from .devices import DeviceManager
+from .devices import MouseHandler
+from .devices import KeyboardHandler
 
-from eventhandlers import EventManager
-from eventhandlers import DragDropHandler
+from .eventhandlers import EventManager
+from .eventhandlers import DragDropHandler
 
-from SensorManager import SensorManager
-from ImageReader import ImageReader
+from .SensorManager import SensorManager
+from .ImageReader import ImageReader
 
-from ContextMenu import ContextMenu
+from .ContextMenu import ContextMenu
 
 
 # FIXME 20080508 jkg: change to private/static method?

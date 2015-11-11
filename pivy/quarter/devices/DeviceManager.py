@@ -85,7 +85,7 @@ class DeviceManager:
 
     def unregisterDevice(self, device):
         """unregister a device"""
-        print "FIXME jkg: unregisterdevice not completely tested/ported"
+        print("FIXME jkg: unregisterdevice not completely tested/ported")
         if device in self.devices:
             self.devices.removeAt(self.devices.indexOf(device))
         else:

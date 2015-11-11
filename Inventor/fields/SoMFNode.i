@@ -29,7 +29,7 @@ def setValues(*args):
      return _coin.SoMFNode_setValues(args[0], 0, len(args[1]), args[1])
    elif len(args) == 3:
      return _coin.SoMFNode_setValues(args[0], args[1], len(args[2]), args[2])
-   return apply(_coin.SoMFNode_setValues,args)
+   return _coin.SoMFNode_setValues(*args)
 %}
 
 %ignore SoMFNode::getValues(const int start) const;

@@ -43,13 +43,21 @@ from distutils import sysconfig
 # Gentoo is Python friendly, so be especially friendly to them! ;)
 try:
     from portage.output import green, blue, turquoise, red, yellow
-    print red("Oooh, it's a Gentoo! Nice nice! tuhtah salutes you! :)")
+    print(red("Oooh, it's a Gentoo! Nice nice! tuhtah salutes you! :)"))
 except:
-    def red(text): return text
-    def green(text): return text
-    def blue(text): return text
-    def turquoise(text): return text
-    def yellow(text): return text
+    try:
+        from colorama import Fore, Style
+        def red(text): return Fore.RED + text + Style.RESET_ALL
+        def green(text): return Fore.GREEN + text + Style.RESET_ALL
+        def blue(text): return Fore.BLUE + text + Style.RESET_ALL
+        def turquoise(text): return Fore.CYAN + text + Style.RESET_ALL
+        def yellow(text): return Fore.YELLOW + text + Style.RESET_ALL
+    except:
+        def red(text): return text
+        def green(text): return text
+        def blue(text): return text
+        def turquoise(text): return text
+        def yellow(text): return text
 
 PIVY_CLASSIFIERS = """\
 Development Status :: 5 - Production/Stable
@@ -114,20 +122,29 @@ class pivy_build(build):
 
 """
 
-    SWIG = ((sys.platform == "win32" and "swig.exe") or "swig")
+    SWIG = ((sys.platform == "win32" and "swig3.0.exe") or "swig3.0")
 
-    SWIG_SUPPRESS_WARNINGS = "-w302,306,307,312,389,361,362,467,503,509,510"
-    SWIG_PARAMS = "-c++ -python -includeall -modern -D__PIVY__ " + \
-                  "-I. -Ifake_headers -I\"%s\" %s -o %s_wrap.cpp " + \
-                  "interfaces" + os.sep + "%s.i"
+    SWIG_SUPPRESS_WARNINGS = "-w302,306,307,312,314,325,361,362,467,389,503,509,510"
+    if sys.version_info.major < 3:
+        SWIG_PARAMS = "-c++ -python -includeall -modern -D__PIVY__ " + \
+                      "-I. -Ifake_headers -I\"%s\" %s -o %s_wrap.cpp " + \
+                      "interfaces" + os.sep + "%s.i"
+    else:
+        SWIG_PARAMS = "-c++ -python -includeall -modern -py3 -D__PIVY__ " + \
+                      "-I. -Ifake_headers -I\"%s\" %s -o %s_wrap.cpp " + \
+                      "interfaces" + os.sep + "%s.i"
+
 
     SOGUI = ['soqt', 'soxt', 'sogtk', 'sowin']
-    MODULES = {'coin'      : ('_coin',      'coin-config',      'pivy.'),
-               'simvoleon' : ('_simvoleon', 'simvoleon-config', 'pivy.'),
-               'soqt'      : ('gui._soqt',  'soqt-config',      'pivy.gui.'),
-               'soxt'      : ('gui._soxt',  'soxt-config',      'pivy.gui.'),
-               'sogtk'     : ('gui._sogtk', 'sogtk-config',     'pivy.gui.'),
-               'sowin'     : ('gui._sowin', 'sowin-config',     'pivy.gui.')}
+    MODULES = {'coin'      : ['_coin',      'coin-config',      'pivy.',        "coin"],
+               'simvoleon' : ['_simvoleon', 'simvoleon-config', 'pivy.',        "simvoleon"],
+               'soqt'      : ['gui._soqt',  'soqt-config',      'pivy.gui.',    "soqt"],
+               'soxt'      : ['gui._soxt',  'soxt-config',      'pivy.gui.',    "soxt"],
+               'sogtk'     : ['gui._sogtk', 'sogtk-config',     'pivy.gui.',    "sogtk"],
+               'sowin'     : ['gui._sowin', 'sowin-config',     'pivy.gui.',    "sowin"]}
+
+    if sys.version_info.major < 3:
+        MODULES['coin'][3] = "coin2"
 
     SUPPORTED_SWIG_VERSIONS = ['1.3.31', '1.3.33', '1.3.35', '1.3.40']
     SWIG_VERSION = ""
@@ -163,19 +180,19 @@ class pivy_build(build):
 
     def check_cmd_exists(self, cmd):
         "return the path of the specified command if it exists"
-        print blue("Checking for %s..." % cmd),
+        print(blue("Checking for %s..." % cmd))
         for path in os.environ['PATH'].split(os.path.pathsep):
             if os.path.exists(os.path.join(path, cmd)):
-                print blue("'%s'" % os.path.join(path, cmd))
+                print(blue("'%s'" % os.path.join(path, cmd)))
                 return 1
-        print red("not found.")
+        print(red("not found."))
         return 0
 
     def check_python_version(self):
         "check the Python version"
-        print blue("Python version...%s" % sys.version.split(" ")[0])
+        print(blue("Python version...%s" % sys.version.split(" ")[0]))
         if int(sys.version[0]) < 2:
-            print red("Pivy only works with Python versions >= 2.0.")
+            print(red("Pivy only works with Python versions >= 2.0."))
             sys.exit(1)
 
     def check_coin_version(self):
@@ -183,12 +200,12 @@ class pivy_build(build):
         if sys.platform == "win32": return
         if not self.check_cmd_exists("coin-config"):
             sys.exit(1)
-        print blue("Coin version..."),
+        print(blue("Coin version..."))
         version = self.do_os_popen("coin-config --version")
-        print blue("%s" % version)
+        print(blue("%s" % version))
         if not version.startswith('3'):
-            print yellow("** Warning: Pivy has only been tested with Coin "
-                         "versions Coin-dev 3.")
+            print(yellow("** Warning: Pivy has only been tested with Coin "
+                         "versions Coin-dev 3."))
 
     def check_simvoleon_version(self):
         "return if SIMVoleon is available and check the version"
@@ -196,89 +213,88 @@ class pivy_build(build):
             self.MODULES.pop('simvoleon', None)
             return False
 
-        print blue("SIMVoleon version..."),
+        print(blue("SIMVoleon version..."))
         version = self.do_os_popen("simvoleon-config --version")
-        print blue("%s" % version)
+        print(blue("%s" % version))
         if not version.startswith('2.0'):
-            print yellow("** Warning: Pivy has only been tested with SIMVoleon "
-                         "versions 2.0.x.")
+            print(yellow("** Warning: Pivy has only been tested with SIMVoleon "
+                         "versions 2.0.x."))
         return True
 
     def check_gui_bindings(self):
         "check for availability of SoGui bindings and removes the not available ones"
         if sys.platform == "win32":
-            print "Coin and SoWin are built by default on Windows..."
+            print("Coin and SoWin are built by default on Windows...")
             self.MODULES.pop('soxt', None)
             self.MODULES.pop('sogtk', None)
-            print blue("Checking for QTDIR environment variable..."),
+            print(blue("Checking for QTDIR environment variable..."))
             if os.getenv("QTDIR"):
-                print blue(os.getenv("QTDIR"))
+                print(blue(os.getenv("QTDIR")))
             else:
                 self.MODULES.pop('soqt', None)
-                print red("not set. (SoQt bindings won't be built)")
+                print(red("not set. (SoQt bindings won't be built)"))
         else:
             for gui in self.SOGUI:
-                if not self.MODULES.has_key(gui):
+                if gui not in self.MODULES:
                     continue
                 gui_config_cmd = self.MODULES[gui][1]
                 if not self.check_cmd_exists(gui_config_cmd):
                     self.MODULES.pop(gui, None)
                 else:
-                    print blue("Checking for %s version..." % gui),
+                    print(blue("Checking for %s version..." % gui))
                     version = self.do_os_popen("%s --version" % gui_config_cmd)
-                    print blue("%s" % version)
+                    print(blue("%s" % version))
 
     def get_coin_features(self):
         "set the global variable SWIG_COND_SYMBOLS needed for conditional " + \
         "wrapping"
         if sys.platform == "win32": return
-        print blue("Checking for Coin features..."),
+        print(blue("Checking for Coin features..."))
         if not os.system("coin-config --have-feature 3ds_import"):
             self.SWIG_COND_SYMBOLS.append("-DHAVE_FEATURE_3DS_IMPORT")
-            print green("3ds import "),
+            print(green("3ds import "))
 
         if not os.system("coin-config --have-feature vrml97"):
             self.SWIG_COND_SYMBOLS.append("-DHAVE_FEATURE_VRML97")
-            print green("vrml97 "),
+            print(green("vrml97 "))
 
         if not os.system("coin-config --have-feature sound"):
             self.SWIG_COND_SYMBOLS.append("-DHAVE_FEATURE_SOUND")
-            print green("sound "),
+            print(green("sound "))
 
         if not os.system("coin-config --have-feature superglu"):
             self.SWIG_COND_SYMBOLS.append("-DHAVE_FEATURE_SUPERGLUE")
-            print green("superglu "),
+            print(green("superglu "))
 
         if not os.system("coin-config --have-feature threads"):
             self.SWIG_COND_SYMBOLS.append("-DHAVE_FEATURE_THREADS")
-            print green("threads "),
+            print(green("threads "))
 
         if not os.system("coin-config --have-feature threadsafe"):
             self.SWIG_COND_SYMBOLS.append("-DHAVE_FEATURE_THREADSAFE")
-            print green("threadsafe "),
+            print(green("threadsafe "))
 
-        print
+        print()
 
     def check_swig_version(self, swig):
         "check for the swig version"
         global SWIG_VERSION
         if not self.check_cmd_exists(swig):
             sys.exit(1)
-        print blue("Checking for SWIG version..."),
+        print(blue("Checking for SWIG version..."))
         p = subprocess.Popen("%s -version" % swig, 
                              shell=True, stdout=subprocess.PIPE)
-        version = p.stdout.readlines()[1].strip().split(" ")[2]
+        version = str(p.stdout.readlines()[1].strip()).split(" ")[2]
         p.stdout.close()
-        print blue("%s" % version)
+        print(blue("%s" % version))
         SWIG_VERSION = version
         if not version in self.SUPPORTED_SWIG_VERSIONS:
-            print yellow("Warning: Pivy has only been tested with the following " + \
-                         "SWIG versions: %s." % " ".join(self.SUPPORTED_SWIG_VERSIONS))
+            print(yellow("Warning: Pivy has only been tested with the following " + \
+                         "SWIG versions: %s." % " ".join(self.SUPPORTED_SWIG_VERSIONS)))
 
     def copy_and_swigify_headers(self, includedir, dirname, files):
         """Copy the header files to the local include directories. Add an
         #include line at the beginning for the SWIG interface files..."""
-
         for file in files:
             if not os.path.isfile(os.path.join(dirname, file)):
                 continue
@@ -305,7 +321,7 @@ class pivy_build(build):
                         fd.seek(0)
                         fd.writelines(contents)
                     else:
-                        print blue("[") + red("failed") + blue("]")
+                        print(blue("[") + red("failed") + blue("]"))
                         sys.exit(1)
                     fd.close
             # fixes for SWIG 1.3.21 and upwards
@@ -324,8 +340,8 @@ class pivy_build(build):
 
     def pivy_configure(self):
         "configure Pivy"
-        print turquoise(self.PIVY_SNAKES)
-        print blue("Platform...%s" % sys.platform)
+        print(turquoise(self.PIVY_SNAKES))
+        print(blue("Platform...%s" % sys.platform))
         self.check_python_version()
         self.check_swig_version(self.SWIG)
         self.check_coin_version()
@@ -339,9 +355,10 @@ class pivy_build(build):
                 INCLUDE_DIR = self.do_os_popen("simvoleon-config --includedir")
 
             sys.stdout.write(blue("Preparing") + green(" VolumeViz ") + blue("headers:"))
-            os.path.walk("VolumeViz", self.copy_and_swigify_headers,
-                         INCLUDE_DIR)
-            print green(".")
+            dir_gen = os.walk("VolumeViz", INCLUDE_DIR)
+            for _dir, _, names in dir_gen:
+                self.copy_and_swigify_headers(INCLUDE_DIR, _dir, names)
+            print(green("."))
 
         if sys.platform == "win32":
             INCLUDE_DIR = os.path.join(os.getenv("COINDIR"), "include")
@@ -349,9 +366,10 @@ class pivy_build(build):
             INCLUDE_DIR = self.do_os_popen("coin-config --includedir")
 
         sys.stdout.write(blue("Preparing") + green(" Inventor ") + blue("headers:"))
-        os.path.walk("Inventor", self.copy_and_swigify_headers,
-                     INCLUDE_DIR)
-        print green(".")
+        dir_gen = os.walk("Inventor", INCLUDE_DIR)
+        for _dir, _, names in dir_gen:
+            self.copy_and_swigify_headers(INCLUDE_DIR, _dir, names)
+        print(green("."))
 
     def swig_generate(self):
         "build all available modules"
@@ -361,6 +379,7 @@ class pivy_build(build):
             module_name = self.MODULES[module][0]
             config_cmd = self.MODULES[module][1]
             module_pkg_name = self.MODULES[module][2]
+            mod_hack_name = self.MODULES[module][3]
             mod_out_prefix = module_pkg_name.replace('.', os.sep) + module
             
             if sys.platform == "win32":
@@ -383,34 +402,33 @@ class pivy_build(build):
                     mod_include_dir = self.do_os_popen("%s --includedir" % config_cmd)
                     if mod_include_dir != INCLUDE_DIR:
                         INCLUDE_DIR += '\" -I\"%s' % mod_include_dir
-                CPP_FLAGS = self.do_os_popen("%s --cppflags" % config_cmd)
+                CPP_FLAGS = self.do_os_popen("%s --cppflags" % config_cmd) + " -Wno-unused"
                 LDFLAGS_LIBS = self.do_os_popen("%s --ldflags --libs" % config_cmd)
 
             if not os.path.isfile(mod_out_prefix + "_wrap.cpp"):
-                print red("\n=== Generating %s_wrap.cpp for %s ===\n" %
-                          (mod_out_prefix, module))
-                print blue(self.SWIG + " " + self.SWIG_SUPPRESS_WARNINGS + " " + self.SWIG_PARAMS %
+                print(red("\n=== Generating %s_wrap.cpp for %s ===\n" %
+                          (mod_out_prefix, module)))
+                print(blue(self.SWIG + " " + self.SWIG_SUPPRESS_WARNINGS + " " + self.SWIG_PARAMS %
                            (INCLUDE_DIR,
                             self.CXX_INCS,
-                            mod_out_prefix, module))
+                            mod_out_prefix, module)))
                 if os.system(self.SWIG + " " + self.SWIG_SUPPRESS_WARNINGS + " " + self.SWIG_PARAMS %
                              (INCLUDE_DIR,
                               self.CXX_INCS,
-                              mod_out_prefix, module)):
-                    print red("SWIG did not generate wrappers successfully! ** Aborting **")
+                              mod_out_prefix, mod_hack_name)):
+                    print(red("SWIG did not generate wrappers successfully! ** Aborting **"))
                     sys.exit(1)
             else:
-                print red("=== %s_wrap.cpp for %s already exists! ===" % (mod_out_prefix, module_pkg_name + module))
+                print(red("=== %s_wrap.cpp for %s already exists! ===" % (mod_out_prefix, module_pkg_name + module)))
 
             self.ext_modules.append(Extension(module_name, [mod_out_prefix + "_wrap.cpp"],
                                               extra_compile_args=(self.CXX_INCS + CPP_FLAGS).split(),
                                               extra_link_args=(self.CXX_LIBS + LDFLAGS_LIBS).split()))
-            self.py_modules.append(module_pkg_name + module)
 
     def run(self):
         "the entry point for the distutils build class"
         if sys.platform == "win32" and not os.getenv("COINDIR"):
-            print "Please set the COINDIR environment variable to your Coin root directory! ** Aborting **"
+            print("Please set the COINDIR environment variable to your Coin root directory! ** Aborting **")
             sys.exit(1)
 
         self.pivy_configure()
@@ -423,7 +441,7 @@ class pivy_clean(clean):
     pivy_path = 'pivy' + os.sep
     gui_path = 'pivy' + os.sep + 'gui' + os.sep
     REMOVE_FILES = (pivy_path + '__init__.pyc', gui_path + '__init__.pyc',
-                    pivy_path + 'coin_wrap.cpp',  pivy_path + 'coin.py',  pivy_path + 'coin.pyc',
+                    pivy_path + 'coin_wrap.cpp', pivy_path + 'coin2_wrap.cpp',  pivy_path + 'coin.py',  pivy_path + 'coin.pyc',
                     pivy_path + 'simvoleon_wrap.cpp',  pivy_path + 'simvoleon.py',  pivy_path + 'simvoleon.pyc',
                     gui_path + 'soqt_wrap.cpp',  gui_path + 'soqt.py',  gui_path + 'soqt.pyc',
                     gui_path + 'sogtk_wrap.cpp', gui_path + 'sogtk.py', gui_path + 'sogtk.py',
@@ -442,18 +460,24 @@ class pivy_clean(clean):
     def run(self):
         "the entry point for the distutils clean class"
         sys.stdout.write(blue("Cleaning headers:"))
-        os.path.walk("Inventor", self.remove_headers, None)
-        os.path.walk("VolumeViz", self.remove_headers, None)
+        dir_gen = os.walk("Inventor")
+        for _dir, _, names in dir_gen:
+            self.remove_headers(None, _dir, names)
+
+        dir_gen = os.walk("VolumeViz")
+        for _dir, _, names in dir_gen:
+            self.remove_headers(None, _dir, names)
+
         # remove the SWIG generated wrappers
         for wrapper_file in self.REMOVE_FILES:
             if os.path.isfile(wrapper_file):
                 sys.stdout.write(' ' + turquoise(wrapper_file))
                 os.remove(wrapper_file)
-        print green(".")
+        print(green("."))
 
         clean.run(self)
 
-for i in reversed(range(len(sys.argv))):
+for i in reversed(list(range(len(sys.argv)))):
     if sys.argv[i][:10] == "--without-":
         pivy_build.MODULES.pop(sys.argv[i][10:], None)
         del sys.argv[i]
@@ -472,7 +496,7 @@ setup(name = "Pivy",
       ext_modules = pivy_build.ext_modules,
       py_modules  = pivy_build.py_modules,
       packages = ['pivy', 'pivy.gui'],
-      classifiers = filter(None, PIVY_CLASSIFIERS.split("\n")),
+      classifiers = [_f for _f in PIVY_CLASSIFIERS.split("\n") if _f],
       license = "BSD License",
       platforms = ['Any']
       )

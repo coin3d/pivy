@@ -5,9 +5,9 @@ def __init__(self, *args):
    newobj = None
    if len(args) == 2:
       args = (args[0], (args[0], args[1], "SoDelayQueueSensor *"))
-      newobj = apply(_coin.new_SoDelayQueueSensor_scb_v, args)
+      newobj = _coin.new_SoDelayQueueSensor_scb_v(*args)
    else:
-      newobj = apply(_coin.new_SoDelayQueueSensor, args)
+      newobj = _coin.new_SoDelayQueueSensor(*args)
    if newobj:
       self.this = newobj.this
       self.thisown = 1

@@ -47,11 +47,12 @@
 
 %feature("shadow") SoMFColor::setValues(int start, int num, const float rgb[][3]) %{
 def setValues(*args):
-   if len(args) == 2:
-     return _coin.SoMFColor_setValues(args[0], 0, len(args[1]), args[1])
-   elif len(args) == 3:
-     return _coin.SoMFColor_setValues(args[0], args[1], len(args[2]), args[2])
-   return apply(_coin.SoMFColor_setValues,args)
+  if len(args) == 2:
+    return _coin.SoMFColor_setValues(args[0], 0, len(args[1]), args[1])
+  elif len(args) == 3:
+    return _coin.SoMFColor_setValues(args[0], args[1], len(args[2]), args[2])
+
+  return _coin.SoMFColor_setValues(*args)
 %}
 
 %ignore SoMFColor::getValues(const int start) const;

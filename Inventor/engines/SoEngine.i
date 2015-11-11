@@ -5,7 +5,7 @@
     def __getattr__(self, name):
         try:
             return SoFieldContainer.__getattr__(self, name)
-        except AttributeError, e:
+        except AttributeError as e:
             out = self.getOutput(SbName(name))
             if out is None:
                 raise e

@@ -13,7 +13,7 @@
   def __getattr__(self, name):
     try:
         return SoBase.__getattribute__(self, name)
-    except AttributeError, e:
+    except AttributeError as e:
         field = self.getField(name)
         if field is None:
             raise e

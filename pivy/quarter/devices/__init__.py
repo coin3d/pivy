@@ -14,9 +14,9 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-import DeviceManager
-import MouseHandler
-import KeyboardHandler
+from . import DeviceManager
+from . import MouseHandler
+from . import KeyboardHandler
 
 DeviceManager = DeviceManager.DeviceManager
 MouseHandler = MouseHandler.MouseHandler

@@ -17,8 +17,15 @@
   {
     Py_ssize_t len = size[0] * size[1] * nc;
     unsigned char * image;
-
+#ifdef PY_2
     PyString_AsStringAndSize(pixels, (char **)&image, &len);
+#else
+    PyObject *  b_pixels = pixels;
+    if  (PyUnicode_Check(pixels)){
+      b_pixels = PyUnicode_AsEncodedString(pixels, "utf-8", "Error ~");
+    }
+    PyBytes_AsStringAndSize(b_pixels, (char **)&image, &len);
+#endif
     self->setValue(size, nc, image);
   }
 

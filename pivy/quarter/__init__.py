@@ -14,6 +14,6 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-import QuarterWidget
+from . import QuarterWidget
 
 QuarterWidget = QuarterWidget.QuarterWidget

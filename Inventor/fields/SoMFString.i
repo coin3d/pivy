@@ -6,7 +6,11 @@
       $1 = (char **)malloc(len * sizeof(char *));
       for (int i = 0; i < len; i++ ) {
         PyObject * item = PyObject_Str(PySequence_GetItem($input,i));
+#ifdef PY_2
         $1[i] = PyString_AsString(item);
+#else
+        $1[i] = PyBytes_AsString(item);
+#endif
         Py_DECREF(item);
       }
     }
@@ -46,8 +50,13 @@ def setValues(*args):
   Py_XDECREF($result); /* free up any previous result */
   $result = PyList_New(*$1);
   if (result) {
-    for (int i = 0; i < *$1; i++){ 
-      PyObject * str = PyString_FromString(result[i].getString());
+    for (int i = 0; i < *$1; i++){
+      PyObject * str = 
+#ifdef PY_2
+        PyString_FromString(result[i].getString());
+#else
+        PyUnicode_DecodeUTF8(result[i].getString(), strlen(result[i].getString()), "Error ~");
+#endif
       PyList_SetItem($result, i, str);
     }
   }

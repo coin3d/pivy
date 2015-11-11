@@ -21,11 +21,11 @@ __all__ = ['coin']
 try:
     import sys, dl
     sys.setdlopenflags(dl.RTLD_GLOBAL | sys.getdlopenflags())
-except Exception, e:
+except Exception as e:
     None
 
 # initialize the Coin system
-from coin import SoDB, SoNodeKit, SoInteraction
+from .coin import SoDB, SoNodeKit, SoInteraction
 SoDB.init()
 SoNodeKit.init()
 SoInteraction.init()

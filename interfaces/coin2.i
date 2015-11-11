@@ -14,6 +14,20 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+// define PY_2 for c++ preprocessor
+#ifndef PY_2
+#define PY_2
+#endif
+
+// define PY_2 for swig preprocessor
+%{
+#ifndef PY_2
+#define PY_2
+#endif
+%}
+
+
+
 %define COIN_MODULE_DOCSTRING
 "Pivy is a Coin binding for Python. Coin is a high-level 3D graphics
 library with a C++ Application Programming Interface. Coin uses
@@ -61,15 +75,9 @@ typedef SoGLLazyElement::GLState GLState;
 */
 
 %pythoncode %{        
-for x in list(locals()):
-  value = locals()[x]
-  try:
-    if isinstance(value, type) and issubclass(value, SoFieldContainer):
-      for name in list(value.__dict__):
-        val = value.__dict__[name]
-        if isinstance(val, property):
-          delattr(value, name)
-  except NameError:
-    # value == SoSearchAction_duringSearchAll ???
-    pass
+for x in locals().values():
+  if isinstance(x, type) and issubclass(x, SoFieldContainer):
+    for name, thing in x.__dict__.items():
+      if isinstance(thing, property):
+        delattr(x, name)
 %}

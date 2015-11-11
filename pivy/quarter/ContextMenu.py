@@ -21,7 +21,7 @@ from PyQt4.QtGui import QMenu, QMouseEvent, QActionGroup, QAction
 from pivy import coin
 from pivy.coin import SoEventManager, SoScXMLStateMachine, SoRenderManager, SoGLRenderAction
 
-from eventhandlers import EventManager
+from .eventhandlers import EventManager
 
 
 class ContextMenu(QObject):

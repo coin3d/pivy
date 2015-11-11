@@ -18,7 +18,7 @@ from PyQt4 import QtCore, QtGui
 
 from pivy import coin
 
-from DeviceHandler import DeviceHandler
+from .DeviceHandler import DeviceHandler
 
 class MouseHandler(DeviceHandler):
     def __init__(self):

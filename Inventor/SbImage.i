@@ -9,9 +9,18 @@
     PyErr_SetString(PyExc_TypeError,"null reference"); SWIG_fail;
   }
   $3 = PyInt_AsLong(nc);
-  if (PyString_Check(buf)) {
+#ifdef PY_2
+  if (PyString_Check(buf))
+#else
+  if (PyBytes_Check(buf))
+#endif
+  {
     Py_ssize_t len = (*$2)[0] * (*$2)[1] * $3;
+#ifdef PY_2
     PyString_AsStringAndSize(buf, (char **)&image, &len);
+#else
+    PyBytes_AsStringAndSize(buf, (char **)&image, &len);
+#endif
     $1 = image;
   } else {
     PyErr_SetString(PyExc_TypeError, "expected a string."); SWIG_fail;
@@ -31,7 +40,11 @@
   $3 = PyInt_AsLong(nc);
   if (PyString_Check(buf)) {
     Py_ssize_t len = (*$2)[0] * (*$2)[1] * (*$2)[2] * $3;
+#ifdef PY_2
     PyString_AsStringAndSize(buf, (char **)&image, &len);
+#else
+    PyBytes_AsStringAndSize(buf, (char **)&image, &len);
+#endif
     $1 = image;
   } else {
     PyErr_SetString(PyExc_TypeError, "expected a string."); SWIG_fail;
@@ -49,9 +62,18 @@
     PyErr_SetString(PyExc_TypeError,"null reference"); SWIG_fail;
   }
   $2 = PyInt_AsLong(nc);
-  if (PyString_Check(buf)) {
+#ifdef PY_2
+  if (PyString_Check(buf))
+#else
+  if (PyBytes_Check(buf))
+#endif
+  {
     Py_ssize_t len = (*$1)[0] * (*$1)[1] * $2;
+#ifdef PY_2
     PyString_AsStringAndSize(buf, (char **)&image, &len);
+#else
+    PyBytes_AsStringAndSize(buf, (char **)&image, &len);
+#endif
     $3 = image;
   } else {
     PyErr_SetString(PyExc_TypeError, "expected a string."); SWIG_fail;
@@ -69,9 +91,18 @@
     PyErr_SetString(PyExc_TypeError,"null reference"); SWIG_fail;
   }
   $2 = PyInt_AsLong(nc);
-  if (PyString_Check(buf)) {
+#ifdef PY_2
+  if (PyString_Check(buf))
+#else
+  if (PyBytes_Check(buf))
+#endif
+  {
     Py_ssize_t len = (*$1)[0] * (*$1)[1] * ((*$1)[2] ? (*$1)[2] : 1) * $2;
+#ifdef PY_2
     PyString_AsStringAndSize(buf, (char **)&image, &len);
+#else
+    PyBytes_AsStringAndSize(buf, (char **)&image, &len);
+#endif
     $3 = image;
   } else {
     PyErr_SetString(PyExc_TypeError, "expected a string."); SWIG_fail;

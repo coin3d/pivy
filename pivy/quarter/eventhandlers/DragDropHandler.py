@@ -24,7 +24,7 @@
 
 from PyQt4.QtCore import QEvent
 
-from EventHandler import EventHandler
+from .EventHandler import EventHandler
 
 
 # FIXME 20080508 jkg: we need to verify that this actually works, maybe its just vista..

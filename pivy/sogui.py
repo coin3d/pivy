@@ -53,7 +53,7 @@ class SoGui_Proxy:
                             sogui = __import__('pivy.gui.sogtk').gui.sogtk
                             gui = 'SoGtk'
                         except ImportError:
-                            print 'SoGui proxy error: None of the known Gui bindings were found! Please specify one!'
+                            print('SoGui proxy error: None of the known Gui bindings were found! Please specify one!')
                             sys.exit(1)
 
         # check if object is a user provided string possibly a new unknown SoGui binding.
@@ -62,7 +62,7 @@ class SoGui_Proxy:
             try:
                 sogui = getattr(__import__('pivy.gui.' + gui.lower()).gui, gui.lower())
             except ImportError:
-                print 'SoGui proxy error: The specified Gui binding could not be bound!'
+                print('SoGui proxy error: The specified Gui binding could not be bound!')
                 sys.exit(1)
 
         # get a handle to our global module dictionary
@@ -80,11 +80,11 @@ class SoGui_Proxy:
 
     def __getattr__(self, name):
         if self.debug:
-            print 'SoGui_Proxy: __getattr__() called for %s().' % name
+            print ('SoGui_Proxy: __getattr__() called for %s().' % name)
         return getattr(self.__gui__, name)
 
     def __repr__(self):
-        return 'SoGui proxy for ' + `self.__gui__`
+        return 'SoGui proxy for ' + repr(self.__gui__)
 
     def __hash__(self):
         return 0
@@ -94,7 +94,7 @@ class SoGui_Proxy:
 # look for user overrides in the main dictionary of the interpreter
 gui, debug = None, False
 
-if sys.modules.has_key('__main__'):
+if '__main__' in sys.modules:
     try:
         debug = sys.modules['__main__'].SOGUI_DEBUG
     except AttributeError:
@@ -130,16 +130,16 @@ if not gui:
                 pass
 
         class SoGuiViewer(object):
-            BROWSER, EDITOR = range(2)
+            BROWSER, EDITOR = list(range(2))
 
             VIEW_AS_IS, VIEW_HIDDEN_LINE, VIEW_NO_TEXTURE, \
             VIEW_LOW_COMPLEXITY, VIEW_LINE, VIEW_POINT, VIEW_BBOX, \
             VIEW_LOW_RES_LINE, VIEW_LOW_RES_POINT, VIEW_SAME_AS_STILL, \
-            VIEW_WIREFRAME_OVERLAY = range(11)
+            VIEW_WIREFRAME_OVERLAY = list(range(11))
 
-            STILL, INTERACTIVE = range(2)
-            BUFFER_SINGLE, BUFFER_DOUBLE, BUFFER_INTERACTIVE = range(3)
-            VARIABLE_NEAR_PLANE, CONSTANT_NEAR_PLANE = range(2)
+            STILL, INTERACTIVE = list(range(2))
+            BUFFER_SINGLE, BUFFER_DOUBLE, BUFFER_INTERACTIVE = list(range(3))
+            VARIABLE_NEAR_PLANE, CONSTANT_NEAR_PLANE = list(range(2))
 
         class SoGui_Quarter_Wrapper(object):
             """A SoGui QuarterWidget wrapper"""

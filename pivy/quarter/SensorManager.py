@@ -23,7 +23,7 @@ from pivy.coin import SoDB
 from pivy.coin import SbTime
 from pivy.coin import SoRenderManager
 
-from SignalThread import SignalThread
+from .SignalThread import SignalThread
 
 
 class SensorManager(QObject):

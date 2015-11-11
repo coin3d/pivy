@@ -24,6 +24,10 @@
 typedef int Py_ssize_t;
 #endif
 
+#if PY_MAJOR_VERSION >= 3
+  #define IS_PY3K
+#endif
+
 /* a casting helper function */
 SWIGEXPORT PyObject *
 cast(PyObject * self, PyObject * args)
@@ -285,18 +289,42 @@ autocast_event(SoEvent * event)
 %typemap(typecheck) SbName & {
   void *ptr = NULL;
   $1 = 1;
-  if (!PyString_Check($input) && (SWIG_ConvertPtr($input, (void**)(&ptr), SWIGTYPE_p_SbName, 0) == -1)) {
+#ifdef PY_2
+  if (!PyString_Check($input) && 
+     (SWIG_ConvertPtr($input, (void**)(&ptr), SWIGTYPE_p_SbName, 0) == -1)) 
+#else
+  if (!PyBytes_Check($input) && 
+    !PyUnicode_Check($input) && 
+    (SWIG_ConvertPtr($input, (void**)(&ptr), $descriptor(SbName *), 0) == -1))
+#endif
+  {
     $1 = 0;
   }
 }
 
 %typemap(in) SbName & {
-  if (PyString_Check($input)) {
+#ifdef PY_2
+  if (PyString_Check($input))
+  {
     $1 = new SbName(PyString_AsString($input));
-  } else {
+  }
+#else
+  if (PyBytes_Check($input))
+  {
+    $1 = new SbName(PyBytes_AsString($input));
+  }
+  else if  (PyUnicode_Check($input)){
+    $1 = new SbName(PyBytes_AsString(PyUnicode_AsEncodedString($input, "utf-8", "Error ~")));
+  }
+#endif
+   else {
     SbName * tmp = NULL;
     $1 = new SbName;
+#ifdef PY_2
     SWIG_ConvertPtr($input, (void**)&tmp, SWIGTYPE_p_SbName, 1);
+#else
+    SWIG_ConvertPtr($input, (void**)&tmp,  $descriptor(SbName *), 1);
+#endif
     *$1 = *tmp;
   }
 }
@@ -308,17 +336,41 @@ autocast_event(SoEvent * event)
 %typemap(typecheck) SbName {
   void *ptr = NULL;
   $1 = 1;
-  if (!PyString_Check($input) && (SWIG_ConvertPtr($input, (void**)(&ptr), SWIGTYPE_p_SbName, 0) == -1)) {
+#ifdef PY_2
+  if (!PyString_Check($input) && 
+      !PyUnicode_Check($input) && 
+     (SWIG_ConvertPtr($input, (void**)(&ptr), SWIGTYPE_p_SbName, 0) == -1))
+#else       
+  // http://stackoverflow.com/questions/2807887/cs-char-by-swig-got-problem-in-python-3-0
+  if (!PyBytes_Check($input) &&
+     !PyUnicode_Check($input) && 
+     (SWIG_ConvertPtr($input, (void**)(&ptr), $descriptor(SbString *), 0) == -1))
+#endif 
+  {
     $1 = 0;
   }
 }
 
 %typemap(in) SbName {
-  if (PyString_Check($input)) {
+#ifdef PY_2
+  if (PyString_Check($input)){
     $1 = SbName(PyString_AsString($input));
-  } else {
+  }
+#else
+  if (PyBytes_Check($input)){
+    $1 = SbName(PyBytes_AsString($input));
+  }
+  else if  (PyUnicode_Check($input)){
+    $1 = SbName(PyBytes_AsString(PyUnicode_AsEncodedString($input, "utf-8", "Error ~")));
+  }
+#endif
+  else {
     SbName * namePtr;
+#ifdef PY_2
     SWIG_ConvertPtr($input, (void**)&namePtr, SWIGTYPE_p_SbName, 1);
+#else
+    SWIG_ConvertPtr($input, (void**)&namePtr, $descriptor(SbName *), 1);
+#endif
     $1 = *namePtr;
   }
 }
@@ -326,18 +378,42 @@ autocast_event(SoEvent * event)
 %typemap(typecheck) SbString & {
   void *ptr = NULL;
   $1 = 1;
-  if (!PyString_Check($input) && (SWIG_ConvertPtr($input, (void**)(&ptr), SWIGTYPE_p_SbString, 0) == -1)) {
+#ifdef PY_2
+  if (!PyString_Check($input) && 
+     (SWIG_ConvertPtr($input, (void**)(&ptr), SWIGTYPE_p_SbString, 0) == -1)) 
+#else
+  if (!PyBytes_Check($input) &&
+      !PyUnicode_Check($input) && 
+     (SWIG_ConvertPtr($input, (void**)(&ptr), $descriptor(SbString *), 0) == -1))
+#endif
+  {
     $1 = 0;
   }
 }
 
 %typemap(in) SbString & {
-  if (PyString_Check($input)) {
+#ifdef PY_2
+  if (PyString_Check($input))  
+  {
     $1 = new SbString(PyString_AsString($input));
-  } else {
+  }
+#else
+  if (PyBytes_Check($input))  
+  {
+    $1 = new SbString(PyBytes_AsString($input));
+  }
+  else if  (PyUnicode_Check($input)){
+     $1 = new SbString(PyBytes_AsString(PyUnicode_AsEncodedString($input, "utf-8", "Error ~")));
+  }
+#endif
+  else {
     SbString * tmp = NULL;
     $1 = new SbString;
+#ifdef PY_2
     SWIG_ConvertPtr($input, (void**)&tmp, SWIGTYPE_p_SbString, 1);
+#else
+    SWIG_ConvertPtr($input, (void**)&tmp, $descriptor(SbString *), 1);
+#endif
     *$1 = *tmp;
   }
 }
@@ -349,7 +425,12 @@ autocast_event(SoEvent * event)
 %typemap(typecheck) SbTime & {
   void *ptr = NULL;
   $1 = 1;
-  if (!PyFloat_Check($input) && (SWIG_ConvertPtr($input, (void**)(&ptr), SWIGTYPE_p_SbTime, 0) == -1)) {
+#ifdef PY_2
+  if (!PyFloat_Check($input) && (SWIG_ConvertPtr($input, (void**)(&ptr), SWIGTYPE_p_SbTime, 0) == -1))
+#else
+  if (!PyFloat_Check($input) && (SWIG_ConvertPtr($input, (void**)(&ptr), $descriptor(SbTime *), 0) == -1))
+#endif
+  {
     $1 = 0;
   }
 }
@@ -360,7 +441,11 @@ autocast_event(SoEvent * event)
   } else {
     SbTime * tmp = NULL;
     $1 = new SbTime;
+#ifdef PY_2
     SWIG_ConvertPtr($input, (void**)&tmp, SWIGTYPE_p_SbTime, 1);
+#else
+    SWIG_ConvertPtr($input, (void**)&tmp, $descriptor(SbTime *), 1);
+#endif
     *$1 = *tmp;
   }
 }
@@ -370,9 +455,18 @@ autocast_event(SoEvent * event)
 }
 
 %typemap(in) FILE * {
+#ifdef PY_2
   if (PyFile_Check($input)) {
     $1 = PyFile_AsFile($input);
-  } else {
+  }
+#else
+  extern PyTypeObject PyIOBase_Type;
+  if(PyObject_IsInstance($input, (PyObject *)&PyIOBase_Type) ) {
+    int fd = PyObject_AsFileDescriptor($input);
+    $1 = fdopen(fd, "w");
+  }
+#endif
+  else {
     PyErr_SetString(PyExc_TypeError, "expected a file object.");
   }
 }

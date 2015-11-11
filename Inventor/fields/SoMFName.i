@@ -6,7 +6,11 @@
       $1 = (char **)malloc(len * sizeof(char *));
       for (int i = 0; i < len; i++) {
         PyObject * item = PyObject_Str(PySequence_GetItem($input,i));
+#ifdef PY_2
         $1[i] = PyString_AsString(item);
+#else
+        $1[i] = PyBytes_AsString(PyUnicode_AsEncodedString(item, "utf-8", "Error ~"));
+#endif
         Py_DECREF(item);
       }
     } else { $1 = NULL; }
@@ -31,7 +35,7 @@ def setValues(*args):
      return _coin.SoMFName_setValues(args[0], 0, len(args[1]), args[1])
    elif len(args) == 3:
      return _coin.SoMFName_setValues(args[0], args[1], len(args[2]), args[2])
-   return apply(_coin.SoMFName_setValues,args)
+   return _coin.SoMFName_setValues(*args)
 %}
 
 %ignore SoMFName::getValues(const int start) const;
@@ -46,7 +50,12 @@ def setValues(*args):
   $result = PyList_New(*$1);
   if (result) {
     for (int i = 0; i < *$1; i++) {
-      PyObject * str = PyString_FromString(result[i].getString());
+      PyObject * str = 
+#ifdef PY_2
+        PyString_FromString(result[i].getString());
+#else
+        PyUnicode_DecodeUTF8(result[i].getString(), strlen(result[i].getString()), "Error ~");
+#endif
       PyList_SetItem($result, i, str);
     }
   }

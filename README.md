@@ -1,5 +1,6 @@
 General build instructions:
 ---------------------------
+[![Build Status](https://travis-ci.org/looooo/pivy.svg?branch=master)](https://travis-ci.org/looooo/pivy)
 
 Pivy uses distutils[0]. To build Pivy, run 
 

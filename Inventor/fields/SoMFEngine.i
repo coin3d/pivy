@@ -23,14 +23,13 @@
 %typemap(typecheck,precedence=SWIG_TYPECHECK_POINTER) SoEngine ** {
   $1 = PySequence_Check($input) ? 1 : 0;
 }
-
 %feature("shadow") SoMFEngine::setValues(const int , const int , const SoEngine **) %{
 def setValues(*args):
    if len(args) == 2:
      return _coin.SoMFEngine_setValues(args[0], 0, len(args[1]), args[1])
    elif len(args) == 3:
      return _coin.SoMFEngine_setValues(args[0], args[1], len(args[2]), args[2])
-   return apply(_coin.SoMFEngine_setValues,args)
+   return _coin.SoMFEngine_setValues(*args)
 %}
 
 %ignore SoMFEngine::getValues(const int start) const;

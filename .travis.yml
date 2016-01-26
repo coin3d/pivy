@@ -2,7 +2,7 @@ dist: trusty
 language: python
 python:
   - "2.7"
-  - "3.4"
+  - "3.5"
 before_install:
   - sudo add-apt-repository ppa:teward/swig3.0 -y
   - sudo apt-get update -qq

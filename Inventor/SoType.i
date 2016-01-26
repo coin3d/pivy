@@ -24,8 +24,4 @@ static const SoType SoType::overrideType(const SoType originalType,
     }
     return autocast_base((SoBase*)self->createInstance());
   }
-  %pythoncode %{
-    def __hash__(self):
-      super(SoType, self).__hash__()
-  %}
 }

@@ -4,14 +4,14 @@
    * decreased */
   ~SoBase() { self->unref();}
 
+long __hash__() { return (long) $self; }
+
 %pythoncode %{
     def __eq__(self,other):
-      return other and (self.this == other.this) or False
+      return (self.this == other.this) if other is not None else False
     def __ne__(self,other):
-      return other and (self.this != other.this) or True
+      return (self.this != other.this) if other is not None else True
     def __nonzero__(self):
       return True
-    def __hash__(self):
-      return super(SoBase, self).__hash__()
 %}
 }

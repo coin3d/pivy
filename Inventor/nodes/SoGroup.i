@@ -23,5 +23,15 @@
   /* methods to emulate Python Container object */
   int __len__(void) { return self->getNumChildren(); }
   int __contains__(const SoNode * node ) { return (self->findChild(node) != -1); }
-  SoNode * __getitem__(int index) { return self->getChild(index); }
+  SoNode * __getitem__(int index) {
+        if (index >= 0 and index < self->getNumChildren())
+        {
+            return self->getChild(index); 
+        }
+        else{
+            PyErr_SetString(PyExc_IndexError,"index out of bounds");
+            PyErr_Print();
+            return NULL;
+        }
+    }
 }

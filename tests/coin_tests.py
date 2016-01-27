@@ -1070,6 +1070,10 @@ class SoGroupMethods(unittest.TestCase):
         g.addChild(c2)
         self.assertEqual(g[0], c)
         self.assertEqual(g[1], c2)
+        try:
+            g[2]
+        except IndexError as e:
+            test_sucessfully = True
 
     def testIAdd(self):
         g = SoGroup()

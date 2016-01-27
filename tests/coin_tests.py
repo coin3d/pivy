@@ -1168,5 +1168,15 @@ class SoPathTests(unittest.TestCase):
         for i in path.index():
             self.assertEqual(i, 0)
 
+class SoInputTests(unittest.TestCase):
+    """check method SoInput.setBuffer"""
+
+    def setUp(self):
+        self.text = "Separator {}"
+        self.input = SoInput()
+
+    def testSetBuffer(self):
+        self.input.setBuffer(self.text)
+
 if __name__ == "__main__":
     unittest.main(verbosity=4)

@@ -1071,6 +1071,12 @@ class SoGroupMethods(unittest.TestCase):
         self.assertEqual(g[0], c)
         self.assertEqual(g[1], c2)
 
+    def testIAdd(self):
+        g = SoGroup()
+        c = SoCone()
+        d = SoCube()
+        g += [c, [g]]
+
 class SbBaseClasses(unittest.TestCase):
     """checks methods and operators of and between various Sb* classes"""
     def testConstructors(self):

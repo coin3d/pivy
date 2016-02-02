@@ -14,6 +14,10 @@
     try:
         return SoBase.__getattribute__(self, name)
     except AttributeError as e:
+      ## added this to avoid recursive error, but I have no idea why
+        if name == "this":
+          raise AttributeError
+      ##############################################################
         field = self.getField(name)
         if field is None:
             raise e

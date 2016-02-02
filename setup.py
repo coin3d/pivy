@@ -402,7 +402,7 @@ class pivy_build(build):
                     mod_include_dir = self.do_os_popen("%s --includedir" % config_cmd)
                     if mod_include_dir != INCLUDE_DIR:
                         INCLUDE_DIR += '\" -I\"%s' % mod_include_dir
-                CPP_FLAGS = self.do_os_popen("%s --cppflags" % config_cmd) + " -Wno-unused"
+                CPP_FLAGS = self.do_os_popen("%s --cppflags" % config_cmd) + " -Wno-unused -Wno-maybe-uninitialized"
                 LDFLAGS_LIBS = self.do_os_popen("%s --ldflags --libs" % config_cmd)
 
             if not os.path.isfile(mod_out_prefix + "_wrap.cpp"):

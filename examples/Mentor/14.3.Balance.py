@@ -98,7 +98,7 @@ def tipTheBalance(support, # The nodekit representing 'support', the
         startRot *= stringIncrement     
         xf.rotation = startRot
 
-        # eventCB.setHandled()
+        eventCB.setHandled()
 
 def main():
     # Initialize Inventor and Qt

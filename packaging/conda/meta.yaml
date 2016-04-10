@@ -1,0 +1,21 @@
+package:
+  name: pivy
+  version: 0.5.0
+
+build:
+  number: 1
+
+source:
+  path: ../../
+
+requirements:
+  build:
+    - python
+    - swig
+    - coin
+  run:
+    - python
+    - coin
+
+about:
+  summary: python buindings to coin

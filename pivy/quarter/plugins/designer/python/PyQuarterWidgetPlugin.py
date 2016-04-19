@@ -22,7 +22,7 @@ $install_prefix/site-packages/pivy/quarter/plugins to the
 QT_PLUGIN_PATH environment variable.
 """
 
-from PyQt4 import QtGui, QtDesigner
+from PySide import QtGui, QtDesigner
 from pivy import coin, quarter
 
 class PyQuarterWidgetPlugin(QtDesigner.QPyDesignerCustomWidgetPlugin):

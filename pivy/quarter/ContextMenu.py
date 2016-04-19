@@ -14,9 +14,9 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-from PyQt4 import QtCore
-from PyQt4.QtCore import QObject, QVariant
-from PyQt4.QtGui import QMenu, QMouseEvent, QActionGroup, QAction
+from PySide import QtCore
+from PySide.QtCore import QObject
+from PySide.QtGui import QMenu, QMouseEvent, QActionGroup, QAction
 
 from pivy import coin
 from pivy.coin import SoEventManager, SoScXMLStateMachine, SoRenderManager, SoGLRenderAction
@@ -76,7 +76,7 @@ class ContextMenu(QObject):
             action = QAction(second, self)
             action.setCheckable(True)
             action.setChecked(self._rendermanager.getRenderMode() == first)
-            action.setData(QVariant(first))
+            action.setData(first)
             self.rendermodeactions.append(action)
             self.rendermodegroup.addAction(action)
             self.rendermenu.addAction(action)
@@ -86,7 +86,7 @@ class ContextMenu(QObject):
             action = QAction(second, self)
             action.setCheckable(True)
             action.setChecked(self._rendermanager.getStereoMode() == first)
-            action.setData(QVariant(first))
+            action.setData(first)
             self.stereomodeactions.append(action)
             self.stereomodegroup.addAction(action)
             self.stereomenu.addAction(action)
@@ -96,7 +96,7 @@ class ContextMenu(QObject):
             action = QAction(second, self)
             action.setCheckable(True)
             action.setChecked(self._rendermanager.getGLRenderAction().getTransparencyType() == first)
-            action.setData(QVariant(first))
+            action.setData(first)
             self.transparencytypeactions.append(action)
             self.transparencytypegroup.addAction(action)
             self.transparencymenu.addAction(action)
@@ -149,10 +149,19 @@ class ContextMenu(QObject):
             sostatemachine.processEventQueue()
 
     def changeRenderMode(self, action):
-        self._rendermanager.setRenderMode(action.data().toInt()[0])
+        try:
+            self._rendermanager.setRenderMode(action.data().toInt()[0])
+        except AttributeError:
+            self._rendermanager.setRenderMode(action.data())
 
     def changeStereoMode(self, action):
-        self._rendermanager.setStereoMode(action.data().toInt()[0])
+        try:
+            self._rendermanager.setStereoMode(action.data().toInt()[0])
+        except AttributeError:
+            self._rendermanager.setStereoMode(action.data())
 
     def changeTransparencyType(self, action):
-        self._quarterwidget.setTransparencyType(action.data().toInt()[0])
+        try:
+            self._quarterwidget.setTransparencyType(action.data().toInt()[0])
+        except AttributeError:
+            self._quarterwidget.setTransparencyType(action.data())

@@ -23,8 +23,8 @@
   functionality
 """
 
-from PyQt4.QtCore import QEvent
-from PyQt4.QtGui import QMouseEvent
+from PySide.QtCore import QEvent
+from PySide.QtGui import QMouseEvent
 from pivy.coin import SoLocation2Event
 from pivy.coin import SbVec2s
 

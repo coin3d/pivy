@@ -22,7 +22,7 @@
   DeviceManager by default.
 """
 
-from PyQt4.QtCore import QEvent
+from PySide.QtCore import QEvent
 
 from .EventHandler import EventHandler
 

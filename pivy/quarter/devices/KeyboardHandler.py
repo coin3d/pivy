@@ -14,7 +14,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-from PyQt4 import QtCore
+from PySide import QtCore
 
 from pivy import coin
 
@@ -62,8 +62,10 @@ class KeyboardHandler(DeviceHandler):
             sokey = self._keypadmap[qkey]
         else:
             sokey = self._keyboardmap[qkey]
-
-        printable = str(qevent.text().toAscii())
+        try:
+            printable = str(qevent.text().toAscii())
+        except AttributeError:      # python3
+            printable = str(qevent.text())
         self._keyboard.setPrintableCharacter(printable)
         self._keyboard.setKey(sokey)
 

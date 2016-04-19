@@ -14,10 +14,10 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-from PyQt4.QtCore import QThread
-from PyQt4.QtCore import QWaitCondition
-from PyQt4.QtCore import QMutex
-from PyQt4.QtCore import SIGNAL
+from PySide.QtCore import QThread
+from PySide.QtCore import QWaitCondition
+from PySide.QtCore import QMutex
+from PySide.QtCore import SIGNAL
 
 
 class SignalThread(QThread):

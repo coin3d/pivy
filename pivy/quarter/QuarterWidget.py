@@ -110,9 +110,7 @@
   \subpage examiner
 """
 
-import logging
-
-from PyQt4 import QtCore, QtGui, QtOpenGL
+from PySide import QtCore, QtGui, QtOpenGL
 
 from pivy import coin
 

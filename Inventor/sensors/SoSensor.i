@@ -34,7 +34,7 @@ SoSensorPythonCB(void * data, SoSensor * sensor)
   Py_DECREF(pysensor);
   Py_XDECREF(result);
   
-  PyGILState_STATE gil = PyGILState_Ensure();
+  PyGILState_Release(gil);
 }
 %}
 

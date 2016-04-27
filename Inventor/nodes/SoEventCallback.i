@@ -2,6 +2,7 @@
 static void
 SoEventPythonCallBack(void * userdata, SoEventCallback * node)
 {
+  PyGILState_STATE gil = PyGILState_Ensure();
   PyObject *func, *arglist;
   PyObject *result, *evCB;
 
@@ -19,6 +20,7 @@ SoEventPythonCallBack(void * userdata, SoEventCallback * node)
   Py_DECREF(arglist);
   Py_DECREF(evCB);
   Py_XDECREF(result);
+  PyGILState_Release(gil);
 }
 %}
 

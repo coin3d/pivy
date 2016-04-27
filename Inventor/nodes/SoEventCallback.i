@@ -38,21 +38,18 @@ SoEventPythonCallBack(void * userdata, SoEventCallback * node)
 
 /* add python specific callback functions */
 %extend SoEventCallback {
-  void addEventCallback(SoType eventtype, 
+  PyObject* addEventCallback(SoType eventtype, 
                         PyObject *pyfunc, 
                         PyObject *userdata = NULL) {
-    self->addEventCallback(eventtype, SoEventPythonCallBack,
-                           (void *)Py_BuildValue("(OO)",
-                                                 pyfunc,
-                                                 userdata ? userdata : Py_None));
+
+    PyObject* tuple = Py_BuildValue("(OO)", pyfunc, userdata ? userdata : Py_None);
+    self->addEventCallback(eventtype, SoEventPythonCallBack, (void *)tuple);
+    return tuple;
   }
   
   void removeEventCallback(SoType eventtype, 
-                           PyObject *pyfunc, 
-                           PyObject *userdata = NULL) {
+                           PyObject *tuple) {
     self->removeEventCallback(eventtype, SoEventPythonCallBack,
-                              (void *)Py_BuildValue("(OO)",
-                                                    pyfunc,
-                                                    userdata ? userdata : Py_None));
+                              (void *)tuple);
   }
 }

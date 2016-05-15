@@ -122,7 +122,7 @@ class pivy_build(build):
 
 """
     
-    SWIG = ((sys.platform == "win32" and "swig3.0.exe") or "swig3.0")
+    SWIG = ((sys.platform == "win32" and "swig.exe") or "swig")
 
     SWIG_SUPPRESS_WARNINGS = "-w302,306,307,312,314,325,361,362,467,389,503,509,510"
     if sys.version_info.major < 3:

@@ -9,6 +9,7 @@ before_install:
   - sudo apt-get install -y swig3.0
   - sudo apt-get install -y libcoin80
   - sudo apt-get install -y libcoin80-dev
+  - alias swig="swig3"
 
 install:
   - python setup.py install

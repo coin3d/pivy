@@ -280,7 +280,13 @@ class pivy_build(build):
         "check for the swig version"
         global SWIG_VERSION
         if not self.check_cmd_exists(swig):
-            sys.exit(1)
+            # on some systems there is only a swig3.0 so check for this and
+            # set SWIG to "swig3.0"
+            swig = "swig3.0"
+            if not self.check_cmd_exists(swig):
+                sys.exit(1)
+            else:
+                self.SWIG = swig
         print(blue("Checking for SWIG version..."))
         p = subprocess.Popen("%s -version" % swig, 
                              shell=True, stdout=subprocess.PIPE)

@@ -112,13 +112,13 @@ if not gui:
         quarter = __import__('pivy.quarter').quarter
         gui = 'Quarter'
 
-        import PyQt4
         import pivy
+        from PySide import QtGui, QtCore
 
         class SoGui(object):
             @staticmethod
             def init(*args):
-                SoGui_Quarter_Wrapper.qApp = PyQt4.QtGui.QApplication(sys.argv)
+                SoGui_Quarter_Wrapper.qApp = QtGui.QApplication(sys.argv)
                 return pivy.quarter.QuarterWidget()
 
             @staticmethod

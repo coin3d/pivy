@@ -3,17 +3,17 @@
 ###
 # Copyright (c) 2002-2007 Systems in Motion
 #
-# Permission to use, copy, modify, and distribute this software for any
+# Permission to use, copy, modify, and distribute this coin.software for any
 # purpose with or without fee is hereby granted, provided that the above
 # copyright notice and this permission notice appear in all copies.
 #
-# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# THE coin.SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS coin.SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
 # MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
 # ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# WHATcoin.SOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS coin.SOFTWARE.
 #
 
 ###
@@ -25,8 +25,8 @@
 
 import sys
 
-from pivy.coin import *
-from pivy.sogui import *
+from PySide import QtGui
+from pivy import coin, quarter
 
 ##############################################################
 ## CODE FOR The Inventor Mentor STARTS HERE
@@ -65,22 +65,22 @@ IV_STRICT = 0
 
 # Routine to create a scene graph representing an arch.
 def makeArch():
-   result = SoSeparator()
+   result = coin.SoSeparator()
 
    if IV_STRICT:
        # This is the preferred code for Inventor 2.1 
 
-       # Using the new SoVertexProperty node is more efficient
-       myVertexProperty = SoVertexProperty()
+       # Using the new coin.SoVertexProperty node is more efficient
+       myVertexProperty = coin.SoVertexProperty()
 
        # Define the material
-       myVertexProperty.orderedRGBA = SbColor(.78, .57, .11).getPackedValue()
+       myVertexProperty.orderedRGBA = coin.SbColor(.78, .57, .11).getPackedValue()
 
        # Define coordinates for vertices
        myVertexProperty.vertex.setValues(0, 60, vertexPositions)
 
        # Define the QuadMesh.
-       myQuadMesh = SoQuadMesh()
+       myQuadMesh = coin.SoQuadMesh()
        myQuadMesh.verticesPerRow(12)
 
        myQuadMesh.verticesPerColumn(5)
@@ -90,17 +90,17 @@ def makeArch():
 
    else:
        # Define the material
-       myMaterial = SoMaterial()
+       myMaterial = coin.SoMaterial()
        myMaterial.diffuseColor = (.78, .57, .11)
        result.addChild(myMaterial)
 
        # Define coordinates for vertices
-       myCoords = SoCoordinate3()
+       myCoords = coin.SoCoordinate3()
        myCoords.point.setValues(0, 60, vertexPositions)
        result.addChild(myCoords)
 
        # Define the QuadMesh.
-       myQuadMesh = SoQuadMesh()
+       myQuadMesh = coin.SoQuadMesh()
        myQuadMesh.verticesPerRow = 12
 
        myQuadMesh.verticesPerColumn = 5
@@ -113,19 +113,17 @@ def makeArch():
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoGui.init(sys.argv[0])
-    if myWindow == None: sys.exit(1)
+    app = QtGui.QApplication([])
+    viewer = quarter.QuarterWidget()
 
     root = makeArch()
 
-    myViewer = SoGuiExaminerViewer(myWindow)
-    myViewer.setSceneGraph(root)
-    myViewer.setTitle("Quad Mesh: Arch")
-    myViewer.show()
-    myViewer.viewAll()
+    viewer.setSceneGraph(root)
+    viewer.setWindowTitle("Quad Mesh: Arch")
+    viewer.show()
+    viewer.viewAll()
 
-    SoGui.show(myWindow)
-    SoGui.mainLoop()
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
     main()

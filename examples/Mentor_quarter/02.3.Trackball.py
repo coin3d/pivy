@@ -25,34 +25,33 @@
 
 import sys
 
-from pivy.coin import *
-from pivy.sogui import *
+from PySide import QtGui
+from pivy import coin, quarter
+
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoGui.init(sys.argv[0])
-    if myWindow == None: sys.exit(1)
+    app = QtGui.QApplication(sys.argv)
+    viewer = quarter.QuarterWidget()
 
-    root = SoSeparator()
+    root = coin.SoSeparator()
 
-    myCamera = SoPerspectiveCamera()
+    myCamera = coin.SoPerspectiveCamera()
     root.addChild(myCamera)             # child 0
-    root.addChild(SoDirectionalLight()) # child 1
-    root.addChild(SoTrackballManip())   # child 2
+    root.addChild(coin.SoDirectionalLight())  # child 1
+    root.addChild(coin.SoTrackballManip())   # child 2
 
-    myMaterial = SoMaterial()
+    myMaterial = coin.SoMaterial()
     myMaterial.diffuseColor = (1.0, 0.0, 0.0)
     root.addChild(myMaterial)
-    root.addChild(SoCone())
+    root.addChild(coin.SoCone())
 
-    myRenderArea = SoGuiRenderArea(myWindow)
-    myCamera.viewAll(root, myRenderArea.getViewportRegion())
-    myRenderArea.setSceneGraph(root)
-    myRenderArea.setTitle("Trackball")
-    myRenderArea.show()
+    viewer.setSceneGraph(root)
+    viewer.setWindowTitle("Trackball")
+    viewer.viewAll()
 
-    SoGui.show(myWindow)
-    SoGui.mainLoop()
+    viewer.show()
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
     main()

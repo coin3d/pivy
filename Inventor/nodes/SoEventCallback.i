@@ -43,6 +43,7 @@ SoEventPythonCallBack(void * userdata, SoEventCallback * node)
                         PyObject *userdata = NULL) {
 
     PyObject* tuple = Py_BuildValue("(OO)", pyfunc, userdata ? userdata : Py_None);
+    Py_XINCREF(tuple);
     self->addEventCallback(eventtype, SoEventPythonCallBack, (void *)tuple);
     return tuple;
   }
@@ -51,5 +52,6 @@ SoEventPythonCallBack(void * userdata, SoEventCallback * node)
                            PyObject *tuple) {
     self->removeEventCallback(eventtype, SoEventPythonCallBack,
                               (void *)tuple);
+    Py_XDECREF(tuple);
   }
 }

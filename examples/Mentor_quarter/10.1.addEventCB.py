@@ -24,7 +24,7 @@
 # selected by picking with the left mouse button
 # (use shift key to extend the selection to more
 # than one object).
-# 
+#
 # Hitting the up arrow key will increase the size of
 # each selected object; hitting down arrow will decrease
 # the size of each selected object.
@@ -119,7 +119,7 @@ def main():
 
     # An event callback node so we can receive key press events
     myEventCB = coin.SoEventCallback()
-    tmp = myEventCB.addEventCallback(coin.SoKeyboardEvent.getClassTypeId(),
+    myEventCB.addEventCallback(coin.SoKeyboardEvent.getClassTypeId(),
                                myKeyPressCB, selectionRoot)
     selectionRoot.addChild(myEventCB)
 

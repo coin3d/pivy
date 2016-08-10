@@ -115,7 +115,7 @@ def main():
 
     # An event callback node so we can receive key press events
     myEventCB = SoEventCallback()
-    temp = myEventCB.addEventCallback(SoKeyboardEvent.getClassTypeId(), 
+    myEventCB.addEventCallback(SoKeyboardEvent.getClassTypeId(), 
                                myKeyPressCB, selectionRoot)
     selectionRoot.addChild(myEventCB)
 

@@ -315,7 +315,7 @@ class QuarterWidget(QtOpenGL.QGLWidget):
     def actualRedraw(self, *args):
         self.sorendermanager.render(True, True)
 
-    def shedulRedraw(self, *args):
+    def sheduleRedraw(self, *args):
         self.sorendermanager.scheduleRedraw()
 
     def event(self, qevent):

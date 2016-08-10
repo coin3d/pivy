@@ -64,7 +64,8 @@ def myScaleSelection(selection, sf):
 
         # Apply the scale
         scaleFactor = xform.scaleFactor.getValue()
-        scaleFactor *= sf
+        # scaleFactor *= scaleFactor !!! investigate, produce crash
+        scaleFactor = sf * scaleFactor
         xform.scaleFactor = scaleFactor
 
 ###############################################################

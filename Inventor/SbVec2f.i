@@ -23,6 +23,8 @@ convert_SbVec2f_array(PyObject *input, float temp[2])
   $1 = PySequence_Check($input) ? 1 : 0;
 }
 
+%ignore SbVec2d::__imul__;
+
 /* add operator overloading methods instead of the global functions */
 %extend SbVec2f {
   SbVec2f __add__(const SbVec2f &u) { return *self + u; }

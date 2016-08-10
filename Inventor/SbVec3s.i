@@ -25,6 +25,8 @@ convert_SbVec3s_array(PyObject * input, short temp[3])
   $1 = PySequence_Check($input) ? 1 : 0;
 }
 
+%ignore SbVec2d::__imul__;
+
 /* add operator overloading methods instead of the global functions */
 %extend SbVec3s {
   SbVec3s __add__(const SbVec3s &u) { return *self + u; }

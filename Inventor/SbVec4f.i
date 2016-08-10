@@ -27,6 +27,8 @@ convert_SbVec4f_array(PyObject * input, float temp[4])
   $1 = PySequence_Check($input) ? 1 : 0;
 }
 
+%ignore SbVec2d::__imul__;
+
 /* for some strange reason the %apply directive below doesn't work 
  * for this class on getValue(f,f,f,f)...
  * created this typemap for getValue(void) instead as a workaround.

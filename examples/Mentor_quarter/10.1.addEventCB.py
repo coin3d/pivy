@@ -63,10 +63,7 @@ def myScaleSelection(selection, sf):
                 xform = cylTransform
 
         # Apply the scale
-        scaleFactor = xform.scaleFactor.getValue()
-        # scaleFactor *= scaleFactor !!! investigate, produce crash
-        scaleFactor = sf * scaleFactor
-        xform.scaleFactor = scaleFactor
+        xform.scaleFactor = xform.scaleFactor.getValue() * sf
 
 ###############################################################
 # CODE FOR The Inventor Mentor STARTS HERE  (part 2)
@@ -193,7 +190,7 @@ def main():
 
     # Make the camera see the whole scene
     # viewportRegion = myRenderArea.getViewportRegion()
-    selectionRoot.addSelectionCallback(viewer.shedulRedraw)
+    selectionRoot.addSelectionCallback(viewer.sheduleRedraw)
 
     myCamera.viewAll(selectionRoot, viewer.sorendermanager.getViewportRegion(), 2.0)
 

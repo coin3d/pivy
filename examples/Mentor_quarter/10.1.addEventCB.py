@@ -118,7 +118,7 @@ def main():
 
     # An event callback node so we can receive key press events
     myEventCB = coin.SoEventCallback()
-    myEventCB.addEventCallback(coin.SoKeyboardEvent.getClassTypeId(),
+    tmp = myEventCB.addEventCallback(coin.SoKeyboardEvent.getClassTypeId(),
                                myKeyPressCB, selectionRoot)
     selectionRoot.addChild(myEventCB)
 
@@ -188,10 +188,11 @@ def main():
     # .setGLRenderAction(boxhra)
     
     # myRenderArea.redrawOnSelectionChange(selectionRoot)
-    # myRenderArea.setTitle("Adding Event Callbacks")
+    # viewer.setWindowTitle("Adding Event Callbacks")
 
     # Make the camera see the whole scene
     # viewportRegion = myRenderArea.getViewportRegion()
+    selectionRoot.addSelectionCallback(viewer.shedulRedraw)
 
     myCamera.viewAll(selectionRoot, viewer.sorendermanager.getViewportRegion(), 2.0)
 

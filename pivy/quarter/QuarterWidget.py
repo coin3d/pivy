@@ -309,11 +309,14 @@ class QuarterWidget(QtOpenGL.QGLWidget):
         self.sorendermanager.setViewportRegion(vp)
         self.soeventmanager.setViewportRegion(vp)
 
-    def paintGL(self):
+    def paintGL(self, *args):
         self.actualRedraw()
 
-    def actualRedraw(self):
+    def actualRedraw(self, *args):
         self.sorendermanager.render(True, True)
+
+    def shedulRedraw(self, *args):
+        self.sorendermanager.scheduleRedraw()
 
     def event(self, qevent):
         """Translates Qt Events into Coin events and passes them on to the

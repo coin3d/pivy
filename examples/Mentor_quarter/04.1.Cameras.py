@@ -20,75 +20,74 @@
 # This is an example from the Inventor Mentor,
 # chapter 4, example 1.
 #
-# Camera example.  
-# A blinker node is used to switch between three 
-# different views of the same scene. The cameras are 
+# Camera example.
+# A blinker node is used to switch between three
+# different views of the same scene. The cameras are
 # switched once per second.
 #
 
 import sys
 
-from pivy.coin import *
-from pivy.sogui import *
+from PySide import QtGui
+from pivy import coin, quarter
+
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoGui.init(sys.argv[0])
-    if myWindow == None: sys.exit(1)
+    app = QtGui.QApplication([])
+    viewer = quarter.QuarterWidget()
 
-    root = SoSeparator()
+    root = coin.SoSeparator()
 
     # Create a blinker node and put it in the scene. A blinker
     # switches between its children at timed intervals.
-    myBlinker = SoBlinker()
+    myBlinker = coin.SoBlinker()
     root.addChild(myBlinker)
 
     # Create three cameras. Their positions will be set later.
     # This is because the viewAll method depends on the size
     # of the render area, which has not been created yet.
-    orthoViewAll = SoOrthographicCamera()
-    perspViewAll = SoPerspectiveCamera()
-    perspOffCenter = SoPerspectiveCamera()
+    orthoViewAll = coin.SoOrthographicCamera()
+    perspViewAll = coin.SoPerspectiveCamera()
+    perspOffCenter = coin.SoPerspectiveCamera()
     myBlinker.addChild(orthoViewAll)
     myBlinker.addChild(perspViewAll)
     myBlinker.addChild(perspOffCenter)
 
     # Create a light
-    root.addChild(SoDirectionalLight())
+    root.addChild(coin.SoDirectionalLight())
 
     # Read the object from a file and add to the scene
-    myInput = SoInput()
+    myInput = coin.SoInput()
     if not myInput.openFile("parkbench.iv"):
         sys.exit(1)
 
-    fileContents = SoDB.readAll(myInput)
-    if fileContents == None:
+    fileContents = coin.SoDB.readAll(myInput)
+    if fileContents is None:
         sys.exit(1)
 
-    myMaterial = SoMaterial()
-    myMaterial.diffuseColor = (0.8, 0.23, 0.03) 
+    myMaterial = coin.SoMaterial()
+    myMaterial.diffuseColor = (0.8, 0.23, 0.03)
     root.addChild(myMaterial)
     root.addChild(fileContents)
 
-    myRenderArea = SoGuiRenderArea(myWindow)
-
-    # Establish camera positions. 
-    # First do a viewAll on all three cameras.  
+    # Establish camera positions.
+    # First do a viewAll on all three cameras.
     # Then modify the position of the off-center camera.
-    myRegion = SbViewportRegion(myRenderArea.getSize())
+    myRegion = viewer.getSoRenderManager().getViewportRegion()
     orthoViewAll.viewAll(root, myRegion)
     perspViewAll.viewAll(root, myRegion)
     perspOffCenter.viewAll(root, myRegion)
     initialPos = perspOffCenter.position.getValue()
-    x,y,z = initialPos.getValue()
-    perspOffCenter.position = (x+x/2., y+y/2., z+z/4.)
+    x, y, z = initialPos.getValue()
+    perspOffCenter.position = (x + x / 2., y + y / 2., z + z / 4.)
 
-    myRenderArea.setSceneGraph(root)
-    myRenderArea.setTitle("Cameras")
-    myRenderArea.show()
+    viewer.setSceneGraph(root)
+    viewer.setWindowTitle("Cameras")
 
-    SoGui.show(myWindow)
-    SoGui.mainLoop()
+    viewer.show()
+    sys.exit(app.exec_())
+
 
 if __name__ == "__main__":
     main()

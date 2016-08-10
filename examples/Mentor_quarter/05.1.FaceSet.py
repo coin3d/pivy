@@ -25,112 +25,112 @@
 
 import sys
 
-from pivy.coin import *
-from pivy.sogui import *
+from PySide import QtGui
+from pivy import coin, quarter
 
 ##############################################################
-## CODE FOR The Inventor Mentor STARTS HERE
+# CODE FOR The Inventor Mentor STARTS HERE
 
-##  Eight polygons. The first four are triangles 
-##  The second four are quadrilaterals for the sides.
+# Eight polygons. The first four are triangles
+# The second four are quadrilaterals for the sides.
 vertices = (
-   ( 0, 30, 0), (-2,27, 2), ( 2,27, 2),            #front tri
-   ( 0, 30, 0), (-2,27,-2), (-2,27, 2),            #left  tri
-   ( 0, 30, 0), ( 2,27,-2), (-2,27,-2),            #rear  tri
-   ( 0, 30, 0), ( 2,27, 2), ( 2,27,-2),            #right tri
-   (-2, 27, 2), (-4,0, 4), ( 4,0, 4), ( 2,27, 2),  #front quad
-   (-2, 27,-2), (-4,0,-4), (-4,0, 4), (-2,27, 2),  #left  quad
-   ( 2, 27,-2), ( 4,0,-4), (-4,0,-4), (-2,27,-2),  #rear  quad
-   ( 2, 27, 2), ( 4,0, 4), ( 4,0,-4), ( 2,27,-2)   #right quad
+    (0, 30, 0), (-2, 27, 2), (2, 27, 2),  # front tri
+    (0, 30, 0), (-2, 27, -2), (-2, 27, 2),  # left  tri
+    (0, 30, 0), (2, 27, -2), (-2, 27, -2),  # rear  tri
+    (0, 30, 0), (2, 27, 2), (2, 27, -2),  # right tri
+    (-2, 27, 2), (-4, 0, 4), (4, 0, 4), (2, 27, 2),  # front quad
+    (-2, 27, -2), (-4, 0, -4), (-4, 0, 4), (-2, 27, 2),  # left  quad
+    (2, 27, -2), (4, 0, -4), (-4, 0, -4), (-2, 27, -2),  # rear  quad
+    (2, 27, 2), (4, 0, 4), (4, 0, -4), (2, 27, -2)  # right quad
 )
 
 # Number of vertices in each polygon:
 numvertices = (3, 3, 3, 3, 4, 4, 4, 4)
 
 # Normals for each polygon:
-norms = ( 
-   (0, .555,  .832), (-.832, .555, 0), #front, left tris
-   (0, .555, -.832), ( .832, .555, 0), #rear, right tris
-   
-   (0, .0739,  .9973), (-.9972, .0739, 0),#front, left quads
-   (0, .0739, -.9973), ( .9972, .0739, 0),#rear, right quads
+norms = (
+    (0, .555, .832), (-.832, .555, 0),  # front, left tris
+    (0, .555, -.832), (.832, .555, 0),  # rear, right tris
+
+    (0, .0739, .9973), (-.9972, .0739, 0),  # front, left quads
+    (0, .0739, -.9973), (.9972, .0739, 0),  # rear, right quads
 )
 
 # set this variable to 0 if you want to use the other method
 IV_STRICT = 1
 
+
 def makeObeliskFaceSet():
-   obelisk = SoSeparator()
+    obelisk = coin.SoSeparator()
 
-   if IV_STRICT:
-       # This is the preferred code for Inventor 2.1
- 
-       # Using the new SoVertexProperty node is more efficient
-       myVertexProperty = SoVertexProperty()
+    if IV_STRICT:
+        # This is the preferred code for Inventor 2.1
 
-       # Define the normals used:
-       myVertexProperty.normal.setValues(0, 8, norms)
-       myVertexProperty.normalBinding = SoNormalBinding.PER_FACE
+        # Using the new SoVertexProperty node is more efficient
+        myVertexProperty = coin.SoVertexProperty()
 
-       # Define material for obelisk
-       myVertexProperty.orderedRGBA = SbColor(.4,.4,.4).getPackedValue()
+        # Define the normals used:
+        myVertexProperty.normal.setValues(0, 8, norms)
+        myVertexProperty.normalBinding = coin.SoNormalBinding.PER_FACE
 
-       # Define coordinates for vertices
-       myVertexProperty.vertex.setValues(0, 28, vertices)
+        # Define material for obelisk
+        myVertexProperty.orderedRGBA = coin.SbColor(.4, .4, .4).getPackedValue()
 
-       # Define the FaceSet
-       myFaceSet = SoFaceSet()
-       myFaceSet.numVertices.setValues(0, 8, numvertices)
- 
-       myFaceSet.vertexProperty = myVertexProperty
-       obelisk.addChild(myFaceSet)
+        # Define coordinates for vertices
+        myVertexProperty.vertex.setValues(0, 28, vertices)
 
-   else:
-       # Define the normals used:
-       myNormals = SoNormal()
-       myNormals.vector.setValues(0, 8, norms)
-       obelisk.addChild(myNormals)
-       myNormalBinding = SoNormalBinding()
-       myNormalBinding.value = SoNormalBinding.PER_FACE
-       obelisk.addChild(myNormalBinding)
+        # Define the FaceSet
+        myFaceSet = coin.SoFaceSet()
+        myFaceSet.numVertices.setValues(0, 8, numvertices)
 
-       # Define material for obelisk
-       myMaterial = SoMaterial()
-       myMaterial.diffuseColor = (.4, .4, .4)
-       obelisk.addChild(myMaterial)
+        myFaceSet.vertexProperty = myVertexProperty
+        obelisk.addChild(myFaceSet)
 
-       # Define coordinates for vertices
-       myCoords = SoCoordinate3()
-       myCoords.point.setValues(0, 28, vertices)
-       obelisk.addChild(myCoords)
+    else:
+        # Define the normals used:
+        myNormals = coin.SoNormal()
+        myNormals.vector.setValues(0, 8, norms)
+        obelisk.addChild(myNormals)
+        myNormalBinding = coin.SoNormalBinding()
+        myNormalBinding.value = coin.SoNormalBinding.PER_FACE
+        obelisk.addChild(myNormalBinding)
 
-       # Define the FaceSet
-       myFaceSet = SoFaceSet()
-       myFaceSet.numVertices.setValues(0, 8, numvertices)
-       obelisk.addChild(myFaceSet)
+        # Define material for obelisk
+        myMaterial = coin.SoMaterial()
+        myMaterial.diffuseColor = (.4, .4, .4)
+        obelisk.addChild(myMaterial)
 
-   return obelisk
+        # Define coordinates for vertices
+        myCoords = coin.SoCoordinate3()
+        myCoords.point.setValues(0, 28, vertices)
+        obelisk.addChild(myCoords)
 
-## CODE FOR The Inventor Mentor ENDS HERE
+        # Define the FaceSet
+        myFaceSet = coin.SoFaceSet()
+        myFaceSet.numVertices.setValues(0, 8, numvertices)
+        obelisk.addChild(myFaceSet)
+
+    return obelisk
+
+# CODE FOR The Inventor Mentor ENDS HERE
 ##############################################################
+
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoGui.init(sys.argv[0])
-    if myWindow == None: sys.exit(1)
+    app = QtGui.QApplication([])
+    viewer = quarter.QuarterWidget()
 
-    root = SoSeparator()
+    root = coin.SoSeparator()
 
     root.addChild(makeObeliskFaceSet())
 
-    myViewer = SoGuiExaminerViewer(myWindow)
-    myViewer.setSceneGraph(root)
-    myViewer.setTitle("Face Set: Obelisk")
-    myViewer.show()
-    myViewer.viewAll()
+    viewer.setSceneGraph(root)
+    viewer.setWindowTitle("Face Set: Obelisk")
+    viewer.show()
+    viewer.viewAll()
 
-    SoGui.show(myWindow)
-    SoGui.mainLoop()
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
     main()

@@ -25,27 +25,27 @@
 
 import sys
 
-from pivy.coin import *
-from pivy.sogui import *
+from PySide import QtGui
+from pivy import coin, quarter
+
 
 def main():
-    myWindow = SoGui.init(sys.argv[0])
-    if myWindow == None: sys.exit(1)
+    # Initialize Inventor and Qt
+    app = QtGui.QApplication(sys.argv)
+    viewer = quarter.QuarterWidget()
 
-    root = SoSeparator()
-    myMaterial = SoMaterial()
+    root = coin.SoSeparator()
+    myMaterial = coin.SoMaterial()
     myMaterial.diffuseColor = (1.0, 0.0, 0.0)
     root.addChild(myMaterial)
-    root.addChild(SoCone())
+    root.addChild(coin.SoCone())
 
     # Set up viewer:
-    myViewer = SoGuiExaminerViewer(myWindow)
-    myViewer.setSceneGraph(root)
-    myViewer.setTitle("Examiner Viewer")
-    myViewer.show()
+    viewer.setSceneGraph(root)
+    viewer.setWindowTitle("Examiner Viewer")
+    viewer.show()
+    sys.exit(app.exec_())
 
-    SoGui.show(myWindow)
-    SoGui.mainLoop()
 
 if __name__ == "__main__":
     main()

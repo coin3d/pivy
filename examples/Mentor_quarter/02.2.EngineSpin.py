@@ -25,43 +25,43 @@
 
 import sys
 
-from pivy.coin import *
-from pivy.sogui import *
+from PySide import QtGui
+from pivy import coin, quarter
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoGui.init(sys.argv[0])
-    if myWindow == None: sys.exit(1)
 
-    root = SoSeparator()
-    myCamera = SoPerspectiveCamera()
+    app = QtGui.QApplication(sys.argv)
+    viewer = quarter.QuarterWidget()
+
+    root = coin.SoSeparator()
+    myCamera = coin.SoPerspectiveCamera()
     root.addChild(myCamera)
-    root.addChild(SoDirectionalLight())
-    
+    root.addChild(coin.SoDirectionalLight())
+
     # This transformation is modified to rotate the cone
-    myRotXYZ = SoRotationXYZ()
+    myRotXYZ = coin.SoRotationXYZ()
     root.addChild(myRotXYZ)
 
-    myMaterial = SoMaterial()
+    myMaterial = coin.SoMaterial()
     myMaterial.diffuseColor = (1.0, 0.0, 0.0)   # Red
     root.addChild(myMaterial)
-    root.addChild(SoCone())
+    root.addChild(coin.SoCone())
 
     # An engine rotates the object. The output of myCounter 
     # is the time in seconds since the program started.
     # Connect this output to the angle field of myRotXYZ
-    myRotXYZ.axis = SoRotationXYZ.X     # rotate about X axis
-    myCounter = SoElapsedTime()
+    myRotXYZ.axis = coin.SoRotationXYZ.X     # rotate about X axis
+    myCounter = coin.SoElapsedTime()
     myRotXYZ.angle.connectFrom(myCounter.timeOut)
 
-    myRenderArea = SoGuiRenderArea(myWindow)
-    myCamera.viewAll(root, myRenderArea.getViewportRegion())
-    myRenderArea.setSceneGraph(root)
-    myRenderArea.setTitle("Engine Spin")
-    myRenderArea.show()
+    myCamera.viewAll(root, viewer.getSoRenderManager().getViewportRegion())
 
-    SoGui.show(myWindow)
-    SoGui.mainLoop()
+    viewer.setSceneGraph(root)
+    viewer.setWindowTitle("Engine Spin")
+
+    viewer.show()
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
     main()

@@ -24,39 +24,38 @@
 # get back nodes by name.
 #
 
-import sys
+from pivy import coin
 
-from pivy.coin import *
 
 def RemoveCube():
-   # Remove the cube named 'MyCube' from the separator named
-   # 'Root'.  In a real application, isOfType() would probably
-   # be used to make sure the nodes are of the correct type
-   # before doing the cast.
-   # In Pivy no cast is necessary as it gets autocasted for you.
+    # Remove the cube named 'MyCube' from the separator named
+    # 'Root'.  In a real application, isOfType() would probably
+    # be used to make sure the nodes are of the correct type
+    # before doing the cast.
+    # In Pivy no cast is necessary as it gets autocasted for you.
 
-   myRoot = SoNode.getByName("Root")
+    myRoot = coin.SoNode.getByName("Root")
 
-   myCube = SoNode.getByName("MyCube")
-   
-   myRoot.removeChild(myCube)
+    myCube = coin.SoNode.getByName("MyCube")
+
+    myRoot.removeChild(myCube)
 
 def main():
-   # SoDB.init() invoked automatically upon coin module import
-    
-   # Create some objects and give them names:
-   root = SoSeparator()
-   root.setName("Root")
-    
-   myCube = SoCube()
-   root.addChild(myCube)
-   myCube.setName("MyCube")
-    
-   mySphere = SoSphere()
-   root.addChild(mySphere)
-   mySphere.setName("MySphere")
-    
-   RemoveCube()
+    # SoDB.init() invoked automatically upon coin module import
 
-if __name__ == "__main__":
-   main()
+    # Create some objects and give them names:
+    root = coin.SoSeparator()
+    root.setName("Root")
+
+    myCube = coin.SoCube()
+    root.addChild(myCube)
+    myCube.setName("MyCube")
+
+    mySphere = coin.SoSphere()
+    root.addChild(mySphere)
+    mySphere.setName("MySphere")
+
+    RemoveCube()
+
+    if __name__ == "__main__":
+        main()

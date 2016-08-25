@@ -258,7 +258,15 @@ class QuarterWidget(QtOpenGL.QGLWidget):
         self.setStateCursor("spin", QtCore.Qt.OpenHandCursor)
 
         self.setMouseTracking(True)
-        self.setFocusPolicy(QtCore.Qt.StrongFocus);
+        self.setFocusPolicy(QtCore.Qt.StrongFocus)
+
+    @property
+    def sceneGraph(self):
+        return self.scene
+
+    @sceneGraph.setter
+    def sceneGraph(self, node, *args):
+        self.setSceneGraph(node)
 
     def setSceneGraph(self, node):
         if node and self.scene==node:

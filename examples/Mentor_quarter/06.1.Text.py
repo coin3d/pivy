@@ -25,68 +25,65 @@
 #
 
 import sys
+import os
 
-from pivy.coin import *
-from pivy.sogui import *
+from PySide import QtGui
+from pivy import coin, quarter
+
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoGui.init(sys.argv[0])
-    if myWindow == None: sys.exit(1)
+    app = QtGui.QApplication([])
+    viewer = quarter.QuarterWidget()
 
-    root = SoGroup()
+    root = coin.SoGroup()
 
     # Choose a font
-    myFont = SoFont()
+    myFont = coin.SoFont()
     myFont.name = "Times-Roman"
     myFont.size = 24.0
-    root.addChild(myFont)
+    root += myFont
 
     # Add the globe, a sphere with a texture map.
     # Put it within a separator.
-    sphereSep = SoSeparator()
-    myTexture2 = SoTexture2()
-    sphereComplexity = SoComplexity()
+    sphereSep = coin.SoSeparator()
+    myTexture2 = coin.SoTexture2()
+    sphereComplexity = coin.SoComplexity()
     sphereComplexity.value = 0.55
-    root.addChild(sphereSep)
-    sphereSep.addChild(myTexture2)
-    sphereSep.addChild(sphereComplexity)
-    sphereSep.addChild(SoSphere())
-    myTexture2.filename = "globe.rgb"
+    root += sphereSep
+    sphereSep += myTexture2, sphereComplexity, coin.SoSphere()
+    myTexture2.filename = os.path.join(os.path.dirname(__file__), "globe.rgb")
+
 
     # Add Text2 for AFRICA, translated to proper location.
-    africaSep = SoSeparator()
-    africaTranslate = SoTranslation()
-    africaText = SoText2()
-    africaTranslate.translation = (.25,.0,1.25)
+    africaSep = coin.SoSeparator()
+    africaTranslate = coin.SoTranslation()
+    africaText = coin.SoText2()
+    africaTranslate.translation = (.25, .0, 1.25)
     africaText.string = "AFRICA"
-    root.addChild(africaSep)
-    africaSep.addChild(africaTranslate)
-    africaSep.addChild(africaText)
+    root += africaSep
+    africaSep += africaTranslate, africaText
 
     # Add Text2 for ASIA, translated to proper location.
-    asiaSep = SoSeparator()
-    asiaTranslate = SoTranslation()
-    asiaText = SoText2()
-    asiaTranslate.translation = (.8,.8,0)
+    asiaSep = coin.SoSeparator()
+    asiaTranslate = coin.SoTranslation()
+    asiaText = coin.SoText2()
+    asiaTranslate.translation = (.8, .8, 0)
     asiaText.string = "ASIA"
-    root.addChild(asiaSep)
-    asiaSep.addChild(asiaTranslate)
-    asiaSep.addChild(asiaText)
+    root += asiaSep
+    root += asiaTranslate, asiaText
 
-    myViewer = SoGuiExaminerViewer(myWindow)
-    myViewer.setSceneGraph(root)
-    myViewer.setTitle("2D Text")
+    viewer.sceneGraph = root
+    viewer.setWindowTitle("2D Text")
 
     # In Inventor 2.1, if the machine does not have hardware texture
     # mapping, we must override the default drawStyle to display textures.
-    myViewer.setDrawStyle(SoGuiViewer.STILL, SoGuiViewer.VIEW_AS_IS)
+    # viewer.setDrawStyle(coin.SoGuiViewer.STILL, coin.SoGuiViewer.VIEW_AS_IS)
 
-    myViewer.show()
-    myViewer.viewAll()
+    viewer.show()
+    viewer.viewAll()
 
-    SoGui.show(myWindow)
-    SoGui.mainLoop()
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
     main()

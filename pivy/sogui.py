@@ -108,7 +108,7 @@ if '__main__' in sys.modules:
 # if no GUI has been specified try using Quarter
 if not gui:
     try:
-        __import__('PyQt4')
+        __import__('PySide')
         quarter = __import__('pivy.quarter').quarter
         gui = 'Quarter'
 

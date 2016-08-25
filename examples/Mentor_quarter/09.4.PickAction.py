@@ -21,22 +21,23 @@
 # chapter 9, example 4.
 #
 # Example of setting up pick actions and using the pick path.
-# A couple of objects are displayed.  The program catches 
-# mouse button events and determines the mouse position. 
+# A couple of objects are displayed.  The program catches
+# mouse button events and determines the mouse position.
 # A pick action is applied and if an object is picked the
 # pick path is printed to stdout.
 #
 
 import sys
 
-from pivy.coin import *
-from pivy.sogui import *
+from PySide import QtGui
+from pivy import coin, quarter
 
 ###############################################################
 # CODE FOR The Inventor Mentor STARTS HERE
 
+
 def writePickedPath(root, viewport, cursorPosition):
-    myPickAction = SoRayPickAction(viewport)
+    myPickAction = coin.SoRayPickAction(viewport)
 
     # Set an 8-pixel wide region around the pixel
     myPickAction.setPoint(cursorPosition)
@@ -45,87 +46,83 @@ def writePickedPath(root, viewport, cursorPosition):
     # Start a pick traversal
     myPickAction.apply(root)
     myPickedPoint = myPickAction.getPickedPoint()
-    if myPickedPoint == None: return FALSE
+    if myPickedPoint == None:
+        return False
 
     # Write out the path to the picked object
-    myWriteAction = SoWriteAction()
+    myWriteAction = coin.SoWriteAction()
     myWriteAction.apply(myPickedPoint.getPath())
 
-    return TRUE
+    return True
 
 # CODE FOR The Inventor Mentor ENDS HERE
 ###############################################################
 
 # This routine is called for every mouse button event.
+
+
 def myMousePressCB(userData, eventCB):
     root = userData
     event = eventCB.getEvent()
 
-    # Check for mouse button being pressed  
-    if SoMouseButtonEvent.isButtonPressEvent(event, SoMouseButtonEvent.ANY):
+    # Check for mouse button being pressed
+    if coin.SoMouseButtonEvent.isButtonPressEvent(event, coin.SoMouseButtonEvent.ANY):
         myRegion = eventCB.getAction().getViewportRegion()
         writePickedPath(root, myRegion, event.getPosition(myRegion))
         eventCB.setHandled()
 
+
 def main():
-    myMouseEvent = SoMouseButtonEvent()
+    myMouseEvent = coin.SoMouseButtonEvent()
 
     # Initialize Inventor and Qt
-    myWindow = SoGui.init(sys.argv[0])
-    if myWindow == None:
-        sys.exit(1)
-    
-    root = SoSeparator()
+    app = QtGui.QApplication([])
+    viewer = quarter.QuarterWidget()
+
+    root = coin.SoSeparator()
 
     # Add an event callback to catch mouse button presses.
     # The callback is set up later on.
-    myEventCB = SoEventCallback()
-    root.addChild(myEventCB)
+    myEventCB = coin.SoEventCallback()
+    root += myEventCB
 
     # Read object data from a file
-    mySceneInput = SoInput()
+    mySceneInput = coin.SoInput()
     if not mySceneInput.openFile("star.iv"):
         sys.exit(1)
-    starObject = SoDB.readAll(mySceneInput)
-    if starObject == None: sys.exit(1)
+    starObject = coin.SoDB.readAll(mySceneInput)
+    if starObject == None:
+        sys.exit(1)
     mySceneInput.closeFile()
 
     # Add two copies of the star object, one white and one red
-    myRotation = SoRotationXYZ()
-    myRotation.axis = SoRotationXYZ.X
-    myRotation.angle = M_PI/2.2  # almost 90 degrees
-    root.addChild(myRotation)
-
-    root.addChild(starObject)  # first star object
-
-    myMaterial = SoMaterial()
+    myRotation = coin.SoRotationXYZ()
+    myRotation.axis = coin.SoRotationXYZ.X
+    myRotation.angle = coin.M_PI / 2.2  # almost 90 degrees
+    myMaterial = coin.SoMaterial()
     myMaterial.diffuseColor = (1.0, 0.0, 0.0)   # red
-    root.addChild(myMaterial)
-    myTranslation = SoTranslation()
+    myTranslation = coin.SoTranslation()
     myTranslation.translation = (1.0, 0.0, 1.0)
-    root.addChild(myTranslation)
-    root.addChild(starObject)  # second star object
 
-    # Create a render area in which to see our scene graph.
-    myViewer = SoGuiExaminerViewer(myWindow)
+    root += (myRotation, starObject, myMaterial, myTranslation, starObject)
 
-    # Turn off viewing to allow picking
-    myViewer.setViewing(0)
+    # Turn off viewing to allow picking ?
+    # viewer.setViewing(0)
 
-    myViewer.setSceneGraph(root)
-    myViewer.setTitle("Pick Actions & Paths")
-    myViewer.show()
+    viewer.sceneGraph = root
+    viewer.setWindowTitle("Pick Actions & Paths")
+    viewer.show()
+    viewer.viewAll()
 
     # Set up the event callback. We want to pass the root of the
     # entire scene graph (including the camera) as the userData,
     # so we get the scene manager's version of the scene graph
     # root.
-    myEventCB.addEventCallback(SoMouseButtonEvent.getClassTypeId(),
+    myEventCB.addEventCallback(coin.SoMouseButtonEvent.getClassTypeId(),
                                myMousePressCB,
-                               myViewer.getSceneManager().getSceneGraph())
+                               viewer.sceneGraph)
 
-    SoGui.show(myWindow)
-    SoGui.mainLoop()
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
     main()

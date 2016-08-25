@@ -84,18 +84,15 @@ def tipTheBalance(support, # The nodekit representing 'support', the
         # rotating parts and modify their rotations.
 
         xf = beam1.getPart("transform", TRUE)
-        startRot = xf.rotation.getValue()
-        startRot *= beamIncrement
+        startRot = xf.rotation.getValue() * beamIncrement
         xf.rotation = startRot
 
         xf = string1.getPart("transform", TRUE)
-        startRot = xf.rotation.getValue()
-        startRot *= stringIncrement
+        startRot = xf.rotation.getValue() * stringIncrement
         xf.rotation = startRot
 
         xf = string2.getPart("transform", TRUE)
-        startRot = xf.rotation.getValue()
-        startRot *= stringIncrement     
+        startRot = xf.rotation.getValue() * stringIncrement
         xf.rotation = startRot
 
         eventCB.setHandled()

@@ -20,43 +20,42 @@
 # This is an example from the Inventor Mentor,
 # chapter 7, example 1.
 #
-# This example displays a textured cube (default 
+# This example displays a textured cube (default
 # texture coords).
 #
 
 import sys
 
-from pivy.coin import *
-from pivy.sogui import *
+from PySide import QtGui
+from pivy import coin, quarter
+
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoGui.init(sys.argv[0])
-    if myWindow == None: sys.exit(1)
+    app = QtGui.QApplication([])
+    viewer = quarter.QuarterWidget()
 
-    root = SoSeparator()
+    root = coin.SoSeparator()
 
-    # Choose a texture 
-    rock = SoTexture2()
-    root.addChild(rock)
+    # Choose a texture
+    rock = coin.SoTexture2()
+    root += rock
     rock.filename = "brick.1.rgb"
 
     # Make a cube
-    root.addChild(SoCube())
+    root += coin.SoCube()
 
-    myViewer = SoGuiExaminerViewer(myWindow)
-    myViewer.setSceneGraph(root)
-    myViewer.setTitle("Default Texture Coords")
+    viewer.sceneGraph = root
+    viewer.setWindowTitle("Default Texture Coords")
 
     # In Inventor 2.1, if the machine does not have hardware texture
     # mapping, we must override the default drawStyle to display textures.
-    # myViewer.setDrawStyle(SoGuiViewer.STILL, SoGuiViewer.VIEW_AS_IS)
-    
-    myViewer.show()
-    myViewer.viewAll()
-    
-    SoGui.show(myWindow)
-    SoGui.mainLoop()
+    # viewer.setDrawStyle(coin.SoGuiViewer.STILL, coin.SoGuiViewer.VIEW_AS_IS)
+
+    viewer.show()
+    viewer.viewAll()
+
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
     main()

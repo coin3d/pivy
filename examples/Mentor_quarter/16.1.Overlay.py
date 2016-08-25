@@ -67,7 +67,7 @@ def main():
     myViewer = SoGuiExaminerViewer(myWindow)
     myViewer.setSceneGraph(SoCone())
     myViewer.setOverlaySceneGraph(scene)
-    myViewer.setOverlayColorMap(1, 1, color)
+    # myViewer.setOverlayColorMap(1, 1, color)
     myViewer.setTitle("Overlay Plane")
    
     # Show the viewer and loop forever

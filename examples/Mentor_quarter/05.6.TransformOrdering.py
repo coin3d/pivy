@@ -22,73 +22,67 @@
 #
 # This example shows the effect of different order of
 # operation of transforms.  The left object is first
-# scaled, then rotated, and finally translated to the left.  
+# scaled, then rotated, and finally translated to the left.
 # The right object is first rotated, then scaled, and finally
 # translated to the right.
 #
 
 import sys
 
-from pivy.coin import *
-from pivy.sogui import *
+from PySide import QtGui
+from pivy import coin, quarter
+
 
 def main():
     # Initialize Inventor and Qt
-    myWindow = SoGui.init(sys.argv[0])
-    if myWindow == None: sys.exit(1)
+    app = QtGui.QApplication([])
+    viewer = quarter.QuarterWidget()
 
-    root = SoSeparator()
+    root = coin.SoSeparator()
 
     # Create two separators, for left and right objects.
-    leftSep = SoSeparator()
-    rightSep = SoSeparator()
+    leftSep = coin.SoSeparator()
+    rightSep = coin.SoSeparator()
     root.addChild(leftSep)
     root.addChild(rightSep)
 
     # Create the transformation nodes
-    leftTranslation  = SoTranslation()
-    rightTranslation = SoTranslation()
-    myRotation = SoRotationXYZ()
-    myScale = SoScale()
+    leftTranslation = coin.SoTranslation()
+    rightTranslation = coin.SoTranslation()
+    myRotation = coin.SoRotationXYZ()
+    myScale = coin.SoScale()
 
     # Fill in the values
     leftTranslation.translation = (-1.0, 0.0, 0.0)
     rightTranslation.translation = (1.0, 0.0, 0.0)
-    myRotation.angle = M_PI/2   # 90 degrees
-    myRotation.axis = SoRotationXYZ.X
+    myRotation.angle = coin.M_PI / 2   # 90 degrees
+    myRotation.axis = coin.SoRotationXYZ.X
     myScale.scaleFactor = (2., 1., 3.)
 
     # Add transforms to the scene.
-    leftSep.addChild(leftTranslation)   # left graph
-    leftSep.addChild(myRotation)        # then rotated
-    leftSep.addChild(myScale)           # first scaled
-
-    rightSep.addChild(rightTranslation) # right graph
-    rightSep.addChild(myScale)          # then scaled
-    rightSep.addChild(myRotation)       # first rotated
+    leftSep += leftTranslation, myRotation, myScale
+    rightSep += rightTranslation, myScale, myRotation
 
     # Read an object from file. (as in example 4.2.Lights)
-    myInput = SoInput()
+    myInput = coin.SoInput()
     if not myInput.openFile("temple.iv"):
         sys.exit(1)
 
-    fileContents = SoDB.readAll(myInput)
-    if fileContents == None: 
+    fileContents = coin.SoDB.readAll(myInput)
+    if fileContents is None:
         sys.exit(1)
 
     # Add an instance of the object under each separator.
-    leftSep.addChild(fileContents)
-    rightSep.addChild(fileContents)
+    leftSep += fileContents
+    rightSep += fileContents
 
     # Construct a renderArea and display the scene.
-    myViewer = SoGuiExaminerViewer(myWindow)
-    myViewer.setSceneGraph(root)
-    myViewer.setTitle("Transform Ordering")
-    myViewer.show()
-    myViewer.viewAll()
+    viewer.setSceneGraph(root)
+    viewer.setWindowTitle("Transform Ordering")
+    viewer.show()
+    viewer.viewAll()
 
-    SoGui.show(myWindow)
-    SoGui.mainLoop()
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
     main()

@@ -37,14 +37,12 @@ def main():
     root = coin.SoSeparator()
 
     myCamera = coin.SoPerspectiveCamera()
-    root.addChild(myCamera)             # child 0
-    root.addChild(coin.SoDirectionalLight())  # child 1
-    root.addChild(coin.SoTrackballManip())   # child 2
-
     myMaterial = coin.SoMaterial()
     myMaterial.diffuseColor = (1.0, 0.0, 0.0)
-    root.addChild(myMaterial)
-    root.addChild(coin.SoCone())
+
+    root += (myCamera, coin.SoDirectionalLight(),
+             coin.SoTrackballManip(), myMaterial,
+             coin.SoCone())
 
     viewer.setSceneGraph(root)
     viewer.setWindowTitle("Trackball")

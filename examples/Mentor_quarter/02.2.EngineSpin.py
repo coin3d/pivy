@@ -36,17 +36,15 @@ def main():
 
     root = coin.SoSeparator()
     myCamera = coin.SoPerspectiveCamera()
-    root.addChild(myCamera)
-    root.addChild(coin.SoDirectionalLight())
 
     # This transformation is modified to rotate the cone
     myRotXYZ = coin.SoRotationXYZ()
-    root.addChild(myRotXYZ)
 
     myMaterial = coin.SoMaterial()
     myMaterial.diffuseColor = (1.0, 0.0, 0.0)   # Red
-    root.addChild(myMaterial)
-    root.addChild(coin.SoCone())
+
+    root += (myCamera, coin.SoDirectionalLight(),
+             myRotXYZ, myMaterial, coin.SoCone())
 
     # An engine rotates the object. The output of myCounter 
     # is the time in seconds since the program started.
@@ -57,7 +55,7 @@ def main():
 
     myCamera.viewAll(root, viewer.getSoRenderManager().getViewportRegion())
 
-    viewer.setSceneGraph(root)
+    viewer.sceneGraph = root
     viewer.setWindowTitle("Engine Spin")
 
     viewer.show()

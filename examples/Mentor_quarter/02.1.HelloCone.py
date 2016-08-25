@@ -43,17 +43,16 @@ def main():
     root = coin.SoSeparator()
     myCamera = coin.SoPerspectiveCamera()
     myMaterial = coin.SoMaterial()
-    root.addChild(myCamera)
-    root.addChild(coin.SoDirectionalLight())
     myMaterial.diffuseColor = (1.0, 0.0, 0.0)   # Red
-    root.addChild(myMaterial)
-    root.addChild(coin.SoCone())
+
+    # add everything to the root (possible with 0.6)
+    root += myCamera, coin.SoDirectionalLight(), myMaterial, coin.SoCone()
 
     # Make myCamera see everything.
     myCamera.viewAll(root, viewer.getSoRenderManager().getViewportRegion())
 
     # set scenegraph of viewer to our scene, change the title
-    viewer.setSceneGraph(root)
+    viewer.sceneGraph = root
     viewer.setWindowTitle("Hello Cone")
 
     # show the widget

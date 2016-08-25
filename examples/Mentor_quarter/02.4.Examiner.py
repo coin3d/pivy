@@ -37,8 +37,7 @@ def main():
     root = coin.SoSeparator()
     myMaterial = coin.SoMaterial()
     myMaterial.diffuseColor = (1.0, 0.0, 0.0)
-    root.addChild(myMaterial)
-    root.addChild(coin.SoCone())
+    root += (myMaterial, coin.SoCone())
 
     # Set up viewer:
     viewer.setSceneGraph(root)

@@ -2,6 +2,7 @@
 static void
 SoSelectionPathPythonCB(void * data, SoPath * path)
 {
+  PyGILState_STATE gil = PyGILState_Ensure();
   PyObject *func, *arglist;
   PyObject *result, *pathCB;
 
@@ -19,6 +20,7 @@ SoSelectionPathPythonCB(void * data, SoPath * path)
   Py_DECREF(arglist);
   Py_DECREF(pathCB);
   Py_XDECREF(result);
+  PyGILState_Release(gil);
 }
 
 static void

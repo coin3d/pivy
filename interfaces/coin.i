@@ -47,6 +47,36 @@ typedef SoGLLazyElement::GLState GLState;
 %feature("ref") SoBase "$this->ref();"
 %feature("unref") SoBase "$this->unref();"
 
+%{
+/*
+  Workaround for FILE* typemap. Import IO module instead of using extern PyTypeObject PyIOBase_Type,
+  because the windows pyhton lib does not export PyIOBase_Type.
+  Coppied from: https://github.com/Kagami/pygraphviz/commit/fe442dc16accb629c3feaf157af75f67ccabbd6e
+*/
+#if PY_MAJOR_VERSION >= 3
+static PyObject *PyIOBase_TypeObj;
+
+static int init_file_emulator(void)
+{
+    PyObject *io = PyImport_ImportModule("_io");
+    if (io == NULL)
+        return -1;
+    PyIOBase_TypeObj = PyObject_GetAttrString(io, "_IOBase");
+    if (PyIOBase_TypeObj == NULL)
+        return -1;
+    return 0;
+}
+#endif
+%}
+
+%init %{
+#if PY_MAJOR_VERSION >= 3
+if (init_file_emulator() < 0) {
+    return NULL;
+}
+#endif
+%}
+
 /* include the typemaps common to all pivy modules */
 %include pivy_common_typemaps.i
 %include coin_header_includes.h

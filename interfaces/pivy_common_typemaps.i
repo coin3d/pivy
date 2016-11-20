@@ -460,8 +460,7 @@ autocast_event(SoEvent * event)
     $1 = PyFile_AsFile($input);
   }
 #else
-  extern PyTypeObject PyIOBase_Type;
-  if(PyObject_IsInstance($input, (PyObject *)&PyIOBase_Type) ) {
+  if (PyObject_IsInstance($input, PyIOBase_TypeObj)) {
     int fd = PyObject_AsFileDescriptor($input);
     $1 = fdopen(fd, "w");
   }

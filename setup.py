@@ -229,9 +229,12 @@ class pivy_build(build):
     def check_gui_bindings(self):
         "check for availability of SoGui bindings and removes the not available ones"
         if sys.platform == "win32":
-            print("Coin and SoWin are built by default on Windows...")
             self.MODULES.pop('soxt', None)
             self.MODULES.pop('sogtk', None)
+            print(blue("Checking for SoWin..."))
+            if not os.path.exists(os.path.join(os.getenv("COINDIR"), "include", "Inventor", "Win", "SoWin.h")):
+                self.MODULES.pop('sowin', None)
+                print(red("COINDIR\\include\\Inventor\\Win\\SoWin.h not found. (SoWin bindings won't be built)"))
             print(blue("Checking for QTDIR environment variable..."))
             if os.getenv("QTDIR"):
                 print(blue(os.getenv("QTDIR")))

@@ -137,7 +137,7 @@ def makeStellatedDodecahedron():
 
 
 def main():
-    whichBinding = 0
+    whichBinding = 1
 
     if len(sys.argv) > 1:
         whichBinding = int(sys.argv[1])

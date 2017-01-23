@@ -136,12 +136,15 @@ class pivy_build(build):
 
 
     SOGUI = ['soqt', 'soxt', 'sogtk', 'sowin']
-    MODULES = {'coin'      : ['_coin',      'coin-config',      'pivy.',        "coin"],
-               'simvoleon' : ['_simvoleon', 'simvoleon-config', 'pivy.',        "simvoleon"],
-               'soqt'      : ['gui._soqt',  'soqt-config',      'pivy.gui.',    "soqt"],
-               'soxt'      : ['gui._soxt',  'soxt-config',      'pivy.gui.',    "soxt"],
-               'sogtk'     : ['gui._sogtk', 'sogtk-config',     'pivy.gui.',    "sogtk"],
-               'sowin'     : ['gui._sowin', 'sowin-config',     'pivy.gui.',    "sowin"]}
+    MODULES = {'coin'      : ['_coin',      'coin-config',      'pivy.',        "coin"]}
+
+    # this stuff is not yet ported to python3
+    if sys.version_info.major < 3:
+       MODULES['simvoleon'] = ['_simvoleon', 'simvoleon-config', 'pivy.',        "simvoleon"]
+       MODULES['soqt']      = ['gui._soqt',  'soqt-config',      'pivy.gui.',    "soqt"]
+       MODULES['soxt']      = ['gui._soxt',  'soxt-config',      'pivy.gui.',    "soxt"]
+       MODULES['sogtk']     = ['gui._sogtk', 'sogtk-config',     'pivy.gui.',    "sogtk"]
+       MODULES['sowin']     = ['gui._sowin', 'sowin-config',     'pivy.gui.',    "sowin"]
 
     if sys.version_info.major < 3:
         MODULES['coin'][3] = "coin2"
@@ -153,8 +156,7 @@ class pivy_build(build):
     CXX_LIBS = ""
 
     ext_modules = []
-    py_modules = ['pivy.sogui',
-                  'pivy.quarter.ContextMenu',
+    py_modules = ['pivy.quarter.ContextMenu',
                   'pivy.quarter.ImageReader',
                   'pivy.quarter.QuarterWidget',
                   'pivy.quarter.SensorManager',
@@ -167,6 +169,9 @@ class pivy_build(build):
                   'pivy.quarter.eventhandlers.EventHandler',
                   'pivy.quarter.eventhandlers.EventManager',
                   'pivy.quarter.plugins.designer.python.PyQuarterWidgetPlugin']
+
+    if sys.version_info.major < 3:
+        py_modules = ['pivy.sogui'] + py_modules
 
     def do_os_popen(self, cmd):
         "return the output of a command in a single line"

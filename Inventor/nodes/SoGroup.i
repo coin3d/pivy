@@ -18,6 +18,12 @@
                 return self
             except TypeError as e:
                 raise TypeError(str(self.__class__) + " accepts only objects of type pivy.coin.SoNode")
+
+    def getByName(self, name):
+        for child in self:
+            if name == child.getName():
+                return child
+        return None
 %}
 
   /* methods to emulate Python Container object */

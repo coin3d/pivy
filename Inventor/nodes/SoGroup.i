@@ -30,7 +30,7 @@
   int __len__(void) { return self->getNumChildren(); }
   int __contains__(const SoNode * node ) { return (self->findChild(node) != -1); }
   SoNode * __getitem__(int index) {
-        if (index >= 0 and index < self->getNumChildren())
+        if (index >= 0 && index < self->getNumChildren())
         {
             return self->getChild(index); 
         }

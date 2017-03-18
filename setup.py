@@ -402,7 +402,12 @@ class pivy_build(build):
                             "-I" + quote(os.path.join(os.getenv("COINDIR"), "include", "Inventor", "annex")) + \
                             " /DCOIN_DLL /wd4244 /wd4049"
                 # aquire highest non-debug Coin library version
-                LDFLAGS_LIBS = quote(max(glob.glob(os.path.join(os.getenv("COINDIR"), "lib", "coin?.lib")))) + " "
+                try:
+                    LDFLAGS_LIBS = quote(max(glob.glob(os.path.join(os.getenv("COINDIR"), "lib", "coin?.lib")))) + " "
+                # with cmake the coin library is named Coin4.lib
+                except ValueError:
+                    LDFLAGS_LIBS = quote(max(glob.glob(os.path.join(os.getenv("COINDIR"), "lib", "Coin?.lib")))) + " "
+
                 if module == "sowin":
                     CPP_FLAGS += " /DSOWIN_DLL"
                     LDFLAGS_LIBS += quote(os.path.join(os.getenv("COINDIR"), "lib", "sowin1.lib"))

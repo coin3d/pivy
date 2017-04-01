@@ -73,7 +73,7 @@ Topic :: Multimedia :: Graphics :: 3D Rendering
 Topic :: Software Development :: Libraries :: Python Modules
 """
 
-PIVY_VERSION = "0.6.1"
+PIVY_VERSION = "0.6.2"
 
 class pivy_build(build):
     PIVY_SNAKES = r"""

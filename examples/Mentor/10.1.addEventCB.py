@@ -74,7 +74,6 @@ def myScaleSelection(selection, sf):
 # The userData = selection is the selectionRoot from main().
 def myKeyPressCB(selection, eventCB):
     event = eventCB.getEvent()
-
     # check for the Up and Down arrow keys being pressed
     if SoKeyboardEvent_isKeyPressEvent(event, SoKeyboardEvent.UP_ARROW):
         myScaleSelection(selection, 1.1)
@@ -188,6 +187,12 @@ def main():
     viewportRegion = myRenderArea.getViewportRegion()
     myCamera.viewAll(selectionRoot, viewportRegion, 2.0)
 
+    try:
+        # maybe not available with SoQt...
+        viewer = myWindow.getSoRenderManager()
+        selectionRoot.addSelectionCallback(viewer.scheduleRedraw)
+    except:
+        print("selection is not working properly with soqt...")
     # Show our application window, and loop forever...
     myRenderArea.show()
     SoGui.show(myWindow)

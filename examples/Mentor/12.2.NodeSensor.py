@@ -38,14 +38,14 @@ def rootChangedCB(void, mySensor):
     changedNode = mySensor.getTriggerNode()
     changedField = mySensor.getTriggerField()
     
-    print "The node named '%s' changed" % (changedNode.getName().getString())
+    print("The node named '%s' changed" % (changedNode.getName().getString()))
 
     if changedField:
         # the pythonic getFieldName() method returns a string or None in Pivy.
         fieldName = changedNode.getFieldName(changedField)
-        print " (field %s)" % (fieldName)
+        print(" (field %s)" % (fieldName))
     else:
-        print " (no fields changed)"
+        print(" (no fields changed)")
 
 def main():
     # SoDB.init() invoked automatically upon coin module import

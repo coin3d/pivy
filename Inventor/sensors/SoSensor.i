@@ -11,11 +11,18 @@ SoSensorPythonCB(void * data, SoSensor * sensor)
   /* the first item in the data sequence is the python callback
    * function; the second item is the supplied data python object; the
    * third item contains the sensor type that we should create */
-  sensor_cast_name = 
 #ifdef PY_2
-    PyString_AsString(PyTuple_GetItem((PyObject *)data, 2));
+    sensor_cast_name = PyString_AsString(PyTuple_GetItem((PyObject *)data, 2));
 #else
-    PyBytes_AsString(PyTuple_GetItem((PyObject *)data, 2));
+    PyObject* item = PyTuple_GetItem((PyObject *)data, 2);
+    if (PyUnicode_Check(item)){
+    sensor_cast_name = PyUnicode_AsUTF8(item);
+    }
+    else if (PyBytes_Check(item)){
+      sensor_cast_name = PyBytes_AsString(item);
+    }
+    Py_XDECREF(item);
+
 #endif
   if (!(swig_type = SWIG_TypeQuery(sensor_cast_name))) {
     PyErr_SetString(PyExc_TypeError, "Sensor type query failed.");

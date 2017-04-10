@@ -187,12 +187,9 @@ def main():
     viewportRegion = myRenderArea.getViewportRegion()
     myCamera.viewAll(selectionRoot, viewportRegion, 2.0)
 
-    try:
-        # maybe not available with SoQt...
-        viewer = myWindow.getSoRenderManager()
-        selectionRoot.addSelectionCallback(viewer.scheduleRedraw)
-    except:
-        print("selection is not working properly with soqt...")
+    # FIXME: soqt maybe has problems here!
+    selectionRoot.addSelectionCallback(myWindow.scheduleRedraw)
+
     # Show our application window, and loop forever...
     myRenderArea.show()
     SoGui.show(myWindow)

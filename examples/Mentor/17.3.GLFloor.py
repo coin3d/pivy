@@ -225,6 +225,6 @@ def main():
     return 0
 
 if __name__ == "__main__":
-    print "This example is not functional as it is GLX dependent!"
+    print("This example is not functional as it is GLX dependent!")
     sys.exit(1)
     main()

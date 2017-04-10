@@ -92,6 +92,6 @@ def main():
     SoGui.mainLoop()
 
 if __name__ == "__main__":
-    print "This example is not functional as it is GUI toolkit dependent!"
+    print("This example is not functional as it is GUI toolkit dependent!")
     sys.exit(1)
     main()

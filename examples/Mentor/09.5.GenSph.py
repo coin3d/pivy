@@ -35,22 +35,22 @@ from pivy.coin import *
 
 def printVertex(vertex):
     point = vertex.getPoint()
-    print "\tCoords     = (%g, %g, %g)" % (point[0], point[1], point[2])
+    print("\tCoords     = (%g, %g, %g)" % (point[0], point[1], point[2]))
 
     normal = vertex.getNormal()
-    print "\tNormal     = (%g, %g, %g)" % (normal[0], normal[1], normal[2])
+    print("\tNormal     = (%g, %g, %g)" % (normal[0], normal[1], normal[2]))
 
 def printHeaderCallback(void, callbackAction, node):
-    print "\n Sphere ",
+    print("\n Sphere ")
     # Print the node name (if it exists) and address
     if not not node.getName():
-        print 'named "%s" ' % node.getName().getString(),
-    print "at address %r\n" % node.this
+        print('named "%s" ' % node.getName().getString())
+    print("at address %r\n" % node.this)
 
     return SoCallbackAction.CONTINUE
 
 def printTriangleCallback(void, callbackAction, vertex1, vertex2, vertex3):
-    print "Triangle:"
+    print("Triangle:")
     printVertex(vertex1)
     printVertex(vertex2)
     printVertex(vertex3)

@@ -1,0 +1,15 @@
+import os
+
+examples = set()
+for f in os.listdir(os.path.dirname(os.path.abspath(__file__))):
+    name, ext = os.path.splitext(f)
+    if ext == ".py" and (name != "run_all"):
+        examples.add(f)
+
+examples = list(examples)
+examples.sort()
+
+print(examples)
+
+for example in examples:
+    os.system("python " + example)

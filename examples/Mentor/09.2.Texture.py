@@ -74,9 +74,9 @@ def main():
     # Generate the texture map
     texture = SoTexture2()
     if generateTextureMap(texRoot, texture, 64, 64):
-        print "Successfully generated texture map"
+        print("Successfully generated texture map")
     else:
-        print "Could not generate texture map"
+        print("Could not generate texture map")
 
     # Make a scene with a cube and apply the texture to it
     root = SoSeparator()

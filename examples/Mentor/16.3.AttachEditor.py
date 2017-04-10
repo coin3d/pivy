@@ -42,8 +42,8 @@ def main():
     try:
         myEditor = SoGuiMaterialEditor()
     except:
-        print "The SoGuiMaterialEditor node has not been implemented in the " + \
-              "SoGui bindings of Coin!"
+        print("The SoGuiMaterialEditor node has not been implemented in the " + \
+              "SoGui bindings of Coin!")
         sys.exit(1)
    
     # Create a scene graph

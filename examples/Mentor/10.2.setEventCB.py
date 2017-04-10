@@ -162,10 +162,10 @@ def main():
     global myTicker
     
     # Print out usage instructions
-    print "Mouse buttons:"
-    print "\tLeft (with mouse motion): adds points"
-    print "\tMiddle: rotates points about the Y axis"
-    print "\tRight: deletes all the points"
+    print("Mouse buttons:")
+    print("\tLeft (with mouse motion): adds points")
+    print("\tMiddle: rotates points about the Y axis")
+    print("\tRight: deletes all the points")
 
     # Initialize Inventor and Qt
     appWindow = SoQt.init(sys.argv[0])

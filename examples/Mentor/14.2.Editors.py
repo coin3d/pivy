@@ -77,8 +77,8 @@ def main():
     try:
         mtlEditor = SoGuiMaterialEditor()
     except:
-        print "The SoGuiMaterialEditor node has not been implemented in the " + \
-              "SoGui bindings of Coin!"
+        print("The SoGuiMaterialEditor node has not been implemented in the " + \
+              "SoGui bindings of Coin!")
         sys.exit(1)
     mtl = SO_GET_PART(myDesk,"material",SoMaterial())
     mtlEditor.attach(mtl)
@@ -90,8 +90,8 @@ def main():
     try:
         ltEditor = SoGuiDirectionalLightEditor()
     except:
-        print "The SoGuiDirectionalLightEditor node has not been implemented in the " + \
-              "SoGui bindings of Coin!"
+        print("The SoGuiDirectionalLightEditor node has not been implemented in the " + \
+              "SoGui bindings of Coin!")
         sys.exit(1)        
     ltPath = myScene.createPathToPart("lightList[0].light", TRUE)
     ltEditor.attach(ltPath)

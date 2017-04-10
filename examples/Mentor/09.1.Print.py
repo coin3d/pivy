@@ -110,7 +110,7 @@ def main():
         sys.stdout.write("Usage: %s infile.iv outfile.ps\n" % sys.argv[0])
         sys.exit(1) 
   
-    print "To print the scene: press the 'p' key while in picking mode"
+    print("To print the scene: press the 'p' key while in picking mode")
 
     # Make a scene containing an event callback node
     root = SoSeparator()

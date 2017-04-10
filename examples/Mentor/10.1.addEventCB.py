@@ -89,9 +89,9 @@ def myKeyPressCB(selection, eventCB):
 def main():
     global cubeTransform, sphereTransform, coneTransform, cylTransform
     # Print out usage message
-    print "Left mouse button        - selects object"
-    print "<shift>Left mouse button - selects multiple objects"
-    print "Up and Down arrows       - scale selected objects"
+    print("Left mouse button        - selects object")
+    print("<shift>Left mouse button - selects multiple objects")
+    print("Up and Down arrows       - scale selected objects")
 
     # Initialize Inventor and Qt
     myWindow = SoGui.init(sys.argv[0])

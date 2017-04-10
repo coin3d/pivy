@@ -34,13 +34,13 @@ def readFile(filename):
     # Open the input file
     mySceneInput = SoInput()
     if not mySceneInput.openFile(filename):
-        print >> sys.stderr, "Cannot open file %s" % (filename)
+        print("Cannot open file %s" % (filename), file=sys.stderr)
         return None
 
     # Read the whole file into the database
     myGraph = SoDB.readAll(mySceneInput)
     if myGraph == None:
-        print >> sys.stderr, "Problem reading file"
+        print("Problem reading file", file=sys.stderr)
         return None
 
     mySceneInput.closeFile()

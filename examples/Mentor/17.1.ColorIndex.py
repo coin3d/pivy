@@ -71,7 +71,7 @@ def main():
     input.setBuffer(sceneBuffer)
     scene = SoDB.readAll(input) 
     if not scene:
-        print "Couldn't read scene"
+        print("Couldn't read scene")
         sys.exit(1)
 
     # create the color index visual
@@ -79,7 +79,7 @@ def main():
                           XScreenNumberOfScreen(QtScreen(myWindow)),
                           attribList)
     if not vis:
-        print "Couldn't create visual"
+        print("Couldn't create visual")
         sys.exit(1)
    
     # allocate the viewer, set the scene, the visual and
@@ -100,6 +100,6 @@ def main():
     SoGui.mainLoop()
 
 if __name__ == "__main__":
-    print "This example is not functional as it is GLX dependent!"
+    print("This example is not functional as it is GLX dependent!")
     sys.exit(1)
     main()

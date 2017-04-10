@@ -124,8 +124,8 @@ def main():
     try:
         ed = SoGuiMaterialEditor()
     except:
-        print "The SoGuiMaterialEditor node has not been implemented in the " + \
-              "SoGui bindings of Coin!"
+        print("The SoGuiMaterialEditor node has not been implemented in the " + \
+              "SoGui bindings of Coin!")
         sys.exit(1)
     ed.show()
 

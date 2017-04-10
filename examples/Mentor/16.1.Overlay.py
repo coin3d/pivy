@@ -58,7 +58,7 @@ def main():
     input.setBuffer(overlayScene)
     scene = SoDB.readAll(input)
     if scene == None:
-        print "Couldn't read scene"
+        print("Couldn't read scene")
         sys.exit(1)
 
     # Allocate the viewer, set the overlay scene and

@@ -48,8 +48,8 @@ def myMousePressCB(gate, eventCB):
 
 def main():
     # Print out usage message
-    print "Only one duck can move at a time."
-    print "Click the left mouse button to toggle between the two ducks."
+    print("Only one duck can move at a time.")
+    print("Click the left mouse button to toggle between the two ducks.")
 
     # Initialize Inventor and Qt
     myWindow = SoGui.init(sys.argv[0])  

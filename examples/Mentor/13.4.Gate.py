@@ -57,7 +57,7 @@ def myMousePressCB(userData, eventCB):
 
 def main():
     # Print out usage message
-    print "Click the left mouse button to enable/disable the duck motion"
+    print("Click the left mouse button to enable/disable the duck motion")
 
     # Initialize Inventor and Qt
     myWindow = SoGui.init(sys.argv[0])  

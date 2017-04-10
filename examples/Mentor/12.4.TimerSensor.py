@@ -60,7 +60,7 @@ def schedulingSensorCallback(rotatingSensor, sensor):
 
 def main():
     if len(sys.argv) != 2:
-        print >> sys.stderr, "Usage: %s filename.iv" % (sys.argv[0])
+        print("Usage: %s filename.iv" % (sys.argv[0]), file=sys.stderr)
         sys.exit(1)
 
     myWindow = SoGui.init(sys.argv[0])
@@ -87,7 +87,7 @@ def main():
 
     inputFile = SoInput()
     if inputFile.openFile(sys.argv[1]) == 0:
-        print >> sys.stderr, "Could not open file %s" % (sys.argv[1])
+        print("Could not open file %s" % (sys.argv[1]), sys.stderr)
         sys.exit(1)
         
     root.addChild(SoDB.readAll(inputFile))

@@ -21,10 +21,13 @@ SoSensorPythonCB(void * data, SoSensor * sensor)
     else if (PyBytes_Check(item)){
       sensor_cast_name = PyBytes_AsString(item);
     }
-    Py_XDECREF(item);
 
 #endif
-  if (!(swig_type = SWIG_TypeQuery(sensor_cast_name))) {
+  if (!sensor_cast_name){
+    PyErr_SetString(PyExc_TypeError, "Sensor type query failed.");
+    return;
+  }
+  else if (!(swig_type = SWIG_TypeQuery(sensor_cast_name))) {
     PyErr_SetString(PyExc_TypeError, "Sensor type query failed.");
     return;
   }

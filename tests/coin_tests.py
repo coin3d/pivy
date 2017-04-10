@@ -209,7 +209,13 @@ class FieldSetValue(unittest.TestCase):
                         'setValue on SoSFRotation from 4 values failed')
         t.setValue([0,0,1,0])
         self.failUnless(SbRotation(0,0,1,0) == t.getValue(),
-                        'setValue on SoSFRotation from 4 values failed')        
+                        'setValue on SoSFRotation from 4 values failed')
+
+    def testSoRotation(self):
+        r = SoRotation()
+        rot = r.rotation.getValue()
+        rot *= SbRotation(SbVec3f(0,0,1), M_PI/90.0)
+        r.rotation.setValue(rot)
 
     def testSFVec3f(self):
         """check setValue for SoSFVec3f"""

@@ -38,49 +38,50 @@ def main():
     # Make a scene containing a red cone
     root = SoSeparator()
 
-    bitmap_x = ("  xxxx             xxxx" +
-                "  xxxxx           xxxxx" +
-                "  xxxxxx         xxxxxx" +
-                "  xxxxxxx       xxxxxxx" +
-                "   xxxxxxx     xxxxxxx " +
-                "    xxxxxxx   xxxxxxx  " +
-                "     xxxxxxx xxxxxxx   " +
-                "      xxxxxxxxxxxxx    " +
-                "       xxxxxxxxxxx     " +
-                "        xxxxxxxxx      " +
-                "         xxxxxxx       " +
-                "        xxxxxxxxx      " +
-                "       xxxxxxxxxxx     " +
-                "      xxxxxxxxxxxxx    " +
-                "     xxxxxxx xxxxxxx   " +
-                "    xxxxxxx   xxxxxxx  " +
-                "   xxxxxxx     xxxxxxx " +
-                "  xxxxxxx       xxxxxxx" +
-                "  xxxxxx         xxxxxx" +
-                "  xxxxx           xxxxx" +
-                "  xxxx             xxxx")
+    bitmap_x = ("xxxx             xxxx" +
+                "xxxxx           xxxxx" +
+                "xxxxxx         xxxxxx" +
+                "xxxxxxx       xxxxxxx" +
+                " xxxxxxx     xxxxxxx " +
+                "  xxxxxxx   xxxxxxx  " +
+                "   xxxxxxx xxxxxxx   " +
+                "    xxxxxxxxxxxxx    " +
+                "     xxxxxxxxxxx     " +
+                "      xxxxxxxxx      " +
+                "       xxxxxxx       " +
+                "      xxxxxxxxx      " +
+                "     xxxxxxxxxxx     " +
+                "    xxxxxxxxxxxxx    " +
+                "   xxxxxxx xxxxxxx   " +
+                "  xxxxxxx   xxxxxxx  " +
+                " xxxxxxx     xxxxxxx " +
+                "xxxxxxx       xxxxxxx" +
+                "xxxxxx         xxxxxx" +
+                "xxxxx           xxxxx" +
+                "xxxx             xxxx")
 
     SoMarkerSet.CUSTOM_BIT_MAP_1 = SoMarkerSet.getNumDefinedMarkers()
-    SoMarkerSet.addMarker(SoMarkerSet.CUSTOM_BIT_MAP_1, SbVec2s([23,21]), bitmap_x)
+    SoMarkerSet.addMarker(SoMarkerSet.CUSTOM_BIT_MAP_1, SbVec2s([21,21]), bitmap_x,
+                          False, False)
 
-    bitmap_dot = ("               " +
-                  "     xxxxxx    " +
-                  "   xxxxxxxxxx  " +
-                  "  xxxxxxxxxxxx " +
-                  "  xxxxxxxxxxxx " +
-                  " xxxxxxxxxxxxxx" +
-                  " xxxxxxxxxxxxxx" +
-                  " xxxxxxxxxxxxxx" +
-                  " xxxxxxxxxxxxxx" +
-                  " xxxxxxxxxxxxxx" +
-                  " xxxxxxxxxxxxxx" +
-                  "  xxxxxxxxxxxx " +
-                  "  xxxxxxxxxxxx " +
-                  "   xxxxxxxxxx  " +
-                  "     xxxxxx    ")
+    bitmap_dot = ("    xxxxxx    " +
+                  "  xxxxxxxxxx  " +
+                  " xxxxxxxxxxxx " +
+                  " xxxxxxxxxxxx " +
+                  "xxxxxxxxxxxxxx" +
+                  "xxxxxxxxxxxxxx" +
+                  "xxxxxxxxxxxxxx" +
+                  "xxxxxxxxxxxxxx" +
+                  "xxxxxxxxxxxxxx" +
+                  "xxxxxxxxxxxxxx" +
+                  " xxxxxxxxxxxx " +
+                  " xxxxxxxxxxxx " +
+                  "  xxxxxxxxxx  " +
+                  "    xxxxxx    ")
     
     SoMarkerSet.CUSTOM_BIT_MAP_2 = SoMarkerSet.getNumDefinedMarkers()
-    SoMarkerSet.addMarker(SoMarkerSet.CUSTOM_BIT_MAP_2, SbVec2s([15, 15]), bitmap_dot)
+    SoMarkerSet.addMarker(SoMarkerSet.CUSTOM_BIT_MAP_2, SbVec2s([14, 14]), bitmap_dot,
+                          False, False)
 
     color = SoMaterial()
     color.diffuseColor = (1., 0., 0.)

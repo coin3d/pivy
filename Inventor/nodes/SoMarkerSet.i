@@ -6,15 +6,22 @@
         size.getValue(WIDTH, HEIGHT);
         short BYTEWIDTH = (WIDTH + 7) / 2;
         char* coin_marker;
-
-        if (PyBytes_Check(string))
+#ifdef PY_2
+        if (PyString_Check(string))
         {
-            coin_marker = PyBytes_AsString(string);
+            coin_marker = PyString_AsString(string);
         }
-        else if (PyUnicode_Check(string))
+#else
+        if (PyUnicode_Check(string))
         {
             coin_marker = PyUnicode_AsUTF8(string);
         }
+
+        else if (PyBytes_Check(string))
+        {
+            coin_marker = PyBytes_AsString(string);
+        }
+#endif
         else
         {
             return;

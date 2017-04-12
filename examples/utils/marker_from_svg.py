@@ -16,12 +16,6 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-###
-# This is an example from the Inventor Mentor,
-# chapter 2, example 1.
-#
-# Hello Cone example program; draws a red cone in a window.
-#
 
 import sys
 

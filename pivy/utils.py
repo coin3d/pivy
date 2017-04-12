@@ -28,3 +28,42 @@ def addMarkerFromSvg(file_path, marker_name, pixel_x=10, pixel_y=None,
     coin.SoMarkerSet.addMarker(getattr(coin.SoMarkerSet, marker_name), 
                                coin.SbVec2s([pixel_x, pixel_y]), string,
                                isLSBFirst, isUpToDown)
+
+
+def getPointOnScreen(render_manager, screen_pos, normal="camera", point=None):
+    """get coordinates from pixel position"""
+    
+    pCam = render_manager.getCamera()
+    vol = pCam.getViewVolume()
+
+    point = point or coin.SbVec3f(0, 0, 0)
+
+    if normal == "camera":
+        plane = vol.getPlane(10)
+        normal = plane.getNormal()
+    elif normal == "x":
+        normal = SbVec3f(1, 0, 0)
+    elif normal == "y":
+        normal = SbVec3f(0, 1, 0)
+    elif normal == "z":
+        normal = SbVec3f(0, 0, 1)
+    normal.normalize()
+    print(list(normal))
+    x, y = screen_pos
+    vp = render_manager.getViewportRegion()
+    size = vp.getViewportSize()
+    dX, dY = size
+
+    fRatio = vp.getViewportAspectRatio()
+    pX = float(x) / float(vp.getViewportSizePixels()[0])
+    pY = float(y) / float(vp.getViewportSizePixels()[1])
+
+    if (fRatio > 1.0):
+        pX = (pX - 0.5 * dX) * fRatio + 0.5 * dX
+    elif (fRatio < 1.0):
+        pY = (pY - 0.5 * dY) / fRatio + 0.5 * dY
+
+    plane = coin.SbPlane(normal, point)
+    line = coin.SbLine(*vol.projectPointToLine(coin.SbVec2f(pX,pY)))
+    pt = plane.intersect(line)
+    return pt

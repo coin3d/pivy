@@ -1194,5 +1194,19 @@ class SoInputTests(unittest.TestCase):
     def testSetBuffer(self):
         self.input.setBuffer(self.text)
 
+class SbPLaneTests(unittest.TestCase):
+
+    def setUp(self):
+        self.a = coin.SbVec3f([0, 0, 0])
+        self.b = coin.SbVec3f([0, 0, 1])
+        self.c = coin.SbVec3f([0, 1, 0])
+        self.line = coin.SbLine(a, b)
+        self.plane1 = coin.SbPlane(b, a)
+        self.plane2 = coin.SbPlane(c, a)
+
+    def intersection(self):
+        point = self.plane1.intersect(self.line)
+        line = self.plane1.intersect(self.plane2)
+
 if __name__ == "__main__":
     unittest.main(verbosity=4)

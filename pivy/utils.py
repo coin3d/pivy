@@ -48,7 +48,6 @@ def getPointOnScreen(render_manager, screen_pos, normal="camera", point=None):
     elif normal == "z":
         normal = SbVec3f(0, 0, 1)
     normal.normalize()
-    print(list(normal))
     x, y = screen_pos
     vp = render_manager.getViewportRegion()
     size = vp.getViewportSize()

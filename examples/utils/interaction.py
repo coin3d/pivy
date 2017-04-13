@@ -1,13 +1,17 @@
 import sys
 from PySide.QtGui import QApplication, QColor
-from pivy import quarter, coin, graphics
+from pivy import quarter, coin, graphics, utils
+
+class ConnectionMarker(graphics.Marker):
+    def __init__(self, points):
+        super(ConnectionMarker, self).__init__(points, True)
 
 
 class ConnectionPolygon(graphics.Polygon):
     std_col = "green"
-    def __init__(self, markers, dynamic=False):
+    def __init__(self, markers):
         super(ConnectionPolygon, self).__init__(
-            sum([m.points for m in markers], []), dynamic=dynamic)
+            sum([m.points for m in markers], []), True)
         self.markers = markers
 
         for m in self.markers:
@@ -19,13 +23,16 @@ class ConnectionPolygon(graphics.Polygon):
     @property
     def drag_objects(self):
         return self.markers
-        
+
+    def check_dependency(self):
+        if any([m._delete for m in self.markers]):
+            self.delete()
 
 
 class ConnectionLine(graphics.Line):
-    def __init__(self, markers, dynamic=False):
+    def __init__(self, markers):
         super(ConnectionLine, self).__init__(
-            sum([m.points for m in markers], []), dynamic=dynamic)
+            sum([m.points for m in markers], []), True)
         self.markers = markers
         for m in self.markers:
             m.on_drag.append(self.updateLine)
@@ -37,52 +44,55 @@ class ConnectionLine(graphics.Line):
     def drag_objects(self):
         return self.markers
 
+    def check_dependency(self):
+        if any([m._delete for m in self.markers]):
+            self.delete()
+
 
 def main():
     app = QApplication(sys.argv)
-
+    utils.addMarkerFromSvg("test.svg", "CUSTOM_MARKER",  40)
     viewer = quarter.QuarterWidget()
-
     root = graphics.InteractionSeparator(viewer.sorendermanager)
+    root.pick_radius = 40
 
-    m1 = graphics.Marker([[-1, -1, -1]], dynamic=True)
-    m2 = graphics.Marker([[-1,  1, -1]], dynamic=True)
-    m3 = graphics.Marker([[ 1,  1, -1]], dynamic=True)
-    m4 = graphics.Marker([[ 1, -1, -1]], dynamic=True)
+    m1 = ConnectionMarker([[-1, -1, -1]])
+    m2 = ConnectionMarker([[-1,  1, -1]])
+    m3 = ConnectionMarker([[ 1,  1, -1]])
+    m4 = ConnectionMarker([[ 1, -1, -1]])
 
-    m5 = graphics.Marker([[-1, -1,  1]], dynamic=True)
-    m6 = graphics.Marker([[-1,  1,  1]], dynamic=True)
-    m7 = graphics.Marker([[ 1,  1,  1]], dynamic=True)
-    m8 = graphics.Marker([[ 1, -1,  1]], dynamic=True)
+    m5 = ConnectionMarker([[-1, -1,  1]])
+    m6 = ConnectionMarker([[-1,  1,  1]])
+    m7 = ConnectionMarker([[ 1,  1,  1]])
+    m8 = ConnectionMarker([[ 1, -1,  1]])
 
     points = [m1, m2, m3, m4, m5, m6, m7, m8]
 
-    l01 = ConnectionLine([m1, m2], dynamic=True)
-    l02 = ConnectionLine([m2, m3], dynamic=True)
-    l03 = ConnectionLine([m3, m4], dynamic=True)
-    l04 = ConnectionLine([m4, m1], dynamic=True)
+    l01 = ConnectionLine([m1, m2])
+    l02 = ConnectionLine([m2, m3])
+    l03 = ConnectionLine([m3, m4])
+    l04 = ConnectionLine([m4, m1])
 
-    l05 = ConnectionLine([m5, m6], dynamic=True)
-    l06 = ConnectionLine([m6, m7], dynamic=True)
-    l07 = ConnectionLine([m7, m8], dynamic=True)
-    l08 = ConnectionLine([m8, m5], dynamic=True)
+    l05 = ConnectionLine([m5, m6])
+    l06 = ConnectionLine([m6, m7])
+    l07 = ConnectionLine([m7, m8])
+    l08 = ConnectionLine([m8, m5])
 
-    l09 = ConnectionLine([m1, m5], dynamic=True)
-    l10 = ConnectionLine([m2, m6], dynamic=True)
-    l11 = ConnectionLine([m3, m7], dynamic=True)
-    l12 = ConnectionLine([m4, m8], dynamic=True)
+    l09 = ConnectionLine([m1, m5])
+    l10 = ConnectionLine([m2, m6])
+    l11 = ConnectionLine([m3, m7])
+    l12 = ConnectionLine([m4, m8])
 
     lines = [l01, l02, l03, l04, l05, l06, l07, l08, l09, l10, l11, l12]
 
-    p1 = ConnectionPolygon([m1, m2, m3, m4], dynamic=True)
-    p2 = ConnectionPolygon([m8, m7, m6, m5], dynamic=True)
-    p3 = ConnectionPolygon([m5, m6, m2, m1], dynamic=True)
-    p4 = ConnectionPolygon([m6, m7, m3, m2], dynamic=True)
-    p5 = ConnectionPolygon([m7, m8, m4, m3], dynamic=True)
-    p6 = ConnectionPolygon([m8, m5, m1, m4], dynamic=True)
+    p1 = ConnectionPolygon([m1, m2, m3, m4])
+    p2 = ConnectionPolygon([m8, m7, m6, m5])
+    p3 = ConnectionPolygon([m5, m6, m2, m1])
+    p4 = ConnectionPolygon([m6, m7, m3, m2])
+    p5 = ConnectionPolygon([m7, m8, m4, m3])
+    p6 = ConnectionPolygon([m8, m5, m1, m4])
 
     polygons = [p1, p2, p3, p4, p5, p6]
-
     root += points + lines + polygons
     root.register()
 

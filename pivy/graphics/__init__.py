@@ -83,19 +83,19 @@ class Object3D(coin.SoSeparator):
                 pt[1] = mouse_coords[1] * fact + self._tmp_points[i][1]
                 pt[2] = mouse_coords[2] * fact + self._tmp_points[i][2]
             self.points = pts
-            for i in self.on_drag:
-                i()
+            for foo in self.on_drag:
+                foo()
 
     def drag_release(self):
         if self.enabled:
-            for i in self.on_drag_release:
-                i()
+            for foo in self.on_drag_release:
+                foo()
 
     def drag_start(self):
         self._tmp_points = self.points
         if self.enabled:
-            for i in self.on_drag_start:
-                i()
+            for foo in self.on_drag_start:
+                foo()
 
     @property
     def drag_objects(self):
@@ -104,7 +104,6 @@ class Object3D(coin.SoSeparator):
 
     def delete(self):
         if self.enabled and not self._delete:
-            self.removeAllChildren()
             self._delete = True
 
     def check_dependency(self):
@@ -140,6 +139,7 @@ class InteractionSeparator(coin.SoSeparator):
     def __init__(self, render_manager):
         super(InteractionSeparator, self).__init__()
         self.render_manager = render_manager
+        self.objects = coin.SoSeparator()
         self.dynamic_objects = []
         self.static_objects = []
         self.over_object = None
@@ -153,7 +153,7 @@ class InteractionSeparator(coin.SoSeparator):
         self._direction = None
 
         self.events = coin.SoEventCallback()
-        self += self.events, self.dynamic_objects, self.static_objects
+        self += self.events, self.objects
 
     def register(self):
         self._highlightCB = self.events.addEventCallback(
@@ -181,13 +181,14 @@ class InteractionSeparator(coin.SoSeparator):
 
 
     def addChild(self, child):
-        super(InteractionSeparator, self).addChild(child)
         if hasattr(child, "dynamic"):
+            self.objects.addChild(child)
             if child.dynamic:
-                self.dynamic_objects += [child]
+                self.dynamic_objects.append(child)
             else:
-                self.static_objects += [child]
-
+                self.static_objects.append(child)
+        else:
+            super(InteractionSeparator, self).addChild(child)  
 
 #-----------------------HIGHLIGHTING-----------------------#
 # a SoLocation2Event calling a function which sends rays   #
@@ -336,6 +337,7 @@ class InteractionSeparator(coin.SoSeparator):
                 obj.drag_release()
             for foo in self.on_drag_release:
                 foo()
+            self.drag_objects = []
         elif (type(event) == coin.SoKeyboardEvent and
                 event.getState() == coin.SoMouseButtonEvent.DOWN):
             if event.getKey() == 65307:     # esc
@@ -354,7 +356,6 @@ class InteractionSeparator(coin.SoSeparator):
                 self._direction = None
             diff = self.cursor_pos(event) - self.start_pos
             diff = self.constrained_vector(diff)
-            # self.start_pos = self.cursor_pos(event)
             for obj in self.drag_objects:
                 obj.drag(diff, 1)
             for foo in self.on_drag:
@@ -364,7 +365,6 @@ class InteractionSeparator(coin.SoSeparator):
             fact = 0.1 if event.wasShiftDown() else 1.
             diff = self.cursor_pos(event) - self.start_pos
             diff = self.constrained_vector(diff)
-            # self.start_pos = self.cursor_pos(event)
             for obj in self.drag_objects:
                 obj.drag(diff, fact)
             for foo in self.on_drag:
@@ -372,3 +372,38 @@ class InteractionSeparator(coin.SoSeparator):
 
     def deleteCB(self, attr, event_callback):
         event = event_callback.getEvent()
+        # get all drag objects, every selected object can add some drag objects
+        # but the eventhandler is not allowed to call the drag twice on an object
+        if event.getKey() == ord(u"\uffff") and (event.getState() == 1):
+            self.removeSelected()
+
+    def removeSelected(self):
+        temp = []
+        for i in self.selected_objects:
+            i.delete()
+        for i in self.dynamic_objects + self.static_objects:
+            i.check_dependency()    #dependency length max = 1
+        for i in self.dynamic_objects + self.static_objects:
+            if i._delete:
+                temp.append(i)
+        self.selected_objects = []
+        self.over_object = None
+        self.selectionChanged()
+        for i in temp:
+            if i in self.dynamic_objects:
+                self.dynamic_objects.remove(i)
+            else:
+                self.static_objects.remove(i)
+            import sys
+            self.objects.removeChild(i)
+            del(i)
+        self.selectionChanged()
+
+    def removeAllChildren(self):
+        for i in self.dynamic_objects:
+            i.delete()
+        self.dynamic_objects = []
+        self.static_objects = []
+        self.selected_objects = []
+        self.over_object = None
+        super(Container, self).removeAllChildren()

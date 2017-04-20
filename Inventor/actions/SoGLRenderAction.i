@@ -107,3 +107,10 @@ SoGLPreRenderPythonCB(void * userdata, class SoGLRenderAction * action)
                                                         userdata ? userdata : Py_None));
   }
 }
+
+%extend SoGLRenderAction{
+  static SoGLRenderAction* constructFromAction(SoAction* action)
+  {
+    return (SoGLRenderAction*) action;
+  }
+}

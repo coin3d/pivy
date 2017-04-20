@@ -392,11 +392,14 @@ class QuarterWidget(QtOpenGL.QGLWidget):
           opposed to SbColor4f which is in [0 ,1]. The default alpha value for
           a QColor is 255, but you'll probably want to set it to zero before
           using it as an OpenGL clear color."""
-        bgcolor = coin.SbColor4f(max(0, min(1, color.red() / 255.0)),
-                                 max(0, min(1, color.green() / 255.0)),
-                                 max(0, min(1, color.blue() / 255.0)),
-                                 max(0, min(1, color.alpha() / 255.0)))
-        self.sorendermanager.setBackgroundColor(bgcolor)
+        if isinstance(color, QtGui.QColor):
+            bgcolor = coin.SbColor4f(max(0, min(1, color.red() / 255.0)),
+                                     max(0, min(1, color.green() / 255.0)),
+                                     max(0, min(1, color.blue() / 255.0)),
+                                     max(0, min(1, color.alpha() / 255.0)))
+            self.sorendermanager.setBackgroundColor(bgcolor)
+        else:
+            self.sorendermanager.setBackgroundColor(coin.SbColor4f(color))
 
     def getBackgroundColor(self):
         """  Returns color used for clearing the rendering area before

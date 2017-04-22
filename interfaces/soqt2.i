@@ -14,6 +14,21 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+
+// define PY_2 for c++ preprocessor
+#ifndef PY_2
+#define PY_2
+#endif
+
+// define PY_2 for swig preprocessor
+%{
+#ifndef PY_2
+#define PY_2
+#endif
+%}
+
+
+
 %define SOQT_MODULE_DOCSTRING
 "The soqt module is a wrapper for the SoQt library. The module will try
 to import the sip module which is used for PyQt. If found the involved
@@ -22,39 +37,6 @@ otherwise it will fall back to regular SWIG structures."
 %enddef
 
 %module(package="pivy.gui", docstring=SOQT_MODULE_DOCSTRING) soqt
-
-
-%{
-/*
-  Workaround for FILE* typemap. Import IO module instead of using extern PyTypeObject PyIOBase_Type,
-  because the windows pyhton lib does not export PyIOBase_Type.
-  Coppied from: https://github.com/Kagami/pygraphviz/commit/fe442dc16accb629c3feaf157af75f67ccabbd6e
-*/
-#if PY_MAJOR_VERSION >= 3
-static PyObject *PyIOBase_TypeObj;
-
-static int init_file_emulator(void)
-{
-    PyObject *io = PyImport_ImportModule("_io");
-    if (io == NULL)
-        return -1;
-    PyIOBase_TypeObj = PyObject_GetAttrString(io, "_IOBase");
-    if (PyIOBase_TypeObj == NULL)
-        return -1;
-    return 0;
-}
-#endif
-%}
-
-%init %{
-#if PY_MAJOR_VERSION >= 3
-if (init_file_emulator() < 0) {
-    return NULL;
-}
-#endif
-%}
-
-
 
 %{
 #if defined(_WIN32) || defined(__WIN32__)

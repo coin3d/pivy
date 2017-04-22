@@ -136,18 +136,20 @@ class pivy_build(build):
 
 
     SOGUI = ['soqt', 'soxt', 'sogtk', 'sowin']
-    MODULES = {'coin'      : ['_coin',      'coin-config',      'pivy.',        "coin"]}
 
-    # this stuff is not yet ported to python3
-    if sys.version_info.major < 3:
-       MODULES['simvoleon'] = ['_simvoleon', 'simvoleon-config', 'pivy.',        "simvoleon"]
-       MODULES['soqt']      = ['gui._soqt',  'soqt-config',      'pivy.gui.',    "soqt"]
-       MODULES['soxt']      = ['gui._soxt',  'soxt-config',      'pivy.gui.',    "soxt"]
-       MODULES['sogtk']     = ['gui._sogtk', 'sogtk-config',     'pivy.gui.',    "sogtk"]
-       MODULES['sowin']     = ['gui._sowin', 'sowin-config',     'pivy.gui.',    "sowin"]
+    MODULES = {}
+    MODULES['coin']      = ['_coin',      'coin-config',      'pivy.',        "coin"]
+    MODULES['soqt']      = ['gui._soqt',  'soqt-config',      'pivy.gui.',    "soqt"]
 
     if sys.version_info.major < 3:
-        MODULES['coin'][3] = "coin2"
+        MODULES['simvoleon'] = ['_simvoleon', 'simvoleon-config', 'pivy.',        "simvoleon"]
+        MODULES['soxt']      = ['gui._soxt',  'soxt-config',      'pivy.gui.',    "soxt"]
+        MODULES['sogtk']     = ['gui._sogtk', 'sogtk-config',     'pivy.gui.',    "sogtk"]
+        MODULES['sowin']     = ['gui._sowin', 'sowin-config',     'pivy.gui.',    "sowin"]
+
+    if sys.version_info.major < 3:
+        MODULES['coin'][3] = 'coin2'
+        MODULES['soqt'][3] = 'soqt2'
 
     SUPPORTED_SWIG_VERSIONS = ['1.3.31', '1.3.33', '1.3.35', '1.3.40']
     SWIG_VERSION = ""

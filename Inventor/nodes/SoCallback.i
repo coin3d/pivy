@@ -2,6 +2,7 @@
 static void
 SoPythonCallBack(void * userdata, SoAction * action)
 {
+  PyGILState_STATE gil = PyGILState_Ensure();
   PyObject *func, *arglist;
   PyObject *result, *acCB;
 
@@ -19,6 +20,7 @@ SoPythonCallBack(void * userdata, SoAction * action)
   Py_DECREF(arglist);
   Py_DECREF(acCB);
   Py_XDECREF(result);
+  PyGILState_Release(gil);
 }
 %}
 

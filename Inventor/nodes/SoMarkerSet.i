@@ -14,9 +14,8 @@
 #else
         if (PyUnicode_Check(string))
         {
-            coin_marker = PyUnicode_AsUTF8(string);
+            coin_marker = PyUnicode_AsUTF8(string);            
         }
-
         else if (PyBytes_Check(string))
         {
             coin_marker = PyBytes_AsString(string);
@@ -31,7 +30,9 @@
         // from addMarker example:
 
         int byteidx = 0;
-        unsigned char bitmapbytes[BYTEWIDTH * HEIGHT];
+        unsigned char* bitmapbytes = NULL;
+        bitmapbytes = new unsigned char[BYTEWIDTH * HEIGHT];
+        
         for (int h = 0; h < HEIGHT; h++)
         {
             unsigned char bits = 0;
@@ -45,5 +46,7 @@
             }
         }
         SoMarkerSet::addMarker(idx, size, bitmapbytes, isLSBFirst, isUpToDown);
+        delete[] bitmapbytes;
+        bitmapbytes = NULL;
     }
 }

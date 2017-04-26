@@ -19,8 +19,8 @@
 import os
 import sys
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import QMainWindow, QWorkspace, QAction, QFileDialog, QApplication
+from PySide import QtCore, QtGui
+from PySide.QtGui import QMainWindow, QWorkspace, QAction, QFileDialog, QApplication
 
 from pivy.coin import SoInput, SoDB
 from pivy.quarter import QuarterWidget

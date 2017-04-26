@@ -37,9 +37,9 @@ import sys
 from pivy.coin import *
 from pivy.gui.soqt import *
 
-# PyQt module has to be imported as last one if used in the same namespace
+# PySide module has to be imported as last one if used in the same namespace
 if SoQt.getVersionToolkitString().startswith('4'):
-    from PyQt4.Qt import *
+    from PySide.Qt import *
 else:
     from qt import *
 

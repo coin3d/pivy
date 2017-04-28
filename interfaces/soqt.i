@@ -125,11 +125,11 @@ static PyObject* getShiboken()
 %typemap(out) QEvent * {
   $result = NULL;
   {
-    PyObject *shiboken, *qt;
+    PyObject *qt;
 
     /* try to create a PySide QEvent instance through shiboken */
 
-    shiboken = getShiboken();
+    PyObject *shiboken = getShiboken();
 
     if (shiboken && PyModule_Check(shiboken)) {
       /* check if the qt module is available and import it */
@@ -168,11 +168,11 @@ static PyObject* getShiboken()
 %typemap(out) QWidget * {
   $result = NULL;
   {
-    PyObject *shiboken, *qt;
+    PyObject *qt;
 
     /* try to create a PySide QWidget instance through shiboken */
 
-    shiboken = getShiboken();
+    PyObject *shiboken = getShiboken();
 
     if (shiboken && PyModule_Check(shiboken)) {
       /* check if the qt module is available and import it */
@@ -210,9 +210,7 @@ static PyObject* getShiboken()
 
 %typemap(in) QEvent * {
   {
-    PyObject *shiboken;
-    
-    shiboken = getShiboken();
+    PyObject *shiboken = getShiboken();
 
     if (shiboken && PyModule_Check(shiboken)) {
       /* grab the unwrapInstance(obj) function */
@@ -225,7 +223,9 @@ static PyObject* getShiboken()
         if (!(address = PyEval_CallObject(shiboken_unwrapinst_func, arglist))) {
           PyErr_Print();
         } else if (PyNumber_Check(address)) {
-          $1 = (QEvent*)PyLong_AsLong(address);
+          $1 = (QEvent*)PyLong_AsVoidPtr(address);
+        } else if (PyTuple_Check(address)) {
+          $1 = (QEvent*)PyLong_AsVoidPtr(PyTuple_GetItem(address, 0));
         }
           
         Py_DECREF(arglist);
@@ -244,12 +244,8 @@ static PyObject* getShiboken()
     if ($input == Py_None) {
       $1 = NULL;
     } else {
-      PyObject *shiboken;
-    
-      /* check if the shiboken module is available and import it */
-      if (!(shiboken = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "shiboken"))) {
-        shiboken = PyImport_ImportModule("shiboken");
-      }
+
+    PyObject *shiboken = getShiboken();
     
       if (shiboken && PyModule_Check(shiboken)) {
         /* grab the unwrapInstance(obj) function */
@@ -262,7 +258,9 @@ static PyObject* getShiboken()
           if (!(address = PyEval_CallObject(shiboken_unwrapinst_func, arglist))) {
             PyErr_Print();
           } else if (PyNumber_Check(address)) {
-            $1 = (QWidget*)PyLong_AsLong(address);
+            $1 = (QWidget*)PyLong_AsVoidPtr(address);
+          } else if (PyTuple_Check(address)) {
+            $1 = (QWidget*)PyLong_AsVoidPtr(PyTuple_GetItem(address, 0));
           }
         
           Py_DECREF(arglist);
@@ -284,9 +282,7 @@ class QWidget { QWidget(QWidget* parent=0, const char* name=0, WFlags f=0); };
 %typemap(typecheck) QEvent * {
   void *ptr = NULL;
   {
-    PyObject *shiboken;
-    
-    shiboken = getShiboken();
+    PyObject *shiboken = getShiboken();
 
     if (shiboken && PyModule_Check(shiboken)) {
       /* grab the unwrapInstance(obj) function */
@@ -299,7 +295,9 @@ class QWidget { QWidget(QWidget* parent=0, const char* name=0, WFlags f=0); };
         if (!(address = PyEval_CallObject(shiboken_unwrapinst_func, arglist))) {
           PyErr_Print();
         } else if (PyNumber_Check(address)) {
-         ptr = (QEvent*)PyLong_AsLong(address);
+         ptr = (QEvent*)PyLong_AsVoidPtr(address);
+        } else if (PyTuple_Check(address)) {
+         ptr = (QEvent*)PyLong_AsVoidPtr(PyTuple_GetItem(address, 0));
         }
           
         Py_DECREF(arglist);
@@ -320,9 +318,7 @@ class QWidget { QWidget(QWidget* parent=0, const char* name=0, WFlags f=0); };
 %typemap(typecheck) QWidget * {
   void *ptr = NULL;
   {
-    PyObject *shiboken;
-    
-    shiboken = getShiboken();
+    PyObject *shiboken = getShiboken();
 
     if (shiboken && PyModule_Check(shiboken)) {
       /* grab the unwrapInstance(obj) function */
@@ -335,7 +331,9 @@ class QWidget { QWidget(QWidget* parent=0, const char* name=0, WFlags f=0); };
         if (!(address = PyEval_CallObject(shiboken_unwrapinst_func, arglist))) {
           PyErr_Print();
         } else if (PyNumber_Check(address)) {
-         ptr = (QWidget*)PyLong_AsLong(address);
+         ptr = (QWidget*)PyLong_AsVoidPtr(address);
+        } else if (PyTuple_Check(address)) {
+         ptr = (QWidget*)PyLong_AsVoidPtr(PyTuple_GetItem(address, 0));
         }
           
         Py_DECREF(arglist);

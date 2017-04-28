@@ -10,12 +10,7 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
 
 
   /* check if the shiboken module is available and import it */
-  if (!(shiboken = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "shiboken"))) {
-    shiboken = PyImport_ImportModule("shiboken");
-  }
-  if (!(shiboken && PyModule_Check(shiboken))){
-    shiboken = PyImport_ImportModule("Shiboken.shiboken");
-  }
+  shiboken = getShiboken();
 
   if (shiboken && PyModule_Check(shiboken)) {
     /* check if the qt module is available and import it */
@@ -26,7 +21,7 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
     if (qt && PyModule_Check(qt)) {
       /* grab the wrapinstance(addr, type) function */
       PyObject *shiboken_wrapinst_func;
-      shiboken_wrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "wrapinstance");
+      shiboken_wrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "wrapInstance");
       
       if (PyCallable_Check(shiboken_wrapinst_func)) {
         PyObject *qevent_type;

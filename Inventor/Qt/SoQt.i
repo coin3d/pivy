@@ -11,7 +11,7 @@
 #ifdef PY_2
     if (!strcmp(PyString_AsString(result), ""))
 #else
-    if (!strcmp(PyBytes_AsString(result), ""))
+    if (!strcmp(PyUnicode_AsUTF8(result), ""))
 #endif
     {
       cc_thread *py_thread = cc_thread_construct(Pivy_PythonInteractiveLoop, NULL);

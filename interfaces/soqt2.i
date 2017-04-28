@@ -31,8 +31,8 @@
 
 %define SOQT_MODULE_DOCSTRING
 "The soqt module is a wrapper for the SoQt library. The module will try
-to import the sip module which is used for PyQt. If found the involved
-wrapped Qt structures are converted to ones suitable for PyQt,
+to import the shiboken module which is used for PySide. If found the involved
+wrapped Qt structures are converted to ones suitable for PySide,
 otherwise it will fall back to regular SWIG structures."
 %enddef
 
@@ -80,22 +80,19 @@ Pivy_PythonInteractiveLoop(void *data) {
   return NULL;
 }
 
-static char * PYQT_MODULE_IMPORT_NAME = NULL;
+static const char * PYSIDE_QTGUI = "PySide.QtGui";
+static const char * PYSIDE_QTCORE = "PySide.QtCore";
 
-static void
-initialize_pyqt_module_import_name()
+
+static PyObject* getShiboken()
 {
-  /* determine the Qt version SoQt has been compiled with for correct
-   * PyQt module import */
-  if (!PYQT_MODULE_IMPORT_NAME) {
-    PYQT_MODULE_IMPORT_NAME = "qt";
-      
-    if (strlen(SoQt::getVersionToolkitString()) >= 1 &&
-	SoQt::getVersionToolkitString()[0] == '4') {
-      PYQT_MODULE_IMPORT_NAME = "PyQt4.Qt";
-    }
-  }
+  // simplified version
+  // to get a qt representation in python
+  // simple import shiboken from python.
+  // from Shiboken import shiboken
+  return PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "shiboken");
 }
+
 %}
 
 /* include the typemaps common to all pivy modules */
@@ -104,39 +101,33 @@ initialize_pyqt_module_import_name()
 /* import the pivy main interface file */
 %import coin.i
 
-/* typemaps to bridge against PyQt */
+/* typemaps to bridge against PySide */
 %typemap(out) QEvent * {
   $result = NULL;
   {
-    PyObject *sip, *qt;
+    PyObject *qt;
+    PyObject *shiboken = getShiboken();
+    /* try to create a PySide QEvent instance through shiboken */
 
-    /* try to create a PyQt QEvent instance through sip */
-
-    initialize_pyqt_module_import_name();
-  
-    /* check if the sip module is available and import it */
-    if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "sip"))) {
-      sip = PyImport_ImportModule("sip");
-    }
     
-    if (sip && PyModule_Check(sip)) {
+    if (shiboken && PyModule_Check(shiboken)) {
       /* check if the qt module is available and import it */
-      if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), PYQT_MODULE_IMPORT_NAME))) {
-        qt = PyImport_ImportModule(PYQT_MODULE_IMPORT_NAME);
+      if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), PYSIDE_QTCORE))) {
+        qt = PyImport_ImportModule(PYSIDE_QTCORE);
       }
       
       if (qt && PyModule_Check(qt)) {
-        /* grab the wrapinstance(addr, type) function */
-        PyObject *sip_wrapinst_func;
-        sip_wrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip), "wrapinstance");
+        /* grab the wrapInstance(addr, type) function */
+        PyObject *shiboken_wrapinst_func;
+        shiboken_wrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "wrapInstance");
         
-        if (PyCallable_Check(sip_wrapinst_func)) {
+        if (PyCallable_Check(shiboken_wrapinst_func)) {
           PyObject *qevent_type, *arglist;
           qevent_type = PyDict_GetItemString(PyModule_GetDict(qt), "QEvent");
           
           arglist = Py_BuildValue("(lO)", $1, qevent_type);
           
-          if (!($result = PyEval_CallObject(sip_wrapinst_func, arglist))) {
+          if (!($result = PyEval_CallObject(shiboken_wrapinst_func, arglist))) {
             PyErr_Print();
           }
           
@@ -145,7 +136,7 @@ initialize_pyqt_module_import_name()
       }
     }
 
-    /* if no QEvent could be created through sip return a swig QEvent type */
+    /* if no QEvent could be created through shiboken return a swig QEvent type */
     if (PyErr_ExceptionMatches(PyExc_ImportError) || !$result) {
       PyErr_Clear();
       $result = SWIG_NewPointerObj((void *)($1), SWIGTYPE_p_QEvent, 0);
@@ -156,35 +147,29 @@ initialize_pyqt_module_import_name()
 %typemap(out) QWidget * {
   $result = NULL;
   {
-    PyObject *sip, *qt;
+    PyObject *qt;
+    PyObject *shiboken = getShiboken();
+    /* try to create a PySide QWidget instance through shiboken */
 
-    /* try to create a PyQt QWidget instance through sip */
-
-    initialize_pyqt_module_import_name();
     
-    /* check if the sip module is available and import it */
-    if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "sip"))) {
-      sip = PyImport_ImportModule("sip");
-    }
-    
-    if (sip && PyModule_Check(sip)) {
+    if (shiboken && PyModule_Check(shiboken)) {
       /* check if the qt module is available and import it */
-      if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), PYQT_MODULE_IMPORT_NAME))) {
-        qt = PyImport_ImportModule(PYQT_MODULE_IMPORT_NAME);
+      if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), PYSIDE_QTGUI))) {
+        qt = PyImport_ImportModule(PYSIDE_QTGUI);
       }
       
       if (qt && PyModule_Check(qt)) {
-        /* grab the wrapinstance(addr, type) function */
-        PyObject *sip_wrapinst_func;
-        sip_wrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip), "wrapinstance");
+        /* grab the wrapInstance(addr, type) function */
+        PyObject *shiboken_wrapinst_func;
+        shiboken_wrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "wrapInstance");
         
-        if (PyCallable_Check(sip_wrapinst_func)) {
+        if (PyCallable_Check(shiboken_wrapinst_func)) {
           PyObject *qwidget_type, *arglist;
           qwidget_type = PyDict_GetItemString(PyModule_GetDict(qt), "QWidget");
           
           arglist = Py_BuildValue("(lO)", $1, qwidget_type);
           
-          if (!($result = PyEval_CallObject(sip_wrapinst_func, arglist))) {
+          if (!($result = PyEval_CallObject(shiboken_wrapinst_func, arglist))) {
             PyErr_Print();
           }
           
@@ -193,7 +178,7 @@ initialize_pyqt_module_import_name()
       }
     }
 
-    /* if no QWidget could be created through sip return a swig QWidget type */
+    /* if no QWidget could be created through shiboken return a swig QWidget type */
     if (PyErr_ExceptionMatches(PyExc_ImportError) || !$result) {
       PyErr_Clear();
       $result = SWIG_NewPointerObj((void *)($1), SWIGTYPE_p_QWidget, 0);
@@ -203,25 +188,23 @@ initialize_pyqt_module_import_name()
 
 %typemap(in) QEvent * {
   {
-    PyObject *sip;
+    PyObject *shiboken = getShiboken();
     
-    /* check if the sip module is available and import it */
-    if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "sip"))) {
-      sip = PyImport_ImportModule("sip");
-    }
     
-    if (sip && PyModule_Check(sip)) {
-      /* grab the unwrapinstance(obj) function */
-      PyObject *sip_unwrapinst_func;
-      sip_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip), "unwrapinstance");
+    if (shiboken && PyModule_Check(shiboken)) {
+      /* grab the getCppPointer(obj) function */
+      PyObject *shiboken_unwrapinst_func;
+      shiboken_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "getCppPointer");
         
-      if (PyCallable_Check(sip_unwrapinst_func)) {
+      if (PyCallable_Check(shiboken_unwrapinst_func)) {
         PyObject *arglist, *address;
         arglist = Py_BuildValue("(O)", $input);
-        if (!(address = PyEval_CallObject(sip_unwrapinst_func, arglist))) {
+        if (!(address = PyEval_CallObject(shiboken_unwrapinst_func, arglist))) {
           PyErr_Print();
         } else if (PyNumber_Check(address)) {
-          $1 = (QEvent*)PyLong_AsLong(address);
+          $1 = (QEvent*)PyLong_AsVoidPtr(address);
+        } else if (PyTuple_Check(address)) {
+          $1 = (QEvent*)PyLong_AsVoidPtr(PyTuple_GetItem(address, 0));
         }
           
         Py_DECREF(arglist);
@@ -240,26 +223,28 @@ initialize_pyqt_module_import_name()
     if ($input == Py_None) {
       $1 = NULL;
     } else {
-      PyObject *sip;
+      PyObject *shiboken = getShiboken();
     
-      /* check if the sip module is available and import it */
-      if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "sip"))) {
-        sip = PyImport_ImportModule("sip");
+      /* check if the shiboken module is available and import it */
+      if (!(shiboken = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "shiboken"))) {
+        shiboken = PyImport_ImportModule("shiboken");
       }
     
-      if (sip && PyModule_Check(sip)) {
-        /* grab the unwrapinstance(obj) function */
-        PyObject *sip_unwrapinst_func;
-        sip_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip), "unwrapinstance");
+      if (shiboken && PyModule_Check(shiboken)) {
+        /* grab the getCppPointer(obj) function */
+        PyObject *shiboken_unwrapinst_func;
+        shiboken_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "getCppPointer");
       
-        if (PyCallable_Check(sip_unwrapinst_func)) {
+        if (PyCallable_Check(shiboken_unwrapinst_func)) {
           PyObject *arglist, *address;
           arglist = Py_BuildValue("(O)", $input);
-          if (!(address = PyEval_CallObject(sip_unwrapinst_func, arglist))) {
+          if (!(address = PyEval_CallObject(shiboken_unwrapinst_func, arglist))) {
             PyErr_Print();
           } else if (PyNumber_Check(address)) {
-            $1 = (QWidget*)PyLong_AsLong(address);
-          }
+            $1 = (QWidget*)PyLong_AsVoidPtr(address);
+          } else if (PyTuple_Check(address)) {
+          $1 = (QWidget*)PyLong_AsVoidPtr(PyTuple_GetItem(address, 0));
+        }
         
           Py_DECREF(arglist);
         }
@@ -280,25 +265,23 @@ class QWidget { QWidget(QWidget* parent=0, const char* name=0, WFlags f=0); };
 %typemap(typecheck) QEvent * {
   void *ptr = NULL;
   {
-    PyObject *sip;
+    PyObject *shiboken = getShiboken()
     
-    /* check if the sip module is available and import it */
-    if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "sip"))) {
-      sip = PyImport_ImportModule("sip");
-    }
     
-    if (sip && PyModule_Check(sip)) {
-      /* grab the unwrapinstance(obj) function */
-      PyObject *sip_unwrapinst_func;
-      sip_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip), "unwrapinstance");
+    if (shiboken && PyModule_Check(shiboken)) {
+      /* grab the getCppPointer(obj) function */
+      PyObject *shiboken_unwrapinst_func;
+      shiboken_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "getCppPointer");
         
-      if (PyCallable_Check(sip_unwrapinst_func)) {
+      if (PyCallable_Check(shiboken_unwrapinst_func)) {
         PyObject *arglist, *address;
         arglist = Py_BuildValue("(O)", $input);
-        if (!(address = PyEval_CallObject(sip_unwrapinst_func, arglist))) {
+        if (!(address = PyEval_CallObject(shiboken_unwrapinst_func, arglist))) {
           PyErr_Print();
         } else if (PyNumber_Check(address)) {
-         ptr = (QEvent*)PyLong_AsLong(address);
+         ptr = (QEvent*)PyLong_AsVoidPtr(address);
+        } else if (PyTuple_Check(address)) {
+         ptr = (QEvent*)PyLong_AsVoidPtr(PyTuple_GetItem(address, 0));
         }
           
         Py_DECREF(arglist);
@@ -319,25 +302,23 @@ class QWidget { QWidget(QWidget* parent=0, const char* name=0, WFlags f=0); };
 %typemap(typecheck) QWidget * {
   void *ptr = NULL;
   {
-    PyObject *sip;
+    PyObject *shiboken = getShiboken();
     
-    /* check if the sip module is available and import it */
-    if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "sip"))) {
-      sip = PyImport_ImportModule("sip");
-    }
     
-    if (sip && PyModule_Check(sip)) {
-      /* grab the unwrapinstance(obj) function */
-      PyObject *sip_unwrapinst_func;
-      sip_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip), "unwrapinstance");
+    if (shiboken && PyModule_Check(shiboken)) {
+      /* grab the getCppPointer(obj) function */
+      PyObject *shiboken_unwrapinst_func;
+      shiboken_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "getCppPointer");
         
-      if (PyCallable_Check(sip_unwrapinst_func)) {
+      if (PyCallable_Check(shiboken_unwrapinst_func)) {
         PyObject *arglist, *address;
         arglist = Py_BuildValue("(O)", $input);
-        if (!(address = PyEval_CallObject(sip_unwrapinst_func, arglist))) {
+        if (!(address = PyEval_CallObject(shiboken_unwrapinst_func, arglist))) {
           PyErr_Print();
         } else if (PyNumber_Check(address)) {
-         ptr = (QWidget*)PyLong_AsLong(address);
+         ptr = (QWidget*)PyLong_AsVoidPtr(address);
+        } else if (PyTuple_Check(address)) {
+         ptr = (QWidget*)PyLong_AsVoidPtr(PyTuple_GetItem(address, 0));
         }
           
         Py_DECREF(arglist);

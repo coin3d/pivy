@@ -2,10 +2,10 @@
 
 import sys
 from pivy.gui.soqt import SoQt
-from PyQt4.QtGui import QApplication
-from PyQt4.QtCore import QObject
-from PyQt4.QtCore import SIGNAL
-from PyQt4.QtCore import SLOT
+from PySide.QtGui import QApplication
+from PySide.QtCore import QObject
+from PySide.QtCore import SIGNAL
+from PySide.QtCore import SLOT
 from mainwindow import MainWindow
 
 if __name__ == "__main__":

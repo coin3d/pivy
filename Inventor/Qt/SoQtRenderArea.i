@@ -3,36 +3,33 @@ static SbBool
 SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
 {
   PyObject *func, *arglist;
-  PyObject *result, *sip, *qt, *qev = NULL;
+  PyObject *result, *shiboken, *qt, *qev = NULL;
   int ret = 0;
 
-  /* try to create a QEvent PyQt instance over sip */
+  /* try to create a QEvent PySide instance over shiboken */
 
-  initialize_pyqt_module_import_name();
 
-  /* check if the sip module is available and import it */
-  if (!(sip = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "sip"))) {
-    sip = PyImport_ImportModule("sip");
-  }
+  /* check if the shiboken module is available and import it */
+  shiboken = getShiboken();
 
-  if (sip && PyModule_Check(sip)) {
+  if (shiboken && PyModule_Check(shiboken)) {
     /* check if the qt module is available and import it */
-    if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), PYQT_MODULE_IMPORT_NAME))) {
-      qt = PyImport_ImportModule(PYQT_MODULE_IMPORT_NAME);
+    if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), PYSIDE_QTCORE))) {
+      qt = PyImport_ImportModule(PYSIDE_QTCORE);
     }
 
     if (qt && PyModule_Check(qt)) {
       /* grab the wrapinstance(addr, type) function */
-      PyObject *sip_wrapinst_func;
-      sip_wrapinst_func = PyDict_GetItemString(PyModule_GetDict(sip), "wrapinstance");
+      PyObject *shiboken_wrapinst_func;
+      shiboken_wrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "wrapInstance");
       
-      if (PyCallable_Check(sip_wrapinst_func)) {
+      if (PyCallable_Check(shiboken_wrapinst_func)) {
         PyObject *qevent_type;
         qevent_type = PyDict_GetItemString(PyModule_GetDict(qt), "QEvent");
 
         arglist = Py_BuildValue("(lO)", event, qevent_type);
 
-        if (!(qev = PyEval_CallObject(sip_wrapinst_func, arglist))) {
+        if (!(qev = PyEval_CallObject(shiboken_wrapinst_func, arglist))) {
           PyErr_Print();
         }
 
@@ -41,7 +38,7 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
     }
   }
 
-  /* if no QEvent could be created through sip return a swig QEvent type */
+  /* if no QEvent could be created through shiboken return a swig QEvent type */
   if (!qev) {
     qev = SWIG_NewPointerObj((void *)event, SWIGTYPE_p_QEvent, 0);
   }
@@ -57,7 +54,7 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
     ret = PyInt_AsLong(result);
   }
 
-  if (sip) {Py_DECREF(sip); }
+  if (shiboken) {Py_DECREF(shiboken); }
   Py_DECREF(arglist);
   Py_DECREF(qev);
   Py_XDECREF(result);

@@ -38,10 +38,8 @@ from pivy.coin import *
 from pivy.gui.soqt import *
 
 # PySide module has to be imported as last one if used in the same namespace
-if SoQt.getVersionToolkitString().startswith('4'):
-    from PySide.Qt import *
-else:
-    from qt import *
+from PySide.QtCore import *
+from PySide.QtGui import *
 
 # Timer sensor 
 # Rotate 90 degrees every second, update 30 times a second

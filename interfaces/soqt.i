@@ -103,16 +103,13 @@ static const char * PYSIDE_QTCORE = "PySide.QtCore";
 
 static PyObject* getShiboken()
 {
-  PyObject* shiboken;
-  /* check if the shiboken module is available and import it */
-  if (!(shiboken = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "shiboken"))) {
-    shiboken = PyImport_ImportModule("shiboken");
-  }
-  if (!(shiboken && PyModule_Check(shiboken))){
-    shiboken = PyImport_ImportModule("Shiboken.shiboken");
-  }
-  return shiboken;
+  // simplified version
+  // to get a qt representation in python
+  // simple import shiboken from python.
+  // from Shiboken import shiboken
+  return PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "shiboken");
 }
+
 %}
 
 /* include the typemaps common to all pivy modules */

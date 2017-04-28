@@ -1,9 +1,10 @@
 import sys
 from pivy import coin
 from pivy.gui import soqt
-import Shiboken
+# import shiboken if you want to use the widget within qt
 
 myWindow = soqt.SoQt.init(sys.argv[0])
+print(myWindow)
 scene = coin.SoSeparator()
 cam = coin.SoPerspectiveCamera()
 cam.position = (0, 0, 4)

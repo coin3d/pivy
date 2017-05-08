@@ -86,11 +86,16 @@ static const char * PYSIDE_QTCORE = "PySide.QtCore";
 
 static PyObject* getShiboken()
 {
-  // simplified version
-  // to get a qt representation in python
-  // simple import shiboken from python.
-  // from Shiboken import shiboken
-  return PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "shiboken");
+
+  // this function asumes shiboken is available directly
+  // pip installs it in a wrong place
+  // if you have installed shiboken with pip please symlink to correct directory
+
+  if (!(shiboken = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "shiboken"))) {
+    // simple import shiboken from python.
+    shiboken = PyImport_ImportModule("shiboken");
+  }
+  return shiboken;
 }
 
 %}

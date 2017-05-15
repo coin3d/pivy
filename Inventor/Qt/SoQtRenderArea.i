@@ -14,8 +14,8 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
 
   if (shiboken && PyModule_Check(shiboken)) {
     /* check if the qt module is available and import it */
-    if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), PYSIDE_QTCORE))) {
-      qt = PyImport_ImportModule(PYSIDE_QTCORE);
+    if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), PYSIDE_QT))) {
+      qt = PyImport_ImportModule(PYSIDE_QT);
     }
 
     if (qt && PyModule_Check(qt)) {

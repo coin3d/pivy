@@ -80,8 +80,7 @@ Pivy_PythonInteractiveLoop(void *data) {
   return NULL;
 }
 
-static const char * PYSIDE_QTGUI = "PySide.QtGui";
-static const char * PYSIDE_QTCORE = "PySide.QtCore";
+static const char * PYSIDE_QT = "pivy.gui.qt";
 
 
 static PyObject* getShiboken()
@@ -117,8 +116,8 @@ static PyObject* getShiboken()
     
     if (shiboken && PyModule_Check(shiboken)) {
       /* check if the qt module is available and import it */
-      if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), PYSIDE_QTCORE))) {
-        qt = PyImport_ImportModule(PYSIDE_QTCORE);
+      if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), PYSIDE_QT))) {
+        qt = PyImport_ImportModule(PYSIDE_QT);
       }
       
       if (qt && PyModule_Check(qt)) {
@@ -159,8 +158,8 @@ static PyObject* getShiboken()
     
     if (shiboken && PyModule_Check(shiboken)) {
       /* check if the qt module is available and import it */
-      if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), PYSIDE_QTGUI))) {
-        qt = PyImport_ImportModule(PYSIDE_QTGUI);
+      if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), PYSIDE_QT))) {
+        qt = PyImport_ImportModule(PYSIDE_QT);
       }
       
       if (qt && PyModule_Check(qt)) {

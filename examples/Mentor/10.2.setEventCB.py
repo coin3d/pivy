@@ -51,12 +51,16 @@ def myProjectPoint(myRenderArea, mousex, mousey, use_coin=False):
     # Take the x,y position of mouse, and normalize to [0,1].
     # X windows have 0,0 at the upper left,
     # Inventor expects 0,0 to be the lower left.
+
     size = myRenderArea.getSize()
-    x = float(mousex) / size[0]
-    if use_coin:
-        y = float(mousey) / size[1]
-    else:
-        y = float(size[1] - mousey) / size[1]
+    if not use_coin:
+        mousey = size[1] - mousey
+
+    ratio = float(size[0]) / size[1] - 1
+    ratiox = (ratio > 0) * ratio
+    ratioy = (ratio < 0) * ratio
+    x = (float(mousex) + (float(mousex) - 0.5 * float(size[0])) * ratiox) / size[0]
+    y = (float(mousey) + (float(mousey) - 0.5 * float(size[1])) * ratioy) / size[1]
    
     # Get the camera and view volume
     root = myRenderArea.getSceneGraph()

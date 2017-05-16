@@ -98,8 +98,7 @@ Pivy_PythonInteractiveLoop(void *data) {
   return NULL;
 }
 
-static const char * PYSIDE_QTGUI = "PySide.QtGui";
-static const char * PYSIDE_QTCORE = "PySide.QtCore";
+static const char * PYSIDE_QT = "pivy.gui.qt";
 
 static PyObject* getShiboken()
 {
@@ -135,8 +134,8 @@ static PyObject* getShiboken()
 
     if (shiboken && PyModule_Check(shiboken)) {
       /* check if the qt module is available and import it */
-      if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), PYSIDE_QTCORE))) {
-        qt = PyImport_ImportModule(PYSIDE_QTCORE);
+      if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), PYSIDE_QT))) {
+        qt = PyImport_ImportModule(PYSIDE_QT);
       }
       
       if (qt && PyModule_Check(qt)) {
@@ -178,8 +177,8 @@ static PyObject* getShiboken()
 
     if (shiboken && PyModule_Check(shiboken)) {
       /* check if the qt module is available and import it */
-      if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), PYSIDE_QTCORE))) {
-        qt = PyImport_ImportModule(PYSIDE_QTCORE);
+      if (!(qt = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), PYSIDE_QT))) {
+        qt = PyImport_ImportModule(PYSIDE_QT);
       }
       
       if (qt && PyModule_Check(qt)) {
@@ -217,7 +216,7 @@ static PyObject* getShiboken()
     if (shiboken && PyModule_Check(shiboken)) {
       /* grab the unwrapInstance(obj) function */
       PyObject *shiboken_unwrapinst_func;
-      shiboken_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "unwrapInstance");
+      shiboken_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "getCppPointer");
         
       if (PyCallable_Check(shiboken_unwrapinst_func)) {
         PyObject *arglist, *address;
@@ -252,7 +251,7 @@ static PyObject* getShiboken()
       if (shiboken && PyModule_Check(shiboken)) {
         /* grab the unwrapInstance(obj) function */
         PyObject *shiboken_unwrapinst_func;
-        shiboken_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "unwrapInstance");
+        shiboken_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "getCppPointer");
       
         if (PyCallable_Check(shiboken_unwrapinst_func)) {
           PyObject *arglist, *address;
@@ -289,7 +288,7 @@ class QWidget { QWidget(QWidget* parent=0, const char* name=0, WFlags f=0); };
     if (shiboken && PyModule_Check(shiboken)) {
       /* grab the unwrapInstance(obj) function */
       PyObject *shiboken_unwrapinst_func;
-      shiboken_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "unwrapInstance");
+      shiboken_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "getCppPointer");
         
       if (PyCallable_Check(shiboken_unwrapinst_func)) {
         PyObject *arglist, *address;
@@ -325,7 +324,7 @@ class QWidget { QWidget(QWidget* parent=0, const char* name=0, WFlags f=0); };
     if (shiboken && PyModule_Check(shiboken)) {
       /* grab the unwrapInstance(obj) function */
       PyObject *shiboken_unwrapinst_func;
-      shiboken_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "unwrapInstance");
+      shiboken_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "getCppPointer");
         
       if (PyCallable_Check(shiboken_unwrapinst_func)) {
         PyObject *arglist, *address;

@@ -177,15 +177,15 @@ def myAppEventHandlerCoin(myRenderArea, anyevent):
                 vec = myProjectPoint(myRenderArea, pos[0], pos[1], use_coin=True)
                 myAddPoint(myRenderArea, vec)
                 DRAW=TRUE
-            elif event.getButton() == event.BUTTON2:
-                myTicker.schedule()  # start spinning the camera
             elif event.getButton() == event.BUTTON3:
+                myTicker.schedule()  # start spinning the camera
+            elif event.getButton() == event.BUTTON2:
                 myClearPoints(myRenderArea)  # clear the point set
 
         elif (event.getState() == SoMouseButtonEvent.UP):
             if event.getButton() == event.BUTTON1:
                 DRAW = False
-            if event.getButton() == event.BUTTON2:
+            if event.getButton() == event.BUTTON3:
                 myTicker.unschedule()  # stop spinning the camera
 
     elif type(event) == SoLocation2Event:
@@ -250,6 +250,16 @@ def main():
     myRenderArea.setSceneGraph(root)
     myRenderArea.setTitle("My Event Handler")
 
+
+###############################################################
+# as a workaround use a SoEventCallback:
+    if len(sys.argv) > 1 and sys.argv[1] == "coin":
+        myEventCallback = SoEventCallback()
+        root.addChild(myEventCallback)
+        myEventCallback.addEventCallback(SoEvent.getClassTypeId(), myAppEventHandlerCoin, myRenderArea)
+# end of workaround
+###############################################################
+
 ###############################################################
 # TODO: this does not work with pyside
 # it will run once * is solved:
@@ -259,22 +269,13 @@ def main():
 #
 #    # Have render area send events to us instead of the scene 
 #    # graph.  We pass the render area as user data.
-#
-#    if SoQt.getVersionToolkitString().startswith('4'):
-#        myRenderArea.setEventCallback(myAppEventHandlerQt4, myRenderArea)
-#    else:
-#        myRenderArea.setEventCallback(myAppEventHandler, myRenderArea)
+    else:
+        if SoQt.getVersionToolkitString().startswith('4'):
+           myRenderArea.setEventCallback(myAppEventHandlerQt4, myRenderArea)
+        else:
+           myRenderArea.setEventCallback(myAppEventHandler, myRenderArea)
 #
 # CODE FOR The Inventor Mentor ENDS HERE
-###############################################################
-
-###############################################################
-# as a workaround use a SoEventCallback:
-
-    myEventCallback = SoEventCallback()
-    root.addChild(myEventCallback)
-    myEventCallback.addEventCallback(SoEvent.getClassTypeId(), myAppEventHandlerCoin, myRenderArea)
-# end of workaround
 ###############################################################
 
     # Show our application window, and loop forever...

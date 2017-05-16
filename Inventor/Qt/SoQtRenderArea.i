@@ -1,4 +1,5 @@
 %{
+
 static SbBool
 SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
 {
@@ -25,15 +26,16 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
       
       if (PyCallable_Check(shiboken_wrapinst_func)) {
         PyObject *qevent_type;
-        qevent_type = PyDict_GetItemString(PyModule_GetDict(qt), "QEvent");
+        if (qevent_type = PyDict_GetItemString(PyModule_GetDict(qt), get_typename(*event)))
+        {
+          arglist = Py_BuildValue("(lO)", event, qevent_type);
 
-        arglist = Py_BuildValue("(lO)", event, qevent_type);
+          if (!(qev = PyEval_CallObject(shiboken_wrapinst_func, arglist))) {
+            PyErr_Print();
+          }
 
-        if (!(qev = PyEval_CallObject(shiboken_wrapinst_func, arglist))) {
-          PyErr_Print();
+          Py_DECREF(arglist);
         }
-
-        Py_DECREF(arglist);
       }
     }
   }

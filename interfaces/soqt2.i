@@ -80,6 +80,25 @@ Pivy_PythonInteractiveLoop(void *data) {
   return NULL;
 }
 
+//////////////////////////////////////////////////////
+//helper to get subclass name of qt-objects
+
+# include <typeinfo>
+#if __unix
+#include <cxxabi.h>
+template <typename T> char* get_typename(T& object)
+{
+    return abi::__cxa_demangle(typeid(object).name(), 0, 0, 0);
+}
+#else
+template <typename T> char* get_typename(T& object)
+{
+    return typeid(object).name();
+}
+#endif
+/////////////////////////////////////////////////////
+
+
 static const char * PYSIDE_QT = "pivy.gui.qt";
 
 

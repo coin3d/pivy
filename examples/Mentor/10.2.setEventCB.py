@@ -205,18 +205,31 @@ def main():
     myRenderArea.setTitle("My Event Handler")
 
 ###############################################################
+# TODO: this does not work with pyside
+# it will run once * is solved:
+# https://bugreports.qt.io/browse/PYSIDE-31?jql=project%20%3D%20PYSIDE%20AND%20resolution%20%3D%20Unresolved%20ORDER%20BY%20assignee%20ASC%2C%20priority%20DESC
+# 
 # CODE FOR The Inventor Mentor STARTS HERE  (part 2)
-
-    # Have render area send events to us instead of the scene 
-    # graph.  We pass the render area as user data.
-
-    if SoQt.getVersionToolkitString().startswith('4'):
-        myRenderArea.setEventCallback(myAppEventHandlerQt4, myRenderArea)
-    else:
-        myRenderArea.setEventCallback(myAppEventHandler, myRenderArea)
-
+#
+#    # Have render area send events to us instead of the scene 
+#    # graph.  We pass the render area as user data.
+#
+#    if SoQt.getVersionToolkitString().startswith('4'):
+#        myRenderArea.setEventCallback(myAppEventHandlerQt4, myRenderArea)
+#    else:
+#        myRenderArea.setEventCallback(myAppEventHandler, myRenderArea)
+#
 # CODE FOR The Inventor Mentor ENDS HERE
 ###############################################################
+
+# as a workaround use a SoEventCallback:
+    myEventCallback = SoEventCallback()
+    root.addChild(myEventCallback)
+    if SoQt.getVersionToolkitString().startswith('4'):
+        myEventCallback.addEventCallback(myAppEventHandlerQt4, myRenderArea)
+    else:
+        myEventCallback.addEventCallback(myAppEventHandler, myRenderArea)
+
 
     # Show our application window, and loop forever...
     myRenderArea.show()

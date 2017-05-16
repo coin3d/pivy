@@ -86,12 +86,12 @@ Pivy_PythonInteractiveLoop(void *data) {
 # include <typeinfo>
 #if __unix
 #include <cxxabi.h>
-template <typename T> char* get_typename(T& object)
+template <typename T> const char* get_typename(T& object)
 {
     return abi::__cxa_demangle(typeid(object).name(), 0, 0, 0);
 }
 #else
-template <typename T> char* get_typename(T& object)
+template <typename T> const char* get_typename(T& object)
 {
     return typeid(object).name();
 }

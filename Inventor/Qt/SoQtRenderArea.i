@@ -26,7 +26,17 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
       
       if (PyCallable_Check(shiboken_wrapinst_func)) {
         PyObject *qevent_type;
-        if (qevent_type = PyDict_GetItemString(PyModule_GetDict(qt), get_typename(*event)))
+        qevent_type = PyDict_GetItemString(PyModule_GetDict(qt), get_typename(*event));
+
+        // TODO: find better solution for QKeyEvent
+        if (!qevent_type){
+          if (get_typename(*event) == "QKeyEventEx")
+            qevent_type = PyDict_GetItemString(PyModule_GetDict(qt), "QKeyEvent");
+          else
+            qevent_type = PyDict_GetItemString(PyModule_GetDict(qt), "QEvent");
+        }
+
+        if (qevent_type)
         {
           arglist = Py_BuildValue("(lO)", event, qevent_type);
 

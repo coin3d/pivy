@@ -47,13 +47,16 @@ myTicker = None
 UPDATE_RATE    = 1.0/30.0
 ROTATION_ANGLE = M_PI/60.0
 
-def myProjectPoint(myRenderArea, mousex, mousey):
+def myProjectPoint(myRenderArea, mousex, mousey, use_coin=False):
     # Take the x,y position of mouse, and normalize to [0,1].
     # X windows have 0,0 at the upper left,
     # Inventor expects 0,0 to be the lower left.
     size = myRenderArea.getSize()
     x = float(mousex) / size[0]
-    y = float(size[1] - mousey) / size[1]
+    if use_coin:
+        y = float(mousey) / size[1]
+    else:
+        y = float(size[1] - mousey) / size[1]
    
     # Get the camera and view volume
     root = myRenderArea.getSceneGraph()
@@ -153,7 +156,50 @@ def myAppEventHandlerQt4(myRenderArea, anyevent):
 
     return handled
 
+
 # CODE FOR The Inventor Mentor ENDS HERE
+###############################################################
+
+
+###############################################################
+# CALLBACK WORKAROUND STARTS HERE
+
+DRAW = FALSE
+def myAppEventHandlerCoin(myRenderArea, anyevent):
+    global DRAW
+    handled = TRUE
+    event = anyevent.getEvent()
+    myRenderArea.draw = False
+    if type(event) == SoMouseButtonEvent:
+        if (event.getState() == SoMouseButtonEvent.DOWN):
+            if event.getButton() == event.BUTTON1:
+                pos = event.getPosition()
+                vec = myProjectPoint(myRenderArea, pos[0], pos[1], use_coin=True)
+                myAddPoint(myRenderArea, vec)
+                DRAW=TRUE
+            elif event.getButton() == event.BUTTON2:
+                myTicker.schedule()  # start spinning the camera
+            elif event.getButton() == event.BUTTON3:
+                myClearPoints(myRenderArea)  # clear the point set
+
+        elif (event.getState() == SoMouseButtonEvent.UP):
+            if event.getButton() == event.BUTTON1:
+                DRAW = False
+            if event.getButton() == event.BUTTON2:
+                myTicker.unschedule()  # stop spinning the camera
+
+    elif type(event) == SoLocation2Event:
+        if DRAW:
+            pos = event.getPosition()
+            vec = myProjectPoint(myRenderArea, pos[0], pos[1], use_coin=True)
+            myAddPoint(myRenderArea, vec)
+
+    else:
+        handled = FALSE
+
+    return handled
+
+# CALLBACK WORKAROUND ENDS HERE 
 ###############################################################
 
 def main():
@@ -222,14 +268,14 @@ def main():
 # CODE FOR The Inventor Mentor ENDS HERE
 ###############################################################
 
+###############################################################
 # as a workaround use a SoEventCallback:
+
     myEventCallback = SoEventCallback()
     root.addChild(myEventCallback)
-    if SoQt.getVersionToolkitString().startswith('4'):
-        myEventCallback.addEventCallback(myAppEventHandlerQt4, myRenderArea)
-    else:
-        myEventCallback.addEventCallback(myAppEventHandler, myRenderArea)
-
+    myEventCallback.addEventCallback(SoEvent.getClassTypeId(), myAppEventHandlerCoin, myRenderArea)
+# end of workaround
+###############################################################
 
     # Show our application window, and loop forever...
     myRenderArea.show()

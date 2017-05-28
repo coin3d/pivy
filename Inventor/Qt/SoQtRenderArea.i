@@ -30,7 +30,7 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
 
         // TODO: find better solution for QKeyEvent
         if (!qevent_type){
-          if (get_typename(*event) == "QKeyEventEx")
+          if (strcmp(get_typename(*event), "QKeyEventEx") == 0)
             qevent_type = PyDict_GetItemString(PyModule_GetDict(qt), "QKeyEvent");
           else
             qevent_type = PyDict_GetItemString(PyModule_GetDict(qt), "QEvent");

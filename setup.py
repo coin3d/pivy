@@ -419,9 +419,12 @@ class pivy_build(build):
                     CPP_FLAGS += " -I" + '"' + os.getenv("QTDIR") + "\\include\"  /DSOQT_DLL"
                     if os.path.isdir(os.getenv("QTDIR") + "\\include\Qt\""):
                         CPP_FLAGS += " -I" + '"' + os.getenv("QTDIR") + "\\include\Qt\""
+                        LDFLAGS_LIBS += os.path.join(os.getenv("COINDIR"), "lib", "soqt1.lib") + " "
                     else:
+                        # workaround for conda qt4:
                         CPP_FLAGS += " -I" + '"' + os.getenv("QTDIR") + "\\include\qt\Qt\""
-                    LDFLAGS_LIBS += os.path.join(os.getenv("COINDIR"), "lib", "soqt1.lib") + " "
+                        CPP_FLAGS += " -I" + '"' + os.getenv("QTDIR") + "\\include\qt\""
+                        LDFLAGS_LIBS += os.path.join(os.getenv("COINDIR"), "lib", "SoQt.lib") + " "
             else:
                 INCLUDE_DIR = self.do_os_popen("coin-config --includedir")
                 if module_name != 'coin':

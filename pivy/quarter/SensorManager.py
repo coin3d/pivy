@@ -30,7 +30,7 @@ class SensorManager(QObject):
 
     def __init__(self):
         QObject.__init__(self, None)
-        self._mainthreadid = QThread.currentThreadId()
+        self._mainthread = QThread.currentThread()
 
         self._signalthread = SignalThread()
         QObject.connect(self._signalthread, SIGNAL("triggerSignal()"),
@@ -63,7 +63,7 @@ class SensorManager(QObject):
         # if we get a callback from another thread, route the callback
         # through SignalThread so that we receive the callback in the
         # QApplication thread (needed since QTimer isn't thread safe)
-        if QThread.currentThreadId() != closure._mainthreadid:
+        if QThread.currentThread() != closure._mainthread:
             if not closure._signalthread.isRunning():
                 closure._signalthread.start()
             self._signalthread.trigger()

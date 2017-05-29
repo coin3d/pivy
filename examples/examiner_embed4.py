@@ -31,7 +31,7 @@ from PySide.QtCore import *
 
 class EmbeddedWindow(QMainWindow):
     def __init__(self, *args):
-        apply(QMainWindow.__init__, (self,) + args)
+        super(EmbeddedWindow, self).__init__(*args)
 
         # dummy widget needed for the PyQt stuff
         self.centralWidget = QWidget(self)
@@ -107,6 +107,7 @@ class EmbeddedWindow(QMainWindow):
         self.gate.enable = not self.gate.enable.getValue()
 
 def main():
+    qApp = QApplication([])
     # initialize Qt and SoQt
     SoQt.init(None)
 

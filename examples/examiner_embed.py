@@ -20,6 +20,8 @@
 # Demonstrates embedding of an SoQtExaminerViewer within a simple widget
 # hierarchy.
 
+## seems to be qt3 specific. use examinar_embed4.py with qt4!
+
 import sys
 from random import random
 

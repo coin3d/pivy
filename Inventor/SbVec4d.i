@@ -49,6 +49,7 @@ convert_SbVec4d_array(PyObject * input, double temp[4])
   SbVec4d __mul__(const SbDPMatrix &m) { SbVec4d res; m.multVecMatrix(*self,res); return res; }
   SbVec4d __rmul__(const double d) { return *self * d; }
   SbVec4d __div__(const double d) { return *self / d; }
+  SbVec4d __truediv__(const double d) { return *self / d; }
   int __eq__(const SbVec4d &u ) { return *self == u; }
   int __nq__(const SbVec4d &u) { return *self != u; }
   // swig - add a method for wrapping c++ operator[] access

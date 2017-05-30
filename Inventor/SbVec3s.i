@@ -34,6 +34,7 @@ convert_SbVec3s_array(PyObject * input, short temp[3])
   SbVec3s __mul__(const double d) { return *self * d; }
   SbVec3s __rmul__(const double d) { return *self * d; }
   SbVec3s __div__(const double d) { return *self / d; }
+  SbVec3s __truediv__(const double d) { return *self / d; }
   int __eq__(const SbVec3s &u) { return *self == u; }
   int __nq__(const SbVec3s &u) { return *self != u; }
   // add a method for wrapping c++ operator[] access

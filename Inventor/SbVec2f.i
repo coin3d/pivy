@@ -32,6 +32,7 @@ convert_SbVec2f_array(PyObject *input, float temp[2])
   SbVec2f __mul__(const float d) { return *self * d; }
   SbVec2f __rmul__(const float d) { return *self * d; }
   SbVec2f __div__(const float d) { return *self / d; }
+  SbVec2f __truediv__(const float d) { return *self / d; }
   int __eq__(const SbVec2f &u ) { return *self == u; }
   int __nq__(const SbVec2f &u) { return *self != u; }
   // add a method for wrapping c++ operator[] access

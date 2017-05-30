@@ -111,7 +111,9 @@ template <typename T> const char* get_typename(T& object)
 #else
 template <typename T> const char* get_typename(T& object)
 {
-    return typeid(object).name();
+    const char* simpleNonUnicodeAsciiCStyleString = typeid(object).name();
+    const char* shortenedVersion = simpleNonUnicodeAsciiCStyleString + 6;
+    return shortenedVersion;
 }
 #endif
 /////////////////////////////////////////////////////

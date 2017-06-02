@@ -4,7 +4,7 @@
    * decreased */
   ~SoBase() { self->unref();}
 
-long __hash__() { return (long) $self; }
+size_t __hash__() { return (size_t) $self; }
 
 %pythoncode %{
     def __eq__(self,other):

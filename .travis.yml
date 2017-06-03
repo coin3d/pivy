@@ -12,6 +12,9 @@ before_install:
   - sudo apt-get install -y libcoin80-dev
   - sudo apt-get install -y libsoqt4-dev
   - sudo apt-get install -y libsimage-dev
+  - sudo apt-get install -y libshiboken-dev
+  - sudo apt-get install -y python3-pyside
+  - sudo apt-get install -y python-pyside
   - sudo ln -s /usr/bin/swig3 /usr/bin/swig
 
 install:

@@ -1215,7 +1215,7 @@ class SbPLaneTests(unittest.TestCase):
 
 class ShibokenTests(unittest.TestCase):
     """shiboken_64bit_test.py"""
-    def testAdresses(self)
+    def testAdresses(self):
         from PySide import QtCore
         import shiboken
         q = QtCore.QObject()

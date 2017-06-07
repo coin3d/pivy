@@ -233,11 +233,7 @@ class FieldSetValue(unittest.TestCase):
         s.setValue(t)
         self.failUnless(t.getValue() == s.getValue(),
                         'setValue other SoSFVec3f on SoSFVec3f failed')
-        # test division support
-        s.setValue(1, 1, 1)
-        self.failUnless(s / 2. == SoSFVec3f(0.5, 0.5, 0.5),
-                        'divison does not give correct solution')
-        # TODO: support ints!
+
 
     def testSFVec2f(self):
         """check setValue for SoSFVec2f"""
@@ -1198,6 +1194,15 @@ class SoInputTests(unittest.TestCase):
 
     def testSetBuffer(self):
         self.input.setBuffer(self.text)
+
+
+class SbVecTests(unittest.TestCase):
+    def setUp(self):
+        self.sbvec3f = coin.SbVec3f(1, 1, 1)
+
+    def multDivTest(self):
+        self.assertEqual(self.sbvec3f, self.sbvec3f * 2. / 2.)
+        # TODO: also support ints
 
 class SbPLaneTests(unittest.TestCase):
 

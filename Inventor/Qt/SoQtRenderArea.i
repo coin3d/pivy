@@ -3,12 +3,11 @@
 static SbBool
 SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
 {
-  PyObject *func, *arglist;
-  PyObject *result, *shiboken, *qt, *qev = NULL;
-  int ret = 0;
+  PyObject *func = NULL, *arglist = NULL;
+  PyObject *result = NULL, *shiboken, *qt = NULL, *qev = NULL;
+  SbBool ret = TRUE; // assume success as default
 
   /* try to create a QEvent PySide instance over shiboken */
-
 
   /* check if the shiboken module is available and import it */
   shiboken = getShiboken();
@@ -21,24 +20,24 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
 
     if (qt && PyModule_Check(qt)) {
       /* grab the wrapinstance(addr, type) function */
-      PyObject *shiboken_wrapinst_func;
+      PyObject *shiboken_wrapinst_func = NULL;
       shiboken_wrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "wrapInstance");
-      
       if (PyCallable_Check(shiboken_wrapinst_func)) {
-        PyObject *qevent_type;
+        PyObject *qevent_type = NULL;
         qevent_type = PyDict_GetItemString(PyModule_GetDict(qt), get_typename(*event));
 
         // TODO: find better solution for QKeyEvent
         if (!qevent_type){
-          if (strcmp(get_typename(*event), "QKeyEventEx") == 0)
+          if (strcmp(get_typename(*event), "QKeyEventEx") == 0) {
             qevent_type = PyDict_GetItemString(PyModule_GetDict(qt), "QKeyEvent");
-          else
+          } else {
             qevent_type = PyDict_GetItemString(PyModule_GetDict(qt), "QEvent");
+          }
         }
 
         if (qevent_type)
         {
-          arglist = Py_BuildValue("(lO)", event, qevent_type);
+          arglist = Py_BuildValue("(nO)", event, qevent_type);
 
           if (!(qev = PyEval_CallObject(shiboken_wrapinst_func, arglist))) {
             PyErr_Print();
@@ -63,10 +62,12 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
   if (!(result = PyEval_CallObject(func, arglist))) {
     PyErr_Print();
   } else {
-    ret = PyInt_AsLong(result);
+    ret = FALSE;
   }
 
-  if (shiboken) {Py_DECREF(shiboken); }
+  if (shiboken) {
+    Py_DECREF(shiboken);
+  }
   Py_DECREF(arglist);
   Py_DECREF(qev);
   Py_XDECREF(result);

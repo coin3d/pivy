@@ -93,11 +93,10 @@ template <typename T> const char* get_typename(T& object)
 #else
 template <typename T> const char* get_typename(T& object)
 {
-    return typeid(object).name();
+    return (typeid(object).name() + 6);  // the +6 advanced the pointer 6 bytes (6 asc ii characters) to cut off prefix "class " from the object's class name
 }
 #endif
 /////////////////////////////////////////////////////
-
 
 static const char * PYSIDE_QT = "pivy.gui.qt";
 
@@ -108,10 +107,10 @@ static PyObject* getShiboken()
   // this function asumes shiboken is available directly
   // pip installs it in a wrong place
   // if you have installed shiboken with pip please symlink to correct directory
-  PyObject * shiboken;
+  PyObject * shiboken = NULL;
   if (!(shiboken = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "shiboken"))) {
     // simple import shiboken from python.
-    shiboken = PyImport_ImportModule("shiboken");
+   shiboken = PyImport_ImportModule("shiboken");
   }
   return shiboken;
 }
@@ -128,7 +127,7 @@ static PyObject* getShiboken()
 %typemap(out) QEvent * {
   $result = NULL;
   {
-    PyObject *qt;
+    PyObject *qt = NULL;
     PyObject *shiboken = getShiboken();
     /* try to create a PySide QEvent instance through shiboken */
 
@@ -141,14 +140,14 @@ static PyObject* getShiboken()
       
       if (qt && PyModule_Check(qt)) {
         /* grab the wrapInstance(addr, type) function */
-        PyObject *shiboken_wrapinst_func;
+        PyObject *shiboken_wrapinst_func = NULL;
         shiboken_wrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "wrapInstance");
         
         if (PyCallable_Check(shiboken_wrapinst_func)) {
-          PyObject *qevent_type, *arglist;
+          PyObject *qevent_type = NULL, *arglist = NULL;
           qevent_type = PyDict_GetItemString(PyModule_GetDict(qt), "QEvent");
           
-          arglist = Py_BuildValue("(lO)", $1, qevent_type);
+          arglist = Py_BuildValue("(nO)", $1, qevent_type);
           
           if (!($result = PyEval_CallObject(shiboken_wrapinst_func, arglist))) {
             PyErr_Print();
@@ -170,7 +169,7 @@ static PyObject* getShiboken()
 %typemap(out) QWidget * {
   $result = NULL;
   {
-    PyObject *qt;
+    PyObject *qt = NULL;
     PyObject *shiboken = getShiboken();
     /* try to create a PySide QWidget instance through shiboken */
 
@@ -183,14 +182,14 @@ static PyObject* getShiboken()
       
       if (qt && PyModule_Check(qt)) {
         /* grab the wrapInstance(addr, type) function */
-        PyObject *shiboken_wrapinst_func;
+        PyObject *shiboken_wrapinst_func = NULL;
         shiboken_wrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "wrapInstance");
         
         if (PyCallable_Check(shiboken_wrapinst_func)) {
-          PyObject *qwidget_type, *arglist;
+          PyObject *qwidget_type = NULL, *arglist = NULL;
           qwidget_type = PyDict_GetItemString(PyModule_GetDict(qt), "QWidget");
           
-          arglist = Py_BuildValue("(lO)", $1, qwidget_type);
+          arglist = Py_BuildValue("(nO)", $1, qwidget_type);
           
           if (!($result = PyEval_CallObject(shiboken_wrapinst_func, arglist))) {
             PyErr_Print();
@@ -216,11 +215,11 @@ static PyObject* getShiboken()
     
     if (shiboken && PyModule_Check(shiboken)) {
       /* grab the getCppPointer(obj) function */
-      PyObject *shiboken_unwrapinst_func;
+      PyObject *shiboken_unwrapinst_func = NULL;
       shiboken_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "getCppPointer");
         
       if (PyCallable_Check(shiboken_unwrapinst_func)) {
-        PyObject *arglist, *address;
+        PyObject *arglist = NULL, *address = NULL;
         arglist = Py_BuildValue("(O)", $input);
         if (!(address = PyEval_CallObject(shiboken_unwrapinst_func, arglist))) {
           PyErr_Print();
@@ -255,11 +254,11 @@ static PyObject* getShiboken()
     
       if (shiboken && PyModule_Check(shiboken)) {
         /* grab the getCppPointer(obj) function */
-        PyObject *shiboken_unwrapinst_func;
+        PyObject *shiboken_unwrapinst_func = NULL;
         shiboken_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "getCppPointer");
       
         if (PyCallable_Check(shiboken_unwrapinst_func)) {
-          PyObject *arglist, *address;
+          PyObject *arglist = NULL, *address = NULL;
           arglist = Py_BuildValue("(O)", $input);
           if (!(address = PyEval_CallObject(shiboken_unwrapinst_func, arglist))) {
             PyErr_Print();
@@ -293,11 +292,11 @@ class QWidget { QWidget(QWidget* parent=0, const char* name=0, WFlags f=0); };
     
     if (shiboken && PyModule_Check(shiboken)) {
       /* grab the getCppPointer(obj) function */
-      PyObject *shiboken_unwrapinst_func;
+      PyObject *shiboken_unwrapinst_func = NULL;
       shiboken_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "getCppPointer");
         
       if (PyCallable_Check(shiboken_unwrapinst_func)) {
-        PyObject *arglist, *address;
+        PyObject *arglist = NULL, *address = NULL;
         arglist = Py_BuildValue("(O)", $input);
         if (!(address = PyEval_CallObject(shiboken_unwrapinst_func, arglist))) {
           PyErr_Print();
@@ -330,11 +329,11 @@ class QWidget { QWidget(QWidget* parent=0, const char* name=0, WFlags f=0); };
     
     if (shiboken && PyModule_Check(shiboken)) {
       /* grab the getCppPointer(obj) function */
-      PyObject *shiboken_unwrapinst_func;
+      PyObject *shiboken_unwrapinst_func = NULL;
       shiboken_unwrapinst_func = PyDict_GetItemString(PyModule_GetDict(shiboken), "getCppPointer");
         
       if (PyCallable_Check(shiboken_unwrapinst_func)) {
-        PyObject *arglist, *address;
+        PyObject *arglist = NULL, *address = NULL;
         arglist = Py_BuildValue("(O)", $input);
         if (!(address = PyEval_CallObject(shiboken_unwrapinst_func, arglist))) {
           PyErr_Print();

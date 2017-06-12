@@ -21,5 +21,9 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-qt4-gl
 
 - sudo docker run -i -t -v ~/projects/:/projects  --name ubuntu_1404 ubuntu:trusty
 - sudo apt-get update
-- sudo apt-get install libcoin80-dev libsimage-dev swig debhelper python-support python3-all-dev python-stdeb# python-all-dev
+- sudo apt-get install libcoin80-dev libsimage-dev libsoqt-dev swig debhelper python-support python3-all-dev python-stdeb# python-all-dev
 - build pivy (previous step)
+
+
+# update version
+http://manpages.ubuntu.com/manpages/xenial/man1/uupdate.1.html

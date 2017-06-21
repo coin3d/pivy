@@ -3,7 +3,7 @@ __This is a fork of pivy [1] which adds python3 support!__
 
 General build instructions:
 ---------------------------
-[![Build Status](https://travis-ci.org/looooo/pivy.svg?branch=master)](https://travis-ci.org/looooo/pivy)
+[![Build Status](https://travis-ci.org/FreeCAD/pivy.svg?branch=master)](https://travis-ci.org/FreeCAD/pivy)
 
 Pivy uses distutils[2]. To build Pivy, run 
 

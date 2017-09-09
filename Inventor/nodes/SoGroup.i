@@ -19,6 +19,18 @@
             except TypeError as e:
                 raise TypeError(str(self.__class__) + " accepts only objects of type pivy.coin.SoNode")
 
+    def __isub__(self, other):
+        if isinstance(other, (list, tuple)):
+            for other_i in other:
+                self.__iadd__(other_i)
+            return self
+        else:
+            try:
+                self.removeChild(other)
+                return self
+            except TypeError as e:
+                raise TypeError(str(self.__class__) + " can't remove child of type " + str(type(other)))
+
     def getByName(self, name):
         for child in self:
             if name == child.getName():

@@ -25,7 +25,7 @@ If you have any questions regarding Pivy or simply want to discuss
 with other Pivy users, you can do so at the general coin-discuss
 mailinglist[2].
 
-[1] https://bitbucket.org/Coin3D/pivy
-[2] http://www.python.org/sigs/distutils-sig/
-[3] http://issue.coin3d.org/pivy/
-[4] https://www.coin3d.org/mailman/listinfo/coin-discuss/
+[1] https://bitbucket.org/Coin3D/pivy  
+[2] http://www.python.org/sigs/distutils-sig/  
+[3] http://issue.coin3d.org/pivy/  
+[4] https://www.coin3d.org/mailman/listinfo/coin-discuss/  

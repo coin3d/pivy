@@ -39,6 +39,8 @@ from distutils.core import setup
 from distutils.extension import Extension
 from distutils import sysconfig
 
+import qtinfo
+
 # if we are on a Gentoo box salute the chap and output stuff in nice colors
 # Gentoo is Python friendly, so be especially friendly to them! ;)
 try:
@@ -134,6 +136,8 @@ class pivy_build(build):
                       "-I. -Ifake_headers -I\"%s\" %s -o %s_wrap.cpp " + \
                       "interfaces" + os.sep + "%s.i"
 
+    QTINFO = qtinfo.QtInfo()
+
 
     SOGUI = ['soqt', 'soxt', 'sogtk', 'sowin']
 
@@ -172,7 +176,10 @@ class pivy_build(build):
                   'pivy.quarter.eventhandlers.EventManager',
                   'pivy.quarter.plugins.designer.python.PyQuarterWidgetPlugin',
                   'pivy.utils',
-                  'pivy.graphics.']
+                  'pivy.graphics.colors',
+                  'pivy.graphics.mesh',
+                  'pivy.graphics.plot',
+                  'pivy.graphics.viewer']
 
     if sys.version_info.major < 3:
         py_modules = ['pivy.sogui'] + py_modules
@@ -381,7 +388,7 @@ class pivy_build(build):
         if sys.platform == "win32":
             INCLUDE_DIR = os.path.join(os.getenv("COINDIR"), "include")
         else:
-            INCLUDE_DIR = self.do_os_popen("coin-config --includedir")
+            INCLUDE_DIR = sysconfig.get_config_var("INCLUDEDIR")
 
         sys.stdout.write(blue("Preparing") + green(" Inventor ") + blue("headers:"))
         dir_gen = os.walk("Inventor", INCLUDE_DIR)
@@ -426,13 +433,23 @@ class pivy_build(build):
                         CPP_FLAGS += " -I" + '"' + os.getenv("QTDIR") + "\\include\qt\""
                         LDFLAGS_LIBS += os.path.join(os.getenv("COINDIR"), "lib", "SoQt.lib") + " "
             else:
-                INCLUDE_DIR = self.do_os_popen("coin-config --includedir")
-                if module_name != 'coin':
-                    mod_include_dir = self.do_os_popen("%s --includedir" % config_cmd)
-                    if mod_include_dir != INCLUDE_DIR:
-                        INCLUDE_DIR += '\" -I\"%s' % mod_include_dir
-                CPP_FLAGS = self.do_os_popen("%s --cppflags" % config_cmd) + " -Wno-unused -Wno-maybe-uninitialized"
-                LDFLAGS_LIBS = self.do_os_popen("%s --ldflags --libs" % config_cmd)
+                INCLUDE_DIR = sysconfig.get_config_var("INCLUDEDIR")
+                CPP_FLAGS = ' -I' + INCLUDE_DIR
+                CPP_FLAGS += ' -I' + INCLUDE_DIR +'/Inventor/annex'
+                if module == "soqt":
+                    CPP_FLAGS += ' -I' + self.QTINFO.getHeadersPath()
+                    # CPP_FLAGS = ' -I' + self.QTINFO.getHeadersPath() + '/Qt'
+                    CPP_FLAGS += ' -I' + self.QTINFO.getHeadersPath() + '/QtCore'
+                    CPP_FLAGS += ' -I' + self.QTINFO.getHeadersPath() + '/QtGui'
+                    CPP_FLAGS += ' -I' + self.QTINFO.getHeadersPath() + '/QtOpenGL'
+                CPP_FLAGS  += " -Wno-unused -Wno-maybe-uninitialized"
+                #CPP_FLAGS = self.do_os_popen("%s --cppflags" % config_cmd) + " -Wno-unused -Wno-maybe-uninitialized"
+
+                LDFLAGS_LIBS = ' -L' + sysconfig.get_config_var("LIBDIR") #self.do_os_popen("%s --ldflags --libs" % config_cmd)
+                if module == "coin":
+                    LDFLAGS_LIBS += ' -lCoin'
+                elif module == 'soqt':
+                    LDFLAGS_LIBS += ' -lSoQt'
 
             if not os.path.isfile(mod_out_prefix + "_wrap.cpp"):
                 print(red("\n=== Generating %s_wrap.cpp for %s ===\n" %

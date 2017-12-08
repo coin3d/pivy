@@ -159,8 +159,8 @@ class pivy_build(build):
         soqt_interface = 'soqt2'
 
     MODULES = {
-        'coin': ['_coin', 'coin-config', 'pivy.', coin_interface],
-        'soqt': ['gui._soqt', 'soqt-config', 'pivy.gui.', soqt_interface]
+        'coin': ['_coin', 'coin-config', 'pivy.', coin_interface]
+        # 'soqt': ['gui._soqt', 'soqt-config', 'pivy.gui.', soqt_interface]
     }
 
     SUPPORTED_SWIG_VERSIONS = ['3.0.10']

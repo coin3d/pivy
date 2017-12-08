@@ -14,7 +14,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-from PySide import QtCore
+from PySide2 import QtCore
 
 from pivy import coin
 

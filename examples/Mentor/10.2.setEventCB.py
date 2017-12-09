@@ -274,7 +274,8 @@ def main():
 #    # Have render area send events to us instead of the scene 
 #    # graph.  We pass the render area as user data.
     else:
-        if SoQt.getVersionToolkitString().startswith('4'):
+        if (SoQt.getVersionToolkitString().startswith('4') or
+            SoQt.getVersionToolkitString().startswith('5')):
            myRenderArea.setEventCallback(myAppEventHandlerQt4, myRenderArea)
         else:
            myRenderArea.setEventCallback(myAppEventHandler, myRenderArea)

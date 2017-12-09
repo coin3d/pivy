@@ -8,7 +8,7 @@ ExaminerViewer.  It is a little fancier than 6.2.
 
 import sys
 
-from PySide2.QtGui import *
+from pivy.gui.qt import *
 from pivy.coin import *
 from pivy.quarter import *
 

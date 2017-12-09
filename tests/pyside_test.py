@@ -1,5 +1,5 @@
 import unittest
-from PySide import QtCore
+from PySide2 import QtCore
 import shiboken
 
 class ShibokenTests(unittest.TestCase):

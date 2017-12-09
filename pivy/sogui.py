@@ -113,7 +113,7 @@ if not gui:
         gui = 'Quarter'
 
         import pivy
-        from PySide import QtGui, QtCore
+        from PySide2 import QtGui, QtCore
 
         class SoGui(object):
             @staticmethod

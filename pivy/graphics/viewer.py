@@ -1,5 +1,5 @@
 from pivy import quarter, coin
-from PySide import QtGui, QtCore
+from PySide2 import QtGui, QtCore
 import tempfile
 
 class Viewer(quarter.QuarterWidget):

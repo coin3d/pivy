@@ -159,11 +159,11 @@ class pivy_build(build):
         soqt_interface = 'soqt2'
 
     MODULES = {
-        'coin': ['_coin', 'coin-config', 'pivy.', coin_interface],
-        'soqt': ['gui._soqt', 'soqt-config', 'pivy.gui.', soqt_interface]
+        'coin': ['_coin', 'COIN', 'pivy.', coin_interface],
+        'soqt': ['gui._soqt', 'SOQT', 'pivy.gui.', soqt_interface]
     }
 
-    SUPPORTED_SWIG_VERSIONS = ['3.0.10']
+    SUPPORTED_SWIG_VERSIONS = ['3.0.8', '3.0.10']
     SWIG_VERSION = ""
     SWIG_COND_SYMBOLS = []
     CXX_INCS = "-Iinterfaces "
@@ -188,6 +188,39 @@ class pivy_build(build):
                   'pivy.graphics.mesh',
                   'pivy.graphics.plot',
                   'pivy.graphics.viewer']
+
+    def check_with_cmake(self):
+        cmake = subprocess.Popen(['cmake', '.'], stdout=subprocess.PIPE)
+        cmake_out, _ = cmake.communicate()
+        coin_vars = ['COIN_FOUND', 'COIN_VERSION', 'COIN_INCLUDE_DIR', 'COIN_LIB_DIR']
+        soqt_vars = ['SOQT_FOUND', 'SOQT_VERSION', 'SOQT_INCLUDE_DIR', 'SOQT_LIB_DIR']
+        config_dict = {}
+        if cmake.returncode == 0:
+            for line in cmake_out.decode("utf-8").split("\n"):
+                for var in coin_vars + soqt_vars:
+                    if var in line:
+                        line = (line
+                                .replace('-- ' + var, '')
+                                .replace(': ', '')
+                                .replace('\n', ''))
+                        config_dict[var] = line
+
+        print(yellow('\nchecking for COIN via cmake'))
+        for key in coin_vars:
+            if key in config_dict:
+                print(blue(key + ': ' + config_dict[key]))
+
+        print(yellow('\nchecking for SOQT via cmake'))
+        for key in soqt_vars:
+            if key in config_dict:
+                print(blue(key + ': ' + config_dict[key]))
+
+        self.cmake_config_dict = config_dict
+        if not bool(self.cmake_config_dict['COIN_FOUND']):
+            raise(RuntimeError('coin was not found, but you need coin to build pivy'))
+
+        if not bool(self.cmake_config_dict['SOQT_FOUND']):
+            raise(RuntimeError('soqt was not found, but you need soqt to build pivy'))
 
     def do_os_popen(self, cmd):
         "return the output of a command in a single line"
@@ -338,6 +371,8 @@ class pivy_build(build):
         p = subprocess.Popen("%s -version" % swig,
                              shell=True, stdout=subprocess.PIPE)
         version = str(p.stdout.readlines()[1].strip()).split(" ")[2]
+        if version[-1] == "'":
+            version = version[:-1]
         p.stdout.close()
         print(blue("%s" % version))
         SWIG_VERSION = version
@@ -398,12 +433,14 @@ class pivy_build(build):
         print(blue("Platform...%s" % sys.platform))
         self.check_python_version()
         self.check_swig_version(self.SWIG)
-        self.check_coin_version()
+        # self.check_coin_version()
+
+        self.check_with_cmake()
 
         # TODO: find a way to enable coin-features
         self.get_coin_features()
-        if self.SOGUI:
-            self.check_gui_bindings()
+        # if self.SOGUI:
+        #     self.check_gui_bindings()
 
         if 'simvoleon' in self.MODULES and self.check_simvoleon_version():
             if sys.platform == "win32":
@@ -423,7 +460,7 @@ class pivy_build(build):
             # INCLUDE_DIR = sysconfig.get_config_var("INCLUDEDIR")
 
         # TODO: Check on win
-        INCLUDE_DIR = sysconfig.get_config_var("INCLUDEDIR")
+        INCLUDE_DIR = self.cmake_config_dict['COIN_INCLUDE_DIR']
 
         sys.stdout.write(blue("Preparing") + green(" Inventor ") + blue("headers:"))
         dir_gen = os.walk("Inventor", INCLUDE_DIR)
@@ -470,7 +507,7 @@ class pivy_build(build):
                         CPP_FLAGS += " -I" + '"' + os.getenv("QTDIR") + "\\include\qt\""
                         LDFLAGS_LIBS += os.path.join(os.getenv("COINDIR"), "lib", "SoQt.lib") + " "
             else:
-                INCLUDE_DIR = sysconfig.get_config_var("INCLUDEDIR")
+                INCLUDE_DIR = self.cmake_config_dict[config_cmd + '_INCLUDE_DIR']
                 CPP_FLAGS = ' -I' + INCLUDE_DIR
                 CPP_FLAGS += ' -I' + INCLUDE_DIR + '/Inventor/annex'
                 if module == "soqt":
@@ -483,7 +520,7 @@ class pivy_build(build):
                 #CPP_FLAGS = self.do_os_popen("%s --cppflags" % config_cmd) + " -Wno-unused -Wno-maybe-uninitialized"
 
                 # self.do_os_popen("%s --ldflags --libs" % config_cmd)
-                LDFLAGS_LIBS = ' -L' + sysconfig.get_config_var("LIBDIR")
+                LDFLAGS_LIBS = ' -L' + self.cmake_config_dict[config_cmd + '_LIB_DIR']
                 if module == "coin":
                     LDFLAGS_LIBS += ' -lCoin'
                 elif module == 'soqt':

@@ -190,7 +190,13 @@ class pivy_build(build):
                   'pivy.graphics.viewer']
 
     def check_with_cmake(self):
-        cmake = subprocess.Popen(['cmake', '.'], stdout=subprocess.PIPE)
+
+        cmake_command = ['cmake', '.', '-G']
+        try:
+            cmake_command.append(os.environ['GENERATOR'])
+        except KeyError:
+            pass
+        cmake = subprocess.Popen(cmake_command, stdout=subprocess.PIPE)
         cmake_out, _ = cmake.communicate()
         coin_vars = ['COIN_FOUND', 'COIN_VERSION', 'COIN_INCLUDE_DIR', 'COIN_LIB_DIR']
         soqt_vars = ['SOQT_FOUND', 'SOQT_VERSION', 'SOQT_INCLUDE_DIR', 'SOQT_LIB_DIR']
@@ -295,7 +301,7 @@ class pivy_build(build):
         print(yellow('make sure you have installed the soqt library + headers\n'))
         return #TODO
 
-        if sys.platform == "win32":
+        if sys.platform == "_win32":
             self.MODULES.pop('soxt', None)
             self.MODULES.pop('sogtk', None)
             print(blue("Checking for SoWin..."))
@@ -472,6 +478,11 @@ class pivy_build(build):
         "build all available modules"
 
         def quote(s): return '"' + s + '"'
+
+        def win_quote(s):
+            if sys.platform == 'win32':
+                return '"' + s + '"'
+
         for module in self.MODULES:
             module_name = self.MODULES[module][0]
             config_cmd = self.MODULES[module][1]
@@ -479,7 +490,7 @@ class pivy_build(build):
             mod_hack_name = self.MODULES[module][3]
             mod_out_prefix = module_pkg_name.replace('.', os.sep) + module
 
-            if sys.platform == "win32":
+            if sys.platform == "_win32":
                 INCLUDE_DIR = os.path.join(os.getenv("COINDIR"), "include")
                 CPP_FLAGS = "-I" + quote(INCLUDE_DIR) + " " + \
                             "-I" + quote(os.path.join(os.getenv("COINDIR"), "include", "Inventor", "annex")) + \
@@ -508,23 +519,33 @@ class pivy_build(build):
                         LDFLAGS_LIBS += os.path.join(os.getenv("COINDIR"), "lib", "SoQt.lib") + " "
             else:
                 INCLUDE_DIR = self.cmake_config_dict[config_cmd + '_INCLUDE_DIR']
-                CPP_FLAGS = ' -I' + INCLUDE_DIR
-                CPP_FLAGS += ' -I' + INCLUDE_DIR + '/Inventor/annex'
-                if module == "soqt":
-                    CPP_FLAGS += ' -I' + self.QTINFO.getHeadersPath()
-                    CPP_FLAGS += ' -I' + self.QTINFO.getHeadersPath() + '/QtCore'
-                    CPP_FLAGS += ' -I' + self.QTINFO.getHeadersPath() + '/QtGui'
-                    CPP_FLAGS += ' -I' + self.QTINFO.getHeadersPath() + '/QtOpenGL'
-                    CPP_FLAGS += ' -I' + self.QTINFO.getHeadersPath() + '/QtWidgets'
-                CPP_FLAGS += " -Wno-unused -Wno-maybe-uninitialized"
-                #CPP_FLAGS = self.do_os_popen("%s --cppflags" % config_cmd) + " -Wno-unused -Wno-maybe-uninitialized"
+                LIB_DIR = self.cmake_config_dict[config_cmd + '_LIB_DIR']
+                CPP_FLAGS = ' -I' + win_quote(INCLUDE_DIR)
+                CPP_FLAGS += ' -I' + win_quote(os.path.join(INCLUDE_DIR, 'Inventor', 'annex'))
+                if sys.platform == 'win32':
+                    CPP_FLAGS += " /DCOIN_DLL /wd4244 /wd4049"
+                    LDFLAGS_LIBS = quote(max(glob.glob(os.path.join(LIB_DIR, "Coin?.lib")))) + " "
+                else:
+                    CPP_FLAGS += " -Wno-unused -Wno-maybe-uninitialized"
+                    LDFLAGS_LIBS = ' -L' + self.cmake_config_dict[config_cmd + '_LIB_DIR']
 
-                # self.do_os_popen("%s --ldflags --libs" % config_cmd)
-                LDFLAGS_LIBS = ' -L' + self.cmake_config_dict[config_cmd + '_LIB_DIR']
+                if module == "soqt":
+                    CPP_FLAGS += ' -I' + win_quote(self.QTINFO.getHeadersPath())
+                    CPP_FLAGS += ' -I' + win_quote(os.path.join(self.QTINFO.getHeadersPath(), 'QtCore'))
+                    CPP_FLAGS += ' -I' + win_quote(os.path.join(self.QTINFO.getHeadersPath(), 'QtGui'))
+                    CPP_FLAGS += ' -I' + win_quote(os.path.join(self.QTINFO.getHeadersPath(), 'QtOpenGL'))
+                    CPP_FLAGS += ' -I' + win_quote(os.path.join(self.QTINFO.getHeadersPath(), 'QtWidgets'))
+                    if sys.platform == 'win32':
+                        LDFLAGS_LIBS += os.path.join(LIB_DIR, "SoQt.lib") + " "
+                        CPP_FLAGS += " /DSOQT_DLL"
+                    else:
+                        LDFLAGS_LIBS += ' -lSoQt'
+                
                 if module == "coin":
-                    LDFLAGS_LIBS += ' -lCoin'
-                elif module == 'soqt':
-                    LDFLAGS_LIBS += ' -lSoQt'
+                    if sys.platform == 'win32':
+                        pass
+                    else:
+                        LDFLAGS_LIBS += ' -lCoin'
 
             if not os.path.isfile(mod_out_prefix + "_wrap.cpp"):
                 print(red("\n=== Generating %s_wrap.cpp for %s ===\n" %
@@ -550,9 +571,9 @@ class pivy_build(build):
 
     def run(self):
         "the entry point for the distutils build class"
-        if sys.platform == "win32" and not os.getenv("COINDIR"):
-            print("Please set the COINDIR environment variable to your Coin root directory! ** Aborting **")
-            sys.exit(1)
+        # if sys.platform == "win32" and not os.getenv("COINDIR"):
+        #     print("Please set the COINDIR environment variable to your Coin root directory! ** Aborting **")
+        #     sys.exit(1)
 
         self.pivy_configure()
         self.swig_generate()
@@ -592,6 +613,8 @@ class pivy_clean(clean):
         for _dir, _, names in dir_gen:
             self.remove_headers(None, _dir, names)
 
+        self.remove_cmake()
+
         # remove the SWIG generated wrappers
         for wrapper_file in self.REMOVE_FILES:
             if os.path.isfile(wrapper_file):
@@ -600,6 +623,10 @@ class pivy_clean(clean):
         print(green("."))
 
         clean.run(self)
+
+    def remove_cmake(self):
+        os.system('rm -rf CMakeFiles')  # find better solution
+        os.remove('CMakeCache.txt')
 
 
 for i in reversed(list(range(len(sys.argv)))):

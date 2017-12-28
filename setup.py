@@ -626,7 +626,9 @@ class pivy_clean(clean):
 
     def remove_cmake(self):
         os.system('rm -rf CMakeFiles')  # find better solution
-        os.remove('CMakeCache.txt')
+        if os.path.isfile('CMakeCache.txt'):
+            os.remove('CMakeCache.txt')
+
 
 
 for i in reversed(list(range(len(sys.argv)))):

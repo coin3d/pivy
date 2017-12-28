@@ -191,9 +191,9 @@ class pivy_build(build):
 
     def check_with_cmake(self):
 
-        cmake_command = ['cmake', '.', '-G']
+        cmake_command = ['cmake', '.']
         try:
-            cmake_command.append(os.environ['GENERATOR'])
+            cmake_command += ['-G', os.environ['GENERATOR']]
         except KeyError:
             pass
         cmake = subprocess.Popen(cmake_command, stdout=subprocess.PIPE)
@@ -482,6 +482,7 @@ class pivy_build(build):
         def win_quote(s):
             if sys.platform == 'win32':
                 return '"' + s + '"'
+            return s
 
         for module in self.MODULES:
             module_name = self.MODULES[module][0]

@@ -1,16 +1,8 @@
 from pivy import coin
 from pivy.utils import getPointOnScreen
-
-
-COLORS = {
-    "black":  (0., 0., 0.),
-    "white":  (1., 1., 1.),
-    "grey":   (.5, .5, .5),
-    "red":    (1., 0., 0.),
-    "blue":   (0., 0., 1.),
-    "green":  (0., 1., 1.),
-    "yellow": (0., 1., 0.)
-}
+from .colors import COLORS
+from .plot import plot
+from .mesh import simple_quad_mesh, simple_poly_mesh
 
 
 class Object3D(coin.SoSeparator):

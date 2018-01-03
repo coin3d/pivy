@@ -4,11 +4,11 @@ from random import random
 from pivy.coin import *
 from pivy.gui.soqt import SoQtExaminerViewer
 from ui_test import Ui_MainWindow
-from PySide.QtGui import QWidget
-from PySide.QtGui import QMainWindow
-from PySide.QtGui import QButtonGroup
-from PySide.QtCore import QObject
-from PySide.QtCore import SIGNAL
+from PySide2.QtGui import QWidget
+from PySide2.QtGui import QMainWindow
+from PySide2.QtGui import QButtonGroup
+from PySide2.QtCore import QObject
+from PySide2.QtCore import SIGNAL
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent = None):

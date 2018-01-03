@@ -14,9 +14,10 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-from PySide import QtCore
-from PySide.QtCore import QObject
-from PySide.QtGui import QMenu, QMouseEvent, QActionGroup, QAction
+from PySide2 import QtCore
+from PySide2.QtCore import QObject
+from PySide2.QtGui import QMouseEvent
+from PySide2.QtWidgets import QMenu, QActionGroup, QAction
 
 from pivy import coin
 from pivy.coin import SoEventManager, SoScXMLStateMachine, SoRenderManager, SoGLRenderAction

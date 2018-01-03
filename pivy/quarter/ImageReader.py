@@ -14,7 +14,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-from PySide.QtGui import QImage
+from PySide2.QtGui import QImage
 from pivy.coin import SbImage
 
 

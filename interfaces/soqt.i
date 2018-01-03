@@ -125,9 +125,9 @@ static PyObject* getShiboken()
   // pip installs it in a wrong place
   // if you have installed shiboken with pip please symlink to correct directory
   PyObject * shiboken = NULL;
-  if (!(shiboken = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "shiboken"))) {
+  if (!(shiboken = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "shiboken2"))) {
     // simple import shiboken from python.
-   shiboken = PyImport_ImportModule("shiboken");
+   shiboken = PyImport_ImportModule("shiboken2");
   }
   return shiboken;
 }

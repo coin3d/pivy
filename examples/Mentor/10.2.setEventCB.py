@@ -38,8 +38,8 @@ from pivy.coin import *
 from pivy.gui.soqt import *
 
 # PySide module has to be imported as last one if used in the same namespace
-from PySide.QtCore import *
-from PySide.QtGui import *
+from PySide2.QtCore import *
+from PySide2.QtGui import *
 
 # Timer sensor 
 # Rotate 90 degrees every second, update 30 times a second
@@ -274,7 +274,8 @@ def main():
 #    # Have render area send events to us instead of the scene 
 #    # graph.  We pass the render area as user data.
     else:
-        if SoQt.getVersionToolkitString().startswith('4'):
+        if (SoQt.getVersionToolkitString().startswith('4') or
+            SoQt.getVersionToolkitString().startswith('5')):
            myRenderArea.setEventCallback(myAppEventHandlerQt4, myRenderArea)
         else:
            myRenderArea.setEventCallback(myAppEventHandler, myRenderArea)

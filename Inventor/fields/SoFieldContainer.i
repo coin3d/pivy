@@ -33,6 +33,14 @@
         field.setValue(value)
         return field
 
+    def __dir__(self):
+        from pivy import coin
+        fl = coin.SoFieldList()
+        num_fields = self.getAllFields(fl)
+        fields = [self.getFieldName(fl[i]) for i in range(num_fields)]
+        return super(SoFieldContainer, self).__dir__() + fields
+
+
     @property
     def values(self):
         def _values(obj):

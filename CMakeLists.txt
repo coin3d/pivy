@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 
 
 find_package(Coin CONFIG REQUIRED)
-find_package(soqt CONFIG REQUIRED)
 
 if (Coin_INCLUDE_DIR)
     MESSAGE(STATUS "COIN_FOUND: " true)
@@ -14,6 +13,9 @@ MESSAGE(STATUS "COIN_INCLUDE_DIR: " ${Coin_INCLUDE_DIR})
 MESSAGE(STATUS "COIN_LIB_DIR: " ${Coin_LIB_DIR})
 MESSAGE(STATUS "COIN_VERSION: " ${Coin_VERSION})
 
+
+
+find_package(soqt CONFIG QUIET)
 
 if (SoQt_INCLUDE_DIRS)
     MESSAGE(STATUS "SOQT_FOUND: " true)

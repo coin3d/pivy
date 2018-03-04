@@ -43,8 +43,6 @@ from distutils.core import setup
 from distutils.extension import Extension
 from distutils import sysconfig
 
-import qtinfo
-
 # if we are on a Gentoo box salute the chap and output stuff in nice colors
 # Gentoo is Python friendly, so be especially friendly to them! ;)
 try:
@@ -147,7 +145,6 @@ class pivy_build(build):
     if sys.version_info.major >= 3:
         SWIG_PARAMS = '-py3 ' + SWIG_PARAMS
 
-    QTINFO = qtinfo.QtInfo()
 
     # TODO: add command line arguments to tell distutils which library should be build
     SOGUI = ['soqt']  # stop supporting soxt, sogtk, and sowin to simplify the setup
@@ -220,6 +217,10 @@ class pivy_build(build):
         for key in soqt_vars:
             if key in config_dict:
                 print(blue(key + ': ' + config_dict[key]))
+
+        if config_dict['SOQT_FOUND'] == 'false':
+            pivy_build.MODULES.pop('soqt')
+            print(red("\ndisable soqt, because cmake couldn't find it"))
 
         self.cmake_config_dict = config_dict
         if not bool(self.cmake_config_dict['COIN_FOUND']):
@@ -531,6 +532,8 @@ class pivy_build(build):
                     LDFLAGS_LIBS = ' -L' + self.cmake_config_dict[config_cmd + '_LIB_DIR']
 
                 if module == "soqt":
+                    import qtinfo
+                    QTINFO = qtinfo.QtInfo()
                     CPP_FLAGS += ' -I' + win_quote(self.QTINFO.getHeadersPath())
                     CPP_FLAGS += ' -I' + win_quote(os.path.join(self.QTINFO.getHeadersPath(), 'QtCore'))
                     CPP_FLAGS += ' -I' + win_quote(os.path.join(self.QTINFO.getHeadersPath(), 'QtGui'))

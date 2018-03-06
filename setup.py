@@ -196,7 +196,7 @@ class pivy_build(build):
             cmake_command += ['-G', os.environ['GENERATOR']]
         except KeyError:
             pass
-        print(yellow('calling: ' + cmake_command))
+        print(yellow('calling: ' + cmake_command[0] + ' ' + cmake_command[1]))
         cmake = subprocess.Popen(cmake_command, stdout=subprocess.PIPE)
         cmake_out, _ = cmake.communicate()
         coin_vars = ['COIN_FOUND', 'COIN_VERSION', 'COIN_INCLUDE_DIR', 'COIN_LIB_DIR']

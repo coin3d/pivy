@@ -160,6 +160,9 @@ class pivy_build(build):
         'soqt': ['gui._soqt', 'SOQT', 'pivy.gui.', soqt_interface]
     }
 
+    import qtinfo
+    QTINFO = qtinfo.QtInfo()
+
     SUPPORTED_SWIG_VERSIONS = ['3.0.8', '3.0.10']
     SWIG_VERSION = ""
     SWIG_COND_SYMBOLS = []
@@ -193,6 +196,7 @@ class pivy_build(build):
             cmake_command += ['-G', os.environ['GENERATOR']]
         except KeyError:
             pass
+        print(yellow('calling: ' + cmake_command))
         cmake = subprocess.Popen(cmake_command, stdout=subprocess.PIPE)
         cmake_out, _ = cmake.communicate()
         coin_vars = ['COIN_FOUND', 'COIN_VERSION', 'COIN_INCLUDE_DIR', 'COIN_LIB_DIR']
@@ -532,8 +536,6 @@ class pivy_build(build):
                     LDFLAGS_LIBS = ' -L' + self.cmake_config_dict[config_cmd + '_LIB_DIR']
 
                 if module == "soqt":
-                    import qtinfo
-                    QTINFO = qtinfo.QtInfo()
                     CPP_FLAGS += ' -I' + win_quote(self.QTINFO.getHeadersPath())
                     CPP_FLAGS += ' -I' + win_quote(os.path.join(self.QTINFO.getHeadersPath(), 'QtCore'))
                     CPP_FLAGS += ' -I' + win_quote(os.path.join(self.QTINFO.getHeadersPath(), 'QtGui'))

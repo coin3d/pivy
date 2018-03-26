@@ -190,8 +190,8 @@ class pivy_build(build):
                   'pivy.graphics.viewer']
 
     def check_with_cmake(self):
-
-        cmake_command = ['cmake', '.']
+        dirname = os.path.dirname(__file__)
+        cmake_command = ['cmake', dirname]
         try:
             cmake_command += ['-G', os.environ['GENERATOR']]
         except KeyError:

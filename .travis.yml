@@ -1,29 +1,29 @@
-dist: trusty
 language: python
+
 python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
-  - "3.6"
-before_install:
-  - sudo add-apt-repository ppa:teward/swig3.0 -y
-  - sudo apt-get update -qq
-  - sudo apt-get install -y swig3.0
-  - sudo apt-get install -y libcoin80
-  - sudo apt-get install -y libcoin80-dev
-  - sudo apt-get install -y libsoqt4-dev
-  - sudo apt-get install -y libsimage-dev
-  - sudo apt-get install -y libshiboken-dev
-  - sudo apt-get install -y python3-pyside
-  - sudo apt-get install -y python-pyside
-  - sudo ln -s /usr/bin/swig3 /usr/bin/swig
+    - "2.7"
+    - "3.5"
+     - "3.6"
 
 install:
-  - python setup.py install
+    - sudo apt-get update
+    - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+          wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+      else
+          wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+      fi
+    - bash miniconda.sh -b -p $HOME/miniconda
+    - export PATH="$HOME/miniconda/bin:$PATH"
+    - hash -r
+    - conda config --set always_yes yes --set changeps1 no
+    - conda config --add channels conda-forge
+    - conda config --add channels freecad
+    - conda update -q conda
+    - conda info -a
+    - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION coin3d soqt ninja cmake gcc colorama swig=3.0.8
+    - source activate test-environment
+    - python setup.py install
 
-script:
-  - python tests/coin_tests.py
-
-branches:
-  only:
-    - master
+test:
+    - cd tests
+    - python coin_tests.py

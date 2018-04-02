@@ -398,4 +398,4 @@ class InteractionSeparator(coin.SoSeparator):
         self.static_objects = []
         self.selected_objects = []
         self.over_object = None
-        super(Container, self).removeAllChildren()
+        super(InteractionSeparator, self).removeAllChildren()

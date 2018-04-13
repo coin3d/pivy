@@ -36,6 +36,9 @@
             if name == child.getName():
                 return child
         return None
+
+    def __bool__(self):
+        return True
 %}
 
   /* methods to emulate Python Container object */

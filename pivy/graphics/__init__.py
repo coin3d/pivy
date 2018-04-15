@@ -247,6 +247,27 @@ class InteractionSeparator(coin.SoSeparator):
             obj = self.sendRay(pos)
             self.selectObject(obj, event.wasCtrlDown())
 
+    def select_all_cb(self, event_callback):
+        event = event_callback.getEvent()
+        if (event.getKey() == ord('a')):
+            if event.getState() == event.DOWN:
+                if self.selected_objects:
+                    for o in self.selected_objects:
+                        o.unselect()
+                    self.selected_objects = []
+                else:
+                    for obj in self.objects:
+                        if obj.dynamic:
+                            self.selected_objects.append(obj)
+                self.ColorSelected()
+                self.selection_changed()
+
+    def deselect_all(self):
+        if self.selected_objects:
+            for o in self.selected_objects:
+                o.unselect()
+            self.selected_objects = []
+
     def colorSelected(self):
         for obj in self.selected_objects:
             obj.select()

@@ -124,6 +124,32 @@ class Polygon(Object3D):
         self.polygon = coin.SoFaceSet()
         self.addChild(self.polygon)
 
+class Arrow(Line):
+    def __init__(self, points, dynamic=False, arrow_size=0.04, length=2):
+        super(Arrow, self).__init__(points, dynamic)
+        self.arrow_sep = coin.SoSeparator()
+        self.arrow_rot = coin.SoRotation()
+        self.arrow_scale = coin.SoScale()
+        self.arrow_translate = coin.SoTranslation()
+        self.arrow_scale.scaleFactor.setValue(arrow_size, arrow_size, arrow_size)
+        self.cone = coin.SoCone()
+        arrow_length = coin.SoScale()
+        arrow_length.scaleFactor = (1, length, 1)
+        arrow_origin = coin.SoTranslation()
+        arrow_origin.translation = (0, -1, 0)
+        self.arrow_sep += [self.arrow_translate, self.arrow_rot, self.arrow_scale]
+        self.arrow_sep += [arrow_length, arrow_origin, self.cone]
+        self += [self.arrow_sep]
+        self.set_arrow_direction()
+
+    def set_arrow_direction(self):
+        pts = np.array(self.points)
+        self.arrow_translate.translation = tuple(pts[-1])
+        direction = pts[-1] - pts[-2]
+        direction /= np.linalg.norm(direction)
+        _rot = coin.SbRotation()
+        _rot.setValue(coin.SbVec3f(0, 1, 0), coin.SbVec3f(*direction))
+        self.arrow_rot.rotation.setValue(_rot)
 
 class InteractionSeparator(coin.SoSeparator):
     pick_radius = 10

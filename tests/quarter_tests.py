@@ -34,7 +34,7 @@ class Quarter(unittest.TestCase):
     """tests various methods of Quarter"""
     def testSomeQuartermethod(self):
         """check a Quarter method"""
-        self.failUnless(1, 1)
+        self.assertTrue(1, 1)
 
 if __name__ == "__main__":
     unittest.main()

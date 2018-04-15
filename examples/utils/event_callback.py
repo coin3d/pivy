@@ -1,7 +1,10 @@
 import sys
-from PySide2.QtGui import QApplication, QColor
-from pivy import quarter, coin, highlevel
+from PySide2.QtGui import QColor
+from PySide2.QtWidgets import QApplication
+from pivy import quarter, coin
 
+
+# testing if a eventcallback can remove itself.
 
 class test(coin.SoSeparator):
     def __init__(self):
@@ -16,16 +19,14 @@ class test(coin.SoSeparator):
     def my_cb(self, *args):
         self.events.removeEventCallback(
             coin.SoLocation2Event.getClassTypeId(), self.cb)
+
     def my_cb_1(self, *args):
         self.events.removeEventCallback(
-            coin.SoEvent.getClassTypeId(), self.cb1)        
+            coin.SoEvent.getClassTypeId(), self.cb1)
 
 
 def main():
     app = QApplication(sys.argv)
-
-
-
     viewer = quarter.QuarterWidget()
 
     root = coin.SoSeparator()
@@ -37,6 +38,7 @@ def main():
     viewer.setWindowTitle("minimal")
     viewer.show()
     sys.exit(app.exec_())
+
 
 if __name__ == '__main__':
     main()

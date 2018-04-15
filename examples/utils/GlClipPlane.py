@@ -1,5 +1,5 @@
 import sys
-from PySide2 import QtGui
+from PySide2 import QtGui, QtWidgets
 from pivy import quarter, coin
 from OpenGL.GL import *
 
@@ -94,14 +94,16 @@ class CapPlane():
         glPopMatrix()
         glEnable(GL_LIGHTING)
 
+
 def myCallbackRoutine(cap, action):
     global handled
     if not action.isOfType(coin.SoGLRenderAction.getClassTypeId()):
         return
     cap.stencilBuffer()
 
+
 def main():
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     viewer = quarter.QuarterWidget()
     # build a scene (sphere, cube)
     plane = coin.SbPlane(coin.SbVec3f(0, 0, 1), coin.SbVec3f(0, 0, 0))

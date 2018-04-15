@@ -1,11 +1,11 @@
 import sys
 
-from PySide2 import QtGui
+from PySide2 import QtWidgets
 from pivy import coin, quarter
 
 
 def main():
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
     root = coin.SoSeparator()
     mat = coin.SoMaterial()
@@ -23,6 +23,7 @@ def main():
     viewer.setWindowTitle("minimal")
     viewer.show()
     sys.exit(app.exec_())
+
 
 if __name__ == '__main__':
     main()

@@ -1,5 +1,6 @@
 import sys
-from PySide2.QtGui import QApplication, QColor
+from PySide2.QtWidgets import QApplication
+from PySide2.QtGui import QColor
 from pivy import quarter, coin, graphics, utils
 
 class ConnectionMarker(graphics.Marker):

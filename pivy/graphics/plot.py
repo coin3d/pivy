@@ -17,4 +17,3 @@ def plot(foo, x, y):
     scale = coin.SoScale()
     scale.scaleFactor.setValue(1, 1, abs(x[1] - x[0]) / abs(max(zz) - min(zz)))
     return [scale, simple_quad_mesh(points, num_x, num_y)]
-

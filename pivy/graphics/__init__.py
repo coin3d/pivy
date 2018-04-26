@@ -118,6 +118,14 @@ class Line(Object3D):
         self.addChild(self.drawstyle)
         self.addChild(self.line)
 
+class Point(Object3D):
+    def __init__(self, points, dynamic=False):
+        super(Point, self).__init__(points, dynamic)
+        self.drawstyle = coin.SoDrawStyle()
+        self.point = coin.SoPointSet()
+        self.addChild(self.drawstyle)
+        self.addChild(self.point)
+
 class Polygon(Object3D):
     def __init__(self, points, dynamic=False):
         super(Polygon, self).__init__(points, dynamic)

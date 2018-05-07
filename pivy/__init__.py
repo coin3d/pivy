@@ -14,6 +14,8 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
+from . import pivy_meta
+__version__ = pivy_meta.__version__
 
 __all__ = ['coin']
 

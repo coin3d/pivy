@@ -86,8 +86,12 @@ Topic :: Multimedia :: Graphics :: 3D Rendering
 Topic :: Software Development :: Libraries :: Python Modules
 """
 
-PIVY_VERSION = "0.6.4"
-
+__dir_name__ = os.path.dirname(__file__)
+pivy_dir = os.path.join(__dir_name__, "pivy")
+sys.path.append(pivy_dir)
+import pivy_meta
+PIVY_VERSION = pivy_meta.__version__
+sys.path.pop(-1)
 
 class pivy_build(build):
     PIVY_SNAKES = r"""

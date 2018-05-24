@@ -12,7 +12,7 @@ python setup.py build
 python setup.py install
 ```
 
-For older system/distros please use the `seup_old.py` script to build pivy. 
+For older system/distros please use the `setup_old.py` script to build pivy. 
 
 Reporting bugs:
 --------------

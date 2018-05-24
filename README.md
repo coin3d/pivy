@@ -17,8 +17,7 @@ For older system/distros please use the `setup_old.py` script to build pivy.
 Reporting bugs:
 --------------
 
-Please submit bug reports, feature requests, etc. to the Pivy
-issue tracker[3].
+If you find a bug, feel free to create an issue.
 
 Contact:
 --------
@@ -26,8 +25,10 @@ Contact:
 If you have any questions regarding Pivy or simply want to discuss
 with other Pivy users, you can do so at the general coin-discuss
 mailinglist[2].
+pivy is used also in FreeCAD. So you may find some interesting posts on the FreeCAD-forum [5]
 
 [1] https://bitbucket.org/Coin3D/pivy  
 [2] http://www.python.org/sigs/distutils-sig/  
 [3] http://issue.coin3d.org/pivy/  
 [4] https://www.coin3d.org/mailman/listinfo/coin-discuss/  
+[5] https://forum.freecadweb.org/

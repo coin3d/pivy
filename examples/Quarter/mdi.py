@@ -91,7 +91,7 @@ class MdiMainWindow(QMainWindow):
             self.open_path(path)
 
     def closeEvent(self, event):
-        self._workspace.closeAllWindows()
+        self._workspace.closeAllSubWindows()
 
     def open(self):
         self.open_path(QFileDialog.getOpenFileName(self, "", self.dirname))
@@ -120,7 +120,7 @@ class MdiMainWindow(QMainWindow):
 
     def createMdiChild(self):
         widget = MdiQuarterWidget(None, self._firstwidget)
-        self._workspace.addWindow(widget)
+        self._workspace.addSubWindow(widget)
         if not self._firstwidget:
             self._firstwidget = widget
         return widget

@@ -25,7 +25,7 @@ Contact:
 If you have any questions regarding Pivy or simply want to discuss
 with other Pivy users, you can do so at the general coin-discuss
 mailinglist[2].
-pivy is used also in FreeCAD. So you may find some interesting posts on the FreeCAD-forum [5]
+pivy is used also in FreeCAD. So you may find some interesting posts at the FreeCAD-forum [5]
 
 [1] https://bitbucket.org/Coin3D/pivy  
 [2] http://www.python.org/sigs/distutils-sig/  

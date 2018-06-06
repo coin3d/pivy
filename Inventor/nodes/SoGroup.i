@@ -22,7 +22,7 @@
     def __isub__(self, other):
         if isinstance(other, (list, tuple)):
             for other_i in other:
-                self.__iadd__(other_i)
+                self.__isub__(other_i)
             return self
         else:
             try:

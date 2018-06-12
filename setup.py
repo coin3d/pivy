@@ -167,7 +167,7 @@ class pivy_build(build):
     import qtinfo
     QTINFO = qtinfo.QtInfo()
 
-    SUPPORTED_SWIG_VERSIONS = ['3.0.8', '3.0.10']
+    SUPPORTED_SWIG_VERSIONS = ['3.0.8', '3.0.10', '3.0.12']
     SWIG_VERSION = ""
     SWIG_COND_SYMBOLS = []
     CXX_INCS = "-Iinterfaces "

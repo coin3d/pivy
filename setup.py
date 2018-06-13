@@ -546,7 +546,7 @@ class pivy_build(build):
                     CPP_FLAGS += ' -I' + win_quote(os.path.join(self.QTINFO.getHeadersPath(), 'QtOpenGL'))
                     CPP_FLAGS += ' -I' + win_quote(os.path.join(self.QTINFO.getHeadersPath(), 'QtWidgets'))
                     if sys.platform == 'win32':
-                        LDFLAGS_LIBS += os.path.join(LIB_DIR, "SoQt.lib") + " "
+                        LDFLAGS_LIBS += " " + quote(max(glob.glob(os.path.join(LIB_DIR, "SoQt?.lib")))) + " "
                         CPP_FLAGS += " /DSOQT_DLL"
                     else:
                         LDFLAGS_LIBS += ' -lSoQt'

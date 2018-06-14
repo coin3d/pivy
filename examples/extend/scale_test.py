@@ -22,7 +22,7 @@ from random import random
 from pivy.coin import *
 from pivy.sogui import *
 
-from shapescale import *
+import shapescale
 
 def construct_new_marker(v):
     markerroot = SoSeparator()
@@ -67,7 +67,7 @@ def event_cb(viewer, n):
 
         point = rp.getPickedPoint()
         if point == None:
-            print >>sys.stderr, "\n** miss! **\n"
+            print("\n** miss! **\n", file=sys.stderr)
             return
 
         n.setHandled()
@@ -82,7 +82,7 @@ def event_cb(viewer, n):
         
 
 def show_instructions():
-    print """
+    print("""
 This example program demonstrates the use of the ShapeScale nodekit.
 Quick instructions:
 
@@ -91,11 +91,11 @@ Quick instructions:
   * hit ESC to toggle back and forth to view mode
   * zoom back and forth to see how the markers stay the same size
 
-"""
+""")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print >>sys.stderr, "\nSpecify an Inventor file as argument.\n"
+        print("\nSpecify an Inventor file as argument.\n", file=sys.stderr)
         sys.exit(-1)
 
     window = SoGui.init(sys.argv[0])
@@ -105,13 +105,13 @@ if __name__ == "__main__":
 
     input = SoInput()
     if not input.openFile(sys.argv[1]):
-        print >>sys.stderr, "Unable to open file: %s\n" % sys.argv[1]
+        print("Unable to open file: %s\n" % sys.argv[1], file=sys.stderr)
         sys.exit(-1)
 
     root = SoDB.readAll(input) 
 
     if root == None:
-        print >>sys.stderr, "Unable to read file: %s\n" % sys.argv[1]
+        print("Unable to read file: %s\n" % sys.argv[1], file=sys.stderr)
         sys.exit(-1)
 
     show_instructions()

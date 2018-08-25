@@ -5,7 +5,7 @@
         short WIDTH, HEIGHT;
         size.getValue(WIDTH, HEIGHT);
         short BYTEWIDTH = (WIDTH + 7) / 2;
-        char* coin_marker;
+        const char* coin_marker;
 #ifdef PY_2
         if (PyString_Check(string))
         {

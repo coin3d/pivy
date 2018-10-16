@@ -1,25 +1,40 @@
-%typemap(in) const char * [] {
-  int len;
+/* typemap for char* is used from SoMFName!!! */
+/* maybe it's not possible to define two typemaps for the same type? */
+/*
+%typemap(in) const char * strings[] {
+  int len;  
   if (PySequence_Check($input)) {
     len = PySequence_Length($input);
     if (len > 0) {
       $1 = (char **)malloc(len * sizeof(char *));
-      for (int i = 0; i < len; i++ ) {
-        PyObject * item = PyObject_Str(PySequence_GetItem($input,i));
+      for (int i = 0; i < len; i++) {
 #ifdef PY_2
+        PyObject * item = PyObject_Str(PySequence_GetItem($input,i));
         $1[i] = PyString_AsString(item);
 #else
-        $1[i] = PyBytes_AsString(item);
+        PyObject * item = PySequence_GetItem($input,i);
+        if (PyBytes_Check(item))
+        {
+          $1[i] = PyBytes_AsString(item);
+        }
+        else if  (PyUnicode_Check(item))
+        {
+          $1[i] = PyBytes_AsString(PyUnicode_AsEncodedString(item, "utf-8", "Error ~"));
+        }
+        else
+        {
+          $1[i] = PyBytes_AsString(PyUnicode_AsEncodedString(PyObject_Str(item), "utf-8", "Error ~"));
+        }
 #endif
         Py_DECREF(item);
       }
-    }
-    else { $1 = NULL; }
+    } else { $1 = NULL; }
   } else {
     PyErr_SetString(PyExc_TypeError, "expected a sequence.");
     return NULL;
   }
 }
+*/
 
 /* free the list */
 %typemap(freearg) const char * [] {

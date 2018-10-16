@@ -9,7 +9,7 @@
         SbTime * time = NULL;
         PyObject * item = PyList_GetItem($input,i);
         SWIG_ConvertPtr(item, (void **) &time, $1_descriptor, 1);
-        if (time != NULL) { $1[i] = *time; }
+        $1[i] = *time;
       }
     } else { $1 = NULL; }
   } else {

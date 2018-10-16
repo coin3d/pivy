@@ -9,7 +9,7 @@
         SbPlane * plane = NULL;
         PyObject * item = PyList_GetItem($input,i);
         SWIG_ConvertPtr(item, (void **) &plane, $1_descriptor, 1);
-        if (time != NULL) { $1[i] = *plane; }
+        $1[i] = *plane;
       }
     } else { $1 = NULL; }
   } else {

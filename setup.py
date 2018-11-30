@@ -226,16 +226,13 @@ class pivy_build(build):
             if key in config_dict:
                 print(blue(key + ': ' + config_dict[key]))
 
-        if config_dict['SOQT_FOUND'] == 'false':
+        if config_dict.get('SOQT_FOUND', 'flse') == 'false':
             pivy_build.MODULES.pop('soqt')
             print(red("\ndisable soqt, because cmake couldn't find it"))
 
         self.cmake_config_dict = config_dict
         if not bool(self.cmake_config_dict['COIN_FOUND']):
             raise(RuntimeError('coin was not found, but you need coin to build pivy'))
-
-        if not bool(self.cmake_config_dict['SOQT_FOUND']):
-            raise(RuntimeError('soqt was not found, but you need soqt to build pivy'))
 
     def do_os_popen(self, cmd):
         "return the output of a command in a single line"

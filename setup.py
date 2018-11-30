@@ -223,7 +223,7 @@ class pivy_build(build):
             if key in config_dict:
                 print(blue(key + ': ' + config_dict[key]))
 
-        if config_dict.get('SOQT_FOUND', 'flse') == 'false':
+        if config_dict.get('SOQT_FOUND', 'false') == 'false':
             pivy_build.MODULES.pop('soqt')
             print(red("\ndisable soqt, because cmake couldn't find it"))
         else:

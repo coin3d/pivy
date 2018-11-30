@@ -164,9 +164,6 @@ class pivy_build(build):
         'soqt': ['gui._soqt', 'SOQT', 'pivy.gui.', soqt_interface]
     }
 
-    import qtinfo
-    QTINFO = qtinfo.QtInfo()
-
     SUPPORTED_SWIG_VERSIONS = ['3.0.8', '3.0.10', '3.0.12']
     SWIG_VERSION = ""
     SWIG_COND_SYMBOLS = []
@@ -229,6 +226,9 @@ class pivy_build(build):
         if config_dict.get('SOQT_FOUND', 'flse') == 'false':
             pivy_build.MODULES.pop('soqt')
             print(red("\ndisable soqt, because cmake couldn't find it"))
+        else:
+            import qtinfo
+            self.QTINFO = qtinfo.QtInfo()
 
         self.cmake_config_dict = config_dict
         if not bool(self.cmake_config_dict['COIN_FOUND']):

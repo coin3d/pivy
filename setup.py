@@ -198,8 +198,8 @@ class pivy_build(build):
         except KeyError:
             pass
         print(yellow('calling: ' + cmake_command[0] + ' ' + cmake_command[1]))
-        cmake = subprocess.Popen(cmake_command, stdout=subprocess.PIPE)
-        cmake_out, _ = cmake.communicate()
+        cmake = subprocess.Popen(cmake_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        cmake_out, cmake_err = cmake.communicate()
         coin_vars = ['COIN_FOUND', 'COIN_VERSION', 'COIN_INCLUDE_DIR', 'COIN_LIB_DIR']
         soqt_vars = ['SOQT_FOUND', 'SOQT_VERSION', 'SOQT_INCLUDE_DIR', 'SOQT_LIB_DIR']
         config_dict = {}
@@ -227,11 +227,19 @@ class pivy_build(build):
             pivy_build.MODULES.pop('soqt')
             print(red("\ndisable soqt, because cmake couldn't find it"))
         else:
-            import qtinfo
-            self.QTINFO = qtinfo.QtInfo()
+            try:
+                import qtinfo
+                self.QTINFO = qtinfo.QtInfo()
+            except Exception as e:
+                import traceback
+                print(red("\ndisable soqt, because there was a problem running qtinfo (needs qmake)"))
+                print(red("-" * 60))
+                print(red(traceback.print_exc()))
+                print(red("-" * 60))
+                pivy_build.MODULES.pop('soqt')
 
         self.cmake_config_dict = config_dict
-        if not bool(self.cmake_config_dict['COIN_FOUND']):
+        if self.cmake_config_dict.get('COIN_FOUND', 'false') == 'false':
             raise(RuntimeError('coin was not found, but you need coin to build pivy'))
 
     def do_os_popen(self, cmd):

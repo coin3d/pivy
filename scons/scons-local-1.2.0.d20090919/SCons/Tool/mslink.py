@@ -7,6 +7,7 @@ It will usually be imported through the generic SCons.Tool.Tool()
 selection method.
 
 """
+from __future__ import print_function
 
 #
 # Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 The SCons Foundation
@@ -184,7 +185,7 @@ def RegServerFunc(target, source, env):
         if ret:
             raise SCons.Errors.UserError, "Unable to register %s" % target[0]
         else:
-            print "Registered %s sucessfully" % target[0]
+            print("Registered %s sucessfully" % target[0])
         return ret
     return 0
 

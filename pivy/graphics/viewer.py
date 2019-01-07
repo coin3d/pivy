@@ -1,3 +1,4 @@
+from __future__ import print_function
 from pivy import quarter, coin
 from PySide2 import QtGui, QtCore
 import tempfile

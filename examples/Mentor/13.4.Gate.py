@@ -26,6 +26,7 @@
 # controls the motion of the duck.
 #
 
+from __future__ import print_function
 import sys
 
 from pivy.coin import *

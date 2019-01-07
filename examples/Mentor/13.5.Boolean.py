@@ -25,6 +25,7 @@
 # and starts moving as soon as the bigger duck stops.
 #
 
+from __future__ import print_function
 import sys
 
 from pivy.coin import *

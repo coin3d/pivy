@@ -10,6 +10,7 @@ some other module.  If it's specific to the "scons" script invocation,
 it goes here.
 
 """
+from __future__ import print_function
 
 #
 # Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 The SCons Foundation
@@ -225,7 +226,7 @@ class BuildTask(SCons.Taskmaster.OutOfDateTask):
                     self.exception_set()
                 self.do_failed()
             else:
-                print "scons: Nothing to be done for `%s'." % t
+                print("scons: Nothing to be done for `%s'." % t)
                 SCons.Taskmaster.OutOfDateTask.executed(self)
         else:
             SCons.Taskmaster.OutOfDateTask.executed(self)
@@ -294,8 +295,8 @@ class BuildTask(SCons.Taskmaster.OutOfDateTask):
             if self.options.debug_includes:
                 tree = t.render_include_tree()
                 if tree:
-                    print
-                    print tree
+                    print()
+                    print(tree)
         SCons.Taskmaster.OutOfDateTask.postprocess(self)
 
     def make_ready(self):
@@ -335,9 +336,9 @@ class CleanTask(SCons.Taskmaster.AlwaysTask):
                     errstr = "Path '%s' exists but isn't a file or directory."
                     raise SCons.Errors.UserError(errstr % (pathstr))
         except SCons.Errors.UserError, e:
-            print e
+            print(e)
         except (IOError, OSError), e:
-            print "scons: Could not remove '%s':" % pathstr, e.strerror
+            print("scons: Could not remove '%s':" % pathstr, e.strerror)
 
     def show(self):
         target = self.targets[0]
@@ -362,7 +363,7 @@ class CleanTask(SCons.Taskmaster.AlwaysTask):
                     # the file not existing.  In either case, print a
                     # message and keep going to try to remove as many
                     # targets aa possible.
-                    print "scons: Could not remove '%s':" % str(t), e.strerror
+                    print("scons: Could not remove '%s':" % str(t), e.strerror)
                 else:
                     if removed:
                         display("Removed " + str(t))
@@ -605,7 +606,7 @@ def _scons_internal_error():
     """Handle all errors but user errors. Print out a message telling
     the user what to do in this case and print a normal trace.
     """
-    print 'internal error'
+    print('internal error')
     traceback.print_exc()
     sys.exit(2)
 
@@ -983,8 +984,8 @@ def _main(parser):
             # SConscript files.  Give them the options usage.
             raise SConsPrintHelpException
         else:
-            print help_text
-            print "Use scons -H for help about command-line options."
+            print(help_text)
+            print("Use scons -H for help about command-line options.")
         exit_status = 0
         return
 
@@ -1343,10 +1344,10 @@ def main():
             else:
                 ct = last_command_end - first_command_start
         scons_time = total_time - sconscript_time - ct
-        print "Total build time: %f seconds"%total_time
-        print "Total SConscript file execution time: %f seconds"%sconscript_time
-        print "Total SCons execution time: %f seconds"%scons_time
-        print "Total command execution time: %f seconds"%ct
+        print("Total build time: %f seconds"%total_time)
+        print("Total SConscript file execution time: %f seconds"%sconscript_time)
+        print("Total SCons execution time: %f seconds"%scons_time)
+        print("Total command execution time: %f seconds"%ct)
 
     sys.exit(exit_status)
 

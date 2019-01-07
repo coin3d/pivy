@@ -22,6 +22,7 @@
   Custom device handlers can be registered with this class for more
   functionality
 """
+from __future__ import print_function
 
 from PySide2.QtCore import QEvent
 from PySide2.QtGui import QMouseEvent

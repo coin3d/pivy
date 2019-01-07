@@ -33,6 +33,7 @@
 # is attached to the light's 'directionalLight' part.
 #
 
+from __future__ import print_function
 import sys
 
 from pivy.coin import *

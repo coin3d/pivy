@@ -3,6 +3,7 @@
 Various utility functions go here.
 
 """
+from __future__ import print_function
 
 #
 # Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 The SCons Foundation
@@ -243,17 +244,17 @@ def print_tree(root, child_func, prune=0, showtags=0, margin=[0], visited={}):
     if showtags:
 
         if showtags == 2:
-            print ' E         = exists'
-            print '  R        = exists in repository only'
-            print '   b       = implicit builder'
-            print '   B       = explicit builder'
-            print '    S      = side effect'
-            print '     P     = precious'
-            print '      A    = always build'
-            print '       C   = current'
-            print '        N  = no clean'
-            print '         H = no cache'
-            print ''
+            print(' E         = exists')
+            print('  R        = exists in repository only')
+            print('   b       = implicit builder')
+            print('   B       = explicit builder')
+            print('    S      = side effect')
+            print('     P     = precious')
+            print('      A    = always build')
+            print('       C   = current')
+            print('        N  = no clean')
+            print('         H = no cache')
+            print('')
 
         tags = ['[']
         tags.append(' E'[IDX(root.exists())])
@@ -278,10 +279,10 @@ def print_tree(root, child_func, prune=0, showtags=0, margin=[0], visited={}):
     children = child_func(root)
 
     if prune and visited.has_key(rname) and children:
-        print string.join(tags + margins + ['+-[', rname, ']'], '')
+        print(string.join(tags + margins + ['+-[', rname, ']'], ''))
         return
 
-    print string.join(tags + margins + ['+-', rname], '')
+    print(string.join(tags + margins + ['+-', rname], ''))
 
     visited[rname] = 1
 

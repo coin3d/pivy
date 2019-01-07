@@ -1,3 +1,4 @@
+from __future__ import print_function
 import unittest
 from PySide2 import QtCore
 import shiboken2 as wrapper

@@ -1,3 +1,4 @@
+from __future__ import print_function
 #
 # Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 The SCons Foundation
 #
@@ -38,7 +39,7 @@ import SCons.Util
 logfile = os.environ.get('SCONS_MSCOMMON_DEBUG')
 if logfile == '-':
     def debug(x):
-        print x
+        print(x)
 elif logfile:
     try:
         import logging

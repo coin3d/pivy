@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 ###
-# Copyright (c) 2005 Øystein Handegard <handegar@sim.no>
+# Copyright (c) 2005 Ã˜ystein Handegard <handegar@sim.no>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -17,6 +17,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
+from __future__ import print_function
 import math
 from pivy.coin import *
 from pivy.sogui import *
@@ -124,9 +125,9 @@ def main():
     lights.addChild(SoResetTransform())
 
     # Generate mirror ball.
-    print "Generating a mirror ball with radius %d and tile size %.1fx%.1f..." % (radius, tilesizex, tilesizey)
+    print("Generating a mirror ball with radius %d and tile size %.1fx%.1f..." % (radius, tilesizex, tilesizey))
     lights.addChild(generateMirrorBall(radius, tilesizex, tilesizey))
-    print "...finished."
+    print("...finished.")
 
     # setup viewer
     myViewer = SoGuiExaminerViewer(myWindow)

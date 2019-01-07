@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 from pivy import coin
 from pivy.gui import soqt

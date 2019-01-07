@@ -27,6 +27,7 @@
 # shape that was picked.
 #
 
+from __future__ import print_function
 import sys
 
 from pivy.coin import *
@@ -54,7 +55,7 @@ def main():
     input = SoInput()
     datafile = "parkbench.iv"
     if not input.openFile(datafile):
-        print >> sys.stderr, "Cannot open %s for reading." % (datafile)
+        print("Cannot open %s for reading." % (datafile), file=sys.stderr)
         sys.exit(1)
 
     # Read the input file

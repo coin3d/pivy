@@ -1,3 +1,4 @@
+from __future__ import print_function
 # make the handler of the color field to call chicken_mcnuggets()
 # instead of the default set handle_color() function
 handler_registry['color'] = 'chicken_mcnuggets'
@@ -42,6 +43,6 @@ def callback(action):
 wa = SoWriteAction()
 wa.apply(self)
 
-print handler_registry
+print(handler_registry)
 
-print '== Glow script loaded =='
+print('== Glow script loaded ==')

@@ -25,6 +25,7 @@
 # a texture map.
 #
 
+from __future__ import print_function
 import sys
 
 from pivy.coin import *

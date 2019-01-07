@@ -7,6 +7,7 @@ It will usually be imported through the generic SCons.Tool.Tool()
 selection method.
 
 """
+from __future__ import print_function
 
 #
 # Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 The SCons Foundation
@@ -326,7 +327,7 @@ class _DSPGenerator:
                 config.platform = 'Win32'
 
             self.configs[variant] = config
-            print "Adding '" + self.name + ' - ' + config.variant + '|' + config.platform + "' to '" + str(dspfile) + "'"
+            print("Adding '" + self.name + ' - ' + config.variant + '|' + config.platform + "' to '" + str(dspfile) + "'")
 
         for i in range(len(variants)):
             AddConfig(self, variants[i], buildtarget[i], outdir[i], runfile[i], cmdargs)
@@ -924,7 +925,7 @@ class _GenerateV7DSW(_DSWGenerator):
                 config.platform = 'Win32'
 
             self.configs[variant] = config
-            print "Adding '" + self.name + ' - ' + config.variant + '|' + config.platform + "' to '" + str(dswfile) + "'"
+            print("Adding '" + self.name + ' - ' + config.variant + '|' + config.platform + "' to '" + str(dswfile) + "'")
 
         if not env.has_key('variant'):
             raise SCons.Errors.InternalError, \
@@ -1180,7 +1181,7 @@ def GenerateProject(target, source, env):
         try:
             bdsp = open(str(builddspfile), "w+")
         except IOError, detail:
-            print 'Unable to open "' + str(dspfile) + '" for writing:',detail,'\n'
+            print('Unable to open "' + str(dspfile) + '" for writing:',detail,'\n')
             raise
 
         bdsp.write("This is just a placeholder file.\nThe real project file is here:\n%s\n" % dspfile.get_abspath())
@@ -1196,7 +1197,7 @@ def GenerateProject(target, source, env):
             try:
                 bdsw = open(str(builddswfile), "w+")
             except IOError, detail:
-                print 'Unable to open "' + str(dspfile) + '" for writing:',detail,'\n'
+                print('Unable to open "' + str(dspfile) + '" for writing:',detail,'\n')
                 raise
 
             bdsw.write("This is just a placeholder file.\nThe real workspace file is here:\n%s\n" % dswfile.get_abspath())

@@ -1,3 +1,4 @@
+from __future__ import print_function
 #
 # Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 The SCons Foundation
 #
@@ -131,12 +132,12 @@ class SConsInteractiveCmd(cmd.Cmd):
             self.shell_variable = 'SHELL'
 
     def default(self, argv):
-        print "*** Unknown command: %s" % argv[0]
+        print("*** Unknown command: %s" % argv[0])
 
     def onecmd(self, line):
         line = string.strip(line)
         if not line:
-            print self.lastcmd
+            print(self.lastcmd)
             return self.emptyline()
         self.lastcmd = line
         if line[0] == '!':
@@ -276,7 +277,7 @@ class SConsInteractiveCmd(cmd.Cmd):
         return self.do_build(['build', '--clean'] + argv[1:])
 
     def do_EOF(self, argv):
-        print
+        print()
         self.do_exit(argv)
 
     def _do_one_help(self, arg):

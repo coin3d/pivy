@@ -1,3 +1,4 @@
+from __future__ import print_function
 #
 # Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 The SCons Foundation
 #
@@ -143,7 +144,7 @@ class Counter:
         CounterList.append(self)
     def display(self):
         fmt = "    %7d hits %7d misses    %s()"
-        print fmt % (self.hit, self.miss, self.name)
+        print(fmt % (self.hit, self.miss, self.name))
     def __cmp__(self, other):
         try:
             return cmp(self.name, other.name)
@@ -263,7 +264,7 @@ else:
 
     def Dump(title=None):
         if title:
-            print title
+            print(title)
         CounterList.sort()
         for counter in CounterList:
             counter.display()

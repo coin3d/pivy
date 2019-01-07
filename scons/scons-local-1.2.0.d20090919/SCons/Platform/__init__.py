@@ -18,6 +18,7 @@ their own "platform specification" in an arbitrary callable function.
 No one needs to use or tie in to this subsystem in order to roll
 their own platform definition.
 """
+from __future__ import print_function
 
 #
 # Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 The SCons Foundation

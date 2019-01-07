@@ -8,6 +8,7 @@ It will usually be imported through the generic SCons.Tool.Tool()
 selection method.
 
 """
+from __future__ import print_function
 
 #
 # Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 The SCons Foundation
@@ -213,12 +214,11 @@ def get_all_compiler_versions():
                         # Registry key is left dangling (potentially
                         # after uninstalling).
 
-                        print \
-                            "scons: *** Ignoring the registry key for the Intel compiler version %s.\n" \
+                        print("scons: *** Ignoring the registry key for the Intel compiler version %s.\n" \
                             "scons: *** It seems that the compiler was uninstalled and that the registry\n" \
-                            "scons: *** was not cleaned up properly.\n" % subkey
+                            "scons: *** was not cleaned up properly.\n" % subkey)
                     else:
-                        print "scons: *** Ignoring "+str(value)
+                        print("scons: *** Ignoring "+str(value))
 
                 i = i + 1
         except EnvironmentError:
@@ -362,8 +362,8 @@ def generate(env, version=None, abi=None, topdir=None, verbose=0):
 
     if topdir:
         if verbose:
-            print "Intel C compiler: using version %s (%g), abi %s, in '%s'"%\
-                  (repr(version), linux_ver_normalize(version),abi,topdir)
+            print("Intel C compiler: using version %s (%g), abi %s, in '%s'"%\
+                  (repr(version), linux_ver_normalize(version),abi,topdir))
             if is_linux:
                 # Show the actual compiler version by running the compiler.
                 os.system('%s/bin/icc --version'%topdir)

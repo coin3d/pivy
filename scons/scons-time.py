@@ -32,6 +32,7 @@
 #
 
 from __future__ import nested_scopes
+from __future__ import print_function
 
 __revision__ = "src/script/scons-time.py 4369 2009/09/19 15:58:29 scons"
 
@@ -124,7 +125,7 @@ class Line:
 
     def print_label(self, inx, x, y):
         if self.label:
-            print 'set label %s "%s" at %s,%s right' % (inx, self.label, x, y)
+            print('set label %s "%s" at %s,%s right' % (inx, self.label, x, y))
 
     def plot_string(self):
         if self.title:
@@ -137,15 +138,15 @@ class Line:
         if fmt is None:
             fmt = self.fmt
         if self.comment:
-            print '# %s' % self.comment
+            print('# %s' % self.comment)
         for x, y in self.points:
             # If y is None, it usually represents some kind of break
             # in the line's index number.  We might want to represent
             # this some way rather than just drawing the line straight
             # between the two points on either side.
             if not y is None:
-                print fmt % (x, y)
-        print 'e'
+                print(fmt % (x, y))
+        print('e')
 
     def get_x_values(self):
         return [ p[0] for p in self.points ]
@@ -231,8 +232,8 @@ class Gnuplotter(Plotter):
             return
 
         if self.title:
-            print 'set title "%s"' % self.title
-        print 'set key %s' % self.key_location
+            print('set title "%s"' % self.title)
+        print('set key %s' % self.key_location)
 
         min_y = self.get_min_y()
         max_y = self.max_graph_value(self.get_max_y())
@@ -248,7 +249,7 @@ class Gnuplotter(Plotter):
             inx += 1
 
         plot_strings = [ self.plot_string(l) for l in self.lines ]
-        print 'plot ' + ', \\\n     '.join(plot_strings)
+        print('plot ' + ', \\\n     '.join(plot_strings))
 
         for line in self.lines:
             line.print_points()
@@ -522,7 +523,7 @@ class SConsTimer:
         header_fmt = ' '.join(['%12s'] * len(columns))
         line_fmt = header_fmt + '    %s'
 
-        print header_fmt % columns
+        print(header_fmt % columns)
 
         for file in files:
             t = line_function(file, *args, **kw)
@@ -532,7 +533,7 @@ class SConsTimer:
             if diff > 0:
                 t += [''] * diff
             t.append(file_function(file))
-            print line_fmt % tuple(t)
+            print(line_fmt % tuple(t))
 
     def collect_results(self, files, function, *args, **kw):
         results = {}
@@ -880,7 +881,7 @@ class SConsTimer:
                 else:
                     if f.startswith(cwd_):
                         f = f[len(cwd_):]
-                    print "%.3f %s:%d(%s)" % (time, f, line, func)
+                    print("%.3f %s:%d(%s)" % (time, f, line, func))
 
         elif format == 'gnuplot':
 

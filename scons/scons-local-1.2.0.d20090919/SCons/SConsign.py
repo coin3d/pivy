@@ -3,6 +3,7 @@
 Writing and reading information to the .sconsign file or files.
 
 """
+from __future__ import print_function
 
 #
 # Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 The SCons Foundation
@@ -82,7 +83,7 @@ def Get_DataBase(dir):
         DB_sync_list.append(db)
         return db, "c"
     except TypeError:
-        print "DataBase =", DataBase
+        print("DataBase =", DataBase)
         raise
 
 def Reset():

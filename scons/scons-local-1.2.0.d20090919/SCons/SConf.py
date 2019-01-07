@@ -2,6 +2,7 @@
 
 Autoconf-like configuration support.
 """
+from __future__ import print_function
 
 #
 # Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 The SCons Foundation
@@ -245,7 +246,7 @@ class SConfBuildTask(SCons.Taskmaster.AlwaysTask):
                 # Earlier versions of Python don't have sys.excepthook...
                 def excepthook(type, value, tb):
                     traceback.print_tb(tb)
-                    print type, value
+                    print(type, value)
             apply(excepthook, self.exc_info())
         return SCons.Taskmaster.Task.failed(self)
 

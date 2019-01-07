@@ -24,6 +24,7 @@
 # but using a GLX window.
 #
 
+from __future__ import print_function
 import sys, time
 
 from OpenGL.GL import *

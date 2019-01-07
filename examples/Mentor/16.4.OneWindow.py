@@ -26,6 +26,7 @@
 # It attaches the editor to the material of an object.
 #
 
+from __future__ import print_function
 import sys
 
 from pivy.coin import *

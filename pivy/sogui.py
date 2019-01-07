@@ -24,6 +24,7 @@ The following special variables can be set before this module is imported:
 
 * SOGUI_BINDING: allows to specify an SoGui binding (e.g. 'SoQt') explicitly
 """
+from __future__ import print_function
 
 import sys
 

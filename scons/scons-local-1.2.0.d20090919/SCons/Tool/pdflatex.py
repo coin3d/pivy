@@ -8,6 +8,7 @@ It will usually be imported through the generic SCons.Tool.Tool()
 selection method.
 
 """
+from __future__ import print_function
 
 #
 # Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 The SCons Foundation
@@ -44,7 +45,7 @@ PDFLaTeXAction = None
 def PDFLaTeXAuxFunction(target = None, source= None, env=None):
     result = SCons.Tool.tex.InternalLaTeXAuxAction( PDFLaTeXAction, target, source, env )
     if result != 0:
-        print env['PDFLATEX']," returned an error, check the log file"
+        print(env['PDFLATEX']," returned an error, check the log file")
     return result
 
 PDFLaTeXAuxAction = None

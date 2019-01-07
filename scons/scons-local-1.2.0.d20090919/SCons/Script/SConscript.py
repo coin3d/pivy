@@ -4,6 +4,7 @@ This module defines the Python API provided to SConscript and SConstruct
 files.
 
 """
+from __future__ import print_function
 
 #
 # Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 The SCons Foundation
@@ -472,8 +473,8 @@ class SConsEnvironment(SCons.Environment.Base):
                 scons_ver_string = '%d.%d.%d' % (major, minor, revision)
             else:
                 scons_ver_string = '%d.%d' % (major, minor)
-            print "SCons %s or greater required, but you have SCons %s" % \
-                  (scons_ver_string, SCons.__version__)
+            print("SCons %s or greater required, but you have SCons %s" % \
+                  (scons_ver_string, SCons.__version__))
             sys.exit(2)
 
     def EnsurePythonVersion(self, major, minor):
@@ -485,7 +486,7 @@ class SConsEnvironment(SCons.Environment.Base):
             python_ver = self._get_major_minor_revision(sys.version)[:2]
         if python_ver < (major, minor):
             v = string.split(sys.version, " ", 1)[0]
-            print "Python %d.%d or greater required, but you have Python %s" %(major,minor,v)
+            print("Python %d.%d or greater required, but you have Python %s" %(major,minor,v))
             sys.exit(2)
 
     def Exit(self, value=0):

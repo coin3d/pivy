@@ -1,3 +1,4 @@
+from __future__ import print_function
 # example that shows a scrolling text using a timer sensor
 idx = 0
 text = string.getValue().getString()
@@ -26,4 +27,4 @@ wa.apply(self)
 
 string.setValue(text[:idx])
 
-print '== TextScroller script loaded =='
+print('== TextScroller script loaded ==')

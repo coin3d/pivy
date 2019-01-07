@@ -27,6 +27,7 @@
 # load the overlay color map with the wanted color.
 #
 
+from __future__ import print_function
 import sys
 
 from pivy.coin import *

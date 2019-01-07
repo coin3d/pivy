@@ -26,6 +26,7 @@ scene-graph data structures to render real-time graphics suitable for
 mostly all kinds of scientific and engineering visualization
 applications.
 """
+from __future__ import print_function
 
 ###
 # Setup file for the Pivy distribution.

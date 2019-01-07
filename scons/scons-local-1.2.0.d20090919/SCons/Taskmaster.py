@@ -1,3 +1,4 @@
+from __future__ import print_function
 #
 # Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 The SCons Foundation
 #
@@ -109,7 +110,7 @@ fmt = "%(considered)3d "\
 def dump_stats():
     StatsNodes.sort(lambda a, b: cmp(str(a), str(b)))
     for n in StatsNodes:
-        print (fmt % n.stats.__dict__) + str(n)
+        print((fmt % n.stats.__dict__) + str(n))
 
 
 

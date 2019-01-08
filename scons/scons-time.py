@@ -47,19 +47,6 @@ import sys
 import tempfile
 import time
 
-try:
-    False
-except NameError:
-    # Pre-2.2 Python has no False keyword.
-    import __builtin__
-    __builtin__.False = not 1
-
-try:
-    True
-except NameError:
-    # Pre-2.2 Python has no True keyword.
-    import __builtin__
-    __builtin__.True = not 0
 
 def make_temp_file(**kw):
     try:

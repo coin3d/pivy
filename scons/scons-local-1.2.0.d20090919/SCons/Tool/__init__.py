@@ -113,7 +113,7 @@ class Tool:
                         file.close()
             except ImportError as e:
                 if str(e)!="No module named %s"%self.name:
-                    raise SCons.Errors.EnvironmentError, e
+                    raise SCons.Errors.EnvironmentError(e)
                 try:
                     import zipimport
                 except ImportError:
@@ -143,7 +143,7 @@ class Tool:
                     return module
                 except ImportError as e:
                     if str(e)!="No module named %s"%self.name:
-                        raise SCons.Errors.EnvironmentError, e
+                        raise SCons.Errors.EnvironmentError(e)
                     try:
                         import zipimport
                         importer = zipimport.zipimporter( sys.modules['SCons.Tool'].__path__[0] )
@@ -152,10 +152,10 @@ class Tool:
                         return module
                     except ImportError as e:
                         m = "No tool named '%s': %s" % (self.name, e)
-                        raise SCons.Errors.EnvironmentError, m
+                        raise SCons.Errors.EnvironmentError(m)
             except ImportError as e:
                 m = "No tool named '%s': %s" % (self.name, e)
-                raise SCons.Errors.EnvironmentError, m
+                raise SCons.Errors.EnvironmentError(m)
 
     def __call__(self, env, *args, **kw):
         if self.init_kw is not None:

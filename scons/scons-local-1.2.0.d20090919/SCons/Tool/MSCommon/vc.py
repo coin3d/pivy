@@ -265,12 +265,12 @@ def get_installed_vcs():
 def set_vc_by_version(env, msvc):
     if msvc not in SupportedVCMap:
         msg = "VC version %s is not supported" % repr(msvc)
-        raise SCons.Errors.UserError, msg
+        raise SCons.Errors.UserError(msg)
     get_installed_vcs()
     vc = InstalledVCMap.get(msvc)
     if not vc:
         msg = "VC version %s is not installed" % repr(msvc)
-        raise SCons.Errors.UserError, msg
+        raise SCons.Errors.UserError(msg)
     set_vc_by_directory(env, vc.get_vc_dir())
 
 # New stuff

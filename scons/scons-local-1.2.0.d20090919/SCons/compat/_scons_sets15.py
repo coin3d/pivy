@@ -65,7 +65,7 @@ class Set:
         try:
             self.elems.remove(elem)
         except ValueError:
-            raise LookupError, "Object %s is not a member of the set." % str(elem)
+            raise LookupError("Object %s is not a member of the set." % str(elem))
 
     def discard(self, elem):
         """Remove an element from the set. Do nothing if elem is not in the set."""

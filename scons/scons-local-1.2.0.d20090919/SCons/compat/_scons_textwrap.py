@@ -15,14 +15,6 @@ except NameError:
    class unicode:
        pass
 
-# Do the right thing with boolean values for all known Python versions
-# (so this module can be copied to projects that don't depend on Python
-# 2.3, e.g. Optik and Docutils).
-try:
-    True, False
-except NameError:
-    (True, False) = (1, 0)
-
 __all__ = ['TextWrapper', 'wrap', 'fill']
 
 # Hardcode the recognized whitespace characters to the US-ASCII

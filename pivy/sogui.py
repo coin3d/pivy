@@ -59,7 +59,7 @@ class SoGui_Proxy:
 
         # check if object is a user provided string possibly a new unknown SoGui binding.
         # try to bind it.
-        elif type(gui) == type(''):
+        elif isinstance(gui, type('')):
             try:
                 sogui = getattr(__import__('pivy.gui.' + gui.lower()).gui, gui.lower())
             except ImportError:

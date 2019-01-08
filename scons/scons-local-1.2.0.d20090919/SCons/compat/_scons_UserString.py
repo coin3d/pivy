@@ -35,15 +35,15 @@ in later versions.
 
 import types
 
-StringType = types.StringType
+StringType = bytes
 
 if hasattr(types, 'UnicodeType'):
-    UnicodeType = types.UnicodeType
+    UnicodeType = str
     def is_String(obj):
         return type(obj) in (StringType, UnicodeType)
 else:
     def is_String(obj):
-        return type(obj) is StringType
+        return isinstance(obj, StringType)
 
 class UserString:
     def __init__(self, seq):

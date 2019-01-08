@@ -37,7 +37,7 @@ def ProgramScanner(**kw):
     """Return a prototype Scanner instance for scanning executable
     files for static-lib dependencies"""
     kw['path_function'] = SCons.Scanner.FindPathDirs('LIBPATH')
-    ps = apply(SCons.Scanner.Base, [scan, "ProgramScanner"], kw)
+    ps = SCons.Scanner.Base(*[scan, "ProgramScanner"], **kw)
     return ps
 
 def scan(node, env, libpath = ()):

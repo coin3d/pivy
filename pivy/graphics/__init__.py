@@ -369,7 +369,7 @@ class InteractionSeparator(coin.SoSeparator):
 
     def dragCB(self, attr, event_callback, force=False):
         event = event_callback.getEvent()
-        if ((type(event) == coin.SoMouseButtonEvent and
+        if ((isinstance(event, coin.SoMouseButtonEvent) and
                 event.getState() == coin.SoMouseButtonEvent.DOWN
                 and event.getButton() == coin.SoMouseButtonEvent.BUTTON1) or 
                 force):
@@ -385,7 +385,7 @@ class InteractionSeparator(coin.SoSeparator):
             for foo in self.on_drag_release:
                 foo()
             self.drag_objects = []
-        elif (type(event) == coin.SoKeyboardEvent and
+        elif (isinstance(event, coin.SoKeyboardEvent) and
                 event.getState() == coin.SoMouseButtonEvent.DOWN):
             if event.getKey() == 65307:     # esc
                 for obj in self.drag_objects:
@@ -408,7 +408,7 @@ class InteractionSeparator(coin.SoSeparator):
             for foo in self.on_drag:
                 foo()
 
-        elif type(event) == coin.SoLocation2Event:
+        elif isinstance(event, coin.SoLocation2Event):
             fact = 0.1 if event.wasShiftDown() else 1.
             diff = self.cursor_pos(event) - self.start_pos
             diff = self.constrained_vector(diff)

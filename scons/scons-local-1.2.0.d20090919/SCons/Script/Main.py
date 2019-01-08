@@ -146,7 +146,7 @@ ProgressObject = SCons.Util.Null()
 
 def Progress(*args, **kw):
     global ProgressObject
-    ProgressObject = apply(Progressor, args, kw)
+    ProgressObject = Progressor(*args, **kw)
 
 # Task control.
 #
@@ -317,10 +317,9 @@ class CleanTask(SCons.Taskmaster.AlwaysTask):
                     display("Removed " + pathstr)
                 elif os.path.isdir(path) and not os.path.islink(path):
                     # delete everything in the dir
-                    entries = os.listdir(path)
+                    entries = sorted(os.listdir(path))
                     # Sort for deterministic output (os.listdir() Can
                     # return entries in a random order).
-                    entries.sort()
                     for e in entries:
                         p = os.path.join(path, e)
                         s = os.path.join(pathstr, e)
@@ -335,9 +334,9 @@ class CleanTask(SCons.Taskmaster.AlwaysTask):
                 else:
                     errstr = "Path '%s' exists but isn't a file or directory."
                     raise SCons.Errors.UserError(errstr % (pathstr))
-        except SCons.Errors.UserError, e:
+        except SCons.Errors.UserError as e:
             print(e)
-        except (IOError, OSError), e:
+        except (IOError, OSError) as e:
             print("scons: Could not remove '%s':" % pathstr, e.strerror)
 
     def show(self):
@@ -346,7 +345,7 @@ class CleanTask(SCons.Taskmaster.AlwaysTask):
             for t in self.targets:
                 if not t.isdir():
                     display("Removed " + str(t))
-        if SCons.Environment.CleanTargets.has_key(target):
+        if target in SCons.Environment.CleanTargets:
             files = SCons.Environment.CleanTargets[target]
             for f in files:
                 self.fs_delete(f.abspath, str(f), 0)
@@ -357,7 +356,7 @@ class CleanTask(SCons.Taskmaster.AlwaysTask):
             for t in self.targets:
                 try:
                     removed = t.remove()
-                except OSError, e:
+                except OSError as e:
                     # An OSError may indicate something like a permissions
                     # issue, an IOError would indicate something like
                     # the file not existing.  In either case, print a
@@ -367,7 +366,7 @@ class CleanTask(SCons.Taskmaster.AlwaysTask):
                 else:
                     if removed:
                         display("Removed " + str(t))
-        if SCons.Environment.CleanTargets.has_key(target):
+        if target in SCons.Environment.CleanTargets:
             files = SCons.Environment.CleanTargets[target]
             for f in files:
                 self.fs_delete(f.abspath, str(f))
@@ -470,9 +469,9 @@ class FakeOptionParser:
 OptionsParser = FakeOptionParser()
 
 def AddOption(*args, **kw):
-    if not kw.has_key('default'):
+    if 'default' not in kw:
         kw['default'] = None
-    result = apply(OptionsParser.add_local_option, args, kw)
+    result = OptionsParser.add_local_option(*args, **kw)
     return result
 
 def GetOption(name):
@@ -509,8 +508,7 @@ class CountStats(Stats):
             for n, c in s:
                 stats_table[n][i] = c
             i = i + 1
-        keys = stats_table.keys()
-        keys.sort()
+        keys = sorted(stats_table.keys())
         self.outfp.write("Object counts:\n")
         pre = ["   "]
         post = ["   %s\n"]
@@ -713,21 +711,21 @@ def _load_site_scons_dir(topdir, site_dir_name=None):
                 # the error checking makes it longer.
                 try:
                     m = sys.modules['SCons.Script']
-                except Exception, e:
+                except Exception as e:
                     fmt = 'cannot import site_init.py: missing SCons.Script module %s'
                     raise SCons.Errors.InternalError, fmt % repr(e)
                 try:
                     # This is the magic.
-                    exec fp in m.__dict__
+                    exec(fp, m.__dict__)
                 except KeyboardInterrupt:
                     raise
-                except Exception, e:
+                except Exception as e:
                     fmt = '*** Error loading site_init file %s:\n'
                     sys.stderr.write(fmt % repr(site_init_file))
                     raise
             except KeyboardInterrupt:
                 raise
-            except ImportError, e:
+            except ImportError as e:
                 fmt = '*** cannot import site init file %s:\n'
                 sys.stderr.write(fmt % repr(site_init_file))
                 raise
@@ -928,7 +926,7 @@ def _main(parser):
     try:
         for script in scripts:
             SCons.Script._SConscript._SConscript(fs, script)
-    except SCons.Errors.StopError, e:
+    except SCons.Errors.StopError as e:
         # We had problems reading an SConscript file, such as it
         # couldn't be copied in to the VariantDir.  Since we're just
         # reading SConscript files and haven't started building
@@ -1226,13 +1224,13 @@ def _exec_main(parser, values):
 
     options, args = parser.parse_args(all_args, values)
 
-    if type(options.debug) == type([]) and "pdb" in options.debug:
+    if isinstance(options.debug, type([])) and "pdb" in options.debug:
         import pdb
         pdb.Pdb().runcall(_main, parser)
     elif options.profile_file:
         try:
             from cProfile import Profile
-        except ImportError, e:
+        except ImportError as e:
             from profile import Profile
 
         # Some versions of Python 2.4 shipped a profiler that had the
@@ -1250,7 +1248,7 @@ def _exec_main(parser, values):
         prof = Profile()
         try:
             prof.runcall(_main, parser)
-        except SConsPrintHelpException, e:
+        except SConsPrintHelpException as e:
             prof.dump_stats(options.profile_file)
             raise e
         except SystemExit:
@@ -1293,22 +1291,22 @@ def main():
     
     try:
         _exec_main(parser, values)
-    except SystemExit, s:
+    except SystemExit as s:
         if s:
             exit_status = s
     except KeyboardInterrupt:
         print("scons: Build interrupted.")
         sys.exit(2)
-    except SyntaxError, e:
+    except SyntaxError as e:
         _scons_syntax_error(e)
     except SCons.Errors.InternalError:
         _scons_internal_error()
-    except SCons.Errors.UserError, e:
+    except SCons.Errors.UserError as e:
         _scons_user_error(e)
     except SConsPrintHelpException:
         parser.print_help()
         exit_status = 0
-    except SCons.Errors.BuildError, e:
+    except SCons.Errors.BuildError as e:
         exit_status = e.exitstatus
     except:
         # An exception here is likely a builtin Python exception Python

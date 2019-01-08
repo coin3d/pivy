@@ -46,7 +46,7 @@ else:
     def logInstanceCreation(instance, name=None):
         if name is None:
             name = instance.__class__.__name__
-        if not tracked_classes.has_key(name):
+        if name not in tracked_classes:
             tracked_classes[name] = []
         tracked_classes[name].append(weakref.ref(instance))
 
@@ -56,8 +56,7 @@ tracked_classes = {}
 
 def string_to_classes(s):
     if s == '*':
-        c = tracked_classes.keys()
-        c.sort()
+        c = sorted(tracked_classes.keys())
         return c
     else:
         return string.split(s)
@@ -156,13 +155,12 @@ def _dump_one_caller(key, file, level=0):
     leader = '      '*level
     for v,c in l:
         file.write("%s  %6d %s:%d(%s)\n" % ((leader,-v) + func_shorten(c[-3:])))
-        if caller_dicts.has_key(c):
+        if c in caller_dicts:
             _dump_one_caller(c, file, level+1)
 
 # print each call tree
 def dump_caller_counts(file=sys.stdout):
-    keys = caller_bases.keys()
-    keys.sort()
+    keys = sorted(caller_bases.keys())
     for k in keys:
         file.write("Callers of %s:%d(%s), %d calls:\n"
                     % (func_shorten(k) + (caller_bases[k],)))

@@ -187,7 +187,7 @@ class Serial:
         fails to execute (i.e. execute() raises an exception), then the job will
         stop."""
         
-        while 1:
+        while True:
             task = self.taskmaster.next_task()
 
             if task is None:
@@ -240,7 +240,7 @@ else:
             self.start()
 
         def run(self):
-            while 1:
+            while True:
                 task = self.requestQueue.get()
 
                 if task is None:
@@ -276,14 +276,14 @@ else:
 
             try:
                 prev_size = threading.stack_size(stack_size*1024) 
-            except AttributeError, e:
+            except AttributeError as e:
                 # Only print a warning if the stack size has been
                 # explicitly set.
                 if not explicit_stack_size is None:
                     msg = "Setting stack size is unsupported by this version of Python:\n    " + \
                         e.args[0]
                     SCons.Warnings.warn(SCons.Warnings.StackSizeWarning, msg)
-            except ValueError, e:
+            except ValueError as e:
                 msg = "Setting stack size failed:\n    " + str(e)
                 SCons.Warnings.warn(SCons.Warnings.StackSizeWarning, msg)
 
@@ -374,7 +374,7 @@ else:
 
             jobs = 0
             
-            while 1:
+            while True:
                 # Start up as many available tasks as we're
                 # allowed to.
                 while jobs < self.maxjobs:
@@ -402,7 +402,7 @@ else:
 
                 # Let any/all completed tasks finish up before we go
                 # back and put the next batch of tasks on the queue.
-                while 1:
+                while True:
                     task, ok = self.tp.get()
                     jobs = jobs - 1
 

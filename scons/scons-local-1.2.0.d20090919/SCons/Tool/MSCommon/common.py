@@ -99,7 +99,7 @@ def normalize_env(env, keys):
             normenv[k] = copy.deepcopy(env[k]).encode('mbcs')
 
         for k in keys:
-            if os.environ.has_key(k):
+            if k in os.environ:
                 normenv[k] = os.environ[k].encode('mbcs')
 
     return normenv

@@ -112,7 +112,7 @@ def JavaHOutFlagGenerator(target, source, env, for_signature):
 
 def getJavaHClassPath(env,target, source, for_signature):
     path = "${SOURCE.attributes.java_classdir}"
-    if env.has_key('JAVACLASSPATH') and env['JAVACLASSPATH']:
+    if 'JAVACLASSPATH' in env and env['JAVACLASSPATH']:
         path = SCons.Util.AppendPath(path, env['JAVACLASSPATH'])
     return "-classpath %s" % (path)
 

@@ -123,8 +123,8 @@ class Variables:
                     putting it in the environment.
         """
 
-        if SCons.Util.is_List(key) or type(key) == type(()):
-            apply(self._do_add, key)
+        if SCons.Util.is_List(key) or isinstance(key, type(())):
+            self._do_add(*key)
             return
 
         if not SCons.Util.is_String(key) or \
@@ -149,7 +149,7 @@ class Variables:
             )
         """
         for o in optlist:
-            apply(self._do_add, o)
+            self._do_add(*o)
 
 
     def Update(self, env, args=None):
@@ -174,7 +174,7 @@ class Variables:
                     sys.path.insert(0, dir)
                 try:
                     values['__name__'] = filename
-                    exec open(filename, 'rU').read() in {}, values
+                    exec(open(filename, 'rU').read(), {}, values)
                 finally:
                     if dir:
                         del sys.path[0]
@@ -203,20 +203,20 @@ class Variables:
 
         # Call the convert functions:
         for option in self.options:
-            if option.converter and values.has_key(option.key):
+            if option.converter and option.key in values:
                 value = env.subst('${%s}'%option.key)
                 try:
                     try:
                         env[option.key] = option.converter(value)
                     except TypeError:
                         env[option.key] = option.converter(value, env)
-                except ValueError, x:
+                except ValueError as x:
                     raise SCons.Errors.UserError, 'Error converting option: %s\n%s'%(option.key, x)
 
 
         # Finally validate the values:
         for option in self.options:
-            if option.validator and values.has_key(option.key):
+            if option.validator and option.key in values:
                 option.validator(option.key, env.subst('${%s}'%option.key), env)
 
     def UnknownVariables(self):
@@ -272,7 +272,7 @@ class Variables:
             finally:
                 fh.close()
 
-        except IOError, x:
+        except IOError as x:
             raise SCons.Errors.UserError, 'Error writing options to file: %s\n%s' % (filename, x)
 
     def GenerateHelpText(self, env, sort=None):
@@ -290,7 +290,7 @@ class Variables:
             options = self.options
 
         def format(opt, self=self, env=env):
-            if env.has_key(opt.key):
+            if opt.key in env:
                 actual = env.subst('${%s}' % opt.key)
             else:
                 actual = None

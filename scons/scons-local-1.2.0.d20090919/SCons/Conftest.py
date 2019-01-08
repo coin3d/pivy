@@ -230,7 +230,7 @@ int main()
 
 def _check_empty_program(context, comp, text, language, use_shared = False):
     """Return 0 on success, 1 otherwise."""
-    if not context.env.has_key(comp) or not context.env[comp]:
+    if comp not in context.env or not context.env[comp]:
         # The compiler construction variable is not set or empty
         return 1
 
@@ -730,7 +730,7 @@ def _Have(context, key, have, comment = None):
         line = "#define %s 1\n" % key_up
     elif have == 0:
         line = "/* #undef %s */\n" % key_up
-    elif type(have) == IntType:
+    elif isinstance(have, IntType):
         line = "#define %s %d\n" % (key_up, have)
     else:
         line = "#define %s %s\n" % (key_up, str(have))

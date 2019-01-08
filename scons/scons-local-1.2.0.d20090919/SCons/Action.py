@@ -163,12 +163,12 @@ def _callable_contents(obj):
     """
     try:
         # Test if obj is a method.
-        return _function_contents(obj.im_func)
+        return _function_contents(obj.__func__)
 
     except AttributeError:
         try:
             # Test if obj is a callable object.
-            return _function_contents(obj.__call__.im_func)
+            return _function_contents(obj.__call__.__func__)
 
         except AttributeError:
             try:
@@ -188,12 +188,12 @@ def _object_contents(obj):
     """
     try:
         # Test if obj is a method.
-        return _function_contents(obj.im_func)
+        return _function_contents(obj.__func__)
 
     except AttributeError:
         try:
             # Test if obj is a callable object.
-            return _function_contents(obj.__call__.im_func)
+            return _function_contents(obj.__call__.__func__)
 
         except AttributeError:
             try:
@@ -267,17 +267,17 @@ def _code_contents(code):
 def _function_contents(func):
     """Return the signature contents of a function."""
 
-    contents = [_code_contents(func.func_code)]
+    contents = [_code_contents(func.__code__)]
 
     # The function contents depends on the value of defaults arguments
-    if func.func_defaults:
-        contents.append(',(' + string.join(map(_object_contents,func.func_defaults),',') + ')')
+    if func.__defaults__:
+        contents.append(',(' + string.join(map(_object_contents,func.__defaults__),',') + ')')
     else:
         contents.append(',()')
 
     # The function contents depends on the closure captured cell values.
     try:
-        closure = func.func_closure or []
+        closure = func.__closure__ or []
     except AttributeError:
         # Older versions of Python do not support closures.
         closure = []
@@ -354,7 +354,7 @@ def _do_create_action(act, kw):
 
     if is_List(act):
         #TODO(1.5) return CommandAction(act, **kw)
-        return apply(CommandAction, (act,), kw)
+        return CommandAction(*(act,), **kw)
 
     if callable(act):
         try:
@@ -381,7 +381,7 @@ def _do_create_action(act, kw):
         commands = string.split(str(act), '\n')
         if len(commands) == 1:
             #TODO(1.5) return CommandAction(commands[0], **kw)
-            return apply(CommandAction, (commands[0],), kw)
+            return CommandAction(*(commands[0],), **kw)
         # The list of string commands may include a LazyAction, so we
         # reprocess them via _do_create_list_action.
         return _do_create_list_action(commands, kw)
@@ -652,8 +652,8 @@ def _subproc(env, cmd, error = 'ignore', **kw):
 
     try:
         #FUTURE return subprocess.Popen(cmd, **kw)
-        return apply(subprocess.Popen, (cmd,), kw)
-    except EnvironmentError, e:
+        return subprocess.Popen(*(cmd,), **kw)
+    except EnvironmentError as e:
         if error == 'raise': raise
         # return a dummy Popen instance that only returns error
         class dummyPopen:
@@ -682,7 +682,7 @@ class CommandAction(_ActionAction):
         if __debug__: logInstanceCreation(self, 'Action.CommandAction')
 
         #TODO(1.5) _ActionAction.__init__(self, **kw)
-        apply(_ActionAction.__init__, (self,), kw)
+        _ActionAction.__init__(*(self,), **kw)
         if is_List(cmd):
             if filter(is_List, cmd):
                 raise TypeError, "CommandAction should be given only " \
@@ -701,7 +701,7 @@ class CommandAction(_ActionAction):
             result = env.subst_list(self.cmd_list, 0, target, source)
         silent = None
         ignore = None
-        while 1:
+        while True:
             try: c = result[0][0][0]
             except IndexError: c = None
             if c == '@': silent = 1
@@ -857,7 +857,7 @@ class CommandGeneratorAction(ActionBase):
                              env=env,
                              for_signature=for_signature)
         #TODO(1.5) gen_cmd = Action(ret, **self.gen_kw)
-        gen_cmd = apply(Action, (ret,), self.gen_kw)
+        gen_cmd = Action(*(ret,), **self.gen_kw)
         if not gen_cmd:
             raise SCons.Errors.UserError("Object returned from command generator: %s cannot be used to create an Action." % repr(ret))
         return gen_cmd
@@ -924,7 +924,7 @@ class LazyAction(CommandGeneratorAction, CommandAction):
     def __init__(self, var, kw):
         if __debug__: logInstanceCreation(self, 'Action.LazyAction')
         #FUTURE CommandAction.__init__(self, '${'+var+'}', **kw)
-        apply(CommandAction.__init__, (self, '${'+var+'}'), kw)
+        CommandAction.__init__(*(self, '${'+var+'}'), **kw)
         self.var = SCons.Util.to_String(var)
         self.gen_kw = kw
 
@@ -940,7 +940,7 @@ class LazyAction(CommandGeneratorAction, CommandAction):
         else:
             c = ''
         #TODO(1.5) gen_cmd = Action(c, **self.gen_kw)
-        gen_cmd = apply(Action, (c,), self.gen_kw)
+        gen_cmd = Action(*(c,), **self.gen_kw)
         if not gen_cmd:
             raise SCons.Errors.UserError("$%s value %s cannot be used to create an Action." % (self.var, repr(c)))
         return gen_cmd
@@ -952,7 +952,7 @@ class LazyAction(CommandGeneratorAction, CommandAction):
         args = (self, target, source, env) + args
         c = self.get_parent_class(env)
         #TODO(1.5) return c.__call__(*args, **kw)
-        return apply(c.__call__, args, kw)
+        return c.__call__(*args, **kw)
 
     def get_presig(self, target, source, env):
         c = self.get_parent_class(env)
@@ -978,7 +978,7 @@ class FunctionAction(_ActionAction):
                 self.funccontents = _object_contents(execfunction)
 
         #TODO(1.5) _ActionAction.__init__(self, **kw)
-        apply(_ActionAction.__init__, (self,), kw)
+        _ActionAction.__init__(*(self,), **kw)
 
     def function_name(self):
         try:
@@ -1039,11 +1039,11 @@ class FunctionAction(_ActionAction):
             rsources = map(rfile, source)
             try:
                 result = self.execfunction(target=target, source=rsources, env=env)
-            except KeyboardInterrupt, e:
+            except KeyboardInterrupt as e:
                 raise
-            except SystemExit, e:
+            except SystemExit as e:
                 raise
-            except Exception, e:
+            except Exception as e:
                 result = e
                 exc_info = sys.exc_info()
 
@@ -1157,11 +1157,11 @@ class ActionCaller:
         actfunc = self.parent.actfunc
         try:
             # "self.actfunc" is a function.
-            contents = str(actfunc.func_code.co_code)
+            contents = str(actfunc.__code__.co_code)
         except AttributeError:
             # "self.actfunc" is a callable object.
             try:
-                contents = str(actfunc.__call__.im_func.func_code.co_code)
+                contents = str(actfunc.__call__.__func__.__code__.co_code)
             except AttributeError:
                 # No __call__() method, so it might be a builtin
                 # or something like that.  Do the best we can.
@@ -1202,17 +1202,17 @@ class ActionCaller:
         args = self.subst_args(target, source, env)
         kw = self.subst_kw(target, source, env)
         #TODO(1.5) return self.parent.actfunc(*args, **kw)
-        return apply(self.parent.actfunc, args, kw)
+        return self.parent.actfunc(*args, **kw)
 
     def strfunction(self, target, source, env):
         args = self.subst_args(target, source, env)
         kw = self.subst_kw(target, source, env)
         #TODO(1.5) return self.parent.strfunc(*args, **kw)
-        return apply(self.parent.strfunc, args, kw)
+        return self.parent.strfunc(*args, **kw)
 
     def __str__(self):
         #TODO(1.5) return self.parent.strfunc(*self.args, **self.kw)
-        return apply(self.parent.strfunc, self.args, self.kw)
+        return self.parent.strfunc(*self.args, **self.kw)
 
 class ActionFactory:
     """A factory class that will wrap up an arbitrary function

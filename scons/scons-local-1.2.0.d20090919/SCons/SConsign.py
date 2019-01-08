@@ -203,12 +203,12 @@ class DB(Base):
         else:
             try:
                 self.entries = cPickle.loads(rawentries)
-                if type(self.entries) is not type({}):
+                if not isinstance(self.entries, type({})):
                     self.entries = {}
                     raise TypeError
             except KeyboardInterrupt:
                 raise
-            except Exception, e:
+            except Exception as e:
                 SCons.Warnings.warn(SCons.Warnings.CorruptSConsignWarning,
                                     "Ignoring corrupt sconsign entry : %s (%s)\n"%(self.dir.tpath, e))
             for key, entry in self.entries.items():
@@ -262,7 +262,7 @@ class Dir(Base):
             return
 
         self.entries = cPickle.load(fp)
-        if type(self.entries) is not type({}):
+        if not isinstance(self.entries, type({})):
             self.entries = {}
             raise TypeError
 
@@ -333,7 +333,7 @@ class DirFile(Dir):
         if fname != self.sconsign:
             try:
                 mode = os.stat(self.sconsign)[0]
-                os.chmod(self.sconsign, 0666)
+                os.chmod(self.sconsign, 0o666)
                 os.unlink(self.sconsign)
             except (IOError, OSError):
                 # Try to carry on in the face of either OSError

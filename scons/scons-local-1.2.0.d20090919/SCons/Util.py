@@ -44,11 +44,11 @@ from UserString import UserString
 
 # Don't "from types import ..." these because we need to get at the
 # types module later to look for UnicodeType.
-DictType        = types.DictType
+DictType        = dict
 InstanceType    = types.InstanceType
-ListType        = types.ListType
-StringType      = types.StringType
-TupleType       = types.TupleType
+ListType        = list
+StringType      = bytes
+TupleType       = tuple
 
 def dictify(keys, values, result={}):
     for k, v in zip(keys, values):
@@ -128,9 +128,7 @@ class NodeList(UserList):
         return iter(self.data)
 
     def __call__(self, *args, **kwargs):
-        result = map(lambda x, args=args, kwargs=kwargs: apply(x,
-                                                               args,
-                                                               kwargs),
+        result = map(lambda x, args=args, kwargs=kwargs: x(*args, **kwargs),
                      self.data)
         return self.__class__(result)
 
@@ -205,7 +203,7 @@ def render_tree(root, child_func, prune=0, margin=[0], visited={}):
         else:
             retval = retval + "  "
 
-    if visited.has_key(rname):
+    if rname in visited:
         return retval + "+-[" + rname + "]\n"
 
     retval = retval + "+-" + rname + "\n"
@@ -278,7 +276,7 @@ def print_tree(root, child_func, prune=0, showtags=0, margin=[0], visited={}):
 
     children = child_func(root)
 
-    if prune and visited.has_key(rname) and children:
+    if prune and rname in visited and children:
         print(string.join(tags + margins + ['+-[', rname, ']'], ''))
         return
 
@@ -404,7 +402,7 @@ except TypeError:
     # specified object has one.
     #
     if hasattr(types, 'UnicodeType'):
-        UnicodeType = types.UnicodeType
+        UnicodeType = str
         def to_String(s):
             if isinstance(s, UserString):
                 t = type(s.data)
@@ -600,15 +598,15 @@ def _semi_deepcopy_dict(x):
         # Doesn't seem like we need to, but we'll comment it just in case.
         copy[key] = semi_deepcopy(val)
     return copy
-d[types.DictionaryType] = _semi_deepcopy_dict
+d[dict] = _semi_deepcopy_dict
 
 def _semi_deepcopy_list(x):
     return map(semi_deepcopy, x)
-d[types.ListType] = _semi_deepcopy_list
+d[list] = _semi_deepcopy_list
 
 def _semi_deepcopy_tuple(x):
     return tuple(map(semi_deepcopy, x))
-d[types.TupleType] = _semi_deepcopy_tuple
+d[tuple] = _semi_deepcopy_tuple
 
 def _semi_deepcopy_inst(x):
     if hasattr(x, '__semi_deepcopy__'):
@@ -847,7 +845,7 @@ else:
                     # raised so as to not mask possibly serious disk or
                     # network issues.
                     continue
-                if stat.S_IMODE(st[stat.ST_MODE]) & 0111:
+                if stat.S_IMODE(st[stat.ST_MODE]) & 0o111:
                     try:
                         reject.index(f)
                     except ValueError:
@@ -1133,7 +1131,7 @@ class Selector(OrderedDict):
             for (k,v) in self.items():
                 if k is not None:
                     s_k = env.subst(k)
-                    if s_dict.has_key(s_k):
+                    if s_k in s_dict:
                         # We only raise an error when variables point
                         # to the same suffix.  If one suffix is literal
                         # and a variable suffix contains this literal,
@@ -1225,8 +1223,7 @@ def unique(s):
     # sort functions in all languages or libraries, so this approach
     # is more effective in Python than it may be elsewhere.
     try:
-        t = list(s)
-        t.sort()
+        t = sorted(s)
     except TypeError:
         pass    # move on to the next method
     else:
@@ -1280,7 +1277,7 @@ def uniquer_hashables(seq):
     result = []
     for item in seq:
         #if not item in seen:
-        if not seen.has_key(item):
+        if item not in seen:
             seen[item] = 1
             result.append(item)
     return result
@@ -1296,7 +1293,7 @@ class LogicalLines:
 
     def readline(self):
         result = []
-        while 1:
+        while True:
             line = self.fileobj.readline()
             if not line:
                 break
@@ -1309,7 +1306,7 @@ class LogicalLines:
 
     def readlines(self):
         result = []
-        while 1:
+        while True:
             line = self.readline()
             if not line:
                 break
@@ -1404,7 +1401,7 @@ class UniqueList(UserList):
     def sort(self, *args, **kwds):
         self.__make_unique()
         #return UserList.sort(self, *args, **kwds)
-        return apply(UserList.sort, (self,)+args, kwds)
+        return UserList.sort(*(self,)+args, **kwds)
     def extend(self, other):
         UserList.extend(self, other)
         self.unique = False
@@ -1493,7 +1490,7 @@ def AddMethod(object, function, name = None):
     import new
 
     if name is None:
-        name = function.func_name
+        name = function.__name__
     else:
         function = RenameFunction(function, name)
 
@@ -1516,12 +1513,12 @@ def RenameFunction(function, name):
     # Compatibility for Python 1.5 and 2.1.  Can be removed in favor of
     # passing function.func_defaults directly to new.function() once
     # we base on Python 2.2 or later.
-    func_defaults = function.func_defaults
+    func_defaults = function.__defaults__
     if func_defaults is None:
         func_defaults = ()
 
-    return new.function(function.func_code,
-                        function.func_globals,
+    return new.function(function.__code__,
+                        function.__globals__,
                         name,
                         func_defaults)
 
@@ -1551,7 +1548,7 @@ else:
         def MD5filesignature(fname, chunksize=65536):
             m = hashlib.md5()
             f = open(fname, "rb")
-            while 1:
+            while True:
                 blck = f.read(chunksize)
                 if not blck:
                     break
@@ -1588,7 +1585,7 @@ def silent_intern(x):
     returned and no exception is thrown.
     """
     try:
-        return intern(x)
+        return sys.intern(x)
     except TypeError:
         return x
 
@@ -1607,7 +1604,7 @@ class Null:
     def __new__(cls, *args, **kwargs):
         if not '_inst' in vars(cls):
             #cls._inst = type.__new__(cls, *args, **kwargs)
-            cls._inst = apply(type.__new__, (cls,) + args, kwargs)
+            cls._inst = type.__new__(*(cls,) + args, **kwargs)
         return cls._inst
     def __init__(self, *args, **kwargs):
         pass

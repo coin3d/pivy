@@ -19,6 +19,7 @@ No one needs to use or tie in to this subsystem in order to roll
 their own platform definition.
 """
 from __future__ import print_function
+from functools import reduce
 
 #
 # Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 The SCons Foundation
@@ -93,7 +94,7 @@ def platform_module(name = platform_default()):
     our execution environment.
     """
     full_name = 'SCons.Platform.' + name
-    if not sys.modules.has_key(full_name):
+    if full_name not in sys.modules:
         if os.name == 'java':
             eval(full_name)
         else:

@@ -106,7 +106,7 @@ class VisualC:
             key = root + key
             try:
                 comps = common.read_reg(key)
-            except WindowsError, e:
+            except WindowsError as e:
                 debug('find_vc_dir(): no VC registry key %s' % repr(key))
             else:
                 debug('find_vc_dir(): found VC in registry: %s' % comps)
@@ -263,7 +263,7 @@ def get_installed_vcs():
 
 
 def set_vc_by_version(env, msvc):
-    if not SupportedVCMap.has_key(msvc):
+    if msvc not in SupportedVCMap:
         msg = "VC version %s is not supported" % repr(msvc)
         raise SCons.Errors.UserError, msg
     get_installed_vcs()
@@ -330,7 +330,7 @@ def msvc_exists(version=None):
     vcs = get_installed_vcs()
     if version is None:
         return len(vcs) > 0
-    return InstalledVCMap.has_key(version)
+    return version in InstalledVCMap
     
     
 def reset_installed_vcs():

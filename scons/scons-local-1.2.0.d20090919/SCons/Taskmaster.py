@@ -243,7 +243,7 @@ class Task:
             raise
         except SCons.Errors.BuildError:
             raise
-        except Exception, e:
+        except Exception as e:
             buildError = SCons.Errors.convert_to_BuildError(e)
             buildError.node = self.targets[0]
             buildError.exc_info = sys.exc_info()
@@ -380,7 +380,7 @@ class Task:
                 t.disambiguate().make_ready()
                 is_up_to_date = not t.has_builder() or \
                                 (not t.always_build and t.is_up_to_date())
-            except EnvironmentError, e:
+            except EnvironmentError as e:
                 raise SCons.Errors.BuildError(node=t, errstr=e.strerror, filename=e.filename)
 
             if not is_up_to_date:
@@ -736,7 +736,7 @@ class Taskmaster:
         T = self.trace
         if T: T.write('\n' + self.trace_message('Looking for a node to evaluate'))
 
-        while 1:
+        while True:
             node = self.next_candidate()
             if node is None:
                 if T: T.write(self.trace_message('No candidate anymore.') + '\n')
@@ -783,7 +783,7 @@ class Taskmaster:
                 self.ready_exc = (SCons.Errors.ExplicitExit, e)
                 if T: T.write(self.trace_message('       SystemExit'))
                 return node
-            except Exception, e:
+            except Exception as e:
                 # We had a problem just trying to figure out the
                 # children (like a child couldn't be linked in to a
                 # VariantDir, or a Scanner threw something).  Arrange to
@@ -951,7 +951,7 @@ class Taskmaster:
                 T.write(self.trace_message('       removing node %s from the pending children set\n' %
                         self.trace_node(n)))
         try:
-            while 1:
+            while True:
                 try:
                     node = to_visit.pop()
                 except AttributeError:

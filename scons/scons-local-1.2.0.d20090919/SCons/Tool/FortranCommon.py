@@ -136,17 +136,17 @@ def DialectAddToEnv(env, dialect, suffixes, ppsuffixes, support_module = 0):
         static_obj.add_emitter(suffix, FortranEmitter)
         shared_obj.add_emitter(suffix, ShFortranEmitter)
 
-    if not env.has_key('%sFLAGS' % dialect):
+    if '%sFLAGS' % dialect not in env:
         env['%sFLAGS' % dialect] = SCons.Util.CLVar('')
 
-    if not env.has_key('SH%sFLAGS' % dialect):
+    if 'SH%sFLAGS' % dialect not in env:
         env['SH%sFLAGS' % dialect] = SCons.Util.CLVar('$%sFLAGS' % dialect)
 
     # If a tool does not define fortran prefix/suffix for include path, use C ones
-    if not env.has_key('INC%sPREFIX' % dialect):
+    if 'INC%sPREFIX' % dialect not in env:
         env['INC%sPREFIX' % dialect] = '$INCPREFIX'
 
-    if not env.has_key('INC%sSUFFIX' % dialect):
+    if 'INC%sSUFFIX' % dialect not in env:
         env['INC%sSUFFIX' % dialect] = '$INCSUFFIX'
 
     env['_%sINCFLAGS' % dialect] = '$( ${_concat(INC%sPREFIX, %sPATH, INC%sSUFFIX, __env__, RDirs, TARGET, SOURCE)} $)' % (dialect, dialect, dialect)

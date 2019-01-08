@@ -18,10 +18,10 @@ def corruption_warning(filename):
 if hasattr(types, 'UnicodeType'):
     def is_string(s):
         t = type(s)
-        return t is types.StringType or t is types.UnicodeType
+        return t is bytes or t is str
 else:
     def is_string(s):
-        return type(s) is types.StringType
+        return isinstance(s, bytes)
 
 try:
     unicode('a')
@@ -76,7 +76,7 @@ class dblite:
         statinfo = os.stat(self._file_name)
         self._chown_to = statinfo.st_uid
         self._chgrp_to = statinfo.st_gid
-      except OSError, e:
+      except OSError as e:
         # db file doesn't exist yet.
         # Check os.environ for SUDO_UID, use if set
         self._chown_to = int(os.environ.get('SUDO_UID', -1))
@@ -89,7 +89,7 @@ class dblite:
     else:
       try:
         f = self._open(self._file_name, "rb")
-      except IOError, e:
+      except IOError as e:
         if (self._flag != "c"):
           raise e
         self._open(self._file_name, "wb", self._mode)
@@ -118,7 +118,7 @@ class dblite:
     # (e.g. from a previous run as root).  We should still be able to
     # unlink() the file if the directory's writable, though, so ignore
     # any OSError exception  thrown by the chmod() call.
-    try: self._os_chmod(self._file_name, 0777)
+    try: self._os_chmod(self._file_name, 0o777)
     except OSError: pass
     self._os_unlink(self._file_name)
     self._os_rename(self._tmp_name, self._file_name)
@@ -147,7 +147,7 @@ class dblite:
     if (not is_string(value)):
       raise TypeError, "value `%s' must be a string but is %s" % (value, type(value))
     self._dict[key] = value
-    self._needs_sync = 0001
+    self._needs_sync = 0o001
 
   def keys(self):
     return self._dict.keys()
@@ -166,7 +166,7 @@ class dblite:
   def __len__(self):
     return len(self._dict)
 
-def open(file, flag=None, mode=0666):
+def open(file, flag=None, mode=0o666):
   return dblite(file, flag, mode)
 
 def _exercise():
@@ -193,7 +193,7 @@ def _exercise():
   assert db[unicode("ubar")] == unicode("ufoo")
   try:
     db.sync()
-  except IOError, e:
+  except IOError as e:
     assert str(e) == "Read-only database: tmp.dblite"
   else:
     raise RuntimeError, "IOError expected."
@@ -203,13 +203,13 @@ def _exercise():
   db.sync()
   try:
     db[(1,2)] = "tuple"
-  except TypeError, e:
+  except TypeError as e:
     assert str(e) == "key `(1, 2)' must be a string but is <type 'tuple'>", str(e)
   else:
     raise RuntimeError, "TypeError exception expected"
   try:
     db["list"] = [1,2]
-  except TypeError, e:
+  except TypeError as e:
     assert str(e) == "value `[1, 2]' must be a string but is <type 'list'>", str(e)
   else:
     raise RuntimeError, "TypeError exception expected"
@@ -233,7 +233,7 @@ def _exercise():
   os.unlink("tmp.dblite")
   try:
     db = open("tmp", "w")
-  except IOError, e:
+  except IOError as e:
     assert str(e) == "[Errno 2] No such file or directory: 'tmp.dblite'", str(e)
   else:
     raise RuntimeError, "IOError expected."

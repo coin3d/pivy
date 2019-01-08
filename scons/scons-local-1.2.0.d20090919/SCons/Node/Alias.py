@@ -46,7 +46,7 @@ class AliasNameSpace(UserDict.UserDict):
         try:
             a = self[name]
         except KeyError:
-            a = apply(SCons.Node.Alias.Alias, (name,), kw)
+            a = SCons.Node.Alias.Alias(*(name,), **kw)
             self[name] = a
         return a
 

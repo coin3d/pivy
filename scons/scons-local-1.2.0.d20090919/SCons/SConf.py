@@ -158,8 +158,8 @@ def _stringSource( target, source, env ):
                             '\n', "\n  |" ) )
 
 # python 2.2 introduces types.BooleanType
-BooleanTypes = [types.IntType]
-if hasattr(types, 'BooleanType'): BooleanTypes.append(types.BooleanType)
+BooleanTypes = [int]
+if hasattr(types, 'BooleanType'): BooleanTypes.append(bool)
 
 class SConfBuildInfo(SCons.Node.FS.FileBuildInfo):
     """
@@ -247,7 +247,7 @@ class SConfBuildTask(SCons.Taskmaster.AlwaysTask):
                 def excepthook(type, value, tb):
                     traceback.print_tb(tb)
                     print(type, value)
-            apply(excepthook, self.exc_info())
+            excepthook(*self.exc_info())
         return SCons.Taskmaster.Task.failed(self)
 
     def collect_node_states(self):
@@ -338,7 +338,7 @@ class SConfBuildTask(SCons.Taskmaster.AlwaysTask):
             except SystemExit:
                 exc_value = sys.exc_info()[1]
                 raise SCons.Errors.ExplicitExit(self.targets[0],exc_value.code)
-            except Exception, e:
+            except Exception as e:
                 for t in self.targets:
                     binfo = t.get_binfo()
                     binfo.__class__ = SConfBuildInfo
@@ -645,7 +645,7 @@ class SConfBase:
                 raise (SCons.Errors.UserError,
                        "Test called after sconf.Finish()")
             context = CheckContext(self.sconf)
-            ret = apply(self.test, (context,) +  args, kw)
+            ret = self.test(*(context,) +  args, **kw)
             if self.sconf.config_h is not None:
                 self.sconf.config_h_text = self.sconf.config_h_text + context.config_h
             context.Result("error: no result")
@@ -689,7 +689,7 @@ class SConfBase:
         if self.logfile is not None and not dryrun:
             # truncate logfile, if SConf.Configure is called for the first time
             # in a build
-            if _ac_config_logs.has_key(self.logfile):
+            if self.logfile in _ac_config_logs:
                 log_mode = "a"
             else:
                 _ac_config_logs[self.logfile] = None
@@ -793,7 +793,7 @@ class CheckContext:
                 text = "yes"
             else:
                 text = "no"
-        elif type(res) == types.StringType:
+        elif isinstance(res, bytes):
             text = res
         else:
             raise TypeError, "Expected string, int or bool, got " + str(type(res))
@@ -804,19 +804,19 @@ class CheckContext:
             self.did_show_result = 1
 
     def TryBuild(self, *args, **kw):
-        return apply(self.sconf.TryBuild, args, kw)
+        return self.sconf.TryBuild(*args, **kw)
 
     def TryAction(self, *args, **kw):
-        return apply(self.sconf.TryAction, args, kw)
+        return self.sconf.TryAction(*args, **kw)
 
     def TryCompile(self, *args, **kw):
-        return apply(self.sconf.TryCompile, args, kw)
+        return self.sconf.TryCompile(*args, **kw)
 
     def TryLink(self, *args, **kw):
-        return apply(self.sconf.TryLink, args, kw)
+        return self.sconf.TryLink(*args, **kw)
 
     def TryRun(self, *args, **kw):
-        return apply(self.sconf.TryRun, args, kw)
+        return self.sconf.TryRun(*args, **kw)
 
     def __getattr__( self, attr ):
         if( attr == 'env' ):
@@ -889,7 +889,7 @@ def SConf(*args, **kw):
                 del kw[bt]
             except KeyError:
                 pass
-        return apply(SConfBase, args, kw)
+        return SConfBase(*args, **kw)
     else:
         return SCons.Util.Null()
 

@@ -117,7 +117,7 @@ def msvs_parse_version(s):
 # which works regardless of how we were invoked.
 def getExecScriptMain(env, xml=None):
     scons_home = env.get('SCONS_HOME')
-    if not scons_home and os.environ.has_key('SCONS_LIB_DIR'):
+    if not scons_home and 'SCONS_LIB_DIR' in os.environ:
         scons_home = os.environ['SCONS_LIB_DIR']
     if scons_home:
         exec_script_main = "from os.path import join; import sys; sys.path = [ r'%s' ] + sys.path; import SCons.Script; SCons.Script.main()" % scons_home
@@ -162,7 +162,7 @@ def makeHierarchy(sources):
         if len(path):
             dict = hierarchy
             for part in path[:-1]:
-                if not dict.has_key(part):
+                if part not in dict:
                     dict[part] = {}
                 dict = dict[part]
             dict[path[-1]] = file
@@ -189,7 +189,7 @@ class _DSPGenerator:
         else:
             self.dspabs = get_abspath()
 
-        if not env.has_key('variant'):
+        if 'variant' not in env:
             raise SCons.Errors.InternalError, \
                   "You must specify a 'variant' argument (i.e. 'Debug' or " +\
                   "'Release') to create an MSVSProject."
@@ -198,7 +198,7 @@ class _DSPGenerator:
         elif SCons.Util.is_List(env['variant']):
             variants = env['variant']
 
-        if not env.has_key('buildtarget') or env['buildtarget'] == None:
+        if 'buildtarget' not in env or env['buildtarget'] == None:
             buildtarget = ['']
         elif SCons.Util.is_String(env['buildtarget']):
             buildtarget = [env['buildtarget']]
@@ -220,7 +220,7 @@ class _DSPGenerator:
             for _ in variants:
                 buildtarget.append(bt)
 
-        if not env.has_key('outdir') or env['outdir'] == None:
+        if 'outdir' not in env or env['outdir'] == None:
             outdir = ['']
         elif SCons.Util.is_String(env['outdir']):
             outdir = [env['outdir']]
@@ -242,7 +242,7 @@ class _DSPGenerator:
             for v in variants:
                 outdir.append(s)
 
-        if not env.has_key('runfile') or env['runfile'] == None:
+        if 'runfile' not in env or env['runfile'] == None:
             runfile = buildtarget[-1:]
         elif SCons.Util.is_String(env['runfile']):
             runfile = [env['runfile']]
@@ -270,7 +270,7 @@ class _DSPGenerator:
 
         self.env = env
 
-        if self.env.has_key('name'):
+        if 'name' in self.env:
             self.name = self.env['name']
         else:
             self.name = os.path.basename(SCons.Util.splitext(self.dspfile)[0])
@@ -290,14 +290,14 @@ class _DSPGenerator:
         self.configs = {}
 
         self.nokeep = 0
-        if env.has_key('nokeep') and env['variant'] != 0:
+        if 'nokeep' in env and env['variant'] != 0:
             self.nokeep = 1
 
         if self.nokeep == 0 and os.path.exists(self.dspabs):
             self.Parse()
 
         for t in zip(sourcenames,self.srcargs):
-            if self.env.has_key(t[1]):
+            if t[1] in self.env:
                 if SCons.Util.is_List(self.env[t[1]]):
                     for i in self.env[t[1]]:
                         if not i in self.sources[t[0]]:
@@ -368,8 +368,7 @@ class _GenerateV6DSP(_DSPGenerator):
 
     def PrintHeader(self):
         # pick a default config
-        confkeys = self.configs.keys()
-        confkeys.sort()
+        confkeys = sorted(self.configs.keys())
 
         name = self.name
         confkey = confkeys[0]
@@ -389,8 +388,7 @@ class _GenerateV6DSP(_DSPGenerator):
                         '# PROP Scc_LocalPath ""\n\n')
 
         first = 1
-        confkeys = self.configs.keys()
-        confkeys.sort()
+        confkeys = sorted(self.configs.keys())
         for kind in confkeys:
             outdir = self.configs[kind].outdir
             buildtarget = self.configs[kind].buildtarget
@@ -400,7 +398,7 @@ class _GenerateV6DSP(_DSPGenerator):
             else:
                 self.file.write('\n!ELSEIF  "$(CFG)" == "%s - Win32 %s"\n\n' % (name, kind))
 
-            env_has_buildtarget = self.env.has_key('MSVSBUILDTARGET')
+            env_has_buildtarget = 'MSVSBUILDTARGET' in self.env
             if not env_has_buildtarget:
                 self.env['MSVSBUILDTARGET'] = buildtarget
 
@@ -539,7 +537,7 @@ class _GenerateV6DSP(_DSPGenerator):
     def Build(self):
         try:
             self.file = open(self.dspabs,'w')
-        except IOError, detail:
+        except IOError as detail:
             raise SCons.Errors.InternalError, 'Unable to open "' + self.dspabs + '" for writing:' + str(detail)
         else:
             self.PrintHeader()
@@ -665,8 +663,7 @@ class _GenerateV7DSP(_DSPGenerator):
     def PrintProject(self):
         self.file.write('\t<Configurations>\n')
 
-        confkeys = self.configs.keys()
-        confkeys.sort()
+        confkeys = sorted(self.configs.keys())
         for kind in confkeys:
             variant = self.configs[kind].variant
             platform = self.configs[kind].platform
@@ -675,7 +672,7 @@ class _GenerateV7DSP(_DSPGenerator):
             runfile     = self.configs[kind].runfile
             cmdargs = self.configs[kind].cmdargs
 
-            env_has_buildtarget = self.env.has_key('MSVSBUILDTARGET')
+            env_has_buildtarget = 'MSVSBUILDTARGET' in self.env
             if not env_has_buildtarget:
                 self.env['MSVSBUILDTARGET'] = buildtarget
 
@@ -848,7 +845,7 @@ class _GenerateV7DSP(_DSPGenerator):
     def Build(self):
         try:
             self.file = open(self.dspabs,'w')
-        except IOError, detail:
+        except IOError as detail:
             raise SCons.Errors.InternalError, 'Unable to open "' + self.dspabs + '" for writing:' + str(detail)
         else:
             self.PrintHeader()
@@ -861,7 +858,7 @@ class _DSWGenerator:
         self.dswfile = os.path.normpath(str(dswfile))
         self.env = env
 
-        if not env.has_key('projects'):
+        if 'projects' not in env:
             raise SCons.Errors.UserError, \
                 "You must specify a 'projects' argument to create an MSVSSolution."
         projects = env['projects']
@@ -874,7 +871,7 @@ class _DSWGenerator:
                 "You must specify at least one project to create an MSVSSolution."
         self.dspfiles = map(str, projects)
 
-        if self.env.has_key('name'):
+        if 'name' in self.env:
             self.name = self.env['name']
         else:
             self.name = os.path.basename(SCons.Util.splitext(self.dswfile)[0])
@@ -899,7 +896,7 @@ class _GenerateV7DSW(_DSWGenerator):
         if self.version_num >= 8.0:
             self.versionstr = '9.00'
 
-        if env.has_key('slnguid') and env['slnguid']:
+        if 'slnguid' in env and env['slnguid']:
             self.slnguid = env['slnguid']
         else:
             self.slnguid = _generateGUID(dswfile, self.name)
@@ -907,7 +904,7 @@ class _GenerateV7DSW(_DSWGenerator):
         self.configs = {}
 
         self.nokeep = 0
-        if env.has_key('nokeep') and env['variant'] != 0:
+        if 'nokeep' in env and env['variant'] != 0:
             self.nokeep = 1
 
         if self.nokeep == 0 and os.path.exists(self.dswfile):
@@ -927,7 +924,7 @@ class _GenerateV7DSW(_DSWGenerator):
             self.configs[variant] = config
             print("Adding '" + self.name + ' - ' + config.variant + '|' + config.platform + "' to '" + str(dswfile) + "'")
 
-        if not env.has_key('variant'):
+        if 'variant' not in env:
             raise SCons.Errors.InternalError, \
                   "You must specify a 'variant' argument (i.e. 'Debug' or " +\
                   "'Release') to create an MSVS Solution File."
@@ -993,7 +990,7 @@ class _GenerateV7DSW(_DSWGenerator):
         self.file.write('Global\n')
 
         env = self.env
-        if env.has_key('MSVS_SCC_PROVIDER'):
+        if 'MSVS_SCC_PROVIDER' in env:
             dspfile_base = os.path.basename(self.dspfile)
             slnguid = self.slnguid
             scc_provider = env.get('MSVS_SCC_PROVIDER', '')
@@ -1023,8 +1020,7 @@ class _GenerateV7DSW(_DSWGenerator):
         else:
             self.file.write('\tGlobalSection(SolutionConfiguration) = preSolution\n')
 
-        confkeys = self.configs.keys()
-        confkeys.sort()
+        confkeys = sorted(self.configs.keys())
         cnt = 0
         for name in confkeys:
             variant = self.configs[name].variant
@@ -1077,7 +1073,7 @@ class _GenerateV7DSW(_DSWGenerator):
     def Build(self):
         try:
             self.file = open(self.dswfile,'w')
-        except IOError, detail:
+        except IOError as detail:
             raise SCons.Errors.InternalError, 'Unable to open "' + self.dswfile + '" for writing:' + str(detail)
         else:
             self.PrintSolution()
@@ -1126,7 +1122,7 @@ class _GenerateV6DSW(_DSWGenerator):
     def Build(self):
         try:
             self.file = open(self.dswfile,'w')
-        except IOError, detail:
+        except IOError as detail:
             raise SCons.Errors.InternalError, 'Unable to open "' + self.dswfile + '" for writing:' + str(detail)
         else:
             self.PrintWorkspace()
@@ -1137,7 +1133,7 @@ def GenerateDSP(dspfile, source, env):
     """Generates a Project file based on the version of MSVS that is being used"""
 
     version_num = 6.0
-    if env.has_key('MSVS_VERSION'):
+    if 'MSVS_VERSION' in env:
         version_num, suite = msvs_parse_version(env['MSVS_VERSION'])
     if version_num >= 7.0:
         g = _GenerateV7DSP(dspfile, source, env)
@@ -1150,7 +1146,7 @@ def GenerateDSW(dswfile, source, env):
     """Generates a Solution/Workspace file based on the version of MSVS that is being used"""
 
     version_num = 6.0
-    if env.has_key('MSVS_VERSION'):
+    if 'MSVS_VERSION' in env:
         version_num, suite = msvs_parse_version(env['MSVS_VERSION'])
     if version_num >= 7.0:
         g = _GenerateV7DSW(dswfile, source, env)
@@ -1180,7 +1176,7 @@ def GenerateProject(target, source, env):
     if not dspfile is builddspfile:
         try:
             bdsp = open(str(builddspfile), "w+")
-        except IOError, detail:
+        except IOError as detail:
             print('Unable to open "' + str(dspfile) + '" for writing:',detail,'\n')
             raise
 
@@ -1196,7 +1192,7 @@ def GenerateProject(target, source, env):
 
             try:
                 bdsw = open(str(builddswfile), "w+")
-            except IOError, detail:
+            except IOError as detail:
                 print('Unable to open "' + str(dspfile) + '" for writing:',detail,'\n')
                 raise
 
@@ -1226,7 +1222,7 @@ def projectEmitter(target, source, env):
         source = source + env.subst('$MSVSSCONSCOM', 1)
         source = source + env.subst('$MSVSENCODING', 1)
 
-        if env.has_key('buildtarget') and env['buildtarget'] != None:
+        if 'buildtarget' in env and env['buildtarget'] != None:
             if SCons.Util.is_String(env['buildtarget']):
                 source = source + ' "%s"' % env['buildtarget']
             elif SCons.Util.is_List(env['buildtarget']):
@@ -1242,7 +1238,7 @@ def projectEmitter(target, source, env):
                 except AttributeError: raise SCons.Errors.InternalError, \
                     "buildtarget can be a string, a node, a list of strings or nodes, or None"
 
-        if env.has_key('outdir') and env['outdir'] != None:
+        if 'outdir' in env and env['outdir'] != None:
             if SCons.Util.is_String(env['outdir']):
                 source = source + ' "%s"' % env['outdir']
             elif SCons.Util.is_List(env['outdir']):
@@ -1258,13 +1254,13 @@ def projectEmitter(target, source, env):
                 except AttributeError: raise SCons.Errors.InternalError, \
                     "outdir can be a string, a node, a list of strings or nodes, or None"
 
-        if env.has_key('name'):
+        if 'name' in env:
             if SCons.Util.is_String(env['name']):
                 source = source + ' "%s"' % env['name']
             else:
                 raise SCons.Errors.InternalError, "name must be a string"
 
-        if env.has_key('variant'):
+        if 'variant' in env:
             if SCons.Util.is_String(env['variant']):
                 source = source + ' "%s"' % env['variant']
             elif SCons.Util.is_List(env['variant']):
@@ -1279,7 +1275,7 @@ def projectEmitter(target, source, env):
             raise SCons.Errors.InternalError, "variant must be specified"
 
         for s in _DSPGenerator.srcargs:
-            if env.has_key(s):
+            if s in env:
                 if SCons.Util.is_String(env[s]):
                     source = source + ' "%s' % env[s]
                 elif SCons.Util.is_List(env[s]):
@@ -1321,13 +1317,13 @@ def solutionEmitter(target, source, env):
     if not source:
         source = 'sln_inputs:'
 
-        if env.has_key('name'):
+        if 'name' in env:
             if SCons.Util.is_String(env['name']):
                 source = source + ' "%s"' % env['name']
             else:
                 raise SCons.Errors.InternalError, "name must be a string"
 
-        if env.has_key('variant'):
+        if 'variant' in env:
             if SCons.Util.is_String(env['variant']):
                 source = source + ' "%s"' % env['variant']
             elif SCons.Util.is_List(env['variant']):
@@ -1341,13 +1337,13 @@ def solutionEmitter(target, source, env):
         else:
             raise SCons.Errors.InternalError, "variant must be specified"
 
-        if env.has_key('slnguid'):
+        if 'slnguid' in env:
             if SCons.Util.is_String(env['slnguid']):
                 source = source + ' "%s"' % env['slnguid']
             else:
                 raise SCons.Errors.InternalError, "slnguid must be a string"
 
-        if env.has_key('projects'):
+        if 'projects' in env:
             if SCons.Util.is_String(env['projects']):
                 source = source + ' "%s"' % env['projects']
             elif SCons.Util.is_List(env['projects']):

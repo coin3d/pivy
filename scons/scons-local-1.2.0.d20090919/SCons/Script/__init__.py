@@ -366,7 +366,7 @@ GlobalDefaultBuilders = [
 ]
 
 for name in GlobalDefaultEnvironmentFunctions + GlobalDefaultBuilders:
-    exec "%s = _SConscript.DefaultEnvironmentCall(%s)" % (name, repr(name))
+    exec("%s = _SConscript.DefaultEnvironmentCall(%s)" % (name, repr(name)))
 del name
 
 # There are a handful of variables that used to live in the

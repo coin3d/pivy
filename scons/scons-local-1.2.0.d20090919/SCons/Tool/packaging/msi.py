@@ -72,7 +72,7 @@ def convert_to_id(s, id_set):
         return id_set[id][s]
     except KeyError:
         # no we did not so initialize with the id
-        if not id_set.has_key(id): id_set[id] = { s : id }
+        if id not in id_set: id_set[id] = { s : id }
         # there is a collision, generate an id which is unique by appending
         # the collision number
         else: id_set[id][s] = id + str(len(id_set[id]))
@@ -137,7 +137,7 @@ def create_feature_dict(files):
             feature = [ feature ]
 
         for f in feature:
-            if not dict.has_key( f ):
+            if f not in dict:
                 dict[ f ] = [ file ]
             else:
                 dict[ f ].append( file )
@@ -214,10 +214,10 @@ def build_wxsfile(target, source, env):
         file.write( doc.toprettyxml() )
 
         # call a user specified function
-        if env.has_key('CHANGE_SPECFILE'):
+        if 'CHANGE_SPECFILE' in env:
             env['CHANGE_SPECFILE'](target, source)
 
-    except KeyError, e:
+    except KeyError as e:
         raise SCons.Errors.UserError( '"%s" package field for MSI is missing.' % e.args[0] )
 
 #
@@ -464,7 +464,7 @@ def build_wxsfile_header_section(root, spec):
     Product.childNodes.append( Package )
 
     # set "mandatory" default values
-    if not spec.has_key('X_MSI_LANGUAGE'):
+    if 'X_MSI_LANGUAGE' not in spec:
         spec['X_MSI_LANGUAGE'] = '1033' # select english
 
     # mandatory sections, will throw a KeyError if the tag is not available
@@ -475,10 +475,10 @@ def build_wxsfile_header_section(root, spec):
     Package.attributes['Description']  = escape( spec['SUMMARY'] )
 
     # now the optional tags, for which we avoid the KeyErrror exception
-    if spec.has_key( 'DESCRIPTION' ):
+    if 'DESCRIPTION' in spec:
         Package.attributes['Comments'] = escape( spec['DESCRIPTION'] )
 
-    if spec.has_key( 'X_MSI_UPGRADE_CODE' ):
+    if 'X_MSI_UPGRADE_CODE' in spec:
         Package.attributes['X_MSI_UPGRADE_CODE'] = escape( spec['X_MSI_UPGRADE_CODE'] )
 
     # We hardcode the media tag as our current model cannot handle it.
@@ -511,7 +511,7 @@ def package(env, target, source, PACKAGEROOT, NAME, VERSION,
 
     # put the arguments into the env and call the specfile builder.
     env['msi_spec'] = kw
-    specfile = apply( wxs_builder, [env, target, source], kw )
+    specfile = wxs_builder(*[env, target, source], **kw)
 
     # now call the WiX Tool with the built specfile added as a source.
     msifile  = env.WiX(target, specfile)

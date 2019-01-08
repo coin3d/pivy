@@ -117,7 +117,7 @@ except AttributeError:
         import os,posixpath
         result=[]
         pat = os.path.normcase(pat)
-        if not fnmatch._cache.has_key(pat):
+        if pat not in fnmatch._cache:
             import re
             res = fnmatch.translate(pat)
             fnmatch._cache[pat] = re.compile(res)

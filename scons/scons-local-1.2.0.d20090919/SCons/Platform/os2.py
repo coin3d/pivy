@@ -34,7 +34,7 @@ __revision__ = "src/engine/SCons/Platform/os2.py 4369 2009/09/19 15:58:29 scons"
 import win32
 
 def generate(env):
-    if not env.has_key('ENV'):
+    if 'ENV' not in env:
         env['ENV']        = {}
     env['OBJPREFIX']      = ''
     env['OBJSUFFIX']      = '.obj'

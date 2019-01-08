@@ -175,7 +175,7 @@ def myAppEventHandlerCoin(myRenderArea, anyevent):
     handled = TRUE
     event = anyevent.getEvent()
     myRenderArea.draw = False
-    if type(event) == SoMouseButtonEvent:
+    if isinstance(event, SoMouseButtonEvent):
         if (event.getState() == SoMouseButtonEvent.DOWN):
             if event.getButton() == event.BUTTON1:
                 pos = event.getPosition()
@@ -193,7 +193,7 @@ def myAppEventHandlerCoin(myRenderArea, anyevent):
             if event.getButton() == event.BUTTON3:
                 myTicker.unschedule()  # stop spinning the camera
 
-    elif type(event) == SoLocation2Event:
+    elif isinstance(event, SoLocation2Event):
         if DRAW:
             pos = event.getPosition()
             vec = myProjectPoint(myRenderArea, pos[0], pos[1], use_coin=True)

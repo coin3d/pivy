@@ -75,7 +75,7 @@ class F90Scanner(SCons.Scanner.Classic):
         kw['skeys'] = suffixes
         kw['name'] = name
 
-        apply(SCons.Scanner.Current.__init__, (self,) + args, kw)
+        SCons.Scanner.Current.__init__(*(self,) + args, **kw)
 
     def scan(self, node, env, path=()):
 
@@ -94,7 +94,7 @@ class F90Scanner(SCons.Scanner.Classic):
             d = {}
             for m in defmodules:
                 d[m] = 1
-            modules = filter(lambda m, d=d: not d.has_key(m), modules)
+            modules = filter(lambda m, d=d: m not in d, modules)
             #modules = self.undefinedModules(modules, defmodules)
 
             # Convert module name to a .mod filename

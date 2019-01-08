@@ -65,7 +65,7 @@ if script_dir in sys.path:
 
 libs = []
 
-if os.environ.has_key("SCONS_LIB_DIR"):
+if "SCONS_LIB_DIR" in os.environ:
     libs.append(os.environ["SCONS_LIB_DIR"])
 
 local_version = 'scons-local-' + __version__
@@ -271,8 +271,7 @@ def nodeinfo_raw(name, ninfo, prefix=""):
     try:
         keys = ninfo.field_list + ['_version_id']
     except AttributeError:
-        keys = d.keys()
-        keys.sort()
+        keys = sorted(d.keys())
     l = []
     for k in keys:
         l.append('%s: %s' % (repr(k), repr(d.get(k))))
@@ -326,8 +325,7 @@ def printentries(entries, location):
                     print(nodeinfo_string(name, entry.ninfo))
                 printfield(name, entry.binfo)
     else:
-        names = entries.keys()
-        names.sort()
+        names = sorted(entries.keys())
         for name in names:
             entry = entries[name]
             try:
@@ -354,7 +352,7 @@ class Do_SConsignDB:
             #   .sconsign               => .sconsign.dblite
             #   .sconsign.dblite        => .sconsign.dblite.dblite
             db = self.dbm.open(fname, "r")
-        except (IOError, OSError), e:
+        except (IOError, OSError) as e:
             print_e = e
             try:
                 # That didn't work, so try opening the base name,
@@ -368,7 +366,7 @@ class Do_SConsignDB:
                 # suffix-mangling).
                 try:
                     open(fname, "r")
-                except (IOError, OSError), e:
+                except (IOError, OSError) as e:
                     # Nope, that file doesn't even exist, so report that
                     # fact back.
                     print_e = e
@@ -379,7 +377,7 @@ class Do_SConsignDB:
         except cPickle.UnpicklingError:
             sys.stderr.write("sconsign: ignoring invalid `%s' file `%s'\n" % (self.dbm_name, fname))
             return
-        except Exception, e:
+        except Exception as e:
             sys.stderr.write("sconsign: ignoring invalid `%s' file `%s': %s\n" % (self.dbm_name, fname, e))
             return
 
@@ -392,8 +390,7 @@ class Do_SConsignDB:
                 else:
                     self.printentries(dir, val)
         else:
-            keys = db.keys()
-            keys.sort()
+            keys = sorted(db.keys())
             for dir in keys:
                 self.printentries(dir, db[dir])
 
@@ -404,7 +401,7 @@ class Do_SConsignDB:
 def Do_SConsignDir(name):
     try:
         fp = open(name, 'rb')
-    except (IOError, OSError), e:
+    except (IOError, OSError) as e:
         sys.stderr.write("sconsign: %s\n" % (e))
         return
     try:
@@ -414,7 +411,7 @@ def Do_SConsignDir(name):
     except cPickle.UnpicklingError:
         sys.stderr.write("sconsign: ignoring invalid .sconsign file `%s'\n" % (name))
         return
-    except Exception, e:
+    except Exception as e:
         sys.stderr.write("sconsign: ignoring invalid .sconsign file `%s': %s\n" % (name, e))
         return
     printentries(sconsign.entries, args[0])

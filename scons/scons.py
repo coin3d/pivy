@@ -63,7 +63,7 @@ if script_dir in sys.path:
 
 libs = []
 
-if os.environ.has_key("SCONS_LIB_DIR"):
+if "SCONS_LIB_DIR" in os.environ:
     libs.append(os.environ["SCONS_LIB_DIR"])
 
 local_version = 'scons-local-' + __version__

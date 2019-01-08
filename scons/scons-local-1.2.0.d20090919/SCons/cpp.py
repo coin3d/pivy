@@ -446,13 +446,13 @@ class PreProcessor:
         """
         Default handling of a #ifdef line.
         """
-        self._do_if_else_condition(self.cpp_namespace.has_key(t[1]))
+        self._do_if_else_condition(t[1] in self.cpp_namespace)
 
     def do_ifndef(self, t):
         """
         Default handling of a #ifndef line.
         """
-        self._do_if_else_condition(not self.cpp_namespace.has_key(t[1]))
+        self._do_if_else_condition(t[1] not in self.cpp_namespace)
 
     def do_if(self, t):
         """
@@ -563,7 +563,7 @@ class PreProcessor:
                 s = self.cpp_namespace[m.group(1)]
                 if callable(s):
                     args = function_arg_separator.split(m.group(2))
-                    s = apply(s, args)
+                    s = s(*args)
             if not s:
                 return None
         return (t[0], s[0], s[1:-1])
@@ -584,7 +584,7 @@ class DumbPreProcessor(PreProcessor):
     to tailor its behavior.
     """
     def __init__(self, *args, **kw):
-        apply(PreProcessor.__init__, (self,)+args, kw)
+        PreProcessor.__init__(*(self,)+args, **kw)
         d = self.default_table
         for func in ['if', 'elif', 'else', 'endif', 'ifdef', 'ifndef']:
             d[func] = d[func] = self.do_nothing

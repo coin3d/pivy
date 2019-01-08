@@ -166,9 +166,9 @@ class SConsValues(optparse.Values):
         elif name == 'diskcheck':
             try:
                 value = diskcheck_convert(value)
-            except ValueError, v:
+            except ValueError as v:
                 raise SCons.Errors.UserError, "Not a valid diskcheck value: %s"%v
-            if not self.__dict__.has_key('diskcheck'):
+            if 'diskcheck' not in self.__dict__:
                 # No --diskcheck= option was specified on the command line.
                 # Set this right away so it can affect the rest of the
                 # file/Node lookups while processing the SConscript files.
@@ -356,7 +356,7 @@ class SConsOptionParser(optparse.OptionParser):
             group = self.add_option_group(group)
             self.local_option_group = group
 
-        result = apply(group.add_option, args, kw)
+        result = group.add_option(*args, **kw)
 
         if result:
             # The option was added succesfully.  We now have to add the
@@ -634,7 +634,7 @@ def Parser(version):
     def opt_diskcheck(option, opt, value, parser):
         try:
             diskcheck_value = diskcheck_convert(value)
-        except ValueError, e:
+        except ValueError as e:
             raise OptionValueError("Warning: `%s' is not a valid diskcheck type" % e)
         setattr(parser.values, option.dest, diskcheck_value)
 

@@ -136,8 +136,7 @@ class NodeInfoBase:
             try:
                 field_list = self.field_list
             except AttributeError:
-                field_list = self.__dict__.keys()
-                field_list.sort()
+                field_list = sorted(self.__dict__.keys())
         fields = []
         for field in field_list:
             try:
@@ -372,8 +371,8 @@ class Node:
 
         """
         try:
-            apply(self.get_executor(), (self,), kw)
-        except SCons.Errors.BuildError, e:
+            self.get_executor()(*(self,), **kw)
+        except SCons.Errors.BuildError as e:
             e.node = self
             raise
 
@@ -548,7 +547,7 @@ class Node:
         deps = []
         while nodes:
             n = nodes.pop(0)
-            d = filter(lambda x, seen=seen: not seen.has_key(x),
+            d = filter(lambda x, seen=seen: x not in seen,
                        n.get_found_includes(env, scanner, path))
             if d:
                 deps.extend(d)
@@ -829,7 +828,7 @@ class Node:
         """Adds dependencies."""
         try:
             self._add_child(self.depends, self.depends_set, depend)
-        except TypeError, e:
+        except TypeError as e:
             e = e.args[0]
             if SCons.Util.is_List(e):
                 s = map(str, e)
@@ -846,7 +845,7 @@ class Node:
         """Adds dependencies to ignore."""
         try:
             self._add_child(self.ignore, self.ignore_set, depend)
-        except TypeError, e:
+        except TypeError as e:
             e = e.args[0]
             if SCons.Util.is_List(e):
                 s = map(str, e)
@@ -860,7 +859,7 @@ class Node:
             return
         try:
             self._add_child(self.sources, self.sources_set, source)
-        except TypeError, e:
+        except TypeError as e:
             e = e.args[0]
             if SCons.Util.is_List(e):
                 s = map(str, e)
@@ -1310,7 +1309,7 @@ class Walker:
                 node = self.stack[-1].wkids.pop(0)
                 if not self.stack[-1].wkids:
                     self.stack[-1].wkids = None
-                if self.history.has_key(node):
+                if node in self.history:
                     self.cycle_func(node, self.stack)
                 else:
                     node.wkids = copy.copy(self.kids_func(node, self.stack[-1]))

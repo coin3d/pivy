@@ -88,7 +88,7 @@ def DefaultEnvironment(*args, **kw):
     global _default_env
     if not _default_env:
         import SCons.Util
-        _default_env = apply(SCons.Environment.Environment, args, kw)
+        _default_env = SCons.Environment.Environment(*args, **kw)
         if SCons.Util.md5:
             _default_env.Decider('MD5')
         else:
@@ -223,7 +223,7 @@ def mkdir_func(dest):
     for entry in dest:
         try:
             os.makedirs(str(entry))
-        except os.error, e:
+        except os.error as e:
             p = str(entry)
             if (e[0] == errno.EEXIST or (sys.platform=='win32' and e[0]==183)) \
                     and os.path.isdir(str(entry)):
@@ -374,7 +374,7 @@ def processDefines(defs):
     if SCons.Util.is_List(defs):
         l = []
         for d in defs:
-            if SCons.Util.is_List(d) or type(d) is types.TupleType:
+            if SCons.Util.is_List(d) or isinstance(d, tuple):
                 l.append(str(d[0]) + '=' + str(d[1]))
             else:
                 l.append(str(d))
@@ -386,8 +386,7 @@ def processDefines(defs):
         # Consequently, we have to sort the keys to ensure a
         # consistent order...
         l = []
-        keys = defs.keys()
-        keys.sort()
+        keys = sorted(defs.keys())
         for k in keys:
             v = defs[k]
             if v is None:
@@ -446,11 +445,11 @@ class Variable_Method_Caller:
             frame = sys.exc_info()[2].tb_frame.f_back
         variable = self.variable
         while frame:
-            if frame.f_locals.has_key(variable):
+            if variable in frame.f_locals:
                 v = frame.f_locals[variable]
                 if v:
                     method = getattr(v, self.method)
-                    return apply(method, args, kw)
+                    return method(*args, **kw)
             frame = frame.f_back
         return None
 

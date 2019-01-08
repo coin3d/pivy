@@ -7,8 +7,7 @@ for f in os.listdir(os.path.dirname(os.path.abspath(__file__))):
     if ext == ".py" and (name != "run_all"):
         examples.add(f)
 
-examples = list(examples)
-examples.sort()
+examples = sorted(examples)
 
 print(examples)
 

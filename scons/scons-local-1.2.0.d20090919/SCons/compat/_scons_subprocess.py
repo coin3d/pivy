@@ -444,9 +444,9 @@ try:
     isinstance(1, int)
 except TypeError:
     def is_int(obj):
-        return type(obj) == type(1)
+        return isinstance(obj, type(1))
     def is_int_or_long(obj):
-        return type(obj) in (type(1), type(1L))
+        return type(obj) in (type(1), type(1))
 else:
     def is_int(obj):
         return isinstance(obj, int)
@@ -454,23 +454,23 @@ else:
         return isinstance(obj, (int, long))
 
 try:
-    types.StringTypes
+    (str,)
 except AttributeError:
     try:
-        types.StringTypes = (types.StringType, types.UnicodeType)
+        (str,) = (bytes, str)
     except AttributeError:
-        types.StringTypes = (types.StringType,)
+        (str,) = (bytes,)
     def is_string(obj):
-        return type(obj) in types.StringTypes
+        return type(obj) in (str,)
 else:
     def is_string(obj):
-        return isinstance(obj, types.StringTypes)
+        return isinstance(obj, (str,))
 
 _active = []
 
 def _cleanup():
     for inst in _active[:]:
-        if inst.poll(_deadstate=sys.maxint) >= 0:
+        if inst.poll(_deadstate=sys.maxsize) >= 0:
             try:
                 _active.remove(inst)
             except ValueError:
@@ -503,7 +503,7 @@ def check_call(*popenargs, **kwargs):
 
     check_call(["ls", "-l"])
     """
-    retcode = apply(call, popenargs, kwargs)
+    retcode = call(*popenargs, **kwargs)
     cmd = kwargs.get("args")
     if cmd is None:
         cmd = popenargs[0]
@@ -673,7 +673,7 @@ class Popen(object):
             # We didn't get to successfully create a child process.
             return
         # In case the child hasn't been waited on, check if it's done.
-        self.poll(_deadstate=sys.maxint)
+        self.poll(_deadstate=sys.maxsize)
         if self.returncode is None and _active is not None:
             # Child is still running, keep us alive until we can wait on it.
             _active.append(self)
@@ -802,7 +802,7 @@ class Popen(object):
                            errread, errwrite):
             """Execute program (MS Windows version)"""
 
-            if not isinstance(args, types.StringTypes):
+            if not isinstance(args, (str,)):
                 args = list2cmdline(args)
 
             # Process startup details
@@ -819,7 +819,7 @@ class Popen(object):
                 startupinfo.wShowWindow = SW_HIDE
                 comspec = os.environ.get("COMSPEC", "cmd.exe")
                 args = comspec + " /c " + args
-                if (GetVersion() >= 0x80000000L or
+                if (GetVersion() >= 0x80000000 or
                         os.path.basename(comspec).lower() == "command.com"):
                     # Win9x, or using command.com on NT. We need to
                     # use the w9xpopen intermediate program. For more
@@ -847,12 +847,12 @@ class Popen(object):
                                          env,
                                          cwd,
                                          startupinfo)
-            except pywintypes.error, e:
+            except pywintypes.error as e:
                 # Translate pywintypes.error to WindowsError, which is
                 # a subclass of OSError.  FIXME: We should really
                 # translate errno using _sys_errlist (or simliar), but
                 # how can this be done from Python?
-                raise apply(WindowsError, e.args)
+                raise WindowsError(*e.args)
 
             # Retain the process handle, but close the thread handle
             self._child_created = True
@@ -1256,7 +1256,7 @@ def _demo_posix():
     print("Trying a weird file...")
     try:
         print(Popen(["/this/path/does/not/exist"]).communicate())
-    except OSError, e:
+    except OSError as e:
         if e.errno == errno.ENOENT:
             print("The file didn't exist.  I thought so...")
             print("Child traceback:")

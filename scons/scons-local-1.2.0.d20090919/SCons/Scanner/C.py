@@ -44,7 +44,7 @@ class SConsCPPScanner(SCons.cpp.PreProcessor):
     missing.
     """
     def __init__(self, *args, **kw):
-        apply(SCons.cpp.PreProcessor.__init__, (self,)+args, kw)
+        SCons.cpp.PreProcessor.__init__(*(self,)+args, **kw)
         self.missing = []
     def initialize_result(self, fname):
         self.result = SCons.Util.UniqueList([fname])
@@ -59,7 +59,7 @@ class SConsCPPScanner(SCons.cpp.PreProcessor):
     def read_file(self, file):
         try:
             fp = open(str(file.rfile()))
-        except EnvironmentError, e:
+        except EnvironmentError as e:
             self.missing.append((file, self.current_file))
             return ''
         else:

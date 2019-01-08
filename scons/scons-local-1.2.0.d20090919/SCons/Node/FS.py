@@ -552,7 +552,7 @@ class EntryProxy(SCons.Util.Proxy):
         except KeyError:
             try:
                 attr = SCons.Util.Proxy.__getattr__(self, name)
-            except AttributeError, e:
+            except AttributeError as e:
                 # Raise our own AttributeError subclass with an
                 # overridden __str__() method that identifies the
                 # name of the entry that caused the exception.
@@ -647,7 +647,7 @@ class Base(SCons.Node.Node):
             return self._memo['_save_str']
         except KeyError:
             pass
-        result = intern(self._get_str())
+        result = sys.intern(self._get_str())
         self._memo['_save_str'] = result
         return result
 
@@ -1327,7 +1327,7 @@ class FS(LocalFS):
                 if start_dir.is_under(bd):
                     # If already in the build-dir location, don't reflect
                     return [orig], fmt % str(orig)
-                p = apply(os.path.join, [bd.path] + tail)
+                p = os.path.join(*[bd.path] + tail)
                 targets.append(self.Entry(p))
             tail = [dir.name] + tail
             dir = dir.up()
@@ -1622,7 +1622,7 @@ class Dir(Base):
         """A null "builder" for directories."""
         global MkdirBuilder
         if self.builder is not MkdirBuilder:
-            apply(SCons.Node.Node.build, [self,], kw)
+            SCons.Node.Node.build(*[self,], **kw)
 
     #
     #
@@ -1783,7 +1783,7 @@ class Dir(Base):
                 d[name] = result
             return result
         else:
-            return d.has_key(name)
+            return name in d
 
     memoizer_counters.append(SCons.Memoize.CountValue('srcdir_list'))
 
@@ -2329,7 +2329,7 @@ class File(Base):
         fname = self.rfile().abspath
         try:
             contents = open(fname, "rb").read()
-        except EnvironmentError, e:
+        except EnvironmentError as e:
             if not e.filename:
                 e.filename = fname
             raise
@@ -2378,7 +2378,7 @@ class File(Base):
         try:
             cs = SCons.Util.MD5filesignature(fname,
                 chunksize=SCons.Node.FS.File.md5_chunksize*1024)
-        except EnvironmentError, e:
+        except EnvironmentError as e:
             if not e.filename:
                 e.filename = fname
             raise
@@ -2738,7 +2738,7 @@ class File(Base):
             else:
                 try:
                     self._createDir()
-                except SCons.Errors.StopError, drive:
+                except SCons.Errors.StopError as drive:
                     desc = "No drive `%s' for target `%s'." % (drive, self)
                     raise SCons.Errors.StopError, desc
 

@@ -75,10 +75,9 @@ def emit_java_classes(target, source, env):
         elif isinstance(entry, SCons.Node.FS.Dir):
             result = SCons.Util.OrderedDict()
             def visit(arg, dirname, names, fj=find_java, dirnode=entry.rdir()):
-                java_files = filter(fj, names)
+                java_files = sorted(filter(fj, names))
                 # The on-disk entries come back in arbitrary order.  Sort
                 # them so our target and source lists are determinate.
-                java_files.sort()
                 mydir = dirnode.Dir(dirname)
                 java_paths = map(lambda f, d=mydir: d.File(f), java_files)
                 for jp in java_paths:
@@ -194,7 +193,7 @@ def Java(env, target, source, *args, **kw):
                 b = env.JavaClassFile
             else:
                 b = env.JavaClassDir
-        result.extend(apply(b, (t, s) + args, kw))
+        result.extend(b(*(t, s) + args, **kw))
 
     return result
 

@@ -42,7 +42,7 @@ def find_framework_root():
     try:
         froot = read_reg(_FRAMEWORKDIR_HKEY_ROOT)
         debug("Found framework install root in registry: %s" % froot)
-    except WindowsError, e:
+    except WindowsError as e:
         debug("Could not read reg key %s" % _FRAMEWORKDIR_HKEY_ROOT)
         return None
 

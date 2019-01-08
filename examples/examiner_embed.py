@@ -32,7 +32,7 @@ from qt import *
 
 class EmbeddedWindow(QMainWindow):
     def __init__(self, *args):
-        apply(QMainWindow.__init__, (self,) + args)
+        QMainWindow.__init__(*(self,) + args)
 
         # dummy widget needed for the PyQt stuff
         self.mainWidget = QWidget(self)

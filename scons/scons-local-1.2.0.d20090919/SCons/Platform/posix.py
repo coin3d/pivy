@@ -78,7 +78,7 @@ def exec_fork(l, env):
         exitval = 127
         try:
             os.execvpe(l[0], l, env)
-        except OSError, e:
+        except OSError as e:
             exitval = exitvalmap.get(e[0], e[0])
             sys.stderr.write("scons: %s: %s\n" % (l[0], e[1]))
         os._exit(exitval)
@@ -126,7 +126,8 @@ def process_cmd_output(cmd_stdout, cmd_stderr, stdout, stderr):
                 else:
                     #sys.__stderr__.write( "str(stderr) = %s\n" % str )
                     stderr.write(str)
-        except select.error, (_errno, _strerror):
+        except select.error as xxx_todo_changeme:
+            (_errno, _strerror) = xxx_todo_changeme.args
             if _errno != errno.EINTR:
                 raise
 
@@ -165,7 +166,7 @@ def exec_piped_fork(l, env, stdout, stderr):
         exitval = 127
         try:
             os.execvpe(l[0], l, env)
-        except OSError, e:
+        except OSError as e:
             exitval = exitvalmap.get(e[0], e[0])
             stderr.write("scons: %s: %s\n" % (l[0], e[1]))
         os._exit(exitval)
@@ -217,7 +218,7 @@ def generate(env):
     # os.fork()/os.exec() works better than os.system().  There may just
     # not be a default that works best for all users.
 
-    if os.__dict__.has_key('spawnvpe'):
+    if 'spawnvpe' in os.__dict__:
         spawn = spawnvpe_spawn
     elif env.Detect('env'):
         spawn = env_spawn
@@ -229,7 +230,7 @@ def generate(env):
     else:
         pspawn = piped_fork_spawn
 
-    if not env.has_key('ENV'):
+    if 'ENV' not in env:
         env['ENV']        = {}
     env['ENV']['PATH']    = '/usr/local/bin:/opt/bin:/bin:/usr/bin'
     env['OBJPREFIX']      = ''

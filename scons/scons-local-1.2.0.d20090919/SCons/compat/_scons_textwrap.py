@@ -139,7 +139,7 @@ class TextWrapper:
         if self.expand_tabs:
             text = string.expandtabs(text)
         if self.replace_whitespace:
-            if type(text) == type(''):
+            if isinstance(text, type('')):
                 text = string.translate(text, self.whitespace_trans)
             elif isinstance(text, unicode):
                 text = string.translate(text, self.unicode_whitespace_trans)
@@ -316,7 +316,7 @@ def wrap(text, width=70, **kwargs):
     """
     kw = kwargs.copy()
     kw['width'] = width
-    w = apply(TextWrapper, (), kw)
+    w = TextWrapper(*(), **kw)
     return w.wrap(text)
 
 def fill(text, width=70, **kwargs):
@@ -330,7 +330,7 @@ def fill(text, width=70, **kwargs):
     """
     kw = kwargs.copy()
     kw['width'] = width
-    w = apply(TextWrapper, (), kw)
+    w = TextWrapper(*(), **kw)
     return w.fill(text)
 
 

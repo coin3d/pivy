@@ -35,14 +35,14 @@ def DirScanner(**kw):
     directories for on-disk files"""
     kw['node_factory'] = SCons.Node.FS.Entry
     kw['recursive'] = only_dirs
-    return apply(SCons.Scanner.Base, (scan_on_disk, "DirScanner"), kw)
+    return SCons.Scanner.Base(*(scan_on_disk, "DirScanner"), **kw)
 
 def DirEntryScanner(**kw):
     """Return a prototype Scanner instance for "scanning"
     directory Nodes for their in-memory entries"""
     kw['node_factory'] = SCons.Node.FS.Entry
     kw['recursive'] = None
-    return apply(SCons.Scanner.Base, (scan_in_memory, "DirEntryScanner"), kw)
+    return SCons.Scanner.Base(*(scan_in_memory, "DirEntryScanner"), **kw)
 
 skip_entry = {}
 
@@ -67,7 +67,7 @@ for skip in skip_entry_list:
     skip_entry[skip] = 1
     skip_entry[SCons.Node.FS._my_normcase(skip)] = 1
 
-do_not_scan = lambda k: not skip_entry.has_key(k)
+do_not_scan = lambda k: k not in skip_entry
 
 def scan_on_disk(node, env, path=()):
     """
@@ -100,8 +100,7 @@ def scan_in_memory(node, env, path=()):
         # mixed Node types (Dirs and Files, for example) has a Dir as
         # the first entry.
         return []
-    entry_list = filter(do_not_scan, entries.keys())
-    entry_list.sort()
+    entry_list = sorted(filter(do_not_scan, entries.keys()))
     return map(lambda n, e=entries: e[n], entry_list)
 
 # Local Variables:

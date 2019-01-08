@@ -41,7 +41,7 @@ def _run_exitfuncs():
 
     while _exithandlers:
         func, targs, kargs =  _exithandlers.pop()
-        apply(func, targs, kargs)
+        func(*targs, **kargs)
 
 def register(func, *targs, **kargs):
     """register a function to be executed upon normal program termination
@@ -53,6 +53,7 @@ def register(func, *targs, **kargs):
     _exithandlers.append((func, targs, kargs))
 
 import sys
+import atexit
 
 try:
     x = sys.exitfunc
@@ -66,7 +67,7 @@ except AttributeError:
     pass
 
 # make our exit function get run by python when it exits:    
-sys.exitfunc = _run_exitfuncs
+atexit.register(_run_exitfuncs)
 
 del sys
 

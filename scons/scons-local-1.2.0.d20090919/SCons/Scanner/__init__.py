@@ -56,9 +56,9 @@ def Scanner(function, *args, **kw):
     patterned on SCons code.
     """
     if SCons.Util.is_Dict(function):
-        return apply(Selector, (function,) + args, kw)
+        return Selector(*(function,) + args, **kw)
     else:
-        return apply(Base, (function,) + args, kw)
+        return Base(*(function,) + args, **kw)
 
 
 
@@ -216,7 +216,7 @@ class Base:
         nodes = []
         for l in list:
             if self.node_class and not isinstance(l, self.node_class):
-                l = apply(node_factory, (l,), kw)
+                l = node_factory(*(l,), **kw)
             nodes.append(l)
         return nodes
 
@@ -278,7 +278,7 @@ class Selector(Base):
     for custom modules that may be out there.)
     """
     def __init__(self, dict, *args, **kw):
-        apply(Base.__init__, (self, None,)+args, kw)
+        Base.__init__(*(self, None,)+args, **kw)
         self.dict = dict
         self.skeys = dict.keys()
 
@@ -307,7 +307,7 @@ class Current(Base):
         def current_check(node, env):
             return not node.has_builder() or node.is_up_to_date()
         kw['scan_check'] = current_check
-        apply(Base.__init__, (self,) + args, kw)
+        Base.__init__(*(self,) + args, **kw)
 
 class Classic(Current):
     """
@@ -337,7 +337,7 @@ class Classic(Current):
         kw['skeys'] = suffixes
         kw['name'] = name
 
-        apply(Current.__init__, (self,) + args, kw)
+        Current.__init__(*(self,) + args, **kw)
 
     def find_include(self, include, source_dir, path):
         n = SCons.Node.FS.find_file(include, (source_dir,) + tuple(path))

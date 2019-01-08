@@ -342,7 +342,7 @@ class Executor:
         for act in self.get_action_list():
             #args = (self.get_all_targets(), self.get_all_sources(), env)
             args = ([], [], env)
-            status = apply(act, args, kw)
+            status = act(*args, **kw)
             if isinstance(status, SCons.Errors.BuildError):
                 status.executor = self
                 raise status
@@ -521,7 +521,7 @@ class Executor:
             idict = {}
             for i in ignore:
                 idict[i] = 1
-            sourcelist = filter(lambda s, i=idict: not i.has_key(s), sourcelist)
+            sourcelist = filter(lambda s, i=idict: s not in i, sourcelist)
 
         memo_dict[key] = sourcelist
 
@@ -547,7 +547,7 @@ def GetBatchExecutor(key):
     return _batch_executors[key]
 
 def AddBatchExecutor(key, executor):
-    assert not _batch_executors.has_key(key)
+    assert key not in _batch_executors
     _batch_executors[key] = executor
 
 nullenv = None

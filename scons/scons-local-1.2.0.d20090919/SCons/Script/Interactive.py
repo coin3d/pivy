@@ -223,7 +223,7 @@ class SConsInteractiveCmd(cmd.Cmd):
 
         def get_unseen_children(node, parent, seen_nodes=seen_nodes):
             def is_unseen(node, seen_nodes=seen_nodes):
-                return not seen_nodes.has_key(node)
+                return node not in seen_nodes
             return filter(is_unseen, node.children(scan=1))
 
         def add_to_seen_nodes(node, parent, seen_nodes=seen_nodes):
@@ -248,9 +248,9 @@ class SConsInteractiveCmd(cmd.Cmd):
             walker = SCons.Node.Walker(node,
                                         kids_func=get_unseen_children,
                                         eval_func=add_to_seen_nodes)
-            n = walker.next()
+            n = next(walker)
             while n:
-                n = walker.next()
+                n = next(walker)
 
         for node in seen_nodes.keys():
             # Call node.clear() to clear most of the state
@@ -360,7 +360,7 @@ class SConsInteractiveCmd(cmd.Cmd):
             # Doing the right thing with an argument list currently
             # requires different shell= values on Windows and Linux.
             p = subprocess.Popen(argv, shell=(sys.platform=='win32'))
-        except EnvironmentError, e:
+        except EnvironmentError as e:
             sys.stderr.write('scons: %s: %s\n' % (argv[0], e.strerror))
         else:
             p.wait()

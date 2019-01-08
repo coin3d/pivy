@@ -399,7 +399,7 @@ def scons_subst(strSubst, env, mode=SUBST_RAW, target=None, source=None, gvars={
     handles separating command lines into lists of arguments, so see
     that function if that's what you're looking for.
     """
-    if type(strSubst) == types.StringType and string.find(strSubst, '$') < 0:
+    if isinstance(strSubst, bytes) and string.find(strSubst, '$') < 0:
         return strSubst
 
     class StringSubber:
@@ -445,14 +445,14 @@ def scons_subst(strSubst, env, mode=SUBST_RAW, target=None, source=None, gvars={
                             s = eval(key, self.gvars, lvars)
                         except KeyboardInterrupt:
                             raise
-                        except Exception, e:
+                        except Exception as e:
                             if e.__class__ in AllowableExceptions:
                                 return ''
                             raise_exception(e, lvars['TARGETS'], s)
                     else:
-                        if lvars.has_key(key):
+                        if key in lvars:
                             s = lvars[key]
-                        elif self.gvars.has_key(key):
+                        elif key in self.gvars:
                             s = self.gvars[key]
                         elif not NameError in AllowableExceptions:
                             raise_exception(NameError(key), lvars['TARGETS'], s)
@@ -540,7 +540,7 @@ def scons_subst(strSubst, env, mode=SUBST_RAW, target=None, source=None, gvars={
     # If we dropped that behavior (or found another way to cover it),
     # we could get rid of this call completely and just rely on the
     # Executor setting the variables.
-    if not lvars.has_key('TARGET'):
+    if 'TARGET' not in lvars:
         d = subst_dict(target, source)
         if d:
             lvars = lvars.copy()
@@ -660,14 +660,14 @@ def scons_subst_list(strSubst, env, mode=SUBST_RAW, target=None, source=None, gv
                             s = eval(key, self.gvars, lvars)
                         except KeyboardInterrupt:
                             raise
-                        except Exception, e:
+                        except Exception as e:
                             if e.__class__ in AllowableExceptions:
                                 return
                             raise_exception(e, lvars['TARGETS'], s)
                     else:
-                        if lvars.has_key(key):
+                        if key in lvars:
                             s = lvars[key]
-                        elif self.gvars.has_key(key):
+                        elif key in self.gvars:
                             s = self.gvars[key]
                         elif not NameError in AllowableExceptions:
                             raise_exception(NameError(), lvars['TARGETS'], s)
@@ -834,7 +834,7 @@ def scons_subst_list(strSubst, env, mode=SUBST_RAW, target=None, source=None, gv
     # If we dropped that behavior (or found another way to cover it),
     # we could get rid of this call completely and just rely on the
     # Executor setting the variables.
-    if not lvars.has_key('TARGET'):
+    if 'TARGET' not in lvars:
         d = subst_dict(target, source)
         if d:
             lvars = lvars.copy()
@@ -870,7 +870,7 @@ def scons_subst_once(strSubst, env, key):
 
     We do this with some straightforward, brute-force code here...
     """
-    if type(strSubst) == types.StringType and string.find(strSubst, '$') < 0:
+    if isinstance(strSubst, bytes) and string.find(strSubst, '$') < 0:
         return strSubst
 
     matchlist = ['$' + key, '${' + key + '}']

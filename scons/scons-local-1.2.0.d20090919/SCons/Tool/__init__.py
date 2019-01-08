@@ -111,7 +111,7 @@ class Tool:
                 finally:
                     if file:
                         file.close()
-            except ImportError, e:
+            except ImportError as e:
                 if str(e)!="No module named %s"%self.name:
                     raise SCons.Errors.EnvironmentError, e
                 try:
@@ -123,7 +123,7 @@ class Tool:
                         try:
                             importer = zipimport.zipimporter(aPath)
                             return importer.load_module(self.name)
-                        except ImportError, e:
+                        except ImportError as e:
                             pass
         finally:
             sys.path = oldpythonpath
@@ -141,7 +141,7 @@ class Tool:
                     if file:
                         file.close()
                     return module
-                except ImportError, e:
+                except ImportError as e:
                     if str(e)!="No module named %s"%self.name:
                         raise SCons.Errors.EnvironmentError, e
                     try:
@@ -150,10 +150,10 @@ class Tool:
                         module = importer.load_module(full_name)
                         setattr(SCons.Tool, self.name, module)
                         return module
-                    except ImportError, e:
+                    except ImportError as e:
                         m = "No tool named '%s': %s" % (self.name, e)
                         raise SCons.Errors.EnvironmentError, m
-            except ImportError, e:
+            except ImportError as e:
                 m = "No tool named '%s': %s" % (self.name, e)
                 raise SCons.Errors.EnvironmentError, m
 
@@ -170,7 +170,7 @@ class Tool:
         env.Append(TOOLS = [ self.name ])
         if hasattr(self, 'options'):
             import SCons.Variables
-            if not env.has_key('options'):
+            if 'options' not in env:
                 from SCons.Script import ARGUMENTS
                 env['options']=SCons.Variables.Variables(args=ARGUMENTS)
             opts=env['options']
@@ -178,7 +178,7 @@ class Tool:
             self.options(opts)
             opts.Update(env)
 
-        apply(self.generate, ( env, ) + args, kw)
+        self.generate(*( env, ) + args, **kw)
 
     def __str__(self):
         return self.name
@@ -474,7 +474,7 @@ class ToolInitializerMethod:
         builder = self.get_builder(env)
         if builder is None:
             return [], []
-        return apply(builder, args, kw)
+        return builder(*args, **kw)
 
 class ToolInitializer:
     """
@@ -530,9 +530,9 @@ class ToolInitializer:
 def Initializers(env):
     ToolInitializer(env, ['install'], ['_InternalInstall', '_InternalInstallAs'])
     def Install(self, *args, **kw):
-        return apply(self._InternalInstall, args, kw)
+        return self._InternalInstall(*args, **kw)
     def InstallAs(self, *args, **kw):
-        return apply(self._InternalInstallAs, args, kw)
+        return self._InternalInstallAs(*args, **kw)
     env.AddMethod(Install)
     env.AddMethod(InstallAs)
 

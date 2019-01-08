@@ -79,7 +79,7 @@ class SDKDefinition:
 
         try:
             sdk_dir = common.read_reg(hkey)
-        except WindowsError, e:
+        except WindowsError as e:
             debug('find_sdk_dir(): no SDK registry key %s' % repr(hkey))
             return None
 
@@ -109,7 +109,7 @@ class WindowsSDK(SDKDefinition):
     """
     HKEY_FMT = r'Software\Microsoft\Microsoft SDKs\Windows\v%s\InstallationFolder'
     def __init__(self, *args, **kw):
-        apply(SDKDefinition.__init__, (self,)+args, kw)
+        SDKDefinition.__init__(*(self,)+args, **kw)
         self.hkey_data = self.version
 
 class PlatformSDK(SDKDefinition):
@@ -118,7 +118,7 @@ class PlatformSDK(SDKDefinition):
     """
     HKEY_FMT = r'Software\Microsoft\MicrosoftSDK\InstalledSDKS\%s\Install Dir'
     def __init__(self, *args, **kw):
-        apply(SDKDefinition.__init__, (self,)+args, kw)
+        SDKDefinition.__init__(*(self,)+args, **kw)
         self.hkey_data = self.uuid
 
 # The list of support SDKs which we know how to detect.
@@ -239,7 +239,7 @@ def get_cur_sdk_dir_from_reg():
     try:
         val = common.read_reg(_CURINSTALLED_SDK_HKEY_ROOT)
         debug("Found current sdk dir in registry: %s" % val)
-    except WindowsError, e:
+    except WindowsError as e:
         debug("Did not find current sdk in registry")
         return None
 
@@ -250,7 +250,7 @@ def get_cur_sdk_dir_from_reg():
     return val
 
 def get_sdk_by_version(mssdk):
-    if not SupportedSDKMap.has_key(mssdk):
+    if mssdk not in SupportedSDKMap:
         msg = "SDK version %s is not supported" % repr(mssdk)
         raise SCons.Errors.UserError, msg
     get_installed_sdks()
@@ -265,12 +265,12 @@ def get_default_sdk():
 
 def mssdk_setup_env(env):
     debug('msvs_setup_env()')
-    if env.has_key('MSSDK_DIR'):
+    if 'MSSDK_DIR' in env:
         sdk_dir = env['MSSDK_DIR']
         if sdk_dir is None:
             return
         sdk_dir = env.subst(sdk_dir)
-    elif env.has_key('MSSDK_VERSION'):
+    elif 'MSSDK_VERSION' in env:
         sdk_version = env['MSSDK_VERSION']
         if sdk_version is None:
             msg = "SDK version %s is not installed" % repr(mssdk)
@@ -278,7 +278,7 @@ def mssdk_setup_env(env):
         sdk_version = env.subst(sdk_version)
         mssdk = get_sdk_by_version(sdk_version)
         sdk_dir = mssdk.get_sdk_dir()
-    elif env.has_key('MSVS_VERSION'):
+    elif 'MSVS_VERSION' in env:
         msvs_version = env['MSVS_VERSION']
         debug('Getting MSVS_VERSION from env:%s'%msvs_version)
         if msvs_version is None:
@@ -312,7 +312,7 @@ def mssdk_exists(version=None):
     sdks = get_installed_sdks()
     if version is None:
         return len(sdks) > 0
-    return sdks.has_key(version)
+    return version in sdks
 
 # Local Variables:
 # tab-width:4

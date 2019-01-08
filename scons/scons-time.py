@@ -88,8 +88,8 @@ def HACK_for_exec(cmd, *args):
     internal functions.
     '''
     if not args:          exec(cmd)
-    elif len(args) == 1:  exec cmd in args[0]
-    else:                 exec cmd in args[0], args[1]
+    elif len(args) == 1:  exec(cmd, args[0])
+    else:                 exec(cmd, args[0], args[1])
 
 class Plotter:
     def increment_size(self, largest):
@@ -507,8 +507,7 @@ class SConsTimer:
         """
         files = []
         for a in args:
-            g = glob.glob(a)
-            g.sort()
+            g = sorted(glob.glob(a))
             files.extend(g)
 
         if tail:
@@ -591,8 +590,7 @@ class SConsTimer:
         """
         gp = Gnuplotter(self.title, self.key_location)
 
-        indices = results.keys()
-        indices.sort()
+        indices = sorted(results.keys())
 
         for i in indices:
             try:
@@ -676,7 +674,7 @@ class SConsTimer:
         """
         try:
             import pstats
-        except ImportError, e:
+        except ImportError as e:
             sys.stderr.write('%s: func: %s\n' % (self.name, e))
             sys.stderr.write('%s  This version of Python is missing the profiler.\n' % self.name_spaces)
             sys.stderr.write('%s  Cannot use the "func" subcommand.\n' % self.name_spaces)
@@ -737,7 +735,7 @@ class SConsTimer:
             return self.default(argv)
         try:
             return func(argv)
-        except TypeError, e:
+        except TypeError as e:
             sys.stderr.write("%s %s: %s\n" % (self.name, cmdName, e))
             import traceback
             traceback.print_exc(file=sys.stderr)
@@ -842,7 +840,7 @@ class SConsTimer:
                 self.title = a
 
         if self.config_file:
-            exec open(self.config_file, 'rU').read() in self.__dict__
+            exec(open(self.config_file, 'rU').read(), self.__dict__)
 
         if self.chdir:
             os.chdir(self.chdir)
@@ -875,7 +873,7 @@ class SConsTimer:
                 try:
                     f, line, func, time = \
                             self.get_function_profile(file, function_name)
-                except ValueError, e:
+                except ValueError as e:
                     sys.stderr.write("%s: func: %s: %s\n" %
                                      (self.name, file, e))
                 else:
@@ -1219,7 +1217,7 @@ class SConsTimer:
             sys.exit(1)
 
         if self.config_file:
-            exec open(self.config_file, 'rU').read() in self.__dict__
+            exec(open(self.config_file, 'rU').read(), self.__dict__)
 
         if args:
             self.archive_list = args

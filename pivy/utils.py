@@ -42,11 +42,11 @@ def getPointOnScreen(render_manager, screen_pos, normal="camera", point=None):
         plane = vol.getPlane(10)
         normal = plane.getNormal()
     elif normal == "x":
-        normal = SbVec3f(1, 0, 0)
+        normal = coin.SbVec3f(1, 0, 0)
     elif normal == "y":
-        normal = SbVec3f(0, 1, 0)
+        normal = coin.SbVec3f(0, 1, 0)
     elif normal == "z":
-        normal = SbVec3f(0, 0, 1)
+        normal = coin.SbVec3f(0, 0, 1)
     normal.normalize()
     x, y = screen_pos
     vp = render_manager.getViewportRegion()

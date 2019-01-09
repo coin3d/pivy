@@ -420,7 +420,7 @@ class QuarterWidget(QtOpenGL.QGLWidget):
         return self.contextmenu.getMenu()
 
     def contextMenuEnabled(self):
-        return contextmenuenabled
+        return self.contextmenuenabled
 
     def enableContextMenu(self, yesno):
         self.contextmenuenabled = yesno

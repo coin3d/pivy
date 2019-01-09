@@ -101,6 +101,6 @@ class MouseHandler(DeviceHandler):
             self.mousebutton.setButton(coin.SoMouseButtonEvent.BUTTON3)
         else:
             self.mousebutton.setButton(coin.SoMouseButtonEvent.ANY)
-            SoDebugError.postInfo("MouseHandler.mouseButtonEvent",
-                                  "Unhandled ButtonState = %x", event.button())
+            coin.SoDebugError.postInfo("MouseHandler.mouseButtonEvent",
+                                  "Unhandled ButtonState = %x", qevent.button())
         return self.mousebutton

@@ -22,8 +22,8 @@
   DeviceManager by default.
 """
 
-from PySide2.QtCore import QEvent
-
+from PySide2 import QtCore
+from pivy import coin
 from .EventHandler import EventHandler
 
 
@@ -39,10 +39,10 @@ class DragDropHandler(EventHandler):
     and calls setSceneGraph on the QuarterWidget
     """
     def handleEvent(self, event):
-        if event.type() == QEvent.DragEnter:
+        if event.type() == QtCore.QEvent.DragEnter:
             self._dragEnterEvent(event)
             return True
-        elif event.type() == QEvent.Drop:
+        elif event.type() == QtCore.QEvent.Drop:
             self._dropEvent(event)
             return True
         else:
@@ -53,21 +53,21 @@ class DragDropHandler(EventHandler):
         if not mimedata.hasUrls() and not mimedata.hasText(): return
 
         if mimedata.hasUrls():
-            fileinfo = QFileInfo(mimedata.urls().takeFirst().path())
-            suffix = QString(fileinfo.suffix().toLower())
+            fileinfo = QtCore.QFileInfo(mimedata.urls().takeFirst().path())
+            suffix = QtCore.QString(fileinfo.suffix().toLower())
 
-            if not suffix in suffixes: return
+            if not suffix in self._suffixes: return
 
         event.acceptProposedAction()
 
     def _dropEvent(self, event):
         mimedata = event.mimeData()
 
-        input = SoInput()
+        input = coin.SoInput()
 
         if mimedata.hasUrls():
             url = mimedata.urls().takeFirst()
-            if url.scheme().isEmpty() or url.scheme().toLower() == QString("file"):
+            if url.scheme().isEmpty() or url.scheme().toLower() == QtCore.QString("file"):
                 # attempt to open file
                 if not input.openFile(url.toLocalFile().toLatin1().constData()): return
         elif mimedata.hasText():
@@ -77,7 +77,7 @@ class DragDropHandler(EventHandler):
             if not input.isValidBuffer(): return
 
         # attempt to import it
-        root = SoDB.readAll(input)
+        root = coin.SoDB.readAll(input)
         if not root: return
 
         # get QuarterWidget and set new scenegraph

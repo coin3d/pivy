@@ -208,7 +208,6 @@ class pivy_build(build):
         if cmake.returncode == 0:
             for line in cmake_out.decode("utf-8").split("\n"):
                 for var in coin_vars + soqt_vars:
-                    print(var)
                     if var in line:
                         line = (line
                                 .replace('-- ' + var, '')
@@ -217,7 +216,6 @@ class pivy_build(build):
                         if "INCLUDE" in var:
                             line = line.replace(';', '\" -I\"')
                         config_dict[var] = line
-        raise("stop here!!!")
 
         print(yellow('\nchecking for COIN via cmake'))
         for key in coin_vars:

@@ -204,15 +204,20 @@ class pivy_build(build):
         coin_vars = ['COIN_FOUND', 'COIN_VERSION', 'COIN_INCLUDE_DIR', 'COIN_LIB_DIR']
         soqt_vars = ['SOQT_FOUND', 'SOQT_VERSION', 'SOQT_INCLUDE_DIR', 'SOQT_LIB_DIR']
         config_dict = {}
+        print(yellow(cmake_out.decode("utf-8")))
         if cmake.returncode == 0:
             for line in cmake_out.decode("utf-8").split("\n"):
                 for var in coin_vars + soqt_vars:
+                    print(var)
                     if var in line:
                         line = (line
                                 .replace('-- ' + var, '')
                                 .replace(': ', '')
                                 .replace('\n', ''))
+                        if "INCLUDE" in var:
+                            line = line.replace(';', '\" -I\"')
                         config_dict[var] = line
+        raise("stop here!!!")
 
         print(yellow('\nchecking for COIN via cmake'))
         for key in coin_vars:

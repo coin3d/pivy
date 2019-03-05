@@ -214,7 +214,7 @@ class pivy_build(build):
                                 .replace(': ', '')
                                 .replace('\n', ''))
                         if "INCLUDE" in var:
-                            line = line.replace(';', '\" -I\"')
+                            line = line.replace(';', ' -I')
                         config_dict[var] = line
 
         print(yellow('\nchecking for COIN via cmake'))

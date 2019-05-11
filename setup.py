@@ -539,8 +539,8 @@ class pivy_build(build):
             else:
                 INCLUDE_DIR = self.cmake_config_dict[config_cmd + '_INCLUDE_DIR']
                 LIB_DIR = self.cmake_config_dict[config_cmd + '_LIB_DIR']
-                CPP_FLAGS = ' -I' + win_quote(INCLUDE_DIR)
-                CPP_FLAGS += ' -I' + win_quote(os.path.join(INCLUDE_DIR, 'Inventor', 'annex'))
+                CPP_FLAGS = ' -I' + quote(INCLUDE_DIR)
+                CPP_FLAGS += ' -I' + quote(os.path.join(INCLUDE_DIR, 'Inventor', 'annex'))
                 if sys.platform == 'win32':
                     CPP_FLAGS += " /DCOIN_DLL /wd4244 /wd4049"
                     LDFLAGS_LIBS = quote(max(glob.glob(os.path.join(LIB_DIR, "Coin?.lib")))) + " "

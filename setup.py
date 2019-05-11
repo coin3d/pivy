@@ -539,14 +539,19 @@ class pivy_build(build):
             else:
                 INCLUDE_DIR = self.cmake_config_dict[config_cmd + '_INCLUDE_DIR']
                 LIB_DIR = self.cmake_config_dict[config_cmd + '_LIB_DIR']
-                CPP_FLAGS = ' -I' + quote(INCLUDE_DIR)
-                CPP_FLAGS += ' -I' + quote(os.path.join(INCLUDE_DIR, 'Inventor', 'annex'))
-                if sys.platform == 'win32':
-                    CPP_FLAGS += " /DCOIN_DLL /wd4244 /wd4049"
-                    LDFLAGS_LIBS = quote(max(glob.glob(os.path.join(LIB_DIR, "Coin?.lib")))) + " "
-                else:
-                    CPP_FLAGS += " -Wno-unused -Wno-maybe-uninitialized"
-                    LDFLAGS_LIBS = ' -L' + self.cmake_config_dict[config_cmd + '_LIB_DIR']
+                # replace all quotes from INCLUDE_DIR
+                # somehow this is not working
+                _INCLUDE_DIR = INCLUDE_DIR.replace('"', "")
+                CPP_FLAGS = ' -I' + _INCLUDE_DIR
+                CPP_FLAGS += ' -I' + os.path.join(_INCLUDE_DIR, 'Inventor', 'annex')
+                #### never should happen -> remove
+
+                # if sys.platform == 'win32': 
+                #     CPP_FLAGS += " /DCOIN_DLL /wd4244 /wd4049"
+                #     LDFLAGS_LIBS = quote(max(glob.glob(os.path.join(LIB_DIR, "Coin?.lib")))) + " "
+                # else:
+                CPP_FLAGS += " -Wno-unused -Wno-maybe-uninitialized"
+                LDFLAGS_LIBS = ' -L' + self.cmake_config_dict[config_cmd + '_LIB_DIR']
 
                 if module == "soqt":
                     CPP_FLAGS += ' -I' + win_quote(self.QTINFO.getHeadersPath())

@@ -10,3 +10,4 @@ VolumeViz/**.h
 SoPyScript/swigpyrun.h
 examples/SoPyScript/examin
 examples/SoPyScript/swigpyrun.h
+CMakeCache.txt

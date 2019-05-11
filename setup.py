@@ -540,7 +540,7 @@ class pivy_build(build):
                 INCLUDE_DIR = self.cmake_config_dict[config_cmd + '_INCLUDE_DIR']
                 LIB_DIR = self.cmake_config_dict[config_cmd + '_LIB_DIR']
                 if sys.platform == 'win32':
-                    _INCLUDE_DIR = INCLUDEDIR
+                    _INCLUDE_DIR = INCLUDE_DIR
                 else:
                     # replace all quotes from INCLUDE_DIR
                     _INCLUDE_DIR = INCLUDE_DIR.replace('"', "")

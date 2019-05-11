@@ -217,6 +217,7 @@ class pivy_build(build):
                             line = line.replace(';', ' -I')
                             print(blue(line))
                         config_dict[var] = line
+           print(yellow(config_dict))
 
         print(yellow('\nchecking for COIN via cmake'))
         for key in coin_vars:

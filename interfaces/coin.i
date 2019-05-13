@@ -24,6 +24,10 @@ applications."
 
 %module(package="pivy", docstring=COIN_MODULE_DOCSTRING) coin
 
+// stdint is not wrapped automatically anymore with swig4.0
+// https://stackoverflow.com/questions/40959436/swig-python-detected-a-memory-leak-of-type-uint32-t-no-destructor-found
+%include "stdint.i"
+
 %{
 #if defined(_WIN32) || defined(__WIN32__)
 #include <windows.h>

@@ -144,7 +144,7 @@ class pivy_build(build):
     SWIG = ((sys.platform == "win32" and "swig.exe") or "swig")
 
     SWIG_SUPPRESS_WARNINGS = "-w302,306,307,312,314,325,361,362,467,389,503,509,510"
-    SWIG_PARAMS = "-c++ -python -includeall -modern -D__PIVY__ " + \
+    SWIG_PARAMS = "-c++ -python -includeall -D__PIVY__ " + \
                   "-I. -Ifake_headers -I\"%s\" %s -o %s_wrap.cpp " + \
                   "interfaces" + os.sep + "%s.i"
     if sys.version_info.major >= 3:
@@ -165,7 +165,7 @@ class pivy_build(build):
         'soqt': ['gui._soqt', 'SOQT', 'pivy.gui.', soqt_interface]
     }
 
-    SUPPORTED_SWIG_VERSIONS = ['3.0.8', '3.0.10', '3.0.12']
+    SUPPORTED_SWIG_VERSIONS = ['3.0.8', '3.0.10', '3.0.12', '4.0.0']
     SWIG_VERSION = ""
     SWIG_COND_SYMBOLS = []
     CXX_INCS = "-Iinterfaces "
@@ -537,6 +537,7 @@ class pivy_build(build):
                         CPP_FLAGS += " -I" + '"' + os.getenv("QTDIR") + "\\include\qt\""
                         LDFLAGS_LIBS += os.path.join(os.getenv("COINDIR"), "lib", "SoQt.lib") + " "
             else:
+                CPP_FLAGS = " -std=c++1z"
                 INCLUDE_DIR = self.cmake_config_dict[config_cmd + '_INCLUDE_DIR']
                 LIB_DIR = self.cmake_config_dict[config_cmd + '_LIB_DIR']
                 if sys.platform == 'win32':
@@ -544,7 +545,7 @@ class pivy_build(build):
                 else:
                     # replace all quotes from INCLUDE_DIR
                     _INCLUDE_DIR = INCLUDE_DIR.replace('"', "")
-                CPP_FLAGS = ' -I' + _INCLUDE_DIR
+                CPP_FLAGS += ' -I' + _INCLUDE_DIR
                 CPP_FLAGS += ' -I' + os.path.join(_INCLUDE_DIR, 'Inventor', 'annex')
                 if sys.platform == 'win32': 
                     CPP_FLAGS += " /DCOIN_DLL /wd4244 /wd4049"

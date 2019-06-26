@@ -656,12 +656,12 @@ class pivy_clean(clean):
             os.remove('CMakeCache.txt')
 
 
-
 for i in reversed(list(range(len(sys.argv)))):
     if sys.argv[i][:10] == "--without-":
         pivy_build.MODULES.pop(sys.argv[i][10:], None)
         del sys.argv[i]
 
+ 
 setup(name="Pivy",
       version=PIVY_VERSION,
       description="A Python binding for Coin",

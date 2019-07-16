@@ -165,7 +165,7 @@ class pivy_build(build):
         'soqt': ['gui._soqt', 'SOQT', 'pivy.gui.', soqt_interface]
     }
 
-    SUPPORTED_SWIG_VERSIONS = ['3.0.8', '3.0.10', '3.0.12']
+    SUPPORTED_SWIG_VERSIONS = ['3.0.8', '3.0.10', '3.0.12', '4.0.0']
     SWIG_VERSION = ""
     SWIG_COND_SYMBOLS = []
     CXX_INCS = "-Iinterfaces "
@@ -508,10 +508,14 @@ class pivy_build(build):
             module_pkg_name = self.MODULES[module][2]
             mod_hack_name = self.MODULES[module][3]
             mod_out_prefix = module_pkg_name.replace('.', os.sep) + module
+            try:
+                CPP_FLAGS = os.environ["PIVY_CPP_FLAGS"]
+            except KeyError:
+                CPP_FLAGS = ""
 
             if sys.platform == "_win32":  # this should never happen
                 INCLUDE_DIR = os.path.join(os.getenv("COINDIR"), "include")
-                CPP_FLAGS = "-I" + quote(INCLUDE_DIR) + " " + \
+                CPP_FLAGS += "-I" + quote(INCLUDE_DIR) + " " + \
                             "-I" + quote(os.path.join(os.getenv("COINDIR"), "include", "Inventor", "annex")) + \
                             " /DCOIN_DLL /wd4244 /wd4049"
                 # aquire highest non-debug Coin library version
@@ -544,7 +548,7 @@ class pivy_build(build):
                 else:
                     # replace all quotes from INCLUDE_DIR
                     _INCLUDE_DIR = INCLUDE_DIR.replace('"', "")
-                CPP_FLAGS = ' -I' + _INCLUDE_DIR
+                CPP_FLAGS += ' -I' + _INCLUDE_DIR
                 CPP_FLAGS += ' -I' + os.path.join(_INCLUDE_DIR, 'Inventor', 'annex')
                 if sys.platform == 'win32': 
                     CPP_FLAGS += " /DCOIN_DLL /wd4244 /wd4049"
@@ -655,12 +659,12 @@ class pivy_clean(clean):
             os.remove('CMakeCache.txt')
 
 
-
 for i in reversed(list(range(len(sys.argv)))):
     if sys.argv[i][:10] == "--without-":
         pivy_build.MODULES.pop(sys.argv[i][10:], None)
         del sys.argv[i]
 
+ 
 setup(name="Pivy",
       version=PIVY_VERSION,
       description="A Python binding for Coin",

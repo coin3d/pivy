@@ -17,6 +17,7 @@ install:
     - conda create -q -n test-environment python=3.7 colorama cmake ninja swig coin3d simage soqt flake8
     - source activate test-environment
     - flake8 . --count --select=E901,E999,F821,F822,F823 --show-source --statistics --exclude=.svn,CVS,.bzr,.hg,.git,__pycache__,.tox,.eggs,*.egg,scons,SoPyScript
+    - export PIVY_CPP_FLAGS="-std=c++11 "
     - python setup.py install
 script:
     - cd tests

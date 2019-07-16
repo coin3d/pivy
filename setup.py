@@ -144,7 +144,7 @@ class pivy_build(build):
     SWIG = ((sys.platform == "win32" and "swig.exe") or "swig")
 
     SWIG_SUPPRESS_WARNINGS = "-w302,306,307,312,314,325,361,362,467,389,503,509,510"
-    SWIG_PARAMS = "-c++ -python -includeall -D__PIVY__ " + \
+    SWIG_PARAMS = "-c++ -python -includeall -modern -D__PIVY__ " + \
                   "-I. -Ifake_headers -I\"%s\" %s -o %s_wrap.cpp " + \
                   "interfaces" + os.sep + "%s.i"
     if sys.version_info.major >= 3:

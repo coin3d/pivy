@@ -508,10 +508,14 @@ class pivy_build(build):
             module_pkg_name = self.MODULES[module][2]
             mod_hack_name = self.MODULES[module][3]
             mod_out_prefix = module_pkg_name.replace('.', os.sep) + module
+            try:
+                CPP_FLAGS = os.environ["PIVY_CPP_FLAGS"]
+            except KeyError:
+                CPP_FLAGS = ""
 
             if sys.platform == "_win32":  # this should never happen
                 INCLUDE_DIR = os.path.join(os.getenv("COINDIR"), "include")
-                CPP_FLAGS = "-I" + quote(INCLUDE_DIR) + " " + \
+                CPP_FLAGS += "-I" + quote(INCLUDE_DIR) + " " + \
                             "-I" + quote(os.path.join(os.getenv("COINDIR"), "include", "Inventor", "annex")) + \
                             " /DCOIN_DLL /wd4244 /wd4049"
                 # aquire highest non-debug Coin library version
@@ -537,7 +541,6 @@ class pivy_build(build):
                         CPP_FLAGS += " -I" + '"' + os.getenv("QTDIR") + "\\include\qt\""
                         LDFLAGS_LIBS += os.path.join(os.getenv("COINDIR"), "lib", "SoQt.lib") + " "
             else:
-                CPP_FLAGS = " -std=c++1z"
                 INCLUDE_DIR = self.cmake_config_dict[config_cmd + '_INCLUDE_DIR']
                 LIB_DIR = self.cmake_config_dict[config_cmd + '_LIB_DIR']
                 if sys.platform == 'win32':

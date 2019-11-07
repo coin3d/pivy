@@ -205,6 +205,7 @@ class pivy_build(build):
         soqt_vars = ['SOQT_FOUND', 'SOQT_VERSION', 'SOQT_INCLUDE_DIR', 'SOQT_LIB_DIR']
         config_dict = {}
         print(yellow(cmake_out.decode("utf-8")))
+        print(red(cmake_err.decode("utf-8")))
         if cmake.returncode == 0:
             for line in cmake_out.decode("utf-8").split("\n"):
                 for var in coin_vars + soqt_vars:

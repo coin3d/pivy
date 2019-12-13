@@ -182,60 +182,50 @@ class InteractionSeparator(coin.SoSeparator):
         self += self.events, self.objects
 
     def register(self):
-        self._highlightCB = self.events.addEventCallback(
-            coin.SoLocation2Event.getClassTypeId(), self.highlightCB)
-        self._selectCB = self.events.addEventCallback(
-            coin.SoMouseButtonEvent.getClassTypeId(), self.selectCB)
-        self._grabCB = self.events.addEventCallback(
-            coin.SoKeyboardEvent.getClassTypeId(), self.grabCB)
-        self._deleteCB = self.events.addEventCallback(
-            coin.SoKeyboardEvent.getClassTypeId(), self.deleteCB)
-        self._selectAllCB = self.events.addEventCallback(
-            coin.SoKeyboardEvent.getClassTypeId(), self.selectAllCB)
+        self._highlight_cb = self.events.addEventCallback(
+            coin.SoLocation2Event.getClassTypeId(), self.highlight_cb)
+        self._select_cb = self.events.addEventCallback(
+            coin.SoMouseButtonEvent.getClassTypeId(), self.select_cb)
+        self._grab_cb = self.events.addEventCallback(
+            coin.SoKeyboardEvent.getClassTypeId(), self.grab_cb)
+        self._delete_cb = self.events.addEventCallback(
+            coin.SoKeyboardEvent.getClassTypeId(), self.delete_cb)
+        self._select_all_cb = self.events.addEventCallback(
+            coin.SoKeyboardEvent.getClassTypeId(), self.select_all_cb)
 
     def unregister(self):
         self.events.removeEventCallback(
-            coin.SoLocation2Event.getClassTypeId(), self._highlightCB)
+            coin.SoLocation2Event.getClassTypeId(), self._highlight_cb)
         self.events.removeEventCallback(
-            coin.SoMouseButtonEvent.getClassTypeId(), self._selectCB)
+            coin.SoMouseButtonEvent.getClassTypeId(), self._select_cb)
         self.events.removeEventCallback(
-            coin.SoKeyboardEvent.getClassTypeId(), self._grabCB)
+            coin.SoKeyboardEvent.getClassTypeId(), self._grab_cb)
         self.events.removeEventCallback(
-            coin.SoKeyboardEvent.getClassTypeId(), self._deleteCB)
+            coin.SoKeyboardEvent.getClassTypeId(), self._delete_cb)
         self.events.removeEventCallback(
-            coin.SoKeyboardEvent.getClassTypeId(), self._selectAllCB)
+            coin.SoKeyboardEvent.getClassTypeId(), self._select_all_cb)
+ 
 
+    #-----------------------HIGHLIGHTING-----------------------#
+    # a SoLocation2Event calling a function which sends rays   #
+    # into the scene. This will return the object the mouse is #
+    # currently hoovering.                                     #
 
-    def addChild(self, child):
-        if hasattr(child, "dynamic"):
-            self.objects.addChild(child)
-            if child.dynamic:
-                self.dynamic_objects.append(child)
-            else:
-                self.static_objects.append(child)
-        else:
-            super(InteractionSeparator, self).addChild(child)  
-
-#-----------------------HIGHLIGHTING-----------------------#
-# a SoLocation2Event calling a function which sends rays   #
-# int the scene. This will return the object the mouse is  #
-# currently hoovering.                                     #
-
-    def highlightObject(self, obj):
+    def highlight_object(self, obj):
         if self.over_object:
             self.over_object.unset_mouse_over()
         self.over_object = obj
         if self.over_object:
             self.over_object.set_mouse_over()
-        self.colorSelected()
+        self.color_selected()
 
-    def highlightCB(self, attr, event_callback):
+    def highlight_cb(self, attr, event_callback):
         event = event_callback.getEvent()
         pos = event.getPosition()
-        obj = self.sendRay(pos)
-        self.highlightObject(obj)
+        obj = self.send_ray(pos)
+        self.highlight_object(obj)
 
-    def sendRay(self, mouse_pos):
+    def send_ray(self, mouse_pos):
         """sends a ray trough the scene and return the nearest entity"""
         ray_pick = coin.SoRayPickAction(self.render_manager.getViewportRegion())
         ray_pick.setPoint(coin.SbVec2s(*mouse_pos))
@@ -243,9 +233,9 @@ class InteractionSeparator(coin.SoSeparator):
         ray_pick.setPickAll(True)
         ray_pick.apply(self.render_manager.getSceneGraph())
         picked_point = ray_pick.getPickedPointList()
-        return self.objByID(picked_point)
+        return self.obj_by_id(picked_point)
 
-    def objByID(self, picked_point):
+    def obj_by_id(self, picked_point):
         for point in picked_point:
             path = point.getPath()
             length = path.getLength()
@@ -260,7 +250,7 @@ class InteractionSeparator(coin.SoSeparator):
 
 
 #------------------------SELECTION------------------------#
-    def selectObject(self, obj, multi=False):
+    def select_object(self, obj, multi=False):
         if not multi:
             for o in self.selected_objects:
                 o.unselect()
@@ -270,16 +260,16 @@ class InteractionSeparator(coin.SoSeparator):
                 self.selected_objects.remove(obj)
             else:
                 self.selected_objects.append(obj)
-        self.colorSelected()
-        self.selectionChanged()
+        self.color_selected()
+        self.selection_changed()
 
-    def selectCB(self, attr, event_callback):
+    def select_cb(self, attr, event_callback):
         event = event_callback.getEvent()
         if (event.getState() == coin.SoMouseButtonEvent.DOWN and
                 event.getButton() == event.BUTTON1):
             pos = event.getPosition()
-            obj = self.sendRay(pos)
-            self.selectObject(obj, event.wasCtrlDown())
+            obj = self.send_ray(pos)
+            self.select_object(obj, event.wasCtrlDown())
 
     def select_all_cb(self, event_callback):
         event = event_callback.getEvent()
@@ -293,7 +283,7 @@ class InteractionSeparator(coin.SoSeparator):
                     for obj in self.objects:
                         if obj.dynamic:
                             self.selected_objects.append(obj)
-                self.ColorSelected()
+                self.color_selected()
                 self.selection_changed()
 
     def deselect_all(self):
@@ -302,14 +292,14 @@ class InteractionSeparator(coin.SoSeparator):
                 o.unselect()
             self.selected_objects = []
 
-    def colorSelected(self):
+    def color_selected(self):
         for obj in self.selected_objects:
             obj.select()
 
-    def selectionChanged(self):
+    def selection_changed(self):
         pass
 
-    def selectAllCB(self, attr, event_callback):
+    def select_all_cb(self, attr, event_callback):
         event = event_callback.getEvent()
         if (event.getKey() == ord("a")):
             if event.getState() == event.DOWN:
@@ -321,8 +311,8 @@ class InteractionSeparator(coin.SoSeparator):
                     for obj in self.dynamic_objects:
                         if obj.dynamic:
                             self.selected_objects.append(obj)
-                self.colorSelected()
-                self.selectionChanged()
+                self.color_selected()
+                self.selection_changed()
 
 
 #------------------------INTERACTION------------------------#
@@ -343,7 +333,7 @@ class InteractionSeparator(coin.SoSeparator):
         elif self._direction == "z":
             return [0, 0, vector[2]]
 
-    def grabCB(self, attr, event_callback):
+    def grab_cb(self, attr, event_callback):
         # press g to move an entity
         event = event_callback.getEvent()
         # get all drag objects, every selected object can add some drag objects
@@ -417,14 +407,14 @@ class InteractionSeparator(coin.SoSeparator):
             for foo in self.on_drag:
                 foo()
 
-    def deleteCB(self, attr, event_callback):
+    def delete_cb(self, attr, event_callback):
         event = event_callback.getEvent()
         # get all drag objects, every selected object can add some drag objects
         # but the eventhandler is not allowed to call the drag twice on an object
         if event.getKey() == ord(u"\uffff") and (event.getState() == 1):
-            self.removeSelected()
+            self.remove_selected()
 
-    def removeSelected(self):
+    def remove_selected(self):
         temp = []
         for i in self.selected_objects:
             i.delete()
@@ -435,7 +425,7 @@ class InteractionSeparator(coin.SoSeparator):
                 temp.append(i)
         self.selected_objects = []
         self.over_object = None
-        self.selectionChanged()
+        self.selection_changed()
         for i in temp:
             if i in self.dynamic_objects:
                 self.dynamic_objects.remove(i)
@@ -444,8 +434,9 @@ class InteractionSeparator(coin.SoSeparator):
             import sys
             self.objects.removeChild(i)
             del(i)
-        self.selectionChanged()
+        self.selection_changed()
 
+    # needs upper case as this must overwrite the addChild from coin.SoSeparator
     def removeAllChildren(self):
         for i in self.dynamic_objects:
             i.delete()
@@ -454,3 +445,14 @@ class InteractionSeparator(coin.SoSeparator):
         self.selected_objects = []
         self.over_object = None
         super(InteractionSeparator, self).removeAllChildren()
+
+    # needs upper case as this must overwrite the addChild from coin.SoSeparator
+    def addChild(self, child):
+        if hasattr(child, "dynamic"):
+            self.objects.addChild(child)
+            if child.dynamic:
+                self.dynamic_objects.append(child)
+            else:
+                self.static_objects.append(child)
+        else:
+            super(InteractionSeparator, self).addChild(child) 

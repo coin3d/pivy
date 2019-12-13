@@ -27,7 +27,7 @@ def main():
     if myWindow == None: sys.exit(1)
 
     # add a new marker type:
-    utils.addMarkerFromSvg("test.svg", "CUSTOM_MARKER",  50)
+    utils.add_marker_from_svg("test.svg", "CUSTOM_MARKER",  30)
 
     root = coin.SoSeparator()
     color = coin.SoMaterial()

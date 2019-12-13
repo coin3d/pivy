@@ -16,9 +16,9 @@ class ConnectionPolygon(graphics.Polygon):
         self.markers = markers
 
         for m in self.markers:
-            m.on_drag.append(self.updatePolygon)
+            m.on_drag.append(self.update_polygon)
 
-    def updatePolygon(self):
+    def update_polygon(self):
         self.points = sum([m.points for m in self.markers], [])
 
     @property
@@ -36,9 +36,9 @@ class ConnectionLine(graphics.Line):
             sum([m.points for m in markers], []), True)
         self.markers = markers
         for m in self.markers:
-            m.on_drag.append(self.updateLine)
+            m.on_drag.append(self.update_line)
 
-    def updateLine(self):
+    def update_line(self):
         self.points = sum([m.points for m in self.markers], [])
 
     @property

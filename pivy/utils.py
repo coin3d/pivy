@@ -1,7 +1,7 @@
 from pivy import coin
 
 
-def addMarkerFromSvg(file_path, marker_name, pixel_x=10, pixel_y=None,
+def add_marker_from_svg(file_path, marker_name, pixel_x=10, pixel_y=None,
                      isLSBFirst=False, isUpToDown=False):
     """adds a new marker bitmap from a vector graphic (svg)"""
 
@@ -18,7 +18,8 @@ def addMarkerFromSvg(file_path, marker_name, pixel_x=10, pixel_y=None,
     buffer.close()
 
     # get a string from the XMP-icon
-    ary = str(buffer.buffer())
+    ary = str(buffer.buffer(), "utf8")
+    ary = ary.split("\n", 1)[1]
     ary = ary.replace('\n', "").replace('"', "").replace(";", "")
     ary = ary.replace("}", "").replace("#", "x").replace(".", " ")
     string = str.join("", ary.split(",")[3:])
@@ -30,7 +31,7 @@ def addMarkerFromSvg(file_path, marker_name, pixel_x=10, pixel_y=None,
                                isLSBFirst, isUpToDown)
 
 
-def getPointOnScreen(render_manager, screen_pos, normal="camera", point=None):
+def get_point_on_screen(render_manager, screen_pos, normal="camera", point=None):
     """get coordinates from pixel position"""
     
     pCam = render_manager.getCamera()

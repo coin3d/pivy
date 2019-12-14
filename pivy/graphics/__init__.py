@@ -1,5 +1,5 @@
 from pivy import coin
-from pivy.utils import getPointOnScreen
+from pivy.utils import get_point_on_screen
 from .colors import COLORS
 from .plot import plot
 from .mesh import simple_quad_mesh, simple_poly_mesh
@@ -319,8 +319,7 @@ class InteractionSeparator(coin.SoSeparator):
 
     def cursor_pos(self, event):
         pos = event.getPosition()
-        # print(list(getPointOnScreen1(self.render_manager, pos)))
-        return getPointOnScreen(self.render_manager, pos)
+        return get_point_on_screen(self.render_manager, pos)
     
 
     def constrained_vector(self, vector):

@@ -1,5 +1,6 @@
 General build instructions:
 ---------------------------
+[![Build Status](https://travis-ci.org/Coin3D/pivy.svg?branch=master)](https://travis-ci.org/Coin3D/pivy)
 Pivy uses [distutils][0]. To build Pivy, run
 
 ```bash

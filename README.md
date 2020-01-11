@@ -1,15 +1,12 @@
-__This is a fork of pivy [1] which adds python3 support!__
-------------------------------------------------------
-
 General build instructions:
 ---------------------------
-[![Build Status](https://travis-ci.org/FreeCAD/pivy.svg?branch=master)](https://travis-ci.org/FreeCAD/pivy)
+[![Build Status](https://travis-ci.org/Coin3D/pivy.svg?branch=master)](https://travis-ci.org/Coin3D/pivy)
 
-Pivy uses distutils[2]. To build Pivy, run 
+Pivy uses [distutils][0]. To build Pivy, run
 
-```
-python setup.py build
-python setup.py install
+```bash
+  $ python3 setup.py build
+  $ python3 setup.py install
 ```
 
 For older system/distros please use the `setup_old.py` script to build pivy. 
@@ -17,18 +14,17 @@ For older system/distros please use the `setup_old.py` script to build pivy.
 Reporting bugs:
 --------------
 
-If you find a bug, feel free to create an issue.
+Please submit bug reports, feature requests, etc. to the [Pivy
+issue tracker][1].
 
 Contact:
 --------
 
 If you have any questions regarding Pivy or simply want to discuss
-with other Pivy users, you can do so at the general coin-discuss
-mailinglist[2].
-pivy is used also in FreeCAD. So you may find some interesting posts at the FreeCAD-forum [5]
+with other Pivy users, you can do so at the general [coin-discuss
+mailinglist][2].
 
-[1] https://bitbucket.org/Coin3D/pivy  
-[2] http://www.python.org/sigs/distutils-sig/  
-[3] http://issue.coin3d.org/pivy/  
-[4] https://www.coin3d.org/mailman/listinfo/coin-discuss/  
-[5] https://forum.freecadweb.org/
+
+[0]: http://www.python.org/sigs/distutils-sig/
+[1]: https://github.com/Coin3D/pivy/issues
+[2]: http://groups.google.com/group/coin3d-discuss

@@ -352,6 +352,7 @@
 #include <Inventor/misc/SoGLBigImage.h>
 #include <Inventor/misc/SoGLImage.h>
 #include <Inventor/misc/SoGlyph.h>
+#include <Inventor/misc/SoGeo.h>
 #include <Inventor/misc/SoLightPath.h>
 #include <Inventor/misc/SoNormalGenerator.h>
 #include <Inventor/misc/SoNotification.h>
@@ -404,6 +405,10 @@
 #include <Inventor/nodes/SoFile.h>
 #include <Inventor/nodes/SoFont.h>
 #include <Inventor/nodes/SoFontStyle.h>
+#include <Inventor/nodes/SoGeoCoordinate.h>
+#include <Inventor/nodes/SoGeoLocation.h>
+#include <Inventor/nodes/SoGeoOrigin.h>
+#include <Inventor/nodes/SoGeoSeparator.h>
 #include <Inventor/nodes/SoGroup.h>
 #include <Inventor/nodes/SoImage.h>
 #include <Inventor/nodes/SoIndexedFaceSet.h>

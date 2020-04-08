@@ -48,6 +48,8 @@ class Object3D(coin.SoSeparator):
 
     @points.setter
     def points(self, points):
+        # check if we got a list of 3D points
+        assert(len(points[0]) == len(points[-1]) == 3)
         self.data.point.setValue(0, 0, 0)
         self.data.point.setValues(0, len(points), points)
 

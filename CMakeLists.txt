@@ -1,4 +1,4 @@
-project(pivy_cmake_setup NONE)
+project(pivy_cmake_setup)
 cmake_minimum_required(VERSION 3.5)
 
 

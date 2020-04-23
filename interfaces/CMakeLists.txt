@@ -1,13 +1,15 @@
-set(disable_warnings "-w302,306,307,312,314,325,361,362,467,389,503,509,510")
+function(set_swig_properties NAME)
+    set_property(SOURCE ${NAME} PROPERTY CPLUSPLUS ON)
+    set_property(SOURCE ${NAME} PROPERTY SWIG_FLAGS "-includeall")
+    set_property(SOURCE ${NAME} APPEND PROPERTY SWIG_FLAGS "-py3")
+    set_property(SOURCE ${NAME} APPEND PROPERTY SWIG_FLAGS "-D__PIVY__")
+    set_property(SOURCE ${NAME} APPEND PROPERTY SWIG_FLAGS
+        "-w302,306,307,312,314,325,361,362,467,389,503,509,510")
+endfunction()
+
 
 # coin.i
-
-set_property(SOURCE coin.i PROPERTY CPLUSPLUS ON)
-set_property(SOURCE coin.i PROPERTY OUTPUT_DIR ${CMAKE_BINARY_DIR}/pivy)
-set_property(SOURCE coin.i PROPERTY SWIG_FLAGS "-includeall")
-set_property(SOURCE coin.i APPEND PROPERTY SWIG_FLAGS "-py3")
-set_property(SOURCE coin.i APPEND PROPERTY SWIG_FLAGS "-D__PIVY__")
-set_property(SOURCE coin.i APPEND PROPERTY SWIG_FLAGS ${disable_warnings})
+set_swig_properties(coin.i)
 
 # remember: the order of the includes is important!
 # swig needs the generated headers first (these headers are replacing the origin Inventor headers)
@@ -20,9 +22,6 @@ swig_add_library(coin
     OUTPUT_DIR ${CMAKE_BINARY_DIR}/pivy
     SOURCES coin.i)
 
-link_directories(${Coin_LIB_DIR})
-
-
 target_include_directories(coin
     PRIVATE
     ${Coin_INCLUDE_DIR}
@@ -31,19 +30,14 @@ target_include_directories(coin
     )
 
 set_target_properties(coin PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/pivy")
-target_link_libraries(coin Coin)
+target_link_libraries(coin Coin::Coin)
 install(TARGETS coin DESTINATION ${python_libs}/pivy)
 
 
-if (WRAP_SOQT)
-    # soqt.i
+if (SoQt_FOUND)
 
-    set_property(SOURCE soqt.i PROPERTY CPLUSPLUS ON)
-    set_property(SOURCE soqt.i PROPERTY OUTPUT_DIR ${CMAKE_BINARY_DIR}/pivy)
-    set_property(SOURCE soqt.i PROPERTY SWIG_FLAGS "-includeall")
-    set_property(SOURCE soqt.i APPEND PROPERTY SWIG_FLAGS "-py3")
-    set_property(SOURCE soqt.i APPEND PROPERTY SWIG_FLAGS "-D__PIVY__")
-    set_property(SOURCE soqt.i APPEND PROPERTY SWIG_FLAGS ${disable_warnings})
+    # soqt.i
+    set_swig_properties(soqt.i)
 
     # remember: the order of the includes is important!
     # swig needs the generated headers first (these headers are replacing the origin Inventor headers)
@@ -57,7 +51,6 @@ if (WRAP_SOQT)
         OUTPUT_DIR ${CMAKE_BINARY_DIR}/pivy/gui
         SOURCES soqt.i)
 
-    link_directories(${SoQt_LIBRARY_DIRS})
 
 
     target_include_directories(soqt
@@ -69,7 +62,7 @@ if (WRAP_SOQT)
         ${CMAKE_SOURCE_DIR}/interfaces
         )
 
-    target_link_libraries(soqt SoQt)
+    target_link_libraries(soqt SoQt::SoQt)
     set_target_properties(soqt PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/pivy/gui")
     install(TARGETS soqt DESTINATION ${python_libs}/pivy/gui)
-endif(WRAP_SOQT)
+endif(SoQt_FOUND)

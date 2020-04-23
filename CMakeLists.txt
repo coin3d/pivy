@@ -7,11 +7,8 @@ include(${SWIG_USE_FILE})
 find_package(Coin CONFIG REQUIRED)
 find_package(SoQt CONFIG)
 
-option(WRAP_SOQT "wrap the soqt library" OFF)
-
-if (SoQt_LIBRARY_DIRS)
+if (SoQt_FOUND)
     find_package(Qt5 COMPONENTS Core Widgets Gui REQUIRED)
-    set(WRAP_SOQT ON)
 endif()
 
 find_package(PythonInterp REQUIRED)

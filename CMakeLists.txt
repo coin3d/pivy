@@ -1,32 +1,26 @@
-project(pivy)
 cmake_minimum_required(VERSION 3.14)
+project(pivy)
 
-FIND_PACKAGE(SWIG 4.0.0 REQUIRED)
-INCLUDE(${SWIG_USE_FILE})
+find_package(SWIG 4.0.0 REQUIRED)
+include(${SWIG_USE_FILE})
 
-FIND_PACKAGE(Coin CONFIG REQUIRED)
-FIND_PACKAGE(SoQt CONFIG)
+find_package(Coin CONFIG REQUIRED)
+find_package(SoQt CONFIG)
 
-OPTION(WRAP_SOQT "wrap the soqt library" OFF)
+option(WRAP_SOQT "wrap the soqt library" OFF)
 
 if (SoQt_LIBRARY_DIRS)
-    MESSAGE(STATUS "try to find qt")
-    FIND_PACKAGE(Qt5 COMPONENTS Core Widgets Gui REQUIRED)
-    SET(WRAP_SOQT ON)
+    find_package(Qt5 COMPONENTS Core Widgets Gui REQUIRED)
+    set(WRAP_SOQT ON)
 endif()
 
-FIND_PACKAGE(PythonInterp REQUIRED)
-FIND_PACKAGE(PythonLibs REQUIRED)
-
-
-SET(CMAKE_EXECUTE_PROCESS_COMMAND_ECHO STDOUT)
-
+find_package(PythonInterp REQUIRED)
+find_package(PythonLibs REQUIRED)
 
 # SWIGIFY HEADERS
 # doing this with the origin python functions
 
-MESSAGE(STATUS ${CMAKE_SOURCE_DIR})
-EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} -c
+execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
 "import sys; sys.path.append('${CMAKE_SOURCE_DIR}'); \
 import install_helpers; install_helpers.swigify('${CMAKE_SOURCE_DIR}', '${Coin_INCLUDE_DIR}');")
 
@@ -43,13 +37,13 @@ add_copy_directory(pivy ${CMAKE_SOURCE_DIR}/pivy
 
 # find python install destination
 
-EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} -c
+execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
   "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
   OUTPUT_VARIABLE python_libs OUTPUT_STRIP_TRAILING_WHITESPACE )
 
-ADD_SUBDIRECTORY(interfaces)
+add_subdirectory(interfaces)
 
-INSTALL(DIRECTORY
+install(DIRECTORY
     ${CMAKE_BINARY_DIR}/pivy
     DESTINATION ${python_libs}
     PATTERN "*.py"

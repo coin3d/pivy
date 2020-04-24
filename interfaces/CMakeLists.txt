@@ -10,7 +10,6 @@ function(set_swig_properties NAME)
 endfunction()
 
 
-# coin.i
 set_swig_properties(coin.i)
 
 # remember: the order of the includes is important!
@@ -25,19 +24,18 @@ swig_add_library(coin
     SOURCES coin.i)
 
 target_include_directories(coin
-    PRIVATE
+    PUBLIC
     ${Coin_INCLUDE_DIR}
     ${PYTHON_INCLUDE_DIRS}
+    PRIVATE
     ${CMAKE_SOURCE_DIR}/interfaces
     )
 
-set_target_properties(coin PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/pivy")
-target_link_libraries(coin Coin::Coin)
+target_link_libraries(coin PUBLIC Coin::Coin)
 
 
 if (SoQt_FOUND)
 
-    # soqt.i
     set_swig_properties(soqt.i)
 
     # remember: the order of the includes is important!
@@ -55,14 +53,14 @@ if (SoQt_FOUND)
 
 
     target_include_directories(soqt
-        PRIVATE
+        PUBLIC
         ${SoQt_INCLUDE_DIRS}
         ${Qt5Gui_INCLUDE_DIRS}
         ${Qt5Widgets_INCLUDE_DIRS}
         ${PYTHON_INCLUDE_DIRS}
+        PRIVATE
         ${CMAKE_SOURCE_DIR}/interfaces
         )
 
-    target_link_libraries(soqt SoQt::SoQt)
-    set_target_properties(soqt PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/pivy/gui")
-endif(SoQt_FOUND)
+    target_link_libraries(soqt PUBLIC SoQt::SoQt)
+endif()

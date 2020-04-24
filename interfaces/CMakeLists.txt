@@ -3,8 +3,10 @@ function(set_swig_properties NAME)
     set_property(SOURCE ${NAME} PROPERTY SWIG_FLAGS "-includeall")
     set_property(SOURCE ${NAME} APPEND PROPERTY SWIG_FLAGS "-py3")
     set_property(SOURCE ${NAME} APPEND PROPERTY SWIG_FLAGS "-D__PIVY__")
-    set_property(SOURCE ${NAME} APPEND PROPERTY SWIG_FLAGS
-        "-w302,306,307,312,314,325,361,362,467,389,503,509,510")
+    if(DISABLE_SWIG_WARNINGS)
+        set_property(SOURCE ${NAME} APPEND PROPERTY SWIG_FLAGS
+            "-w302,306,307,312,314,325,361,362,467,389,503,509,510")
+    endif(DISABLE_SWIG_WARNINGS)
 endfunction()
 
 
@@ -31,7 +33,6 @@ target_include_directories(coin
 
 set_target_properties(coin PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/pivy")
 target_link_libraries(coin Coin::Coin)
-install(TARGETS coin DESTINATION ${python_libs}/pivy)
 
 
 if (SoQt_FOUND)
@@ -64,5 +65,4 @@ if (SoQt_FOUND)
 
     target_link_libraries(soqt SoQt::SoQt)
     set_target_properties(soqt PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/pivy/gui")
-    install(TARGETS soqt DESTINATION ${python_libs}/pivy/gui)
 endif(SoQt_FOUND)

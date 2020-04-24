@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.14)
 project(pivy)
 
+
+option(DISABLE_SWIG_WARNINGS "if on no swig warnings are shown" OFF)
+
 find_package(SWIG 4.0.0 REQUIRED)
 include(${SWIG_USE_FILE})
 
@@ -28,7 +31,7 @@ include(TargetCopyFiles.cmake)
 add_custom_target(pivy ALL)
 add_copy_directory(pivy ${CMAKE_SOURCE_DIR}/pivy
     DESTINATION ${CMAKE_BINARY_DIR}/pivy
-    GLOB *.py
+    PATTERN *.py
 )
 
 
@@ -43,5 +46,10 @@ add_subdirectory(interfaces)
 install(DIRECTORY
     ${CMAKE_BINARY_DIR}/pivy
     DESTINATION ${python_libs}
+    FILES_MATCHING
     PATTERN "*.py"
+    PATTERN "*.so"
+    PATTERN "*.dylib"
+    PATTERN "*.dll"
+    PATTERN "*.pyd"
     )

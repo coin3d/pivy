@@ -14,7 +14,6 @@ def copy_and_swigify_headers(includedir, dirname, files):
         """Copy the header files to the local include directories. Add an
         #include line at the beginning for the SWIG interface files..."""
 
-        # remove dots from dirname
         for file in files:
             if not os.path.isfile(os.path.join(dirname, file)):
                 continue
@@ -34,7 +33,7 @@ def copy_and_swigify_headers(includedir, dirname, files):
 
                 if os.path.exists(from_file):
                     shutil.copyfile(from_file, to_file)
-                    # sys.stdout.write('create fake header: ' + to_file + '\n')
+                    sys.stdout.write('create swigified header: ' + to_file + '\n')
                     fd = open(to_file, 'r+')
                     contents = fd.readlines()
 

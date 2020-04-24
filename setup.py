@@ -192,7 +192,7 @@ class pivy_build(build):
                   'pivy.graphics.viewer']
 
     def check_with_cmake(self):
-        dirname = os.path.dirname(__file__)
+        dirname = os.path.join(os.path.dirname(__file__), "distutils_cmake")
         cmake_command = ['cmake', dirname]
         try:
             cmake_command += ['-G', os.environ['GENERATOR']]

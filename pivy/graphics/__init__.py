@@ -95,6 +95,7 @@ class Object3D(coin.SoSeparator):
     def drag_objects(self):
         if self.enabled:
             return [self]
+        return []
 
     def delete(self):
         if self.enabled and not self._delete:
@@ -423,14 +424,18 @@ class InteractionSeparator(coin.SoSeparator):
         self.selection_changed()
 
     # needs upper case as this must overwrite the addChild from coin.SoSeparator
-    def removeAllChildren(self):
+    def removeAllChildren(self, clear_all=False):
         for i in self.dynamic_objects:
             i.delete()
         self.dynamic_objects = []
         self.static_objects = []
         self.selected_objects = []
         self.over_object = None
-        super(InteractionSeparator, self).removeAllChildren()
+        if clear_all:
+            super(InteractionSeparator, self).removeAllChildren()
+        else:
+            # only delets graphics objects
+            self.objects.removeAllChildren()
 
     # needs upper case as this must overwrite the addChild from coin.SoSeparator
     def addChild(self, child):

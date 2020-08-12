@@ -2,7 +2,17 @@ General build instructions:
 ---------------------------
 [![Build Status](https://travis-ci.org/Coin3D/pivy.svg?branch=master)](https://travis-ci.org/Coin3D/pivy)
 
-Pivy uses [distutils][0]. To build Pivy, run
+Starting with version 0.6.6 pivy it's possible to build pivy with cmake:
+
+```bash
+  $ cd pivy
+  $ mkdir build
+  $ cd build
+  $ cmake ..
+  $ make
+```
+
+Alternative it's still possible to use [distutils][0]:
 
 ```bash
   $ python3 setup.py build

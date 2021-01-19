@@ -26,7 +26,10 @@ from random import random
 from pivy.coin import *
 from pivy.gui.soqt import *
 
-from PySide2.QtGui import *
+try:
+    from PySide2.QtWidgets import *
+except ImportError:
+    from PySide2.QtGui import *
 from PySide2.QtCore import *
 
 class EmbeddedWindow(QMainWindow):

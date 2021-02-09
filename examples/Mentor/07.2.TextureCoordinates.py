@@ -20,7 +20,7 @@
 # This is an example from the Inventor Mentor
 # chapter 7, example 2.
 #
-# This example illustrates using texture coordindates on
+# This example illustrates using texture coordinates on
 # a Face Set.
 #
 

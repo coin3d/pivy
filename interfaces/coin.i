@@ -54,8 +54,8 @@ typedef SoGLLazyElement::GLState GLState;
 %{
 /*
   Workaround for FILE* typemap. Import IO module instead of using extern PyTypeObject PyIOBase_Type,
-  because the windows pyhton lib does not export PyIOBase_Type.
-  Coppied from: https://github.com/Kagami/pygraphviz/commit/fe442dc16accb629c3feaf157af75f67ccabbd6e
+  because the windows python lib does not export PyIOBase_Type.
+  Copied from: https://github.com/Kagami/pygraphviz/commit/fe442dc16accb629c3feaf157af75f67ccabbd6e
 */
 #if PY_MAJOR_VERSION >= 3
 static PyObject *PyIOBase_TypeObj;

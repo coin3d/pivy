@@ -51,7 +51,7 @@ class DeviceManager:
         self.lastmousepos = SbVec2s(0, 0)
 
     def translateEvent(self, qevent):
-        """Runs trough the list of registered devices to translate event"""
+        """Runs through the list of registered devices to translate event"""
         if qevent.type() == QEvent.MouseMove:
             self.globalpos = qevent.globalPos()
 

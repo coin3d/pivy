@@ -599,7 +599,7 @@ class SConsTimer:
 
     def logfile_name(self, invocation):
         """
-        Returns the absolute path of a log file for the specificed
+        Returns the absolute path of a log file for the specified
         invocation number.
         """
         name = self.prefix_run + '-%d.log' % invocation

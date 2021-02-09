@@ -38,7 +38,7 @@
 #include "swigpyrun.h"
 #include "SoPyScript.h"
 
-// Python code snippet to load in a URL through the urrlib module
+// Python code snippet to load in a URL through the urllib module
 #define PYTHON_URLLIB_URLOPEN "\
 import urllib\n\
 try:\n\

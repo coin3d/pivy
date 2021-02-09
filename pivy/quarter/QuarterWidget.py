@@ -432,7 +432,7 @@ class QuarterWidget(QtOpenGL.QGLWidget):
         self.sorendermanager.scheduleRedraw()
 
     def enableHeadlight(self, onoff):
-        """  Enable/disable the headlight. This wille toggle the SoDirectionalLigh::on
+        """  Enable/disable the headlight. This will toggle the SoDirectionalLigh::on
           field (returned from getHeadlight())."""
         self.headlight.on = onoff
 

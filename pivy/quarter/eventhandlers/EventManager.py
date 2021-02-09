@@ -29,7 +29,7 @@ class EventManager:
         self.eventhandlers = []
 
     def handleEvent(self, qevent):
-        """Runs trough the list of registered devices to translate events"""
+        """Runs through the list of registered devices to translate events"""
         for handler in self.eventhandlers:
             if handler.handleEvent(qevent):
                 return True

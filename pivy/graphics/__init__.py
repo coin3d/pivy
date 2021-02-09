@@ -229,7 +229,7 @@ class InteractionSeparator(coin.SoSeparator):
         self.highlight_object(obj)
 
     def send_ray(self, mouse_pos):
-        """sends a ray trough the scene and return the nearest entity"""
+        """sends a ray through the scene and return the nearest entity"""
         ray_pick = coin.SoRayPickAction(self.render_manager.getViewportRegion())
         ray_pick.setPoint(coin.SbVec2s(*mouse_pos))
         ray_pick.setRadius(10)
@@ -334,7 +334,7 @@ class InteractionSeparator(coin.SoSeparator):
             if self.drag_objects:
                 # first delete the selection_cb, and higlight_cb
                 self.unregister()
-                # now add a callback that calls the dragfunction of the selected entites
+                # now add a callback that calls the dragfunction of the selected entities
                 self.start_pos = self.cursor_pos(event)
                 self._dragCB = self.events.addEventCallback(
                     coin.SoEvent.getClassTypeId(), self.dragCB)
@@ -434,7 +434,7 @@ class InteractionSeparator(coin.SoSeparator):
         if clear_all:
             super(InteractionSeparator, self).removeAllChildren()
         else:
-            # only delets graphics objects
+            # only deletes graphics objects
             self.objects.removeAllChildren()
 
     # needs upper case as this must overwrite the addChild from coin.SoSeparator

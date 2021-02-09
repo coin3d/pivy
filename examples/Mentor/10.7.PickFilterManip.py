@@ -37,7 +37,7 @@ from pivy.sogui import *
 
 # Returns path to xform left of the input path tail.
 # Inserts the xform if none found. In this example,
-# assume that the xform is always the node preceeding
+# assume that the xform is always the node preceding
 # the selected shape.
 def findXform(p):
     # Copy the input path up to tail's parent.
@@ -63,7 +63,7 @@ def findXform(p):
     return returnPath
 
 # Returns the manip affecting this path. In this example,
-# the manip is always preceeding the selected shape.
+# the manip is always preceding the selected shape.
 def findManip(p):
     # Copy the input path up to tail's parent.
     returnPath = p.copy(0, p.getLength() - 1)

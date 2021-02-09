@@ -104,7 +104,7 @@ static const char * PYSIDE_QT = "pivy.gui.qt";
 static PyObject* getShiboken()
 {
 
-  // this function asumes shiboken is available directly
+  // this function assumes shiboken is available directly
   // pip installs it in a wrong place
   // if you have installed shiboken with pip please symlink to correct directory
   PyObject * shiboken = NULL;

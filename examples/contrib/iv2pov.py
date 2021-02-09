@@ -28,7 +28,7 @@
 ##  * Better camera support
 ##  * Search graph for lights or cameras BEFORE processing. Add
 ##    if missing.
-##  * Better material handeling
+##  * Better material handling
 ##  * Make it into a library?
 ##
 

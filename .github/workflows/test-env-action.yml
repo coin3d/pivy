@@ -1,0 +1,51 @@
+name: lint, install, test
+
+on: [push]
+
+jobs:
+  build-linux:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 3
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Add conda to system path
+      run: |
+        # $CONDA is an environment variable pointing to the root of the miniconda directory
+        echo $CONDA/bin >> $GITHUB_PATH
+    - name: Install dependencies
+      run: |
+        conda install colorama cmake ninja swig coin3d simage soqt flake8 mesa-libgl-devel-cos6-x86_64 -c conda-forge
+    - if: matrix.os == 'ubuntu-latest'
+      name: Lint with flake8
+      run: |
+        flake8 . --count --select=E901,E999,F821,F822,F823 --show-source --statistics --exclude=.svn,CVS,.bzr,.hg,.git,__pycache__,.tox,.eggs,*.egg,scons,SoPyScript
+    - if: matrix.os == 'ubuntu-latest'
+      name: install (linux)
+      run: |
+        mkdir build;
+        cd build;
+        PIVY_CPP_FLAGS='-std=c++1z '
+        cmake -G "Ninja" -D CMAKE_BUILD_TYPE="Release" -D CMAKE_INSTALL_PREFIX:FILEPATH=$PREFIX ..;
+        
+    - if: matrix.os == 'macos-latest'
+      name: install (osx)
+      run: |
+        mkdir build;
+        cd build;
+        PIVY_CPP_FLAGS='-std=c++1z '
+        cmake -G "Ninja" -D CMAKE_BUILD_TYPE="Release" -D CMAKE_INSTALL_PREFIX:FILEPATH=$PREFIX ..;
+        
+    - if: matrix.os == 'windows-latest'
+      name: install (osx)
+      run: |
+        mkdir build;
+        cd build;
+        cmake -G "Ninja" -D CMAKE_BUILD_TYPE="Release" -D CMAKE_INSTALL_PREFIX:FILEPATH=%LIBRARY_PREFIX% ..;

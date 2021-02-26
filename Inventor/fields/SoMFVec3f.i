@@ -39,8 +39,9 @@ convert_SoMFVec3f_array(PyObject * input, int len, float temp[][3])
 
 /* free the list */
 %typemap(freearg) const float xyz[][3] {
-  if ($1) { delete[] $1; }
+  if ($1) { free($1); }
 }
+
 
 %typemap(in) const float xyz[3] (float temp[3]) {
   convert_SbVec3f_array($input, temp);

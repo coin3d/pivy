@@ -39,7 +39,7 @@ convert_SoMFVec4f_array(PyObject * input, int len, float temp[][4])
 
 /* free the list */
 %typemap(freearg) const float xy[][2] {
-  if ($1) { delete[] $1; }
+  if ($1) { free($1); }
 }
 
 %typemap(in) const float xyzw[4] (float temp[4]) {

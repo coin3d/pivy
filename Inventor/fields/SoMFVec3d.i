@@ -39,7 +39,7 @@ convert_SoMFVec3d_array(PyObject * input, int len, double temp[][3])
 
 /* free the list */
 %typemap(freearg) const double xyz[][3] {
-  if ($1) { delete[] $1; }
+  if ($1) { free($1); }
 }
 
 %typemap(in) const double xyz[3] (double temp[3]) {

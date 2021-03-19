@@ -1,21 +1,46 @@
 package:
   name: pivy
-  version: 0.6.0
+  version: {{ GIT_BUILD_STR }}
 
 build:
-  number: 4
+  number: 0
 
 source:
   path: ../../
 
 requirements:
-  build:
-    - python
-    - swig
-    - coin
-  run:
-    - python
-    - coin
+    build:
+        - {{ compiler("cxx") }}
+        - {{ cdt('mesa-libgl-devel') }}  # [linux]
+        - msinttypes  # [win]
+        - cmake
+        - ninja
+        - swig
+    host:
+        - python
+        - coin3d
+        - soqt
+        - qt
+    run:
+        - python
+        - coin3d
+        - qt
+        - pyside2
+        - soqt
+
+test:
+    imports:
+        - pivy.coin
+        - pivy.gui.soqt
 
 about:
-  summary: python buindings to coin
+    home: https://github.com/FreeCAD/pivy
+    license: ISC
+    license_file: LICENSE
+    summary: python bindings to coin3d.
+    doc_url: https://github.com/FreeCAD/pivy
+    dev_url: https://github.com/FreeCAD/pivy
+
+extra:
+    recipe-maintainers:
+        - looooo

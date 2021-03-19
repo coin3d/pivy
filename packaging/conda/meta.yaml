@@ -1,6 +1,6 @@
 package:
   name: pivy
-  version: {{ GIT_BUILD_STR }}
+  version: "master"
 
 build:
   number: 0

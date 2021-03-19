@@ -22,6 +22,10 @@ jobs:
       with:
         auto-update-conda: true
 
+    - name: install packages
+      run: |
+        conda install flake8 conda-build
+
     - if: matrix.os == 'ubuntu-latest'
       name: Lint with flake8
       run: |

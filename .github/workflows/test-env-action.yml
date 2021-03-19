@@ -34,4 +34,4 @@ jobs:
     - name: create package with conda
       run: |
         cd packaging;
-        conda build .
+        conda build . -c conda-forge

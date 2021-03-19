@@ -18,10 +18,18 @@ set_property(SOURCE coin.i PROPERTY INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}")
 set_property(SOURCE coin.i APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/fake_headers")
 set_property(SOURCE coin.i APPEND PROPERTY INCLUDE_DIRECTORIES "${Coin_INCLUDE_DIR}")
 
+
 swig_add_library(coin
     LANGUAGE python
     OUTPUT_DIR ${CMAKE_BINARY_DIR}/pivy
     SOURCES coin.i)
+
+if (APPLE)
+    set_target_properties(coin PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+elseif (WIN32)
+    set_target_properties(coin PROPERTIES COMPILE_FLAGS "/bigobj")
+    target_link_libraries(coin PUBLIC ${PYTHON_LIBRARIES})
+endif ()
 
 target_include_directories(coin
     PUBLIC
@@ -32,6 +40,7 @@ target_include_directories(coin
     )
 
 target_link_libraries(coin PUBLIC Coin::Coin)
+install(TARGETS coin DESTINATION ${python_libs}/pivy)
 
 
 if (SoQt_FOUND)
@@ -50,7 +59,12 @@ if (SoQt_FOUND)
         OUTPUT_DIR ${CMAKE_BINARY_DIR}/pivy/gui
         SOURCES soqt.i)
 
-
+    if (APPLE)
+        set_target_properties(soqt PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    elseif (WIN32)
+        set_target_properties(coin PROPERTIES COMPILE_FLAGS "/bigobj")
+        target_link_libraries(soqt PUBLIC ${PYTHON_LIBRARIES})
+    endif ()
 
     target_include_directories(soqt
         PUBLIC
@@ -63,4 +77,5 @@ if (SoQt_FOUND)
         )
 
     target_link_libraries(soqt PUBLIC SoQt::SoQt)
+    install(TARGETS soqt DESTINATION ${python_libs}/pivy/gui)
 endif()

@@ -25,6 +25,7 @@ jobs:
 
     - name: install packages
       run: |
+        conda init bash;
         conda install flake8 conda-build
 
     - name: Lint with flake8

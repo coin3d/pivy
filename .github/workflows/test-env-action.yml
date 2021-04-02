@@ -13,6 +13,7 @@ jobs:
       max-parallel: 3
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
+        py: ["3.7", "3.8", "3.9"]
 
     steps:
     - uses: actions/checkout@v2
@@ -34,4 +35,4 @@ jobs:
     - name: create package with conda
       run: |
         cd packaging;
-        conda build . -c conda-forge
+        conda build . -c conda-forge --python=${py}

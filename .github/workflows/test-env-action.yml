@@ -10,7 +10,7 @@ jobs:
   build-linux:
     runs-on: ${{ matrix.os }}
     strategy:
-      max-parallel: 3
+      max-parallel: 9
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
         py: ["3.7", "3.8", "3.9"]
@@ -27,10 +27,9 @@ jobs:
       run: |
         conda install flake8 conda-build
 
-    # - if: matrix.os == 'ubuntu-latest'
-    #   name: Lint with flake8
-    #   run: |
-    #     flake8 . --count --select=E901,E999,F821,F822,F823 --show-source --statistics --exclude=.svn,CVS,.bzr,.hg,.git,__pycache__,.tox,.eggs,*.egg,scons,SoPyScript
+      name: Lint with flake8
+      run: |
+        flake8 . --count --select=E901,E999,F821,F822,F823 --show-source --statistics --exclude=.svn,CVS,.bzr,.hg,.git,__pycache__,.tox,.eggs,*.egg,scons,SoPyScript
 
     - name: create package with conda
       run: |

@@ -23,7 +23,7 @@ jobs:
       with:
         auto-update-conda: true
         auto-activate-base: true
-        activate-environment: ""
+        activate-environment: "base"
 
     - name: install packages
       run: |

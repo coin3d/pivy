@@ -23,7 +23,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         auto-activate-base: true
-        activate-environment: ""
+        activate-environment: test
 
     - name: install packages
       run: |

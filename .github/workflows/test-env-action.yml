@@ -1,4 +1,4 @@
-name: lint-install-test
+name: lint-build-test
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build-linux:
+  build_n_lint:
     runs-on: ${{ matrix.os }}
     strategy:
       max-parallel: 9

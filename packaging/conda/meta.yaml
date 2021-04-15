@@ -29,9 +29,14 @@ requirements:
         - soqt
 
 test:
+    source-files:
+        - tests/*
     imports:
         - pivy.coin
         - pivy.gui.soqt
+    script:
+        - coin_tests.py
+
 
 about:
     home: https://github.com/FreeCAD/pivy

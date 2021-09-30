@@ -95,15 +95,11 @@ if (init_file_emulator() < 0) {
 */
 
 %pythoncode %{        
-for x in list(locals()):
-  value = locals()[x]
-  try:
-    if isinstance(value, type) and issubclass(value, SoFieldContainer):
-      for name in list(value.__dict__):
-        val = value.__dict__[name]
-        if isinstance(val, property):
-          delattr(value, name)
-  except NameError:
-    # value == SoSearchAction_duringSearchAll ???
-    pass
+for key in list(locals()):
+  x = locals()[key]
+  if isinstance(x, type) and issubclass(x, SoFieldContainer):
+    for name in list(x.__dict__):
+      thing = x.__dict__[name]
+      if isinstance(thing, property):
+        delattr(x, name)
 %}

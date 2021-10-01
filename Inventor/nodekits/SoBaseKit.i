@@ -2,6 +2,8 @@
 %extend SoBaseKit {
 %pythoncode %{
     def __getattr__(self,name):
+       if name == 'this':
+          return SoNode.__getattr__(self,name)
        c = _coin.SoBaseKit_getNodekitCatalog(self)
        if c.getPartNumber(name) >= 0:
            part = self.getPart(name,1)

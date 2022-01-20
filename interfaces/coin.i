@@ -28,6 +28,10 @@ applications."
 // https://stackoverflow.com/questions/40959436/swig-python-detected-a-memory-leak-of-type-uint32-t-no-destructor-found
 %include "stdint.i"
 
+%begin %{
+#define PY_SSIZE_T_CLEAN
+%}
+
 %{
 #if defined(_WIN32) || defined(__WIN32__)
 #include <windows.h>

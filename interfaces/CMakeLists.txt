@@ -28,19 +28,19 @@ if (APPLE)
     set_target_properties(coin PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 elseif (WIN32)
     set_target_properties(coin PROPERTIES COMPILE_FLAGS "/bigobj")
-    target_link_libraries(coin PUBLIC ${PYTHON_LIBRARIES})
+    target_link_libraries(coin PUBLIC ${Python_LIBRARIES})
 endif ()
 
 target_include_directories(coin
     PUBLIC
     ${Coin_INCLUDE_DIR}
-    ${PYTHON_INCLUDE_DIRS}
+    ${Python_INCLUDE_DIRS}
     PRIVATE
     ${CMAKE_SOURCE_DIR}/interfaces
     )
 
 target_link_libraries(coin PUBLIC Coin::Coin)
-install(TARGETS coin DESTINATION ${python_libs}/pivy)
+install(TARGETS coin DESTINATION ${Python_SITEARCH}/pivy)
 
 
 if (SoQt_FOUND)
@@ -63,7 +63,7 @@ if (SoQt_FOUND)
         set_target_properties(soqt PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     elseif (WIN32)
         set_target_properties(coin PROPERTIES COMPILE_FLAGS "/bigobj")
-        target_link_libraries(soqt PUBLIC ${PYTHON_LIBRARIES})
+        target_link_libraries(soqt PUBLIC ${Python_LIBRARIES})
     endif ()
 
     target_include_directories(soqt
@@ -71,11 +71,11 @@ if (SoQt_FOUND)
         ${SoQt_INCLUDE_DIRS}
         ${Qt5Gui_INCLUDE_DIRS}
         ${Qt5Widgets_INCLUDE_DIRS}
-        ${PYTHON_INCLUDE_DIRS}
+        ${Python_INCLUDE_DIRS}
         PRIVATE
         ${CMAKE_SOURCE_DIR}/interfaces
         )
 
     target_link_libraries(soqt PUBLIC SoQt::SoQt)
-    install(TARGETS soqt DESTINATION ${python_libs}/pivy/gui)
+    install(TARGETS soqt DESTINATION ${Python_SITEARCH}/pivy/gui)
 endif()

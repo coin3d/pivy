@@ -14,13 +14,12 @@ if (SoQt_FOUND)
     find_package(Qt5 COMPONENTS Core Widgets Gui REQUIRED)
 endif()
 
-find_package(PythonInterp REQUIRED)
-find_package(PythonLibs REQUIRED)
+find_package(Python REQUIRED COMPONENTS Interpreter Development)
 
 # SWIGIFY HEADERS
 # doing this with the origin python functions
 
-execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
+execute_process(COMMAND ${Python_EXECUTABLE} -c
 "import sys; sys.path.append('${CMAKE_SOURCE_DIR}'); \
 import install_helpers; install_helpers.swigify('${CMAKE_SOURCE_DIR}', '${Coin_INCLUDE_DIR}');")
 
@@ -34,18 +33,11 @@ add_copy_directory(pivy ${CMAKE_SOURCE_DIR}/pivy
     PATTERN *.py
 )
 
-
-# find python install destination
-
-execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
-  "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
-  OUTPUT_VARIABLE python_libs OUTPUT_STRIP_TRAILING_WHITESPACE )
-
 add_subdirectory(interfaces)
 
 install(DIRECTORY
     ${CMAKE_BINARY_DIR}/pivy
-    DESTINATION ${python_libs}
+    DESTINATION ${Python_SITEARCH}
     FILES_MATCHING
     PATTERN "*.py"
     PATTERN "*.so"

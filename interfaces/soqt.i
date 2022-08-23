@@ -23,6 +23,9 @@ otherwise it will fall back to regular SWIG structures."
 
 %module(package="pivy.gui", docstring=SOQT_MODULE_DOCSTRING) soqt
 
+%begin %{
+#define PY_SSIZE_T_CLEAN
+%}
 
 %{
 /*

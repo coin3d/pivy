@@ -29,7 +29,7 @@ typedef int Py_ssize_t;
 #endif
 
 PyObject *
-cast_internal(PyObject * self, PyObject * obj, const char * type_name, int type_len)
+cast_internal(PyObject * self, PyObject * obj, const char * type_name, Py_ssize_t type_len)
 {
   swig_type_info * swig_type = 0;
   void * cast_obj = 0;
@@ -76,7 +76,7 @@ SWIGEXPORT PyObject *
 cast(PyObject * self, PyObject * args)
 {
   char * type_name;
-  int type_len;
+  Py_ssize_t type_len;
   PyObject * obj = 0;
 
   if (!PyArg_ParseTuple(args, "Os#:cast", &obj, &type_name, &type_len)) {

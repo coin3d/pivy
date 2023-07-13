@@ -10,7 +10,7 @@
   if (PyUnicode_Check($input))
   {
     $1 = (void *) PyUnicode_AsUTF8($input);
-    $2 = PyUnicode_GET_SIZE($input);
+    $2 = PyUnicode_GET_LENGTH($input);
   }
   else if (PyBytes_Check($input))
   { 

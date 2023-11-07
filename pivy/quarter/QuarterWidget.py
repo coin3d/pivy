@@ -110,7 +110,7 @@
   \subpage examiner
 """
 
-from PySide2 import QtCore, QtGui, QtOpenGL
+from pivy.qt import QtCore, QtGui, QtOpenGL
 
 from pivy import coin
 

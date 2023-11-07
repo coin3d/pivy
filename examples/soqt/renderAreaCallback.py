@@ -2,7 +2,7 @@ from __future__ import print_function
 import sys
 from pivy import coin
 from pivy.gui import soqt
-from PySide2.QtCore import QEvent
+from pivy.qt.QtCore import QEvent
 
 
 def foo(a, event):

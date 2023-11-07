@@ -1,16 +1,19 @@
 package:
-  name: pivy
-  version: "master"
+    name: pivy
+    version: "master"
 
 build:
-  number: 0
+    number: 0
+    script_env:
+        - USE_QT6=1  # [py >= 312]
+        - USE_QT6=0  # [py < 312]
 
 source:
   path: ../../
 
 requirements:
     build:
-        - {{ compiler("cxx") }}
+        - compilers
         - {{ cdt('mesa-libgl-devel') }}  # [linux]
         - msinttypes  # [win]
         - cmake
@@ -19,14 +22,19 @@ requirements:
     host:
         - python
         - coin3d
-        - soqt
-        - qt
+        - soqt      # [py < 312]
+        - qt-main   # [py < 312]
+        - soqt6     # [py >= 312]
+        - qt6-main  # [py >= 312]
     run:
         - python
         - coin3d
-        - qt
-        - pyside2
-        - soqt
+        - qt-main   # [py < 312]
+        - soqt      # [py < 312]
+        - pyside2   # [py < 312]
+        - qt6-main  # [py >= 312]
+        - soqt6     # [py >= 312]
+        - pyside6   # [py >= 312]
 
 test:
     source-files:

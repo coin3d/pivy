@@ -14,10 +14,10 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-from PySide2.QtCore import QTimer
-from PySide2.QtCore import QObject
-from PySide2.QtCore import QThread
-from PySide2.QtCore import SIGNAL
+from pivy.qt.QtCore import QTimer
+from pivy.qt.QtCore import QObject
+from pivy.qt.QtCore import QThread
+from pivy.qt.QtCore import SIGNAL
 
 from pivy.coin import SoDB
 from pivy.coin import SbTime

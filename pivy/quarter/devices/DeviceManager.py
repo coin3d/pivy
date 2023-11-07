@@ -24,8 +24,8 @@
 """
 from __future__ import print_function
 
-from PySide2.QtCore import QEvent
-from PySide2.QtGui import QMouseEvent
+from pivy.qt.QtCore import QEvent
+from pivy.qt.QtGui import QMouseEvent
 from pivy.coin import SoLocation2Event
 from pivy.coin import SbVec2s
 

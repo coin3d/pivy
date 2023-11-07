@@ -1,5 +1,5 @@
 import sys
-from PySide2 import QtGui, QtWidgets
+from pivy.qt import QtGui, QtWidgets
 from pivy import quarter, coin
 from OpenGL.GL import *
 

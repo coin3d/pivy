@@ -14,10 +14,10 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-from PySide2.QtCore import QThread
-from PySide2.QtCore import QWaitCondition
-from PySide2.QtCore import QMutex
-from PySide2.QtCore import SIGNAL
+from pivy.qt.QtCore import QThread
+from pivy.qt.QtCore import QWaitCondition
+from pivy.qt.QtCore import QMutex
+from pivy.qt.QtCore import SIGNAL
 
 
 class SignalThread(QThread):

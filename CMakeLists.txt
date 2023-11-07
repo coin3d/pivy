@@ -3,6 +3,7 @@ project(pivy)
 
 
 option(DISABLE_SWIG_WARNINGS "if on no swig warnings are shown" OFF)
+option(PIVY_USE_QT6 "Prefer Qt6 over Qt5 if available" OFF)
 
 find_package(SWIG 4.0.0 REQUIRED)
 include(${SWIG_USE_FILE})
@@ -11,7 +12,11 @@ find_package(Coin CONFIG REQUIRED)
 find_package(SoQt CONFIG)
 
 if (SoQt_FOUND)
-    find_package(Qt5 COMPONENTS Core Widgets Gui REQUIRED)
+    if (PIVY_USE_QT6)
+        find_package(Qt6 COMPONENTS Core Widgets Gui REQUIRED)
+    else (PIVY_USE_QT6)
+        find_package(Qt5 COMPONENTS Core Widgets Gui REQUIRED)
+    endif (PIVY_USE_QT6)
 endif()
 
 find_package(Python REQUIRED COMPONENTS Interpreter Development)

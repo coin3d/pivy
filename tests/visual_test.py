@@ -1,6 +1,6 @@
 import sys
 
-from PySide2 import QtWidgets
+from pivy.qt import QtWidgets
 from pivy import coin, quarter
 
 

@@ -27,10 +27,10 @@ from pivy.coin import *
 from pivy.gui.soqt import *
 
 try:
-    from PySide2.QtWidgets import *
+    from pivy.qt.QtWidgets import *
 except ImportError:
-    from PySide2.QtGui import *
-from PySide2.QtCore import *
+    from pivy.qt.QtGui import *
+from pivy.qt.QtCore import *
 
 class EmbeddedWindow(QMainWindow):
     def __init__(self, *args):

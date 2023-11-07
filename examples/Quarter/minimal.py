@@ -18,7 +18,7 @@
 
 import sys
 
-from PySide2.QtWidgets import QApplication
+from pivy.qt.QtWidgets import QApplication
 
 from pivy.coin import SoSeparator
 from pivy.coin import SoBaseColor

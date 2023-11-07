@@ -1,6 +1,6 @@
 import sys
-from PySide2.QtGui import QColor
-from PySide2.QtWidgets import QApplication
+from pivy.qt.QtGui import QColor
+from pivy.qt.QtWidgets import QApplication
 from pivy import quarter, coin
 
 

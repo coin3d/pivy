@@ -119,7 +119,9 @@ if not gui:
         class SoGui(object):
             @staticmethod
             def init(*args):
-                SoGui_Quarter_Wrapper.qApp = QtWidgets.QApplication(sys.argv)
+                SoGui_Quarter_Wrapper.qApp = QtWidgets.QApplication.instance()
+                if SoGui_Quarter_Wrapper.qApp is None: 
+                    SoGui_Quarter_Wrapper.qApp = QtWidgets.QApplication(sys.argv)
                 return pivy.quarter.QuarterWidget()
 
             @staticmethod

@@ -31,7 +31,7 @@ jobs:
     - if: matrix.os == 'ubuntu-latest'
       name: Lint with ruff
       run: |
-        conda install ruff
+        conda install ruff -c conda-forge
         sudo apt-get install freeglut3 freeglut3-dev
         sudo ln -s /usr/lib/x86_64-linux-gnu/ /usr/lib64
         ${CONDA}/bin/ruff . --count --select=E901,E999,F821,F822,F823 --show-source --statistics --exclude=.svn,CVS,.bzr,.hg,.git,__pycache__,.tox,.eggs,*.egg,scons,SoPyScript

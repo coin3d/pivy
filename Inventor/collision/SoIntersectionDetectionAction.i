@@ -14,7 +14,7 @@ SoIntersectionVisitationPythonCB(void * closure,
   func = PyTuple_GetItem((PyObject *)closure, 0);
   arglist = Py_BuildValue("(OO)", PyTuple_GetItem((PyObject *)closure, 1), path);
 
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
+  if ((result = PyObject_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
   else {
@@ -45,7 +45,7 @@ SoIntersectionFilterPythonCB(void * closure,
   func = PyTuple_GetItem((PyObject *)closure, 0);
   arglist = Py_BuildValue("(OOO)", PyTuple_GetItem((PyObject *)closure, 1), path1, path2);
 
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
+  if ((result = PyObject_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
   else {
@@ -77,7 +77,7 @@ SoIntersectionPythonCB(void * closure,
   func = PyTuple_GetItem((PyObject *)closure, 0);
   arglist = Py_BuildValue("(OOO)", PyTuple_GetItem((PyObject *)closure, 1), primitive1, primitive2);
 
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
+  if ((result = PyObject_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
   else {

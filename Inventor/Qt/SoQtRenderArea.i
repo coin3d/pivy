@@ -39,7 +39,7 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
         {
           arglist = Py_BuildValue("(nO)", event, qevent_type);
 
-          if (!(qev = PyEval_CallObject(shiboken_wrapinst_func, arglist))) {
+          if (!(qev = PyObject_CallObject(shiboken_wrapinst_func, arglist))) {
             PyErr_Print();
           }
 
@@ -59,7 +59,7 @@ SoQtRenderAreaEventPythonCB(void * closure, QEvent * event)
   func = PyTuple_GetItem((PyObject *)closure, 0);
   arglist = Py_BuildValue("(OO)", PyTuple_GetItem((PyObject *)closure, 1), qev);
 
-  if (!(result = PyEval_CallObject(func, arglist))) {
+  if (!(result = PyObject_CallObject(func, arglist))) {
     PyErr_Print();
   } else {
     ret = FALSE;

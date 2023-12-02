@@ -12,7 +12,7 @@ SoDraggerPythonCB(void * data, SoDragger * dragger)
   func = PyTuple_GetItem((PyObject *)data, 0);
   arglist = Py_BuildValue("(OO)", PyTuple_GetItem((PyObject *)data, 1), dragCB);
 
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
+  if ((result = PyObject_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
 

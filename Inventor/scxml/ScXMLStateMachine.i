@@ -13,7 +13,7 @@ ScXMLStateMachineDeletePythonCB(void * userdata,
   func = PyTuple_GetItem((PyObject *)userdata, 0);
   arglist = Py_BuildValue("(OO)", PyTuple_GetItem((PyObject *)userdata, 1), statemachineCB);
 
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
+  if ((result = PyObject_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
 
@@ -41,7 +41,7 @@ ScXMLStateChangePythonCB(void * userdata,
 			  statemachineCB, stateidentifier,
 			  enterstate, success);
   
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
+  if ((result = PyObject_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
 

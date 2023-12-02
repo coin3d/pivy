@@ -211,7 +211,7 @@ SoPyScript::doPyAction(SoAction * action, const char * funcname)
       } else {
         PyObject * argtuple = Py_BuildValue("(O)", pyAction);
         PyObject * result;
-        if (!(result = PyEval_CallObject(func, argtuple))) {
+        if (!(result = PyObject_CallObject(func, argtuple))) {
           PyErr_Print();
         }
         Py_XDECREF(result);
@@ -659,7 +659,7 @@ SoPyScript::eval_cb(void * data, SoSensor *)
           PyErr_SetString(PyExc_TypeError, errMsg.getString());
         } else {
           PyObject * result;
-          if (!(result = PyEval_CallObject(func, NULL))) {
+          if (!(result = PyObject_CallObject(func, NULL))) {
             PyErr_Print();
           }
           Py_XDECREF(result);

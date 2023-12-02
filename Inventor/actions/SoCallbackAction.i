@@ -15,7 +15,7 @@ SoCallbackActionPythonCB(void * userdata,
   func = PyTuple_GetItem((PyObject *)userdata, 0);
   arglist = Py_BuildValue("(OOO)", PyTuple_GetItem((PyObject *)userdata, 1), acCB, pynode);
 
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
+  if ((result = PyObject_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
   else {
@@ -49,7 +49,7 @@ SoTrianglePythonCB(void * userdata, SoCallbackAction * action,
   func = PyTuple_GetItem((PyObject *)userdata, 0);
   arglist = Py_BuildValue("(OOOOO)", PyTuple_GetItem((PyObject *)userdata, 1), acCB, vertex1, vertex2, vertex3);
 
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
+  if ((result = PyObject_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
 
@@ -79,7 +79,7 @@ SoLineSegmentPythonCB(void * userdata, SoCallbackAction * action,
   func = PyTuple_GetItem((PyObject *)userdata, 0);
   arglist = Py_BuildValue("(OOOO)", PyTuple_GetItem((PyObject *)userdata, 1), acCB, vertex1, vertex2);
 
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
+  if ((result = PyObject_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
 
@@ -105,7 +105,7 @@ SoPointPythonCB(void * userdata, SoCallbackAction * action, const SoPrimitiveVer
   func = PyTuple_GetItem((PyObject *)userdata, 0);
   arglist = Py_BuildValue("(OOO)", PyTuple_GetItem((PyObject *)userdata, 1), acCB, vertex);
 
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
+  if ((result = PyObject_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
 

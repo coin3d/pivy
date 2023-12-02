@@ -149,7 +149,7 @@ static PyObject* getShiboken()
           
           arglist = Py_BuildValue("(nO)", $1, qevent_type);
           
-          if (!($result = PyEval_CallObject(shiboken_wrapinst_func, arglist))) {
+          if (!($result = PyObject_CallObject(shiboken_wrapinst_func, arglist))) {
             PyErr_Print();
           }
           
@@ -191,7 +191,7 @@ static PyObject* getShiboken()
           
           arglist = Py_BuildValue("(nO)", $1, qwidget_type);
           
-          if (!($result = PyEval_CallObject(shiboken_wrapinst_func, arglist))) {
+          if (!($result = PyObject_CallObject(shiboken_wrapinst_func, arglist))) {
             PyErr_Print();
           }
           
@@ -221,7 +221,7 @@ static PyObject* getShiboken()
       if (PyCallable_Check(shiboken_unwrapinst_func)) {
         PyObject *arglist = NULL, *address = NULL;
         arglist = Py_BuildValue("(O)", $input);
-        if (!(address = PyEval_CallObject(shiboken_unwrapinst_func, arglist))) {
+        if (!(address = PyObject_CallObject(shiboken_unwrapinst_func, arglist))) {
           PyErr_Print();
         } else if (PyNumber_Check(address)) {
           $1 = (QEvent*)PyLong_AsVoidPtr(address);
@@ -260,7 +260,7 @@ static PyObject* getShiboken()
         if (PyCallable_Check(shiboken_unwrapinst_func)) {
           PyObject *arglist = NULL, *address = NULL;
           arglist = Py_BuildValue("(O)", $input);
-          if (!(address = PyEval_CallObject(shiboken_unwrapinst_func, arglist))) {
+          if (!(address = PyObject_CallObject(shiboken_unwrapinst_func, arglist))) {
             PyErr_Print();
           } else if (PyNumber_Check(address)) {
             $1 = (QWidget*)PyLong_AsVoidPtr(address);
@@ -298,7 +298,7 @@ class QWidget { QWidget(QWidget* parent=0, const char* name=0, WFlags f=0); };
       if (PyCallable_Check(shiboken_unwrapinst_func)) {
         PyObject *arglist = NULL, *address = NULL;
         arglist = Py_BuildValue("(O)", $input);
-        if (!(address = PyEval_CallObject(shiboken_unwrapinst_func, arglist))) {
+        if (!(address = PyObject_CallObject(shiboken_unwrapinst_func, arglist))) {
           PyErr_Print();
         } else if (PyNumber_Check(address)) {
          ptr = (QEvent*)PyLong_AsVoidPtr(address);
@@ -335,7 +335,7 @@ class QWidget { QWidget(QWidget* parent=0, const char* name=0, WFlags f=0); };
       if (PyCallable_Check(shiboken_unwrapinst_func)) {
         PyObject *arglist = NULL, *address = NULL;
         arglist = Py_BuildValue("(O)", $input);
-        if (!(address = PyEval_CallObject(shiboken_unwrapinst_func, arglist))) {
+        if (!(address = PyObject_CallObject(shiboken_unwrapinst_func, arglist))) {
           PyErr_Print();
         } else if (PyNumber_Check(address)) {
          ptr = (QWidget*)PyLong_AsVoidPtr(address);

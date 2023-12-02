@@ -13,7 +13,7 @@ SoVolumeRenderAbortPythonCB(int totalslices, int thisslice, void * userdata)
                           PyInt_FromLong(thisslice),
                           PyTuple_GetItem((PyObject *)userdata, 1));
 
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
+  if ((result = PyObject_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
 

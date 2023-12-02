@@ -13,7 +13,7 @@ SoSelectionPathPythonCB(void * data, SoPath * path)
   func = PyTuple_GetItem((PyObject *)data, 0);
   arglist = Py_BuildValue("(OO)", PyTuple_GetItem((PyObject *)data, 1), pathCB);
 
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
+  if ((result = PyObject_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
 
@@ -36,7 +36,7 @@ SoSelectionClassPythonCB(void * data, SoSelection * sel)
   func = PyTuple_GetItem((PyObject *)data, 0);
   arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)data, 1), selCB);
 
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
+  if ((result = PyObject_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
 
@@ -59,7 +59,7 @@ SoSelectionPickPythonCB(void * data, const SoPickedPoint * pick)
   func = PyTuple_GetItem((PyObject *)data, 0);
   arglist = Py_BuildValue("OO", PyTuple_GetItem((PyObject *)data, 1), pickCB);
 
-  if ((result = PyEval_CallObject(func, arglist)) == NULL) {
+  if ((result = PyObject_CallObject(func, arglist)) == NULL) {
     PyErr_Print();
   }
   else {

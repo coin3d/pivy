@@ -53,6 +53,7 @@ if (SoQt_FOUND)
     set_property(SOURCE soqt.i PROPERTY INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}")
     set_property(SOURCE soqt.i APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/fake_headers")
     set_property(SOURCE soqt.i APPEND PROPERTY INCLUDE_DIRECTORIES "${SoQt_INCLUDE_DIRS}")
+    set_property(SOURCE soqt.i APPEND PROPERTY INCLUDE_DIRECTORIES "${Coin_INCLUDE_DIR}")
 
 
     swig_add_library(soqt
@@ -76,6 +77,7 @@ if (SoQt_FOUND)
 
     target_include_directories(soqt
         PUBLIC
+        ${Coin_INCLUDE_DIR}
         ${SoQt_INCLUDE_DIRS}
         ${QT_INC_DIRS}
         ${Python_INCLUDE_DIRS}

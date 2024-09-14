@@ -37,9 +37,7 @@ endif()
 # SWIGIFY HEADERS
 # doing this with the origin python functions
 
-execute_process(COMMAND ${Python_EXECUTABLE} -c
-"import sys; sys.path.append('${CMAKE_SOURCE_DIR}'); \
-import install_helpers; install_helpers.swigify('${CMAKE_SOURCE_DIR}', '${Coin_INCLUDE_DIR}');")
+execute_process(COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/install_helpers.py ${CMAKE_SOURCE_DIR} ${Coin_INCLUDE_DIR})
 
 
 # copy the python module

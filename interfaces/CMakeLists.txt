@@ -40,7 +40,7 @@ target_include_directories(coin
     )
 
 target_link_libraries(coin PUBLIC Coin::Coin)
-install(TARGETS coin DESTINATION ${Python_SITEARCH}/pivy)
+install(TARGETS coin DESTINATION ${PIVY_Python_SITEARCH}/pivy)
 
 
 if (SoQt_FOUND)
@@ -79,5 +79,5 @@ if (SoQt_FOUND)
         )
 
     target_link_libraries(soqt PUBLIC SoQt::SoQt)
-    install(TARGETS soqt DESTINATION ${Python_SITEARCH}/pivy/gui)
+    install(TARGETS soqt DESTINATION ${PIVY_Python_SITEARCH}/pivy/gui)
 endif()

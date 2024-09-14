@@ -20,6 +20,15 @@ endif()
 
 find_package(Python REQUIRED COMPONENTS Interpreter Development)
 
+if (NOT PIVY_Python_SITEARCH)
+    SET(PIVY_Python_SITEARCH ${Python_SITEARCH})
+endif()
+
+if (Python_FOUND)
+	MESSAGE(STATUS "Python_FOUND: TRUE")
+	MESSAGE(STATUS "PIVY_Python_SITEARCH: ${PIVY_Python_SITEARCH}")
+endif()
+
 if (Coin_FOUND)
 	MESSAGE(STATUS "COIN_FOUND: TRUE")
 	MESSAGE(STATUS "COIN_INCLUDE_DIR: ${Coin_INCLUDE_DIR}")
@@ -53,7 +62,7 @@ add_subdirectory(interfaces)
 
 install(DIRECTORY
     ${CMAKE_BINARY_DIR}/pivy
-    DESTINATION ${Python_SITEARCH}
+    DESTINATION ${PIVY_Python_SITEARCH}
     FILES_MATCHING
     PATTERN "*.py"
     PATTERN "*.so"

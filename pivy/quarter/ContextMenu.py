@@ -17,7 +17,12 @@
 from pivy.qt import QtCore
 from pivy.qt.QtCore import QObject
 from pivy.qt.QtGui import QMouseEvent
-from pivy.qt.QtWidgets import QMenu, QActionGroup, QAction
+from pivy.qt.QtWidgets import QMenu
+
+try:
+    from pivy.qt.QtGui import QActionGroup, QAction
+except ImportError:
+    from pivy.qt.QtWidgets import QActionGroup, QAction
 
 from pivy import coin
 from pivy.coin import SoEventManager, SoScXMLStateMachine, SoRenderManager, SoGLRenderAction

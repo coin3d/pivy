@@ -66,11 +66,16 @@ if (SoQt_FOUND)
         target_link_libraries(soqt PUBLIC ${Python_LIBRARIES})
     endif ()
 
+    if (PIVY_USE_QT6)
+        set(QT_INC_DIRS ${Qt6Gui_INCLUDE_DIRS} ${Qt6Widgets_INCLUDE_DIRS})
+    else ()
+        set(QT_INC_DIRS ${Qt5Gui_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS})
+    endif ()
+
     target_include_directories(soqt
         PUBLIC
         ${SoQt_INCLUDE_DIRS}
-        ${Qt5Gui_INCLUDE_DIRS}
-        ${Qt5Widgets_INCLUDE_DIRS}
+        ${QT_INC_DIRS}
         ${Python_INCLUDE_DIRS}
         PRIVATE
         ${CMAKE_SOURCE_DIR}/interfaces

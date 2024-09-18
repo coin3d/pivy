@@ -119,6 +119,12 @@ template <typename T> const char* get_typename(T& object)
 #endif
 /////////////////////////////////////////////////////
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#define SHIBOKEN "shiboken6"
+#else
+#define SHIBOKEN "shiboken2"
+#endif
+
 static const char * PYSIDE_QT = "pivy.gui.qt";
 
 static PyObject* getShiboken()
@@ -128,9 +134,9 @@ static PyObject* getShiboken()
   // pip installs it in a wrong place
   // if you have installed shiboken with pip please symlink to correct directory
   PyObject * shiboken = NULL;
-  if (!(shiboken = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), "shiboken2"))) {
+  if (!(shiboken = PyDict_GetItemString(PyModule_GetDict(PyImport_AddModule("__main__")), SHIBOKEN))) {
     // simple import shiboken from python.
-   shiboken = PyImport_ImportModule("shiboken2");
+   shiboken = PyImport_ImportModule(SHIBOKEN);
   }
   return shiboken;
 }

@@ -74,7 +74,7 @@ class MouseHandler(DeviceHandler):
         # value indicates that the wheel was rotated backwards toward the
         # user.
 
-        if qevent.delta() > 0:
+        if qevent.angleDelta().y() > 0:
             self.mousebutton.setButton(coin.SoMouseButtonEvent.BUTTON4)
         else:
             self.mousebutton.setButton(coin.SoMouseButtonEvent.BUTTON5)
@@ -97,7 +97,7 @@ class MouseHandler(DeviceHandler):
             self.mousebutton.setButton(coin.SoMouseButtonEvent.BUTTON1)
         elif qevent.button() == QtCore.Qt.RightButton:
             self.mousebutton.setButton(coin.SoMouseButtonEvent.BUTTON2)
-        elif qevent.button() == QtCore.Qt.MidButton:
+        elif qevent.button() == QtCore.Qt.MiddleButton:
             self.mousebutton.setButton(coin.SoMouseButtonEvent.BUTTON3)
         else:
             self.mousebutton.setButton(coin.SoMouseButtonEvent.ANY)

@@ -35,6 +35,6 @@ class DeviceHandler:
         # Note: On Mac OS X, the ControlModifier value corresponds to the
         # Command keys on the Macintosh keyboard, and the MetaModifier
         # value corresponds to the Control keys.
-        soevent.setShiftDown(int(qevent.modifiers() & QtCore.Qt.ShiftModifier) == QtCore.Qt.ShiftModifier)    
-        soevent.setAltDown(int(qevent.modifiers() & QtCore.Qt.AltModifier) == QtCore.Qt.AltModifier)
-        soevent.setCtrlDown(int(qevent.modifiers() & QtCore.Qt.ControlModifier) == QtCore.Qt.ControlModifier)
+        soevent.setShiftDown(qevent.modifiers() & QtCore.Qt.ShiftModifier == QtCore.Qt.ShiftModifier)
+        soevent.setAltDown(qevent.modifiers() & QtCore.Qt.AltModifier == QtCore.Qt.AltModifier)
+        soevent.setCtrlDown(qevent.modifiers() & QtCore.Qt.ControlModifier == QtCore.Qt.ControlModifier)

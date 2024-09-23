@@ -37,6 +37,9 @@ clangxx = "*"
 [feature.build.target.osx-64.dependencies]
 clangxx = "*"
 
+[feature.build.target.win-64.dependencies]
+clangxx = "*"
+
 [feature.build.tasks]
 configure = { cmd = ["cmake", "-G", "Ninja", "-B", "build", "-S", ".",
                      "-D", "CMAKE_BUILD_TYPE='Release'",

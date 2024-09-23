@@ -1,0 +1,29 @@
+[project]
+authors = ["Lorenz Lechner <sppedflyer@gmail.com>"]
+channels = ["conda-forge"]
+description = "Add a short description here"
+name = "pivy"
+platforms = ["linux-aarch64"]
+version = "0.1.0"
+
+[tasks]
+
+configure = { cmd = ["cmake", "-G", "Ninja", "-B", "build", "-S", ".",
+                     "-D", "CMAKE_BUILD_TYPE='Release'",
+                     "-D", "CMAKE_INSTALL_PREFIX:FILEPATH=$CONDA_PREFIX",
+                     "-D", "PIVY_USE_QT6:BOOL=ON",
+                     "-D", "QT_HOST_PATH=$CONDA_PREFIX" 
+                     ], depends-on = []}
+
+build = { cmd = ["ninja", "-C", "build", "-j", "3", "install"], depends-on = ["configure"]}
+
+[dependencies]
+python = ">=3.12.6,<4"
+swig = ">=4.2.1,<5"
+coin3d = ">=4.0.3,<5"
+cmake = ">=3.30.3,<4"
+ninja = ">=1.12.1,<2"
+soqt6 = ">=1.6.2,<2"
+qt6-main = ">=6.7.2,<7"
+pyside6 = ">=6.7.2,<7"
+gxx = ">=14.1.0,<15"

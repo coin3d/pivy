@@ -45,5 +45,6 @@ configure = { cmd = ["cmake", "-G", "Ninja", "-B", "build", "-S", ".",
                      ], depends-on = []}
 
 build = { cmd = ["ninja", "-C", "build", "-j", "3", "install"], depends-on = ["configure"]}
+test = { cmd = ["python", "tests/coin_tests.py"], depends-on = ["build"]}
 
 [dependencies]

@@ -12,29 +12,29 @@ version = "0.1.0"
 build = ["build"]
 
 [feature.build.dependencies]
-python = ">=3.12.6,<4"
-swig = ">=4.2.1,<5"
-coin3d = ">=4.0.3,<5"
-cmake = ">=3.30.3,<4"
-ninja = ">=1.12.1,<2"
-soqt6 = ">=1.6.2,<2"
-qt6-main = ">=6.7.2,<7"
-pyside6 = ">=6.7.2,<7"
+python = "*"
+swig = "*"
+coin3d = "*"
+cmake = "*"
+ninja = "*"
+soqt6 = "*"
+qt6-main = "*"
+pyside6 = "*"
 
 
 [feature.build.target.linux-64.dependencies]
-mesa-libgl-devel-cos7-x86_64 = ">=18.3.4,<19"
-gxx = ">=14.1.0,<15"
+mesa-libgl-devel-cos7-x86_64 = "*"
+gxx = "*"
 
 [feature.build.target.linux-aarch64.dependencies]
-mesa-libgl-devel-cos7-aarch64 = ">=18.3.4,<19"
-gxx = ">=14.1.0,<15"
+mesa-libgl-devel-cos7-aarch64 = "*"
+gxx = "*"
 
 [feature.build.target.osx-arm64.dependencies]
-clangxx = ">=19.1.0,<20"
+clangxx = "*"
 
 [feature.build.target.osx-64.dependencies]
-clangxx = ">=19.1.0,<20"
+clangxx = "*"
 
 [feature.build.tasks]
 configure = { cmd = ["cmake", "-G", "Ninja", "-B", "build", "-S", ".",

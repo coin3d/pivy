@@ -22,24 +22,14 @@ soqt6 = "*"
 qt6-main = "*"
 pyside6 = "*"
 simage = "*"
+clangxx = "*"
 
 
 [feature.build.target.linux-64.dependencies]
 mesa-libgl-devel-cos7-x86_64 = "*"
-gxx = "*"
 
 [feature.build.target.linux-aarch64.dependencies]
 mesa-libgl-devel-cos7-aarch64 = "*"
-gxx = "*"
-
-[feature.build.target.osx-arm64.dependencies]
-clangxx = "*"
-
-[feature.build.target.osx-64.dependencies]
-clangxx = "*"
-
-[feature.build.target.win-64.dependencies]
-clangxx = "*"
 
 [feature.build.tasks]
 configure = { cmd = ["cmake", "-G", "Ninja", "-B", "build", "-S", ".",

@@ -1,7 +1,7 @@
 [project]
 authors = ["Lorenz Lechner <sppedflyer@gmail.com>"]
 channels = ["conda-forge"]
-description = "Add a short description here"
+description = "combining building and dependency management with pixi"
 name = "pivy"
 platforms = ["osx-arm64", "linux-64", "linux-aarch64", "win-64", "osx-64"]
 version = "0.1.0"
@@ -21,6 +21,7 @@ ninja = "*"
 soqt6 = "*"
 qt6-main = "*"
 pyside6 = "*"
+simage = "*"
 
 
 [feature.build.target.linux-64.dependencies]
@@ -48,7 +49,7 @@ configure = { cmd = ["cmake", "-G", "Ninja", "-B", "build", "-S", ".",
                      "-D", "QT_HOST_PATH=$CONDA_PREFIX" 
                      ], depends-on = []}
 
-build = { cmd = ["ninja", "-C", "build", "-j", "3", "install"], depends-on = ["configure"]}
+build = { cmd = ["ninja", "-C", "build", "-j", "1", "install"], depends-on = ["configure"]}
 test = { cmd = ["python", "tests/coin_tests.py"], depends-on = ["build"]}
 
 [feature.lint.dependencies]

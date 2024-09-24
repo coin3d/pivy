@@ -104,6 +104,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/qt6-main-6.7.2-hadfd74e_5.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/readline-8.2-h8228510_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/rhash-1.4.4-hd590300_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/simage-1.8.3-heeb6533_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/soqt6-1.6.2-he24bac0_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/swig-4.2.1-hfb18ccb_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/sysroot_linux-64-2.17-h4a8ded7_16.conda
@@ -238,6 +239,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/qt6-main-6.7.2-hfe1ece3_5.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/readline-8.2-h8fc344f_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/rhash-1.4.4-h31becfc_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/simage-1.8.3-h3825e49_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/soqt6-1.6.2-hce2475e_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/swig-4.2.1-h0a98329_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/sysroot_linux-aarch64-2.17-h5b4a56d_16.conda
@@ -339,6 +341,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/qt6-main-6.7.2-h03d9f68_5.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/readline-8.2-h9e318b2_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/rhash-1.4.4-h0dc2134_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-64/simage-1.8.3-hed17058_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/soqt6-1.6.2-h7b53577_2.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/swig-4.2.1-h5c5c8f3_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/tk-8.6.13-h1abcd95_1.conda
@@ -412,6 +415,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/qt6-main-6.7.2-h92f6480_5.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/readline-8.2-h92ec313_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/rhash-1.4.4-hb547adb_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/simage-1.8.3-hd9f18ba_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/soqt6-1.6.2-h708156c_2.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/swig-4.2.1-hd6c3d49_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/tk-8.6.13-h5083fa2_1.conda
@@ -477,6 +481,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/python-3.12.6-hce54a09_1_cpython.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/python_abi-3.12-5_cp312.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/qt6-main-6.7.2-h2fedb45_5.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/simage-1.8.3-h28af234_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/soqt6-1.6.2-h796eb14_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/swig-4.2.1-h51fbe9b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/tk-8.6.13-h5226925_1.conda
@@ -6811,6 +6816,98 @@ packages:
   license_family: MIT
   size: 185144
   timestamp: 1693455923632
+- kind: conda
+  name: simage
+  version: 1.8.3
+  build: h28af234_0
+  subdir: win-64
+  url: https://conda.anaconda.org/conda-forge/win-64/simage-1.8.3-h28af234_0.conda
+  sha256: ee394356c60e3e17ef831d8f670924aff0a43c54a7cf8b3fdfa546b4e946f8c8
+  md5: 17482fe2e4ebb84fe02d5fb73a7c94f6
+  depends:
+  - libjpeg-turbo >=3.0.0,<4.0a0
+  - libpng >=1.6.44,<1.7.0a0
+  - qt6-main >=6.7.2,<6.8.0a0
+  - ucrt >=10.0.20348.0
+  - vc >=14.2,<15
+  - vc14_runtime >=14.29.30139
+  license: BSD 3-Clause
+  license_family: BSD
+  size: 85158
+  timestamp: 1727210934131
+- kind: conda
+  name: simage
+  version: 1.8.3
+  build: h3825e49_0
+  subdir: linux-aarch64
+  url: https://conda.anaconda.org/conda-forge/linux-aarch64/simage-1.8.3-h3825e49_0.conda
+  sha256: 4ceb745c5f1a87cd74aa3b56fab14cee45cc540836018f8770a5b68a6a04bfaa
+  md5: 7c72b34d7b91bb977fc2854a7c7bd1d5
+  depends:
+  - libgcc >=13
+  - libjpeg-turbo >=3.0.0,<4.0a0
+  - libpng >=1.6.44,<1.7.0a0
+  - libstdcxx >=13
+  - qt6-main >=6.7.2,<6.8.0a0
+  license: BSD 3-Clause
+  license_family: BSD
+  size: 125651
+  timestamp: 1727210432101
+- kind: conda
+  name: simage
+  version: 1.8.3
+  build: hd9f18ba_0
+  subdir: osx-arm64
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/simage-1.8.3-hd9f18ba_0.conda
+  sha256: 5a137c97fe203b3a23e4bbc81f230b6fa7d483f3bbf6af85ef9169c05ef62be4
+  md5: 67de33ca90d5f9dd381a4efa4814b9d7
+  depends:
+  - __osx >=11.0
+  - libcxx >=17
+  - libjpeg-turbo >=3.0.0,<4.0a0
+  - libpng >=1.6.44,<1.7.0a0
+  - qt6-main >=6.7.2,<6.8.0a0
+  license: BSD 3-Clause
+  license_family: BSD
+  size: 99595
+  timestamp: 1727210424510
+- kind: conda
+  name: simage
+  version: 1.8.3
+  build: hed17058_0
+  subdir: osx-64
+  url: https://conda.anaconda.org/conda-forge/osx-64/simage-1.8.3-hed17058_0.conda
+  sha256: 08d0f883517fc66fc5d8885ffaec1494fae26eda7f762d97fcfb2118cacf677e
+  md5: bf6fc82817e7c1f6b6c3870109ced46f
+  depends:
+  - __osx >=10.13
+  - libcxx >=17
+  - libjpeg-turbo >=3.0.0,<4.0a0
+  - libpng >=1.6.44,<1.7.0a0
+  - qt6-main >=6.7.2,<6.8.0a0
+  license: BSD 3-Clause
+  license_family: BSD
+  size: 130936
+  timestamp: 1727210315519
+- kind: conda
+  name: simage
+  version: 1.8.3
+  build: heeb6533_0
+  subdir: linux-64
+  url: https://conda.anaconda.org/conda-forge/linux-64/simage-1.8.3-heeb6533_0.conda
+  sha256: e3510a6057a333313e564d4260591d01a7c3e5347e1c14b7fde4cc39d856e2a0
+  md5: 03a05e3e1ccdfb584d68b12bb3f73847
+  depends:
+  - __glibc >=2.17,<3.0.a0
+  - libgcc >=13
+  - libjpeg-turbo >=3.0.0,<4.0a0
+  - libpng >=1.6.44,<1.7.0a0
+  - libstdcxx >=13
+  - qt6-main >=6.7.2,<6.8.0a0
+  license: BSD 3-Clause
+  license_family: BSD
+  size: 121434
+  timestamp: 1727210351796
 - kind: conda
   name: soqt6
   version: 1.6.2

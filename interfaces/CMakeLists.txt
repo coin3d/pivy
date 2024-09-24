@@ -26,8 +26,9 @@ swig_add_library(coin
 
 if (APPLE)
     set_target_properties(coin PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-elseif (WIN32)
+elseif (MSVC)
     set_target_properties(coin PROPERTIES COMPILE_FLAGS "/bigobj")
+elseif(WIN32)
     target_link_libraries(coin PUBLIC ${Python_LIBRARIES})
 endif ()
 
@@ -61,8 +62,9 @@ if (SoQt_FOUND)
 
     if (APPLE)
         set_target_properties(soqt PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-    elseif (WIN32)
+    elseif (MSVC)
         set_target_properties(coin PROPERTIES COMPILE_FLAGS "/bigobj")
+    elseif (WIN32)
         target_link_libraries(soqt PUBLIC ${Python_LIBRARIES})
     endif ()
 

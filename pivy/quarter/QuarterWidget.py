@@ -111,11 +111,8 @@
 """
 
 from pivy.qt import QtCore, QtGui, QtOpenGL
+from pivy.qt.QtOpenGL import QOpenGLWidget
 
-try:
-    from pivy.qt.QtOpenGLWidgets import QOpenGLWidget
-except ImportError:
-    from pivy.qt.QtWidgets import QOpenGLWidget
 
 from pivy import coin
 

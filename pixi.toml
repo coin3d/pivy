@@ -51,7 +51,7 @@ configure = { cmd = ["cmake", "-G", "Ninja", "-B", "build", "-S", ".",
 
 build = { cmd = ["ninja", "-C", "build", "-j", "1", "install"], depends-on = ["configure"]}
 test = { cmd = ["python", "tests/coin_tests.py"], depends-on = ["build"]}
-
+test_quarter = { cmd = ["python", "tests/quarter_tests.py"], depends-on = ["build"]}
 [feature.lint.dependencies]
 flake8 = "*"
 

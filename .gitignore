@@ -5,7 +5,8 @@ build/
 **.so
 **.o
 **.sconsign*
-Inventor/**.h
+Inventor/*.h
+Inventor/**/**.h
 VolumeViz/**.h
 SoPyScript/swigpyrun.h
 examples/SoPyScript/examin

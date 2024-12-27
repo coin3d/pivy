@@ -8,8 +8,9 @@ Starting with version 0.6.6 pivy it's possible to build pivy with cmake:
   $ cd pivy
   $ mkdir build
   $ cd build
-  $ cmake ..
-  $ make
+  $ cmake .. --toolchain $VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE:STRING=Release -DPython_ROOT_DIR:PATH="path/to/python/root/dir" -DX_VCPKG_APPLOCAL_DEPS_INSTALL:BOOLEAN=ON
+  $ cmake --build .
+  $ cmake --install .
 ```
 
 Alternative it's still possible to use [distutils][0]:

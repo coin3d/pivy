@@ -26,10 +26,10 @@ swig_add_library(coin
 
 if (APPLE)
     set_target_properties(coin PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-elseif (MSVC)
+endif()
+
+if (MSVC)
     set_target_properties(coin PROPERTIES COMPILE_FLAGS "/bigobj")
-elseif(WIN32)
-    target_link_libraries(coin PUBLIC ${Python_LIBRARIES})
 endif ()
 
 target_include_directories(coin
@@ -40,7 +40,7 @@ target_include_directories(coin
     ${CMAKE_SOURCE_DIR}/interfaces
     )
 
-target_link_libraries(coin PUBLIC Coin::Coin)
+target_link_libraries(coin PUBLIC Coin::Coin Python::Module)
 install(TARGETS coin DESTINATION ${PIVY_Python_SITEARCH}/pivy)
 
 cmake_policy(SET CMP0068 NEW)  # Use RUNPATH instead of RPATH, default from CMake 3.9
@@ -65,10 +65,10 @@ if (SoQt_FOUND)
 
     if (APPLE)
         set_target_properties(soqt PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-    elseif (MSVC)
+    endif()
+
+    if (MSVC)
         set_target_properties(coin PROPERTIES COMPILE_FLAGS "/bigobj")
-    elseif (WIN32)
-        target_link_libraries(soqt PUBLIC ${Python_LIBRARIES})
     endif ()
 
     if (PIVY_USE_QT6)
@@ -87,6 +87,6 @@ if (SoQt_FOUND)
         ${CMAKE_SOURCE_DIR}/interfaces
         )
 
-    target_link_libraries(soqt PUBLIC SoQt::SoQt)
+    target_link_libraries(soqt PUBLIC SoQt::SoQt Python::Module)
     install(TARGETS soqt DESTINATION ${PIVY_Python_SITEARCH}/pivy/gui)
 endif()

@@ -43,6 +43,8 @@ target_include_directories(coin
 target_link_libraries(coin PUBLIC Coin::Coin Python::Module)
 install(TARGETS coin DESTINATION ${PIVY_Python_SITEARCH}/pivy)
 
+cmake_policy(SET CMP0068 NEW)  # Use RUNPATH instead of RPATH, default from CMake 3.9
+set_target_properties(coin PROPERTIES BUILD_RPATH "$ORIGIN" INSTALL_RPATH "$ORIGIN")
 
 if (SoQt_FOUND)
 

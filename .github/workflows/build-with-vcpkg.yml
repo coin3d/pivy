@@ -1,0 +1,26 @@
+name: Build with vcpkg
+
+on:
+    push:
+        # branches:
+        #     - main
+    pull_request:
+
+jobs:
+    build:
+        runs-on: windows-latest
+        permissions: 
+            actions: read
+            contents: read
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Configure CMake
+              run: |
+                    cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
+
+            - name: Build project
+              run: |
+                    cmake --build build --config Release

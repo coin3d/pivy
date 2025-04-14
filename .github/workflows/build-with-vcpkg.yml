@@ -49,7 +49,7 @@ jobs:
 
       - name: Configure CMake
         run: |
-          cmake -S . -B build -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=${{ github.workspace }}/out -DCMAKE_BUILD_TYPE:STRING=Release -DX_VCPKG_APPLOCAL_DEPS_INSTALL:BOOLEAN=ON ${{ steps.vcpkg.outputs.vcpkg-cmake-config }}
+          cmake -S . -B build -DCMAKE_INSTALL_PREFIX:PATH=${{ github.workspace }}/out -DCMAKE_BUILD_TYPE:STRING=Release -DX_VCPKG_APPLOCAL_DEPS_INSTALL:BOOLEAN=ON ${{ steps.vcpkg.outputs.vcpkg-cmake-config }}
 
       - name: Build project
         run: |

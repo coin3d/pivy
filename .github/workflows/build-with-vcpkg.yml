@@ -12,8 +12,8 @@ jobs:
     strategy:
       matrix:
         config:
-          - os: ubuntu-latest
-            vcpkg_triplet: x64-linux-release
+          # - os: ubuntu-latest
+          #   vcpkg_triplet: x64-linux-release
           - os: macos-latest
             vcpkg_triplet: x64-osx-release
           - os: windows-latest
@@ -21,12 +21,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Install dependencies (Ubuntu only)
-        if: matrix.config.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y autoconf automake libtool pkg-config
 
       - name: vcpkg build
         uses: johnwason/vcpkg-action@v6

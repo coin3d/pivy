@@ -19,7 +19,7 @@ jobs:
 
             - name: Configure CMake
               run: |
-                    cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
+                    cmake -S . -B build --toolchain $env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
 
             - name: Build project
               run: |

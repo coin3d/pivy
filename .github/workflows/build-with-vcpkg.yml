@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - build_with_vcpkg
   pull_request:
     branches:
       - master
@@ -24,6 +25,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: Install SWIG (macOS only)
         if: matrix.config.os == 'macos-latest'
         run: |
@@ -43,8 +49,12 @@ jobs:
 
       - name: Configure CMake
         run: |
-          cmake -S . -B build ${{ steps.vcpkg.outputs.vcpkg-cmake-config }}
+          cmake -S . -B build -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=${{ github.workspace }}/out -DCMAKE_BUILD_TYPE:STRING=Release -DX_VCPKG_APPLOCAL_DEPS_INSTALL:BOOLEAN=ON ${{ steps.vcpkg.outputs.vcpkg-cmake-config }}
 
       - name: Build project
         run: |
           cmake --build build --config Release
+      
+      - name: Install project
+        run: |
+          cmake --install build --config Release

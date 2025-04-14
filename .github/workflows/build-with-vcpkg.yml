@@ -22,6 +22,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Install dependencies (Ubuntu only)
+        if: matrix.config.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf automake libtool pkg-config
+
       - name: vcpkg build
         uses: johnwason/vcpkg-action@v6
         id: vcpkg

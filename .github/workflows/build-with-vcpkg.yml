@@ -25,8 +25,8 @@ jobs:
       - name: Install SWIG (macOS only)
         if: matrix.config.os == 'macos-latest'
         run: |
-          brew install swig@4
-          brew link --overwrite swig@4
+          brew install swig
+          brew link --overwrite swig
 
       - name: vcpkg build
         uses: johnwason/vcpkg-action@v6

@@ -14,7 +14,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-"""
+r"""
   Quarter is a light-weight glue library that provides seamless
   integration between Systems in Motions's \COIN high-level 3D
   visualization library and Trolltech's \QT 2D user interface

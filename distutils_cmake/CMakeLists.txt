@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(pivy_cmake_setup NONE)
+project(pivy_cmake_setup CXX)
 
 
 find_package(Coin CONFIG REQUIRED)

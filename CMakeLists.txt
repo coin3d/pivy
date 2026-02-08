@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.18...3.30)
 project(pivy_cmake_setup CXX)
 
+if (NOT DEFINED CMAKE_POLICY_VERSION_MINIMUM)
+    set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+endif()
+
 option(DISABLE_SWIG_WARNINGS "if on no swig warnings are shown" OFF)
 option(PIVY_USE_QT6 "Prefer Qt6 over Qt5 if available" OFF)
 

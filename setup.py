@@ -186,10 +186,11 @@ class pivy_build(build):
                   'pivy.quarter.eventhandlers.EventManager',
                   'pivy.quarter.plugins.designer.python.PyQuarterWidgetPlugin',
                   'pivy.utils',
-                  'pivy.graphics.colors',
-                  'pivy.graphics.mesh',
-                  'pivy.graphics.plot',
-                  'pivy.graphics.viewer']
+                  'pivy.interactive',
+                  'pivy.interactive.colors',
+                  'pivy.interactive.mesh',
+                  'pivy.interactive.plot',
+                  'pivy.interactive.viewer']
 
     def check_with_cmake(self):
         dirname = os.path.join(os.path.dirname(__file__), "distutils_cmake")

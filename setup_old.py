@@ -178,7 +178,7 @@ class pivy_build(build):
                   'pivy.quarter.eventhandlers.EventManager',
                   'pivy.quarter.plugins.designer.python.PyQuarterWidgetPlugin',
                   'pivy.utils',
-                  'pivy.graphics.']
+                  'pivy.interactive']
 
     if sys.version_info.major < 3:
         py_modules = ['pivy.sogui'] + py_modules

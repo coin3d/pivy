@@ -1,14 +1,14 @@
 import sys
 from pivy.qt.QtWidgets import QApplication
 from pivy.qt.QtGui import QColor
-from pivy import quarter, coin, graphics, utils
+from pivy import quarter, coin, interactive, utils
 
-class ConnectionMarker(graphics.Marker):
+class ConnectionMarker(interactive.Marker):
     def __init__(self, points):
         super(ConnectionMarker, self).__init__(points, True)
 
 
-class ConnectionPolygon(graphics.Polygon):
+class ConnectionPolygon(interactive.Polygon):
     std_col = "green"
     def __init__(self, markers):
         super(ConnectionPolygon, self).__init__(
@@ -30,7 +30,7 @@ class ConnectionPolygon(graphics.Polygon):
             self.delete()
 
 
-class ConnectionLine(graphics.Line):
+class ConnectionLine(interactive.Line):
     def __init__(self, markers):
         super(ConnectionLine, self).__init__(
             sum([m.points for m in markers], []), True)
@@ -54,7 +54,7 @@ def main():
     app = QApplication(sys.argv)
     utils.addMarkerFromSvg("test.svg", "CUSTOM_MARKER",  40)
     viewer = quarter.QuarterWidget()
-    root = graphics.InteractionSeparator(viewer.sorendermanager)
+    root = interactive.InteractionSeparator(viewer.sorendermanager)
     root.pick_radius = 40
 
     m1 = ConnectionMarker([[-1, -1, -1]])

@@ -1,4 +1,4 @@
-[project]
+[workspace]
 authors = ["Lorenz Lechner <sppedflyer@gmail.com>"]
 channels = ["conda-forge"]
 description = "combining building and dependency management with pixi"

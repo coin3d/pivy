@@ -148,7 +148,6 @@ function(add_copy_directory dircopy_TARGET directory)
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different
                     ${input_abs} ${output_abs}
                 ${verbosity}
-                DEPENDS "${input}"
             )
         endif()
     endforeach()

@@ -31,33 +31,3 @@ from .coin import SoDB, SoNodeKit, SoInteraction
 SoDB.init()
 SoNodeKit.init()
 SoInteraction.init()
-
-# Backward compatibility: graphics module renamed to interactive
-import warnings
-import sys
-
-# Create a deprecation wrapper for the old graphics module name
-class _GraphicsDeprecationWrapper:
-    """Deprecated alias for pivy.interactive module.
-    
-    The graphics module has been renamed to interactive to better reflect
-    its purpose. Use 'from pivy import interactive' instead.
-    """
-    def __init__(self):
-        warnings.warn(
-            "pivy.graphics is deprecated and will be removed in a future version. "
-            "Use 'from pivy import interactive' instead.",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        from . import interactive
-        self._module = interactive
-    
-    def __getattr__(self, name):
-        return getattr(self._module, name)
-    
-    def __dir__(self):
-        return dir(self._module)
-
-# Add graphics as a deprecated alias
-sys.modules['pivy.graphics'] = _GraphicsDeprecationWrapper()

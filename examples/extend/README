@@ -19,7 +19,7 @@ typemaps that are needed and common for all pivy modules.
 Finally add all the headers (of your Nodekits) that swig should actually
 parse, hence the "%include ShapeScale.h" directive at the end.
 
-Look at the SConstruct file for information in how to build the module.
+Look at the CMakeLists.txt file for information on how to build the module.
 
 If everything is build just import the freshly generated module like
 e.g. so:

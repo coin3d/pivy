@@ -4,7 +4,6 @@ build/
 **.pyd
 **.so
 **.o
-**.sconsign*
 Inventor/*.h
 Inventor/**/**.h
 VolumeViz/**.h

@@ -6,6 +6,5 @@ graft docs
 graft examples
 graft interfaces
 graft pivy
-graft scons
 graft SoPyScript
 graft tests

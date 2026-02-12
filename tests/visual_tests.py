@@ -8,11 +8,12 @@ similarity scores. This is intentionally not pixel-by-pixel matching.
 """
 
 import os
+import sys
 import tempfile
 import unittest
 
-from pivy import coin
-from pivy.visual_test import VisualTester
+coin = None
+VisualTester = None
 
 try:
     from PIL import Image  # noqa: F401
@@ -21,8 +22,46 @@ except ImportError:
     _HAS_PILLOW = False
 
 
-@unittest.skipUnless(_HAS_PILLOW, "Pillow is required for visual tests")
 class VisualRegressionTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        if not _HAS_PILLOW:
+            raise unittest.SkipTest("Pillow is required for visual tests")
+
+        if sys.platform.startswith("linux") and not cls._has_reachable_x11_display():
+            raise unittest.SkipTest(
+                "No DISPLAY available. Run visual tests under an X server/Xvfb."
+            )
+
+        global coin, VisualTester
+        from pivy import coin as coin_module
+        from pivy.visual_test import VisualTester as visual_tester_class
+
+        coin = coin_module
+        VisualTester = visual_tester_class
+
+        available, reason = cls._probe_offscreen_renderer()
+        if not available:
+            raise unittest.SkipTest(
+                "Offscreen renderer not available in this environment: {0}".format(reason)
+            )
+
+    @staticmethod
+    def _has_reachable_x11_display():
+        display = os.environ.get("DISPLAY")
+        if not display:
+            return False
+
+        if not display.startswith(":"):
+            return True
+
+        display_number = display[1:].split(".", 1)[0]
+        if not display_number.isdigit():
+            return True
+
+        socket_path = "/tmp/.X11-unix/X{0}".format(display_number)
+        return os.path.exists(socket_path)
+
     def setUp(self):
         self.tmpdir = tempfile.TemporaryDirectory(prefix="pivy-visual-tests-")
         self.tester = VisualTester(
@@ -37,7 +76,8 @@ class VisualRegressionTests(unittest.TestCase):
     def _path(self, name):
         return os.path.join(self.tmpdir.name, name)
 
-    def _make_scene(self, shape="cube", color=(0.8, 0.2, 0.2), x_shift=0.0):
+    @staticmethod
+    def _make_scene(shape="cube", color=(0.8, 0.2, 0.2), x_shift=0.0):
         root = coin.SoSeparator()
 
         camera = coin.SoOrthographicCamera()
@@ -75,6 +115,15 @@ class VisualRegressionTests(unittest.TestCase):
 
         root.addChild(node)
         return root
+
+    @classmethod
+    def _probe_offscreen_renderer(cls):
+        tester = VisualTester(width=64, height=64, background=(1.0, 1.0, 1.0))
+        try:
+            tester.run(scene=cls._make_scene())
+        except Exception as exc:
+            return False, str(exc)
+        return True, ""
 
     def _write_reference(self, scene, filename="reference.png"):
         reference_path = self._path(filename)

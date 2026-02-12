@@ -27,6 +27,10 @@ def _has_reachable_x11_display():
 
 
 def main():
+    env = os.environ.copy()
+    env.setdefault("COIN_GLXGLUE_NO_PBUFFERS", "1")
+    env.setdefault("COIN_GLX_PIXMAP_DIRECT_RENDERING", "1")
+
     test_cmd = [sys.executable, "tests/visual_tests.py"]
 
     if (
@@ -36,7 +40,6 @@ def main():
     ):
         xvfb_run = shutil.which("xvfb-run")
         if xvfb_run:
-            env = os.environ.copy()
             env["PIVY_VISUALTESTS_IN_XVFB"] = "1"
             return subprocess.call(
                 [
@@ -50,7 +53,7 @@ def main():
                 env=env,
             )
 
-    return subprocess.call(test_cmd)
+    return subprocess.call(test_cmd, env=env)
 
 
 if __name__ == "__main__":

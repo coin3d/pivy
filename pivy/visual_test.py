@@ -1,19 +1,11 @@
 #!/usr/bin/env python3
 
 """
-Render Inventor scenes offscreen and run perceptual visual comparisons.
+Render Coin scenes offscreen and run perceptual visual comparisons.
 
-Examples:
-  Save render only:
-    python3 -m pivy.visual_test scene.iv --output render.png
+Pure Python API: scenes are built with pivy/Coin nodes; no .iv file loading.
 
-  Compare with baseline and print similarity in percent:
-    python3 -m pivy.visual_test scene.iv --reference baseline.png
-
-  Save render and compare:
-    python3 -m pivy.visual_test scene.iv --output render.png --reference baseline.png
-
-Python API:
+Example:
   from pivy.visual_test import VisualTester
   from pivy.coin import SoSeparator, SoCube
 
@@ -25,13 +17,8 @@ Python API:
   print(result.similarity_percent)
 """
 
-import argparse
 import math
 import os
-import sys
-
-if __name__ == "__main__" and __package__ is None:
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
     from PIL import Image
@@ -42,9 +29,7 @@ from pivy.coin import (
     SbColor,
     SbViewportRegion,
     SoCamera,
-    SoDB,
     SoDirectionalLight,
-    SoInput,
     SoLight,
     SoOffscreenRenderer,
     SoPerspectiveCamera,
@@ -57,7 +42,6 @@ __all__ = [
     "VisualTester",
     "compare_images",
     "compare_images_detailed",
-    "load_scene",
     "render_scene",
     "run_visual_test",
 ]
@@ -163,33 +147,14 @@ def _require_pillow():
         )
 
 
-def load_scene(scene_path):
-    scene_path = os.fspath(scene_path)
-    so_input = SoInput()
-    if not so_input.openFile(scene_path):
-        raise RuntimeError("Konnte Scene-Datei nicht oeffnen: {0}".format(scene_path))
-
-    root = SoDB.readAll(so_input)
-    if root is None:
-        raise RuntimeError("Konnte Scene-Datei nicht lesen: {0}".format(scene_path))
-    return root
-
-
-def _resolve_scene_input(scene=None, scene_path=None):
-    if scene is not None and scene_path is not None:
-        raise ValueError("Bitte entweder scene oder scene_path angeben, nicht beides.")
-    if scene is None and scene_path is None:
-        raise ValueError("Bitte scene oder scene_path angeben.")
-
-    if scene is not None:
-        if not hasattr(scene, "isOfType"):
-            raise TypeError(
-                "scene muss ein Coin-Node Objekt sein (z.B. SoSeparator), "
-                "oder scene_path verwenden."
-            )
-        return scene
-
-    return load_scene(scene_path)
+def _validate_scene(scene):
+    if scene is None:
+        raise ValueError("scene ist erforderlich.")
+    if not hasattr(scene, "isOfType"):
+        raise TypeError(
+            "scene muss ein Coin-Node Objekt sein (z.B. SoSeparator)."
+        )
+    return scene
 
 
 def _scene_has_type(root, type_id):
@@ -286,7 +251,12 @@ def _save_image(image, output_path):
 
 def _dhash_bits(image, hash_size=16):
     grayscale = image.convert("L").resize((hash_size + 1, hash_size), _RESAMPLE_LANCZOS)
-    pixels = list(grayscale.getdata())
+
+    # Pillow 10+ deprecates getdata() in favour of get_flattened_data().
+    get_flat = getattr(grayscale, "get_flattened_data", None)
+    data = get_flat() if callable(get_flat) else grayscale.getdata()
+
+    pixels = list(data)
     bits = []
     row_stride = hash_size + 1
 
@@ -303,7 +273,11 @@ def _histogram_hsv(image, h_bins=12, s_bins=4, v_bins=4):
     hsv = image.convert("HSV")
     histogram = [0] * (h_bins * s_bins * v_bins)
 
-    for h, s, v in hsv.getdata():
+    # Pillow 10+ deprecates getdata() in favour of get_flattened_data().
+    get_flat = getattr(hsv, "get_flattened_data", None)
+    data = get_flat() if callable(get_flat) else hsv.getdata()
+
+    for h, s, v in data:
         h_idx = min(h_bins - 1, (h * h_bins) // 256)
         s_idx = min(s_bins - 1, (s * s_bins) // 256)
         v_idx = min(v_bins - 1, (v * v_bins) // 256)
@@ -390,15 +364,13 @@ class VisualTester:
             hash_weight, color_weight
         )
 
-    def render(self, scene=None, scene_path=None):
+    def render(self, scene):
         """
-        Render a scene to a PIL image.
+        Render a Coin scene to a PIL image.
 
-        Use one of:
-          - scene: a Coin scene node (SoNode / SoSeparator / ...)
-          - scene_path: path to an Inventor file
+        scene: Coin scene node (SoNode / SoSeparator / ...)
         """
-        scene_root = _resolve_scene_input(scene=scene, scene_path=scene_path)
+        scene_root = _validate_scene(scene)
         image_buffer, components = _render_scene(
             scene_root, self.width, self.height, self.background
         )
@@ -422,8 +394,7 @@ class VisualTester:
 
     def run(
         self,
-        scene=None,
-        scene_path=None,
+        scene,
         output_path=None,
         reference=None,
         threshold=None,
@@ -438,7 +409,7 @@ class VisualTester:
             if reference is None:
                 raise ValueError("threshold erfordert auch eine reference.")
 
-        rendered_image = self.render(scene=scene, scene_path=scene_path)
+        rendered_image = self.render(scene)
 
         saved_output_path = None
         if output_path:
@@ -469,20 +440,18 @@ class VisualTester:
 
 
 def render_scene(
-    scene=None,
-    scene_path=None,
+    scene,
     width=1024,
     height=768,
     background=(0.0, 0.0, 0.0),
 ):
     """Convenience function returning a rendered PIL image."""
     tester = VisualTester(width=width, height=height, background=background)
-    return tester.render(scene=scene, scene_path=scene_path)
+    return tester.render(scene)
 
 
 def run_visual_test(
-    scene=None,
-    scene_path=None,
+    scene,
     output_path=None,
     reference=None,
     width=1024,
@@ -504,94 +473,7 @@ def run_visual_test(
     )
     return tester.run(
         scene=scene,
-        scene_path=scene_path,
         output_path=output_path,
         reference=reference,
         threshold=threshold,
     )
-
-
-def _parse_args(argv):
-    parser = argparse.ArgumentParser(
-        description="Scene offscreen rendern und visuell vergleichen (prozentual)."
-    )
-    parser.add_argument("scene", help="Pfad zur Scene-Datei (z.B. .iv)")
-    parser.add_argument(
-        "--output",
-        "-o",
-        help="Pfad fuer das gerenderte Bild (z.B. render.png)",
-    )
-    parser.add_argument(
-        "--reference",
-        "-r",
-        help="Pfad zum Referenzbild fuer den Vergleich",
-    )
-    parser.add_argument("--width", type=int, default=1024, help="Render-Breite")
-    parser.add_argument("--height", type=int, default=768, help="Render-Hoehe")
-    parser.add_argument(
-        "--background",
-        nargs=3,
-        type=float,
-        metavar=("R", "G", "B"),
-        default=(0.0, 0.0, 0.0),
-        help="Hintergrundfarbe als 3 Floats in [0..1], z.B. --background 1 1 1",
-    )
-    parser.add_argument(
-        "--threshold",
-        type=float,
-        help="Optionaler Mindestwert in Prozent fuer CI (Exitcode 2 wenn unterschritten)",
-    )
-    args = parser.parse_args(argv)
-
-    if not args.output and not args.reference:
-        parser.error("Bitte mindestens --output oder --reference angeben.")
-
-    if args.width <= 0 or args.height <= 0:
-        parser.error("--width und --height muessen > 0 sein.")
-
-    for channel in args.background:
-        if channel < 0.0 or channel > 1.0:
-            parser.error("--background Werte muessen im Bereich [0..1] liegen.")
-
-    if args.threshold is not None and (args.threshold < 0.0 or args.threshold > 100.0):
-        parser.error("--threshold muss im Bereich [0..100] liegen.")
-
-    return args
-
-
-def main(argv=None):
-    args = _parse_args(argv if argv is not None else sys.argv[1:])
-
-    try:
-        result = run_visual_test(
-            scene_path=args.scene,
-            output_path=args.output,
-            reference=args.reference,
-            width=args.width,
-            height=args.height,
-            background=tuple(args.background),
-            threshold=args.threshold,
-        )
-
-        if result.output_path:
-            print("Render gespeichert: {0}".format(result.output_path))
-
-        if result.similarity_percent is not None:
-            print("Aehnlichkeit: {0:.2f}%".format(result.similarity_percent))
-
-        if result.passed is False:
-            print(
-                "Aehnlichkeit unter Threshold ({0:.2f}% < {1:.2f}%)".format(
-                    result.similarity_percent, result.threshold
-                ),
-                file=sys.stderr,
-            )
-            return 2
-        return 0
-    except Exception as exc:
-        print("Fehler: {0}".format(exc), file=sys.stderr)
-        return 1
-
-
-if __name__ == "__main__":
-    sys.exit(main())

@@ -8,7 +8,6 @@ similarity scores. This is intentionally not pixel-by-pixel matching.
 """
 
 import os
-import subprocess
 import sys
 import tempfile
 import unittest
@@ -37,12 +36,7 @@ class VisualRegressionTests(unittest.TestCase):
         if not _HAS_PILLOW:
             raise unittest.SkipTest("Pillow is required for visual tests")
 
-        if sys.platform.startswith("linux") and not cls._has_reachable_x11_display():
-            raise unittest.SkipTest(
-                "No DISPLAY available. Run visual tests under an X server/Xvfb."
-            )
-
-        # Prefer a GLX mode that works reliably with Xvfb in CI.
+        # GLX options for when a display is present (e.g. Xvfb); no DISPLAY required.
         os.environ.setdefault("COIN_GLXGLUE_NO_PBUFFERS", "1")
         os.environ.setdefault("COIN_GLX_PIXMAP_DIRECT_RENDERING", "1")
 
@@ -69,22 +63,6 @@ class VisualRegressionTests(unittest.TestCase):
                 "Missing visual reference images: {0}. "
                 "Run tests/generate_visual_references.py".format(", ".join(missing))
             )
-
-    @staticmethod
-    def _has_reachable_x11_display():
-        display = os.environ.get("DISPLAY")
-        if not display:
-            return False
-
-        if not display.startswith(":"):
-            return True
-
-        display_number = display[1:].split(".", 1)[0]
-        if not display_number.isdigit():
-            return True
-
-        socket_path = "/tmp/.X11-unix/X{0}".format(display_number)
-        return os.path.exists(socket_path)
 
     def setUp(self):
         self.tmpdir = tempfile.TemporaryDirectory(prefix="pivy-visual-tests-")
@@ -199,66 +177,6 @@ class VisualRegressionTests(unittest.TestCase):
 
         self.assertLess(result_against_cube.similarity_percent, 97.0)
         self.assertGreaterEqual(result_against_cone.similarity_percent, 99.0)
-
-    def test_05_scene_path_input_is_supported(self):
-        iv_path = self._path("scene.iv")
-        with open(iv_path, "w", encoding="utf-8") as handle:
-            handle.write(
-                "#Inventor V2.1 ascii\n"
-                "Separator {\n"
-                "  OrthographicCamera {\n"
-                "    position 0 0 5\n"
-                "    nearDistance 0.5\n"
-                "    farDistance 20\n"
-                "    height 4\n"
-                "  }\n"
-                "  DirectionalLight { }\n"
-                "  Material {\n"
-                "    diffuseColor 0.8 0.2 0.2\n"
-                "    specularColor 0.05 0.05 0.05\n"
-                "    shininess 0.1\n"
-                "  }\n"
-                "  Cube { width 2 height 2 depth 2 }\n"
-                "}\n"
-            )
-
-        env = os.environ.copy()
-        env["PIVY_VT_SCENE_PATH"] = iv_path
-        env["PIVY_VT_REFERENCE_PATH"] = self._reference_path("path")
-        process = subprocess.run(
-            [
-                sys.executable,
-                "-c",
-                (
-                    "import os; "
-                    "from pivy.visual_test import VisualTester; "
-                    "tester = VisualTester(width=320, height=240, background=(1.0, 1.0, 1.0)); "
-                    "result = tester.run("
-                    "scene_path=os.environ['PIVY_VT_SCENE_PATH'], "
-                    "reference=os.environ['PIVY_VT_REFERENCE_PATH']"
-                    "); "
-                    "print('SIMILARITY={0:.6f}'.format(result.similarity_percent))"
-                ),
-            ],
-            env=env,
-            capture_output=True,
-            text=True,
-        )
-
-        if process.returncode != 0:
-            self.skipTest(
-                "scene_path rendering is unstable in this environment "
-                "(exit code {0})".format(process.returncode)
-            )
-
-        similarity = None
-        for line in process.stdout.splitlines():
-            if line.startswith("SIMILARITY="):
-                similarity = float(line.split("=", 1)[1])
-                break
-
-        self.assertIsNotNone(similarity)
-        self.assertGreaterEqual(similarity, 99.0)
 
 
 if __name__ == "__main__":

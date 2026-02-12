@@ -12,6 +12,17 @@ Examples:
 
   Save render and compare:
     python3 -m pivy.visual_test scene.iv --output render.png --reference baseline.png
+
+Python API:
+  from pivy.visual_test import VisualTester
+  from pivy.coin import SoSeparator, SoCube
+
+  root = SoSeparator()
+  root.addChild(SoCube())
+
+  tester = VisualTester(width=800, height=600, background=(1.0, 1.0, 1.0))
+  result = tester.run(scene=root, output_path="render.png")
+  print(result.similarity_percent)
 """
 
 import argparse
@@ -41,11 +52,108 @@ from pivy.coin import (
     SoSeparator,
 )
 
+__all__ = [
+    "VisualTestResult",
+    "VisualTester",
+    "compare_images",
+    "compare_images_detailed",
+    "load_scene",
+    "render_scene",
+    "run_visual_test",
+]
+
 
 if hasattr(Image, "Resampling"):
     _RESAMPLE_LANCZOS = Image.Resampling.LANCZOS
 else:
     _RESAMPLE_LANCZOS = Image.LANCZOS if Image is not None else None
+
+
+class VisualTestResult:
+    """Result object returned by VisualTester.run()."""
+
+    __slots__ = (
+        "output_path",
+        "similarity_percent",
+        "hash_similarity_percent",
+        "color_similarity_percent",
+        "threshold",
+        "passed",
+    )
+
+    def __init__(
+        self,
+        output_path=None,
+        similarity_percent=None,
+        hash_similarity_percent=None,
+        color_similarity_percent=None,
+        threshold=None,
+        passed=None,
+    ):
+        self.output_path = output_path
+        self.similarity_percent = similarity_percent
+        self.hash_similarity_percent = hash_similarity_percent
+        self.color_similarity_percent = color_similarity_percent
+        self.threshold = threshold
+        self.passed = passed
+
+    def as_dict(self):
+        return {
+            "output_path": self.output_path,
+            "similarity_percent": self.similarity_percent,
+            "hash_similarity_percent": self.hash_similarity_percent,
+            "color_similarity_percent": self.color_similarity_percent,
+            "threshold": self.threshold,
+            "passed": self.passed,
+        }
+
+    def __repr__(self):
+        return (
+            "VisualTestResult("
+            "output_path={0!r}, "
+            "similarity_percent={1!r}, "
+            "hash_similarity_percent={2!r}, "
+            "color_similarity_percent={3!r}, "
+            "threshold={4!r}, "
+            "passed={5!r})"
+        ).format(
+            self.output_path,
+            self.similarity_percent,
+            self.hash_similarity_percent,
+            self.color_similarity_percent,
+            self.threshold,
+            self.passed,
+        )
+
+
+def _validate_dimensions(width, height):
+    if int(width) <= 0 or int(height) <= 0:
+        raise ValueError("width und height muessen > 0 sein.")
+
+
+def _validate_background(background):
+    if len(background) != 3:
+        raise ValueError("background muss genau 3 Werte enthalten (R, G, B).")
+
+    normalized = []
+    for value in background:
+        channel = float(value)
+        if channel < 0.0 or channel > 1.0:
+            raise ValueError("background Werte muessen im Bereich [0..1] liegen.")
+        normalized.append(channel)
+    return tuple(normalized)
+
+
+def _normalize_weights(hash_weight, color_weight):
+    hash_weight = float(hash_weight)
+    color_weight = float(color_weight)
+    if hash_weight < 0.0 or color_weight < 0.0:
+        raise ValueError("Gewichte muessen >= 0 sein.")
+
+    total = hash_weight + color_weight
+    if total <= 0.0:
+        raise ValueError("Mindestens eines der Gewichte muss > 0 sein.")
+    return hash_weight / total, color_weight / total
 
 
 def _require_pillow():
@@ -55,7 +163,8 @@ def _require_pillow():
         )
 
 
-def _load_scene(scene_path):
+def load_scene(scene_path):
+    scene_path = os.fspath(scene_path)
     so_input = SoInput()
     if not so_input.openFile(scene_path):
         raise RuntimeError("Konnte Scene-Datei nicht oeffnen: {0}".format(scene_path))
@@ -64,6 +173,23 @@ def _load_scene(scene_path):
     if root is None:
         raise RuntimeError("Konnte Scene-Datei nicht lesen: {0}".format(scene_path))
     return root
+
+
+def _resolve_scene_input(scene=None, scene_path=None):
+    if scene is not None and scene_path is not None:
+        raise ValueError("Bitte entweder scene oder scene_path angeben, nicht beides.")
+    if scene is None and scene_path is None:
+        raise ValueError("Bitte scene oder scene_path angeben.")
+
+    if scene is not None:
+        if not hasattr(scene, "isOfType"):
+            raise TypeError(
+                "scene muss ein Coin-Node Objekt sein (z.B. SoSeparator), "
+                "oder scene_path verwenden."
+            )
+        return scene
+
+    return load_scene(scene_path)
 
 
 def _scene_has_type(root, type_id):
@@ -135,6 +261,29 @@ def _buffer_to_image(image_buffer, width, height, components):
     return image.transpose(Image.FLIP_TOP_BOTTOM)
 
 
+def _coerce_to_image(image_or_path):
+    _require_pillow()
+
+    if hasattr(image_or_path, "convert"):
+        return image_or_path.convert("RGB")
+
+    if isinstance(image_or_path, (str, os.PathLike)):
+        with Image.open(image_or_path) as loaded:
+            return loaded.convert("RGB")
+
+    raise TypeError(
+        "reference muss ein Bildobjekt oder ein Dateipfad sein (str / os.PathLike)."
+    )
+
+
+def _save_image(image, output_path):
+    output_path = os.fspath(output_path)
+    output_dir = os.path.dirname(os.path.abspath(output_path))
+    if output_dir and not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
+    image.save(output_path)
+
+
 def _dhash_bits(image, hash_size=16):
     grayscale = image.convert("L").resize((hash_size + 1, hash_size), _RESAMPLE_LANCZOS)
     pixels = list(grayscale.getdata())
@@ -180,7 +329,16 @@ def _bhattacharyya_similarity(hist_a, hist_b):
     return sum(math.sqrt(a * b) for a, b in zip(hist_a, hist_b))
 
 
-def compare_images(rendered_image, reference_image):
+def compare_images_detailed(
+    rendered_image,
+    reference_image,
+    hash_weight=0.7,
+    color_weight=0.3,
+):
+    """Return a detailed perceptual comparison as percentages."""
+    _require_pillow()
+    hash_weight, color_weight = _normalize_weights(hash_weight, color_weight)
+
     rendered_rgb = rendered_image.convert("RGB")
     reference_rgb = reference_image.convert("RGB")
 
@@ -192,9 +350,165 @@ def compare_images(rendered_image, reference_image):
     )
 
     # Combined perceptual score (not pixel-by-pixel matching).
-    score = (0.7 * hash_similarity) + (0.3 * color_similarity)
+    score = (hash_weight * hash_similarity) + (color_weight * color_similarity)
     score = max(0.0, min(1.0, score))
-    return score * 100.0
+    return {
+        "similarity_percent": score * 100.0,
+        "hash_similarity_percent": hash_similarity * 100.0,
+        "color_similarity_percent": color_similarity * 100.0,
+    }
+
+
+def compare_images(rendered_image, reference_image):
+    """Backward-compatible: return only combined similarity percent."""
+    return compare_images_detailed(rendered_image, reference_image)["similarity_percent"]
+
+
+class VisualTester:
+    """
+    High-level API for offscreen rendering and perceptual comparison.
+
+    Example:
+        tester = VisualTester(width=1280, height=720)
+        result = tester.run(scene=my_scene, reference="baseline.png", output_path="actual.png")
+        print(result.similarity_percent)
+    """
+
+    def __init__(
+        self,
+        width=1024,
+        height=768,
+        background=(0.0, 0.0, 0.0),
+        hash_weight=0.7,
+        color_weight=0.3,
+    ):
+        _validate_dimensions(width, height)
+        self.width = int(width)
+        self.height = int(height)
+        self.background = _validate_background(background)
+        self.hash_weight, self.color_weight = _normalize_weights(
+            hash_weight, color_weight
+        )
+
+    def render(self, scene=None, scene_path=None):
+        """
+        Render a scene to a PIL image.
+
+        Use one of:
+          - scene: a Coin scene node (SoNode / SoSeparator / ...)
+          - scene_path: path to an Inventor file
+        """
+        scene_root = _resolve_scene_input(scene=scene, scene_path=scene_path)
+        image_buffer, components = _render_scene(
+            scene_root, self.width, self.height, self.background
+        )
+        return _buffer_to_image(image_buffer, self.width, self.height, components)
+
+    def compare(self, rendered_image, reference):
+        """
+        Compare a rendered image against a reference.
+
+        reference can be:
+          - a file path
+          - a PIL image object
+        """
+        reference_image = _coerce_to_image(reference)
+        return compare_images_detailed(
+            rendered_image,
+            reference_image,
+            hash_weight=self.hash_weight,
+            color_weight=self.color_weight,
+        )
+
+    def run(
+        self,
+        scene=None,
+        scene_path=None,
+        output_path=None,
+        reference=None,
+        threshold=None,
+    ):
+        """
+        Render scene, optionally save image, optionally compare against reference.
+        """
+        if threshold is not None:
+            threshold = float(threshold)
+            if threshold < 0.0 or threshold > 100.0:
+                raise ValueError("threshold muss im Bereich [0..100] liegen.")
+            if reference is None:
+                raise ValueError("threshold erfordert auch eine reference.")
+
+        rendered_image = self.render(scene=scene, scene_path=scene_path)
+
+        saved_output_path = None
+        if output_path:
+            saved_output_path = os.fspath(output_path)
+            _save_image(rendered_image, saved_output_path)
+
+        similarity_percent = None
+        hash_similarity_percent = None
+        color_similarity_percent = None
+        if reference is not None:
+            details = self.compare(rendered_image, reference)
+            similarity_percent = details["similarity_percent"]
+            hash_similarity_percent = details["hash_similarity_percent"]
+            color_similarity_percent = details["color_similarity_percent"]
+
+        passed = None
+        if threshold is not None:
+            passed = similarity_percent >= threshold
+
+        return VisualTestResult(
+            output_path=saved_output_path,
+            similarity_percent=similarity_percent,
+            hash_similarity_percent=hash_similarity_percent,
+            color_similarity_percent=color_similarity_percent,
+            threshold=threshold,
+            passed=passed,
+        )
+
+
+def render_scene(
+    scene=None,
+    scene_path=None,
+    width=1024,
+    height=768,
+    background=(0.0, 0.0, 0.0),
+):
+    """Convenience function returning a rendered PIL image."""
+    tester = VisualTester(width=width, height=height, background=background)
+    return tester.render(scene=scene, scene_path=scene_path)
+
+
+def run_visual_test(
+    scene=None,
+    scene_path=None,
+    output_path=None,
+    reference=None,
+    width=1024,
+    height=768,
+    background=(0.0, 0.0, 0.0),
+    threshold=None,
+    hash_weight=0.7,
+    color_weight=0.3,
+):
+    """
+    Convenience end-to-end function for rendering and optional comparison.
+    """
+    tester = VisualTester(
+        width=width,
+        height=height,
+        background=background,
+        hash_weight=hash_weight,
+        color_weight=color_weight,
+    )
+    return tester.run(
+        scene=scene,
+        scene_path=scene_path,
+        output_path=output_path,
+        reference=reference,
+        threshold=threshold,
+    )
 
 
 def _parse_args(argv):
@@ -249,32 +563,26 @@ def main(argv=None):
     args = _parse_args(argv if argv is not None else sys.argv[1:])
 
     try:
-        scene_root = _load_scene(args.scene)
-        image_buffer, components = _render_scene(
-            scene_root, args.width, args.height, tuple(args.background)
+        result = run_visual_test(
+            scene_path=args.scene,
+            output_path=args.output,
+            reference=args.reference,
+            width=args.width,
+            height=args.height,
+            background=tuple(args.background),
+            threshold=args.threshold,
         )
-        rendered_image = _buffer_to_image(
-            image_buffer, args.width, args.height, components
-        )
 
-        if args.output:
-            output_dir = os.path.dirname(os.path.abspath(args.output))
-            if output_dir and not os.path.isdir(output_dir):
-                os.makedirs(output_dir)
-            rendered_image.save(args.output)
-            print("Render gespeichert: {0}".format(args.output))
+        if result.output_path:
+            print("Render gespeichert: {0}".format(result.output_path))
 
-        similarity = None
-        if args.reference:
-            _require_pillow()
-            with Image.open(args.reference) as baseline:
-                similarity = compare_images(rendered_image, baseline)
-            print("Aehnlichkeit: {0:.2f}%".format(similarity))
+        if result.similarity_percent is not None:
+            print("Aehnlichkeit: {0:.2f}%".format(result.similarity_percent))
 
-        if similarity is not None and args.threshold is not None and similarity < args.threshold:
+        if result.passed is False:
             print(
                 "Aehnlichkeit unter Threshold ({0:.2f}% < {1:.2f}%)".format(
-                    similarity, args.threshold
+                    result.similarity_percent, result.threshold
                 ),
                 file=sys.stderr,
             )

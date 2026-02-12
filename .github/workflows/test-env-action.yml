@@ -23,5 +23,13 @@ jobs:
       with:
         pixi-version: v0.63.2
         cache: true
+    - name: Install Xvfb (Linux visual tests)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xvfb
     - run: pixi run lint
     - run: pixi run test
+    - name: Run visual tests
+      if: matrix.os == 'ubuntu-latest'
+      run: pixi run visualtests

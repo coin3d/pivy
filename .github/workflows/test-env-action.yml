@@ -25,4 +25,15 @@ jobs:
         cache: true
     - run: pixi run lint
     - run: pixi run test
-    - run: pixi run visualtests
+
+    - name: Install Xvfb (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: sudo apt-get update && sudo apt-get install -y xvfb
+
+    - name: Run visual tests
+      run: |
+        if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+          xvfb-run -a pixi run visualtests
+        else
+          pixi run visualtests
+        fi

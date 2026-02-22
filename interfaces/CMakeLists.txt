@@ -14,10 +14,12 @@ set_swig_properties(coin.i)
 
 # remember: the order of the includes is important!
 # swig needs the generated headers first (these headers are replacing the origin Inventor headers)
-set_property(SOURCE coin.i PROPERTY INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}")
-set_property(SOURCE coin.i APPEND PROPERTY INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/fake_headers")
+set_property(SOURCE coin.i PROPERTY INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}")
+set_property(SOURCE coin.i APPEND PROPERTY INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/fake_headers")
 set_property(SOURCE coin.i APPEND PROPERTY INCLUDE_DIRECTORIES "${Coin_INCLUDE_DIR}")
-
+if (Coin_GENERATED_INCLUDE_DIR)
+    set_property(SOURCE coin.i APPEND PROPERTY INCLUDE_DIRECTORIES "${Coin_GENERATED_INCLUDE_DIR}")
+endif()
 
 swig_add_library(coin
     LANGUAGE python
@@ -37,7 +39,7 @@ target_include_directories(coin
     ${Coin_INCLUDE_DIR}
     ${Python_INCLUDE_DIRS}
     PRIVATE
-    ${CMAKE_SOURCE_DIR}/interfaces
+    ${PROJECT_SOURCE_DIR}/interfaces
     )
 
 target_link_libraries(coin PUBLIC Coin::Coin Python::Module)
@@ -84,7 +86,7 @@ if (SoQt_FOUND)
         ${QT_INC_DIRS}
         ${Python_INCLUDE_DIRS}
         PRIVATE
-        ${CMAKE_SOURCE_DIR}/interfaces
+        ${PROJECT_SOURCE_DIR}/interfaces
         )
 
     target_link_libraries(soqt PUBLIC SoQt::SoQt Python::Module)

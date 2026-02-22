@@ -11,7 +11,20 @@ option(PIVY_USE_QT6 "Prefer Qt6 over Qt5 if available" OFF)
 find_package(SWIG 4.0.0 REQUIRED)
 include(${SWIG_USE_FILE})
 
-find_package(Coin CONFIG REQUIRED)
+if (NOT TARGET Coin)
+    find_package(Coin CONFIG REQUIRED)
+else()
+    set(Coin_FOUND 1)
+    get_target_property(Coin_LIB_DIR Coin LIBRARY_OUTPUT_DIRECTORY)
+    # This seems to return the SOVERSION on linux so didn't use it to avoid confusion
+    # get_target_property(Coin_VERSION Coin VERSION)
+    set(Coin_VERSION "Check target Coin!")
+
+    set(Coin_INCLUDE_DIR ${Coin_SOURCE_DIR}/include)
+    set(Coin_GENERATED_INCLUDE_DIR ${Coin_BINARY_DIR}/include)
+
+    add_library(Coin::Coin ALIAS Coin)
+endif()
 find_package(SoQt CONFIG)
 
 if (SoQt_FOUND)
@@ -52,14 +65,14 @@ endif()
 # SWIGIFY HEADERS
 # doing this with the origin python functions
 
-execute_process(COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/install_helpers.py ${CMAKE_SOURCE_DIR} ${Coin_INCLUDE_DIR})
+execute_process(COMMAND ${Python_EXECUTABLE} ${PROJECT_SOURCE_DIR}/install_helpers.py ${PROJECT_SOURCE_DIR} ${Coin_INCLUDE_DIR})
 
 
 # copy the python module
 include(TargetCopyFiles.cmake)
 
 add_custom_target(pivy ALL)
-add_copy_directory(pivy ${CMAKE_SOURCE_DIR}/pivy
+add_copy_directory(pivy ${PROJECT_SOURCE_DIR}/pivy
     DESTINATION ${CMAKE_BINARY_DIR}/pivy
     PATTERN *.py
 )

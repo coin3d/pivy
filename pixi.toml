@@ -4,7 +4,7 @@ channels = ["conda-forge"]
 description = "combining building and dependency management with pixi"
 name = "pivy"
 platforms = ["osx-arm64", "linux-64", "linux-aarch64", "win-64", "osx-64"]
-version = "0.1.0"
+version = "0.6.11"
 
 [dependencies]
 python = "*"

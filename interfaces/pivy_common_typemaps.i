@@ -28,6 +28,19 @@ typedef int Py_ssize_t;
   #define IS_PY3K
 #endif
 
+/* SWIG >= 4.3 dropped the Python 2 PyInt_* aliases; pivy's typemaps still use them. */
+#if PY_VERSION_HEX >= 0x03000000
+  #ifndef PyInt_AsLong
+    #define PyInt_AsLong PyLong_AsLong
+  #endif
+  #ifndef PyInt_FromLong
+    #define PyInt_FromLong PyLong_FromLong
+  #endif
+  #ifndef PyInt_Check
+    #define PyInt_Check PyLong_Check
+  #endif
+#endif
+
 PyObject *
 cast_internal(PyObject * self, PyObject * obj, const char * type_name, Py_ssize_t type_len)
 {
@@ -312,7 +325,7 @@ autocast_event(SoEvent * event)
     $1 = new SbName(PyBytes_AsString($input));
   }
   else if  (PyUnicode_Check($input)){
-    $1 = new SbName(PyBytes_AsString(PyUnicode_AsEncodedString($input, "utf-8", "Error ~")));
+    $1 = new SbName(PyBytes_AsString(PyUnicode_AsEncodedString($input, "utf-8", "strict")));
   }
 #endif
    else {
@@ -359,7 +372,7 @@ autocast_event(SoEvent * event)
     $1 = SbName(PyBytes_AsString($input));
   }
   else if  (PyUnicode_Check($input)){
-    $1 = SbName(PyBytes_AsString(PyUnicode_AsEncodedString($input, "utf-8", "Error ~")));
+    $1 = SbName(PyBytes_AsString(PyUnicode_AsEncodedString($input, "utf-8", "strict")));
   }
 #endif
   else {
@@ -401,7 +414,7 @@ autocast_event(SoEvent * event)
     $1 = new SbString(PyBytes_AsString($input));
   }
   else if  (PyUnicode_Check($input)){
-     $1 = new SbString(PyBytes_AsString(PyUnicode_AsEncodedString($input, "utf-8", "Error ~")));
+     $1 = new SbString(PyBytes_AsString(PyUnicode_AsEncodedString($input, "utf-8", "strict")));
   }
 #endif
   else {

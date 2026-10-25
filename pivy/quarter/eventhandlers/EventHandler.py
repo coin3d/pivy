@@ -14,7 +14,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-"""
+r"""
 \class SIM::Coin3D::Quarter::EventHandler EventHandler.h Quarter/eventhandlers/EventHandler.h
 
   \brief The EventHandler class is the base class for eventhandlers

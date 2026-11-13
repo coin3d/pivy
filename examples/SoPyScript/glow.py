@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 from __future__ import print_function
 # make the handler of the color field to call chicken_mcnuggets()
 # instead of the default set handle_color() function

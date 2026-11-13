@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 import os, sys
 import subprocess
 from distutils.spawn import find_executable

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 /* add operator overloading methods instead of the global functions */
 %extend SbViewportRegion {
   int __eq__(const SbViewportRegion &u) { return *self == u; }

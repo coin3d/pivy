@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %extend SoWin {
   static void mainLoop(void) {
     PyRun_SimpleString("import sys");

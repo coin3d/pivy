@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 /* types like SbVecXf, SbRotation define this typename for fixed size
    arrays which breaks here. Have to clear it before use */
 %typemap(out) float *;

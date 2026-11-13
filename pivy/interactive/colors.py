@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 """Color definitions for graphics objects.
 
 This module provides a dictionary of predefined RGB color values

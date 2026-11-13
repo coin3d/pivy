@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 """Mesh creation utilities for 3D graphics.
 
 This module provides functions to create various types of 3D meshes

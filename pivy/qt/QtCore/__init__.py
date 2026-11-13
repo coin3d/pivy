@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 try:
     from PySide6.QtCore import *
 except ImportError:

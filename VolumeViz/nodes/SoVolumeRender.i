@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %{
 static SoVolumeRender::AbortCode
 SoVolumeRenderAbortPythonCB(int totalslices, int thisslice, void * userdata)

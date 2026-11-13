@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %typemap(in) float xyz[3] (float temp[3]) {
   convert_SbVec3f_array($input, temp);
   $1 = temp;

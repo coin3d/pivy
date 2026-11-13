@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 """3D viewer widget for interactive graphics visualization.
 
 This module provides a Qt-based 3D viewer widget using Quarter (Coin3D/Qt integration)

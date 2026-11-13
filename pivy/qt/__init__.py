@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 try:
     import PySide6
 except ImportError:

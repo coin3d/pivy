@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %rename(SoPathSensor_scb_v) SoPathSensor::SoPathSensor(SoSensorCB * func, void * data);
 
 %feature("shadow") SoPathSensor::SoPathSensor %{

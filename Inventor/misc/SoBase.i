@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %extend SoBase {
   /* add a public destructor - otherwise refcount of new SoBase
    * derived instances, raised by the autoref feature, never gets

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# SPDX-License-Identifier: ISC
 
 import sys
 from pivy.gui.soqt import SoQt

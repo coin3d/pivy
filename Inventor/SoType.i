@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %ignore SoType::createType(const SoType parent, const SbName name,
                            const instantiationMethod method = (instantiationMethod) NULL,
                            const uint16_t data = 0);

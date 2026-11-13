@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %ignore SbViewVolume::projectPointToLine(const SbVec2f & pt, SbLine & line) const;
 %ignore SbViewVolume::projectPointToLine(const SbVec2f & pt, SbVec3f & line0, SbVec3f & line1) const;
 %ignore SbViewVolume::projectToScreen(const SbVec3f & src, SbVec3f & dst) const;

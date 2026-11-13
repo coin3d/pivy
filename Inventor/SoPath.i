@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 /* add operator overloading methods instead of the global functions */
 %extend SoPath {
 

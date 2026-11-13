@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 /* add generic interface to access parts as attributes */
 %extend SoBaseKit {
 %pythoncode %{

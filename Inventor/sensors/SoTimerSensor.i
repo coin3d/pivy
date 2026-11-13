@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %rename(SoTimerSensor_scb_v) SoTimerSensor::SoTimerSensor(SoSensorCB * func, void * data);
 
 %feature("shadow") SoTimerSensor::SoTimerSensor %{

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %typemap(in) (const void * bufpointer, size_t bufsize) {
 
 #ifdef PY_2

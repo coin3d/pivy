@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %ignore SoField::get(SbString & valuestring);
 
 %extend SoField {

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %{
 static void
 SoEventPythonCallBack(void * userdata, SoEventCallback * node)

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %{
 static void
 convert_SoMFInt32_array(PyObject * input, int len, int32_t * temp)

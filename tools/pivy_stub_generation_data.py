@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 """Declarative normalization data for the Pivy stub generator."""
 
 BOOL_TYPES = {"bool", "SbBool"}

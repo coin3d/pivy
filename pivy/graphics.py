@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 """Deprecated alias for pivy.interactive module.
 
 This module provides backward compatibility for code using the old

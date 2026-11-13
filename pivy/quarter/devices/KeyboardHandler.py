@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 ###
 # Copyright (c) 2002-2008 Kongsberg SIM
 #

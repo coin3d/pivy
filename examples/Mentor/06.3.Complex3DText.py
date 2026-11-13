@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# SPDX-License-Identifier: ISC
+
 ###
 # Copyright (c) 2002-2007 Systems in Motion
 #

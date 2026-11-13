@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 /* typemap for char* is used from SoMFName!!! */
 /* maybe it's not possible to define two typemaps for the same type? */
 /*

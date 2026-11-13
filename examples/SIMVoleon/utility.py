@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0
+
 ###
 # This file is part of a set of example programs for the Coin library.
 # Copyright (C) 2000-2003 by Systems in Motion. All rights reserved.

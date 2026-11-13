@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %typemap(in) const char * strings[] {
   int len;  
   if (PySequence_Check($input)) {

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %extend SbPList {
   void * __getitem__(int i) { return self->get(i); }
   void __setitem__(int i, void * val) { self->set(i,val); }

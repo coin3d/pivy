@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %rename(SoFieldSensor_scb_v) SoFieldSensor::SoFieldSensor(SoSensorCB * func, void * data);
 
 %feature("shadow") SoFieldSensor::SoFieldSensor %{

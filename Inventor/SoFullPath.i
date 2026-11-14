@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %extend SoFullPath {
   /* allow construction of an SoFullPath through the provision of an
    * SoPath, to remedy the need for a cast operator. */

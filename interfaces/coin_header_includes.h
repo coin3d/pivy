@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 #include <Inventor/actions/SoAction.h>
 #include <Inventor/actions/SoActions.h>
 #include <Inventor/actions/SoAudioRenderAction.h>

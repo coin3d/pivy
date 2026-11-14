@@ -1,4 +1,5 @@
 #!/usr/bin/env pythonw
+# SPDX-License-Identifier: ISC
 
 from AppKit import *
 from Foundation import *

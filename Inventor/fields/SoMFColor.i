@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 /* note that the following works for both SbColor sequences and float
    sequences because SbColor supports item access derived from SbVec3f */
 %typemap(in) float [][3] (float (*temp)[3]) {

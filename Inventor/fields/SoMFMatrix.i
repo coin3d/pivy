@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %typemap(in) const SbMatrix *newvals {
   int len;
 

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 /* add a method for wrapping c++ operator[] access */
 %extend SoBaseList {
   void __setitem__(const int i, SoBase * value) { self->set(i,value); }

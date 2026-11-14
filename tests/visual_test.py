@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 import sys
 
 from pivy.qt import QtWidgets

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %ignore SbPlane::intersect(const SbLine& l, SbVec3f& intersection) const;
 %ignore SbPlane::intersect(const SbPlane & pl, SbLine & line) const;
 

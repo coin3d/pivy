@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %{
 static void
 convert_SoMFBool_array(PyObject * input, int len, SbBool * temp)

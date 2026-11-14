@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 #include "mainwindow.h"
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoRotationXYZ.h>

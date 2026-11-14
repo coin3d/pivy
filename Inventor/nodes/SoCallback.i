@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %{
 static void
 SoPythonCallBack(void * userdata, SoAction * action)

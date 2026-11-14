@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %extend SoOffscreenRenderer {
   PyObject * getBuffer() {
     SbVec2s size = self->getViewportRegion().getWindowSize();

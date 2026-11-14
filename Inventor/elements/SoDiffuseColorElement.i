@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 /* workaround for wrong const int * -> const uint32_t * in
    SoDiffuseColorElement::set() */
 %ignore set(SoState * const state, SoNode * const node,

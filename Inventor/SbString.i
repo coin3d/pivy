@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %ignore SbString::vsprintf(const char * formatstr, va_list args);
 
 /* add operator overloading methods instead of the global functions */

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 """Function plotting utilities for 3D visualization.
 
 This module provides functions to plot mathematical functions as 3D surfaces

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %{
 static void
 SoSensorPythonCB(void * data, SoSensor * sensor)

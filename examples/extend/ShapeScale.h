@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 // Copyright (C) 1998-2005 by Systems in Motion. All rights reserved.
 
 #ifndef COIN_SHAPESCALE_H

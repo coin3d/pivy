@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %extend SoMarkerSet {
     static void addMarker(int idx, const SbVec2s & size, PyObject* string, 
                         SbBool isLSBFirst = TRUE, SbBool isUpToDown = TRUE)

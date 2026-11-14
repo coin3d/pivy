@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %extend SoNodeKitPath {      
 
 /* extend __iter__ to return a new iterator object */

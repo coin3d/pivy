@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %typemap(in) SoEngine ** {
   int len;
 

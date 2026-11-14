@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 import os
 import sys
 import shutil

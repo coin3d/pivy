@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %typemap(in,numinputs=0) (SbVec3s & size, int & nc) (int temp) {
   $1 = new SbVec3s();
   $2 = &temp;

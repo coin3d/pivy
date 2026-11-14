@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 """Declarative expectations for the Pivy stub validator."""
 
 from dataclasses import dataclass

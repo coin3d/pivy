@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 # pyright: reportMissingModuleSource=false
 
 from pivy import coin

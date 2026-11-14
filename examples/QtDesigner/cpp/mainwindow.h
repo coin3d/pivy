@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 #ifndef mainwindow_h_
 #define mainwindow_h_
 

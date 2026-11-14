@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 try:
     from PySide6.QtOpenGL import *
     from PySide6.QtOpenGLWidgets import QOpenGLWidget

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %extend SoFieldContainer {
     PyObject * getFieldName(SoField * field) {
         SbName name;

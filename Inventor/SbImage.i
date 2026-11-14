@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %typemap(in) (const unsigned char * bytes, const SbVec2s & size, const int bytesperpixel) {
   unsigned char * image;
   PyObject * buf = $input;

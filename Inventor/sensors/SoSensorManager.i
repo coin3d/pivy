@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %{
 static void
 sensorQueueChangedPythonCB(void * userdata)

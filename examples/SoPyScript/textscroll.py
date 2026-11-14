@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 from __future__ import print_function
 # example that shows a scrolling text using a timer sensor
 idx = 0

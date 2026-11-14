@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 #include <Inventor/SoInput.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoTransform.h>

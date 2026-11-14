@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %{
 static void
 SoSceneManagerPythonCB(void * userdata, SoSceneManager * mgr)

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %rename(SoDelayQueueSensor_scb_v) SoDelayQueueSensor::SoDelayQueueSensor(SoSensorCB * func, void * data);
 
 %feature("shadow") SoDelayQueueSensor::SoDelayQueueSensor %{

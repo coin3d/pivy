@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 #include <QApplication>
 #include "mainwindow.h"
 #include <Inventor/Qt/SoQt.h>

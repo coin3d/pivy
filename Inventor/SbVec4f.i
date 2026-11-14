@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %{
 static void
 convert_SbVec4f_array(PyObject * input, float temp[4])

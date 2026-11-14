@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 function(set_swig_properties NAME)
     set_property(SOURCE ${NAME} PROPERTY CPLUSPLUS ON)
     set_property(SOURCE ${NAME} PROPERTY SWIG_FLAGS "-includeall")

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 /* ignores for incorrect extern "C" function typedef wrapping */
 %ignore SbDictApplyFunc;
 %ignore SbDictApplyDataFunc;

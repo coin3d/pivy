@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# SPDX-License-Identifier: GPL-2.0
 
 ###
 # This file is part of a set of example programs for the Coin library.

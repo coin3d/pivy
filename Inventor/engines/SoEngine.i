@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 /* add generic interface to access outputs as attributes */
 %extend SoEngine {
 %pythoncode %{

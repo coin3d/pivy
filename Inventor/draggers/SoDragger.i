@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %{
 static void
 SoDraggerPythonCB(void * data, SoDragger * dragger)

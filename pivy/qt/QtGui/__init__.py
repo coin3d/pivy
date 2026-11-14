@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 try:
     from PySide6.QtGui import *
 except ImportError:

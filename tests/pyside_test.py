@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 from __future__ import print_function
 import unittest
 from pivy.qt import QtCore

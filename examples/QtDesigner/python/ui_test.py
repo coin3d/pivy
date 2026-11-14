@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 # -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file '../test.ui'

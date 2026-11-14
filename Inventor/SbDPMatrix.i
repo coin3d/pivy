@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %{
 static void
 convert_SbDPMat_array(PyObject * input, SbDPMat temp)

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %extend SbName {     
   /* add operator overloading methods instead of the global functions */
   int __eq__(const SbName &u) { return *self == u; }

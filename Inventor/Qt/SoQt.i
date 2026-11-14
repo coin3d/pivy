@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %extend SoQt {
   static void mainLoop() {
     PyRun_SimpleString("import sys");

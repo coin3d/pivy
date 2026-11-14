@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: ISC
+
 %extend SoSFTime {
 #if COIN_MAJOR_VERSION > 2
   void setValue(SbTime & other) { *self = other; }

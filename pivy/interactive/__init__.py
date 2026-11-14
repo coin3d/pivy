@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: ISC
+
 """Interactive 3D graphics objects and scene management.
 
 This module provides classes for creating interactive 3D graphics objects
